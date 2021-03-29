@@ -62,12 +62,9 @@ def test_flow_builder_invalid_wrong_type():
         flow.finalize()
 
 class TestOperator(NoOpOperator):
-    def __init__(self, **kwargs):
-        self.ding = kwargs.pop('ding')
-        super().__init__(**kwargs)
     def execute(self, data={}, context={}):
-        print(data + self.ding)
-        return data + self.ding, context
+        print(data)
+        return data, context
 
 class OperatorA(TestOperator): pass
 class OperatorB(TestOperator): pass
@@ -76,10 +73,10 @@ class OperatorD(TestOperator): pass
 
 def test_branching():
     z = EndOperator()
-    a = OperatorA(ding='a')
-    b = OperatorB(ding='b')
-    c = OperatorC(ding='c')
-    d = OperatorD(ding='d')
+    a = OperatorA()
+    b = OperatorB()
+    c = OperatorC()
+    d = OperatorD()
 
     flow = a > [b > z, c > d > z]
     
@@ -97,9 +94,6 @@ def test_branching():
     flow.finalize()
 
     
-
-
-
 if __name__ == "__main__":
 
     #test_flow_builder_valid()
