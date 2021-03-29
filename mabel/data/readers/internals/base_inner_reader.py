@@ -79,7 +79,7 @@ class BaseInnerReader(abc.ABC):
         stream = self.get_blob_stream(blob)
 
         if blob.endswith('.zstd'):
-            import zstandard
+            import zstandard  # type:ignore
             with zstandard.open(stream, 'r', encoding='utf8') as file:  # type:ignore
                 yield from file
         elif blob.endswith('.lzma'):

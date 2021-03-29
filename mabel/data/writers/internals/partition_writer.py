@@ -95,7 +95,7 @@ class PartitionWriter():
             import lzma
             self.file = lzma.open(self.file, mode='wb')
         if self.format == 'zstd':
-            import zstandard
+            import zstandard  # type:ignore
             self.file = zstandard.open(self.file_name, mode='wb')
 
         self.bytes_in_partition = 0
