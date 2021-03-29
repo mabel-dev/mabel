@@ -3,7 +3,9 @@
 **mabel** is a platform to help with authoring data processing systems.
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/joocer/mabel/blob/master/LICENSE)
-
+[![integration_tests](https://github.com/joocer/mabel/actions/workflows/integration_tests.yaml/badge.svg)](https://github.com/joocer/mabel/actions/workflows/integration_tests.yaml)
+[![bandit](https://github.com/joocer/mabel/actions/workflows/bandit.yaml/badge.svg)](https://github.com/joocer/mabel/actions/workflows/bandit.yaml)
+[![PyPI Latest Release](https://img.shields.io/pypi/v/mabel.svg)](https://pypi.org/project/mabel/)
 
 ## What Is In It?
 
