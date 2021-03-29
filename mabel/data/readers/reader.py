@@ -203,7 +203,7 @@ class Reader():
             ds = self._parse(ds)
             yield from select_from(ds, where=self.where)
         elif self.fork_processes:
-            yield from processed_reader(blob_list, self.reader_class, self.parser, self.where)
+            yield from processed_reader(blob_list, self.reader_class, self._parse, self.where)
         else:
             for blob in blob_list:
                 get_logger().debug(F"Reading from {blob}")
