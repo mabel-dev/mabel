@@ -12,3 +12,4 @@ moz-sql-parser
 gcp_storage_emulator
 xmltodict
 psutil
+pyarrow
