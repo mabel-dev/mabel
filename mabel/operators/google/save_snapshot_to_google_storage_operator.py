@@ -17,7 +17,7 @@ class SaveSnapshotToGoogleStorageOperator(BaseOperator):
             date: datetime.date = None,
             **kwargs):
         """
-        This is a wrapper around mabel.data.writers.GoogleCloudStorage.
+        This is a wrapper around orwell.data.writers.GoogleCloudStorage.
 
         Parameters:
             project: string

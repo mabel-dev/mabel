@@ -110,10 +110,12 @@ class BaseInnerReader(abc.ABC):
         # work out if there's an as_at part
         as_ats = { self._extract_as_at(blob) for blob in blobs if 'as_at_' in blob }
         if as_ats:
-            as_at = sorted(as_ats).pop()
+            as_ats = sorted(as_ats)
+            as_at = as_ats.pop()
             # the .ignore file means the frame shouldn't be used 
-            while as_at + '/.ignore' in blobs:
-                as_at = sorted(as_ats).pop()
+            while any([blob for blob in blobs if as_at + '/.ignore' in blob]):
+                get_logger().debug(F".ignore file found in frame {as_at}, ignoring")
+                as_at = as_ats.pop()
             get_logger().debug(F"Reading from DataSet frame {as_at}")
             blobs = [blob for blob in blobs if as_at in blob]
 
