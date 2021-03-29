@@ -1,0 +1,3 @@
+ujson
+python-dateutil
+zstandard

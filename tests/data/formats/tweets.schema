@@ -1,0 +1,69 @@
+{
+    "type": "record",
+    "name": "tweets",
+    "fields": [
+        {
+            "name": "tweet_id",
+            "type": "numeric"
+        }, 
+        { 
+            "name": "text",
+            "type": "string"
+        },
+        {
+            "name": "timestamp",
+            "type": "date",
+            "description": "Time of Tweet (Linux Epoch)"
+        },
+        {
+            "name": "user_id",
+            "type": "numeric",
+            "description": "Globally unique User Identifier"
+        },
+        {
+            "name": "user_verified",
+            "type": "boolean",
+            "description": "Is the user verified (blue tick)"
+        },
+        {
+            "name": "user_name",
+            "type": "string",
+            "description": "Name of the user (not-static)"
+        },
+        {
+            "name": "hash_tags",
+            "type": "list",
+            "description": "Hash Tags in the Tweet (limited)"
+        },
+        {
+            "name": "followers",
+            "type": "numeric",
+            "description": "The number of followers the user had at the time of the Tweet"
+        },
+        {
+            "name": "following",
+            "type": "numeric",
+            "description": "The number of followers the user had at the time of the Tweet"
+        },
+        {
+            "name": "tweets_by_user",
+            "type": "numeric",
+            "description": "The number of tweets published by the user"
+        },
+        {
+            "name": "is_quoting",
+            "type": ["numeric", "nullable"],
+            "description": "The globally unique identifier of the Tweet being quoted, if quoting"
+        },
+        {
+            "name": "is_reply_to",
+            "type": ["numeric", "nullable"],
+            "description": "The globally unique identifier of the Tweet being replied to, if replying"
+        },
+        {
+            "name": "is_retweeting",
+            "type": ["numeric", "nullable"],
+            "description": "The globally unique identifier of the Tweet being retweeted, if retweeting"
+        }
+    ]
+}

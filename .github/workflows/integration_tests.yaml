@@ -1,0 +1,61 @@
+name: integration_tests
+
+on: [push, pull_request]
+
+jobs:
+  regression_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: check out
+        uses: actions/checkout@v2
+  
+      - name: set up
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8' 
+          
+      - name: install pytest 
+        run:  pip install pytest
+        
+      - name: install requirements
+        run:  pip install -r $GITHUB_WORKSPACE/requirements.txt
+
+      - name: install optional requirements
+        run:  pip install -r $GITHUB_WORKSPACE/requirements-optional.txt
+
+      - name: run test
+        run: pytest 
+
+  bandit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: check out
+        uses: actions/checkout@v2
+  
+      - name: set up
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8' 
+          
+      - name: install 
+        run:  pip install bandit
+
+      - name: run test
+        run: bandit -r . -x /tests
+
+  mypy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: check out
+        uses: actions/checkout@v2
+  
+      - name: set up
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8' 
+          
+      - name: install 
+        run:  pip install mypy
+
+      - name: run test
+        run: mypy mabel

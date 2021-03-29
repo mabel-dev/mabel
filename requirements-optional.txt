@@ -1,0 +1,14 @@
+# these aren't part of the minimum requirements for this library
+# however, they are referenced somewhere in the codebase or in 
+# test scripts.
+google_cloud_storage>=1.35
+pandas
+orjson
+matplotlib
+rich
+python-dotenv
+networkx
+moz-sql-parser
+gcp_storage_emulator
+xmltodict
+psutil
