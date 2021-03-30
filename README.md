@@ -1,4 +1,4 @@
-<img align="centre" alt="VAP" height="64" src="mabel-sm.png" />
+<img align="centre" alt="VAP" height="64" src="mabel.svg" />
 
 **mabel** is a platform to help with authoring data processing systems.
 
