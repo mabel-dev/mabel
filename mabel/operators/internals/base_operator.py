@@ -67,7 +67,7 @@ class BaseOperator(abc.ABC):
         call_hash = self._hash(inspect.getsource(self.__call__))[-12:]    
         version_hash = self._hash(inspect.getsource(self.version))[-12:]
         self.logger.audit({
-                "Operator": self.name,
+                "operator": self.name,
                 "call_hash": call_hash,
                 "version_hash": self.version(),
                 "version_method": version_hash })
@@ -130,7 +130,7 @@ class BaseOperator(abc.ABC):
                     try:
                         error_payload = (
                                 F"timestamp  : {datetime.datetime.today().isoformat()}\n"
-                                F"Operator   : {self.name}\n"
+                                F"operator   : {self.name}\n"
                                 F"error type : {type(err).__name__}\n"
                                 F"details    : {err}\n"
                                 "------------------------------------------------------------------------------------------------------------------------\n"
@@ -155,8 +155,8 @@ class BaseOperator(abc.ABC):
         if context.get('trace', False):
             data_hash = self._hash(data)
             context['execution_trace'].add_block(data_hash=data_hash,
-                                                 Operator=self.name,
-                                                 Operator_version=self.version(),
+                                                 operator=self.name,
+                                                 operator_version=self.version(),
                                                  execution_ns=my_execution_time,
                                                  data_block=serialize(data))
             self.logger.audit(F"{context.get('uuid')} {self.name} {data_hash}")
@@ -174,7 +174,7 @@ class BaseOperator(abc.ABC):
         should include this information
         """
         response = {
-            "Operator": self.name,
+            "operator": self.name,
             "version": self.version(),
             "records_processed": self.records_processed,
             "error_count": self.errors,
@@ -226,26 +226,26 @@ class BaseOperator(abc.ABC):
             flow = Flow()
             flow.add_operator(F"{self.name}-{id(self)}", self)
 
-        for Operator in next_operators:
-            if isinstance(Operator, Flow):
+        for operator in next_operators:
+            if isinstance(operator, Flow):
                 # if we're pointing to a graph, merge with the current graph,
                 # we need to find the node with no incoming nodes we identify
                 # the entry-point
-                flow.merge(Operator)
+                flow.merge(operator)
                 flow.link_operators(
                     F"{self.name}-{id(self)}",
-                    Operator.get_entry_points().pop(),
+                    operator.get_entry_points().pop(),
                 )
-            elif issubclass(type(Operator), BaseOperator):
+            elif issubclass(type(operator), BaseOperator):
                 # otherwise add the node and edge and set the graph further
                 # down the line
-                flow.add_operator(F"{Operator.__class__.__name__}-{id(Operator)}", Operator)
-                flow.link_operators(F"{self.name}-{id(self)}", F"{Operator.__class__.__name__}-{id(Operator)}")
-                Operator.flow = flow
+                flow.add_operator(F"{operator.__class__.__name__}-{id(operator)}", operator)
+                flow.link_operators(F"{self.name}-{id(self)}", F"{operator.__class__.__name__}-{id(operator)}")
+                operator.flow = flow
             else:
-                label = type(Operator).__name__
-                if hasattr(Operator, '__name__'):
-                    label = Operator.__name__
+                label = type(operator).__name__
+                if hasattr(operator, '__name__'):
+                    label = operator.__name__
                 raise TypeError(F"Operator {label} must inherit BaseOperator, this error also occurs when the Operator has not been correctly instantiated.")
         # this variable only exists to build the graph, we don't need it
         # anymore so destroy it

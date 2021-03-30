@@ -7,6 +7,15 @@
 [![bandit](https://github.com/joocer/mabel/actions/workflows/bandit.yaml/badge.svg)](https://github.com/joocer/mabel/actions/workflows/bandit.yaml)
 [![PyPI Latest Release](https://img.shields.io/pypi/v/mabel.svg)](https://pypi.org/project/mabel/)
 
+## Features
+
+-  Programatically define data pipelines
+-  Immutable datasets
+-  On-the-fly compression
+-  Automatic version tracking of processing operations
+-  Trace messages through the pipeline (random sampling)
+-  Automatic retry of operations
+
 ## What Is In It?
 
 mabel.flows -   
@@ -15,8 +24,6 @@ mabel.adapters -
 mabel.data - read data from various sources      
 mabel.data.formats - helpers for handling data   
 mabel.data.validator - schema conformity testing   
-
-
 
 ## How Do I Get It?
 
@@ -28,16 +35,6 @@ From GitHub
 ~~~
 pip install --upgrade git+https://github.com/joocer/mabel
 ~~~
-
-
-## Features
-
--  Programatically define data pipelines
--  Immutable datasets
--  On-the-fly compression
--  Automatic version tracking of processing operations
--  Trace messages through the pipeline (random sampling), including santization of sensitive information from trace logs
--  Automatic retry of operations
 
 ## Concepts
 

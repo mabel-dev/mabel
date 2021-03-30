@@ -32,7 +32,7 @@ def _read_and_compare(ofs, f, size, tester):
         g = tester <= line
     return [fofs, g, ofs]
 
-def bisect_way(f, x, size):
+def bisect_way(f, x):
     f.seek(0, 2)
     size = f.tell()
     lo, hi, mid = 0, size - 1, 1
@@ -76,7 +76,6 @@ def arrow(value):
     mid = 0
     start = 0
     end = len(table)
-    step = 0
 
     while (start <= end):
         mid = (start + end) >> 1
@@ -98,7 +97,6 @@ def arrow_2(value):
     mid = 0
     start = 0
     end = len(table)
-    step = 0
 
     while (start <= end):
         mid = (start + end) >> 1

@@ -70,8 +70,7 @@ class Groups():
         """
         response = {}
         for key, items in self.groups.items():
-            for item in items:
-                values = [item.get(column) for item in items if item.get(column) is not None]
+            values = [item.get(column) for item in items if item.get(column) is not None]
             response[key] = method(values)
         return response
 

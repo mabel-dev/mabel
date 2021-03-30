@@ -92,4 +92,3 @@ class SimpleWriter():
             self.partition_writer.commit()
         except Exception as e:
             get_logger().error(F"{type(self).__name__} failed to close pool: {type(e).__name__} - {e}")
-            pass

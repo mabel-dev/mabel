@@ -167,8 +167,8 @@ def drop_duplicates(
     Yields:
         dictionary
     """
-    from ...utils.lru_index import LRU_Index
-    lru = LRU_Index(size=cache_size)
+    from ...utils.lru_index import Lru_Index
+    lru = Lru_Index(size=cache_size)
 
     for record in dictset:
         entry = serialize(record)

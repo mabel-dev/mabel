@@ -34,7 +34,7 @@ def _sub(x,y):  return x - y
 def _like(x,y): return _sql_like_fragment_to_regex(y).match(str(x))
 
 # functions which implement the Operators
-OperatorS = {
+OPERATORS = {
     'eq':   _eq,
     'neq':  _neq,
     'lt':   _lt,
@@ -73,9 +73,9 @@ def _build_where_function(where_object):
     if where_object is None:
         return None
     # the Operator is the head of the dictionary
-    Operator = list(where_object.keys())[0]
+    operator = list(where_object.keys())[0]
     # the operands are the values in for the key
-    operands = where_object.get(Operator)
+    operands = where_object.get(operator)
     # if the operands are a list, it's the left and right operands
     if isinstance(operands, list):
         left_operand, right_operand = operands[0], operands[1]
@@ -85,7 +85,7 @@ def _build_where_function(where_object):
 
     # we build a function, load some of the values and pass it to the Reader
     return SqlOperator(
-            Operator,
+            operator,
             left_operand,
             right_operand)
 
@@ -104,7 +104,7 @@ class SqlOperator():
             right_operand):
         self.left_operand = left_operand
         self.right_operand = right_operand
-        self.operation = OperatorS.get(Operator)
+        self.operation = OPERATORS.get(Operator)
         self.__name__ = F"SQL_WHERE('{Operator}')"
 
     def __call__(self, row):

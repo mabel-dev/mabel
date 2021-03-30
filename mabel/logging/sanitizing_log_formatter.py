@@ -45,7 +45,7 @@ class SanitizingLogFormatter(logging.Formatter):
 
         try:
             dirty_record = json.loads(json_part.replace("'", '"'))
-        except Exception as e:
+        except:
             return record
 
         if isinstance(dirty_record, dict):

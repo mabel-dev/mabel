@@ -12,7 +12,7 @@ This relies on dictionaries being ordered.
 """
 from typing import Any, List, Optional
 
-class LRU_Index(object):
+class Lru_Index(object):
 
     __slots__ = ('hash_list', 'size')
 

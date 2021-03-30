@@ -23,7 +23,7 @@ class Flow():
         self.edges = []
         self.finalized = False
 
-    def add_operator(self, name, Operator):
+    def add_operator(self, name, operator):
         """
         Add a step to the DAG
 
@@ -33,7 +33,7 @@ class Flow():
             Operator: BaseOperator
                 The Operator
         """
-        self.nodes[name] = Operator
+        self.nodes[name] = operator
 
     def link_operators(self, source_operator, target_operator):
         """
@@ -116,8 +116,8 @@ class Flow():
             context['trace'] = random.randint(1, round(1 / trace_sample_rate)) == 1  # nosec
 
         # start the flow, walk from the nodes with no incoming links
-        for Operator_name in self.get_entry_points():
-            self._inner_runner(Operator_name=Operator_name, data=data, context=context)
+        for operator_name in self.get_entry_points():
+            self._inner_runner(operator_name=operator_name, data=data, context=context)
 
         # if being traced, send the trace to the trace writer
         if context.get('trace', False) and hasattr(self, 'trace_writer'):
@@ -126,7 +126,7 @@ class Flow():
 
     def _inner_runner(
             self,
-            Operator_name: str = None,
+            operator_name: str = None,
             data: dict = {},
             context: dict = {}):
         """
@@ -136,22 +136,22 @@ class Flow():
         - Find the next step by finding outgoing edges
         - Call this method for the next step
         """
-        Operator = self.get_operator(Operator_name)
-        if Operator is None:
-            raise Exception(F"Invalid Flow - Operator {Operator_name} is invalid")
-        if not hasattr(Operator, "error_writer") and hasattr(self, "error_writer"):
-            Operator.error_writer = self.error_writer  # type:ignore
-        out_going_links = self.get_outgoing_links(Operator_name)
+        operator = self.get_operator(operator_name)
+        if operator is None:
+            raise Exception(F"Invalid Flow - Operator {operator_name} is invalid")
+        if not hasattr(operator, "error_writer") and hasattr(self, "error_writer"):
+            operator.error_writer = self.error_writer  # type:ignore
+        out_going_links = self.get_outgoing_links(operator_name)
 
-        outcome = Operator(data, context)
+        outcome = operator(data, context)
 
         if outcome:
             if not type(outcome).__name__ in ["generator", "list"]:
                 outcome_data, outcome_context = outcome
                 outcome = [(outcome_data, outcome_context)]
             for outcome_data, outcome_context in outcome:
-                for Operator_name in out_going_links:
-                    self._inner_runner(Operator_name=Operator_name, data=outcome_data, context=outcome_context.copy())
+                for operator_name in out_going_links:
+                    self._inner_runner(operator_name=operator_name, data=outcome_data, context=outcome_context.copy())
 
 
     def finalize(self):
@@ -160,12 +160,12 @@ class Flow():
         """
         from ..logging import get_logger
 
-        for Operator_name in self.nodes.keys():
-            Operator = self.get_operator(Operator_name)
-            if Operator:
-                get_logger().audit(Operator.read_sensors())
-                if hasattr(Operator, 'finalize'):
-                    Operator.finalize()
+        for operator_name in self.nodes.keys():
+            operator = self.get_operator(operator_name)
+            if operator:
+                get_logger().audit(operator.read_sensors())
+                if hasattr(operator, 'finalize'):
+                    operator.finalize()
         self.finalized = True
         return True
 
@@ -197,9 +197,9 @@ class Flow():
         from ..logging import get_logger
 
         try:
-            for Operator_name in self.nodes:
-                Operator = self.get_operator(Operator_name)
-                setattr(Operator, str(writer.name), writer)
+            for operator_name in self.nodes:
+                operator = self.get_operator(operator_name)
+                setattr(operator, str(writer.name), writer)
             return True
         except Exception as err:
             get_logger().error(F"Failed to add writer to flow - {type(err).__name__} - {err}")

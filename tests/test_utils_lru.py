@@ -2,7 +2,7 @@
 import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
-from mabel.utils.lru_index import LRU_Index
+from mabel.utils.lru_index import Lru_Index
 try:
     from rich import traceback
     traceback.install()
@@ -17,7 +17,7 @@ item_5 = 'five'
 
 def test_lru():
 
-    lru = LRU_Index(size=3)
+    lru = Lru_Index(size=3)
 
     assert not lru(item_1), item_1  # first item shouldn't be on there
     assert not lru(item_2), item_2  # different second item, not there

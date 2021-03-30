@@ -260,7 +260,6 @@ class BTree(object):
             yield batch_keys, batch_values
 
         def nodify_partitioned_data(keys, values, order):
-            root = Node(order)
             for k,v in partition_data(keys, values, order):
                 node = Node(order)
                 node._order = order
@@ -270,7 +269,6 @@ class BTree(object):
                 yield node
         
         def build_level(nodes, order):
-        
             n = Node(order)
             n._leaf = False
             for node in nodes:
