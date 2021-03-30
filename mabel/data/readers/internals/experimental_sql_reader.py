@@ -172,4 +172,5 @@ class SqlReader():
         return self
 
     def __next__(self):
+        # deepcode ignore unguarded~next~call: error should bubble
         return next(self.reader)

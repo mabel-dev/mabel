@@ -138,3 +138,5 @@ _scratch/**
 **DS_Store**
 .cloudstorage/**
 _batch/**
+.pypirc
+.vscode/settings.json

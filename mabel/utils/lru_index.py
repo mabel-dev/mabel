@@ -35,6 +35,7 @@ class LRU_Index(object):
             # we could convert to a list, but then we need
             # to create a list, this is much faster and 
             # uses less memory
+            # deepcode ignore unguarded~next~call: will not error
             hash_list.pop(next(iter(hash_list)))
         return False
 
