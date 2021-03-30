@@ -1,6 +1,8 @@
 from setuptools import setup, find_packages  # type:ignore
 
-exec(open('mabel/version.py').read())  # nosec
+with open('mabel/version.py') as v:
+    vers = v.read()
+exec(vers)
 
 with open("README.md", "r") as fh:
     long_description = fh.read()

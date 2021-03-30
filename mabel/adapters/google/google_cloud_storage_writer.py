@@ -8,6 +8,7 @@ except ImportError:
 
 
 class GoogleCloudStorageWriter(BaseInnerWriter):
+
     def __init__(
             self,
             project: str,
