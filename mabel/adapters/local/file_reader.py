@@ -23,10 +23,11 @@ class FileReader(BaseInnerReader):
         import pathlib
         if path.exists(): 
             blobs = path.rglob("*")
-            yield from [blob.as_posix() 
+            return [blob.as_posix() 
                     for blob in blobs 
                     if blob.is_file() and 
                         (blob.suffix in self.VALID_EXTENSIONS or blob.stem in self.VALID_EXTENSIONS)]
+        return []
 
     def get_blob_stream(self, blob_name:str) -> io.IOBase:
         with open(blob_name, 'rb') as f:

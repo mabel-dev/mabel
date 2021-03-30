@@ -25,7 +25,7 @@ def _inner_process(flag, reader, source_queue, reply_queue, parser, where):
 
     while source is not None and flag.value != TERMINATE_SIGNAL:
         data = reader.get_records(source)
-        data = map(parser, data)
+        data = parser(data)
         if where is not None:
             data = filter(where, data)
         for chunk in dictset.page_dictset(data, 256):
