@@ -32,7 +32,7 @@ def _read_and_compare(ofs, f, size, tester):
         g = tester <= line
     return [fofs, g, ofs]
 
-def bisect_way(f, x, size=None):
+def bisect_way(f, x, size):
     f.seek(0, 2)
     size = f.tell()
     lo, hi, mid = 0, size - 1, 1

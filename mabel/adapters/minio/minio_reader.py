@@ -23,8 +23,8 @@ class MinIoReader(BaseInnerReader):
 
         raise NotImplementedError('MinIoReader needs updating')
 
-        secure = kwargs.get('secure', True)
-        self.minio = Minio(end_point, access_key, secret_key, secure=secure)
+        #secure = kwargs.get('secure', True)
+        #self.minio = Minio(end_point, access_key, secret_key, secure=secure)
 
 
     def list_of_sources(self):

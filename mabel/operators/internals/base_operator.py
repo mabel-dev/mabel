@@ -202,7 +202,7 @@ class BaseOperator(abc.ABC):
         """
         source = inspect.getsource(self.execute)
         source = self._only_alpha_nums(source)
-        full_hash = hashlib.sha224(source.encode())
+        full_hash = hashlib.sha256(source.encode())
         return full_hash.hexdigest()[-12:]
 
     def __del__(self):
