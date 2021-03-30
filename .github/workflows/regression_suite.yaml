@@ -27,7 +27,7 @@ jobs:
         run: coverage run -m pytest 
 
       - name: report on coverage
-        run: coverage report --include=diablo* --fail-under=80
+        run: coverage report --include=mabel* --fail-under=80
 
   mypy:
     runs-on: ubuntu-latest

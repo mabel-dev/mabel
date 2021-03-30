@@ -21,14 +21,14 @@ class MongoDbReader(BaseInnerReader):
             database: str,
             **kwargs):
 
-        raise NotImplementedError('MongoDbReader needs to be updated')
-        
-        #connection = pymongo.MongoClient(connection_string)
-        #self.database = connection[database] 
+        connection = pymongo.MongoClient(connection_string)
+        self.database = connection[database] 
 
         # chunk size affects memory usage
-        #self.chunk_size: int = kwargs.get('chunk_size', 10000)
-        #self.query: dict = kwargs.get('query', {})
+        self.chunk_size: int = kwargs.get('chunk_size', 10000)
+        self.query: dict = kwargs.get('query', {})
+
+        raise NotImplementedError('MongoDbReader needs to be updated')
 
 
     def list_of_sources(self):

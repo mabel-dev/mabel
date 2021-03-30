@@ -15,5 +15,11 @@ jobs:
       - name: install component base requirements
         run:  pip install -r $GITHUB_WORKSPACE/requirements.txt
 
+      - name: install optional requirements
+        run:  pip install -r $GITHUB_WORKSPACE/requirements-optional.txt
+
+      - name: update non-mabel requirements
+        run:  pip install --upgrade idna mando
+
       - name: execute_action
         uses: joocer/quality-indicators@main

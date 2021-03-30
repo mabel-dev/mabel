@@ -1,3 +1,4 @@
+#no-maintain-checks
 """
 Cryno: Data Profiling Library
 
