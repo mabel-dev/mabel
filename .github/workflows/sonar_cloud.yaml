@@ -1,8 +1,8 @@
-name: SonarCloud
+name: sonar_cloud
 on: [push, pull_request]
 jobs:
-  sonarcloud:
-    name: SonarCloud
+  sonar_cloud:
+    name: sonar_cloud
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

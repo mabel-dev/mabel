@@ -1,0 +1,19 @@
+name: quality_measures
+on: [push, pull_request]
+jobs:
+  quality_measures:
+    runs-on: ubuntu-latest
+    steps:
+      - name: check out
+        uses: actions/checkout@v2
+  
+      - name: set up
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8' 
+
+      - name: install component base requirements
+        run:  pip install -r $GITHUB_WORKSPACE/requirements.txt
+
+      - name: execute_action
+        uses: joocer/quality-indicators@main
