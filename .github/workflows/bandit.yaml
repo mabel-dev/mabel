@@ -1,0 +1,21 @@
+name: bandit
+
+on: [push, pull_request]
+
+jobs:
+  bandit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: check out
+        uses: actions/checkout@v2
+  
+      - name: set up
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8' 
+          
+      - name: install 
+        run:  pip install bandit
+
+      - name: run test
+        run: bandit -r . -x /tests

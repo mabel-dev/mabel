@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d1" for="edge" attr.name="relationship" attr.type="string" />
+  <key id="d0" for="node" attr.name="node_type" attr.type="string" />
+  <graph edgedefault="directed">
+    <node id="Sharlene">
+      <data key="d0">Person</data>
+    </node>
+    <node id="Bindoon">
+      <data key="d0">Locality</data>
+    </node>
+    <node id="Ceanne">
+      <data key="d0">Person</data>
+    </node>
+    <node id="Hungry Jacks">
+      <data key="d0">Restaurant</data>
+    </node>
+    <node id="Lainie">
+      <data key="d0">Person</data>
+    </node>
+    <node id="Gingin">
+      <data key="d0">Locality</data>
+    </node>
+    <node id="Kailis Bros">
+      <data key="d0">Restaurant</data>
+    </node>
+    <node id="Toodyay">
+      <data key="d0">Locality</data>
+    </node>
+    <node id="Chicken Treat">
+      <data key="d0">Restaurant</data>
+    </node>
+    <node id="Saturn">
+      <data key="d0">Planet</data>
+    </node>
+    <edge source="Sharlene" target="Bindoon">
+      <data key="d1">Lives In</data>
+    </edge>
+    <edge source="Sharlene" target="Ceanne">
+      <data key="d1">Sister</data>
+    </edge>
+    <edge source="Sharlene" target="Hungry Jacks">
+      <data key="d1">Likes</data>
+    </edge>
+    <edge source="Sharlene" target="Lainie">
+      <data key="d1">Daughter</data>
+    </edge>
+    <edge source="Ceanne" target="Gingin">
+      <data key="d1">Lives In</data>
+    </edge>
+    <edge source="Ceanne" target="Lainie">
+      <data key="d1">Daughter</data>
+    </edge>
+    <edge source="Ceanne" target="Sharlene">
+      <data key="d1">Sister</data>
+    </edge>
+    <edge source="Ceanne" target="Kailis Bros">
+      <data key="d1">Likes</data>
+    </edge>
+    <edge source="Hungry Jacks" target="Gingin">
+      <data key="d1">Located In</data>
+    </edge>
+    <edge source="Hungry Jacks" target="Bindoon">
+      <data key="d1">Located In</data>
+    </edge>
+    <edge source="Lainie" target="Kailis Bros">
+      <data key="d1">Likes</data>
+    </edge>
+    <edge source="Lainie" target="Sharlene">
+      <data key="d1">Mother</data>
+    </edge>
+    <edge source="Lainie" target="Ceanne">
+      <data key="d1">Mother</data>
+    </edge>
+    <edge source="Lainie" target="Toodyay">
+      <data key="d1">Lives In</data>
+    </edge>
+    <edge source="Kailis Bros" target="Toodyay">
+      <data key="d1">Located In</data>
+    </edge>
+    <edge source="Chicken Treat" target="Toodyay">
+      <data key="d1">Located In</data>
+    </edge>
+    <edge source="Chicken Treat" target="Gingin">
+      <data key="d1">Located In</data>
+    </edge>
+  </graph>
+</graphml>
