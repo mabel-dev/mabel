@@ -1,11 +1,11 @@
 from setuptools import setup, find_packages  # type:ignore
 
-with open('mabel/version.py') as v:
+with open('mabel/version.py', 'r') as v:
     vers = v.read()
 exec(vers)
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+with open('README.md', 'r') as rm:
+    long_description = rm.read()
 
 setup(
    name='mabel',

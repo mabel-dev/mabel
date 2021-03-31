@@ -42,4 +42,4 @@ def test_using_operator():
 
 
 if __name__ == "__main__":
-    test_using_operator()
+    pass

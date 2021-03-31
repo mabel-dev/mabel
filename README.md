@@ -1,4 +1,4 @@
-<img align="centre" alt="overlapping arrows" height="64" src="mabel.svg" />
+<img align="centre" alt="overlapping arrows" height="64" src="icons/mabel.svg" />
 
 **mabel** is a platform for authoring data processing systems.
 
@@ -6,7 +6,6 @@
 [![regression_suite](https://github.com/joocer/mabel/actions/workflows/regression_suite.yaml/badge.svg)](https://github.com/joocer/mabel/actions/workflows/regression_suite.yaml)
 [![bandit](https://github.com/joocer/mabel/actions/workflows/bandit.yaml/badge.svg)](https://github.com/joocer/mabel/actions/workflows/bandit.yaml)
 [![PyPI Latest Release](https://img.shields.io/pypi/v/mabel.svg)](https://pypi.org/project/mabel/)
-[![Known Vulnerabilities](https://snyk.io/test/github/joocer/mabel/badge.svg?targetFile=requirements.txt)](https://snyk.io/test/github/joocer/mabel?targetFile=requirements.txt)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=joocer_mabel&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=joocer_mabel)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=joocer_mabel&metric=security_rating)](https://sonarcloud.io/dashboard?id=joocer_mabel)
 
@@ -18,6 +17,10 @@
 -  Automatic version tracking of processing operations
 -  Trace messages through the pipeline (random sampling)
 -  Automatic retry of operations
+
+## Getting Started
+
+## Documentation
 
 ## What Is In It?
 
@@ -38,6 +41,14 @@ From GitHub
 ~~~
 pip install --upgrade git+https://github.com/joocer/mabel
 ~~~
+
+## What Platforms Does It Support?
+
+<img align="centre" alt="Google Cloud" height="64" src="icons/google-cloud-logo.png" />
+<img align="centre" alt="MinIo" height="64" src="icons/minio-logo.png" />
+<img align="centre" alt="MongoDB" height="64" src="icons/mongodb-logo.png" />
+<img align="centre" alt="MQTT" height="64" src="icons/mqtt-logo.png" />
+<img align="centre" alt="Raspberry Pi" height="64" src="icons/raspberry-pi-logo.png" />
 
 ## Concepts
 
@@ -61,6 +72,10 @@ pip install --upgrade git+https://github.com/joocer/mabel
 -  **[zstandard](https://github.com/indygreg/python-zstandard)**
 
 There are a number of optional dependencies which are required for specific features and functionality. These are listed in the [requirements-optional.txt](requirements-optional.txt) file.
+
+## Contributing
+
+Want to help build mabel? See the [contribution guidance](CONTRIBUTING.md)
 
 ## License
 [Apache 2.0](LICENSE)

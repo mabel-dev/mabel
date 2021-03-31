@@ -1,10 +1,10 @@
 """
 A MongoDB Reader
 
-This is a light-weight MongoDB reader to fulfil a specific purpose,
-it needs some work to make it fully reusable.
+This is a light-weight and prototype MongoDB reader.
 """
-from typing import Iterator, Tuple, Optional, List
+import io
+from typing import Iterable, Tuple, Optional, List
 import datetime
 from ...data.readers.internals.base_inner_reader import BaseInnerReader
 try:
@@ -18,25 +18,22 @@ class MongoDbReader(BaseInnerReader):
     def __init__(
             self,
             connection_string: str,
-            database: str,
             **kwargs):
 
+        super().__init__(**kwargs)
+
         connection = pymongo.MongoClient(connection_string)
-        self.database = connection[database] 
+        self.database = connection[kwargs.get('dataset')] 
 
         # chunk size affects memory usage
-        self.chunk_size: int = kwargs.get('chunk_size', 10000)
+        self.chunk_size: int = kwargs.get('chunk_size', 10)
         self.query: dict = kwargs.get('query', {})
 
-        raise NotImplementedError('MongoDbReader needs to be updated')
+    def get_list_of_blobs(self):
+        return self.database.list_collection_names()
 
-
-    def list_of_sources(self):
-        yield from self.database.list_collection_names()
-
-
-    def read_from_source(self, item: str):
-        collection = self.database[item]  # type:ignore
+    def get_records(self, blob) -> Iterable[str]:
+        collection = self.database[blob]  # type:ignore
         chunks = self._iterate_by_chunks(
                 collection,
                 self.chunk_size,
@@ -44,7 +41,6 @@ class MongoDbReader(BaseInnerReader):
                 query=self.query)
         for docs in chunks:
             yield from docs
-
 
     def _iterate_by_chunks(self, collection, chunksize=1, start_from=0, query={}):
         chunks = range(start_from, collection.find(query).count(), int(chunksize))
@@ -54,3 +50,11 @@ class MongoDbReader(BaseInnerReader):
                 yield collection.find(query)[chunks[i-1]:chunks[i]]
             else:
                 yield collection.find(query)[chunks[i-1]:chunks.stop]
+
+    def get_blobs_at_path(self, path):
+        # not used but must be present
+        pass
+
+    def get_blob_stream(self, blob_name:str) -> io.IOBase:
+        # not used but must be present
+        pass

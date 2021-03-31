@@ -1,8 +1,9 @@
 # type:ignore
+import io
 import glob
 import datetime
 import paho.mqtt.client as mqtt
-from typing import Iterator, Tuple, Optional, List
+from typing import Iterable, Tuple, Optional, List
 from ...data.readers.internals.base_inner_reader import BaseInnerReader
 from ...utils import paths, common
 from ...logging import get_logger
@@ -23,18 +24,33 @@ class MqttReader(BaseInnerReader):
 
         self.messages = []
 
+
     def on_connect(self, client, userdata, flags, rc):
-        get_logger().debug("Connected to mqtt server with result code "+str(rc))
+        get_logger().debug(F"Connected to mqtt server {self.host} with result code {rc}")
         client.subscribe(self.dataset)
 
     def on_message(self, client, userdata, msg):
         self.messages.append(msg.payload)
 
-    def list_of_sources(self):
-        # just return the topic
+    def get_list_of_blobs(self):
+        """
+        Override this method to just return the queue we're interested in
+        """
         return [self.dataset]
 
-    def read_from_source(self, file_name: str):
+    def get_blobs_at_path(self, path):
+        # not used but must be present
+        pass
+
+    def get_blob_stream(self, blob_name:str) -> io.IOBase:
+        # not used but must be present
+        pass
+
+    def get_records(self, blob) -> Iterable[str]:
+        """
+        Override this method to just return records as they appear
+        on the queue
+        """
         self.client = mqtt.Client()
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
