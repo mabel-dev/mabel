@@ -47,11 +47,11 @@ Want to help build mabel? See the [contribution guidance](CONTRIBUTING.md)
 
 ## What Platforms Does It Support?
 
-<img align="centre" alt="Google Cloud" height="64" src="icons/google-cloud-logo.png" />
-<img align="centre" alt="MinIo" height="64" src="icons/minio-logo.png" />
-<img align="centre" alt="MongoDB" height="64" src="icons/mongodb-logo.png" /> (partial)
-<img align="centre" alt="MQTT" height="64" src="icons/mqtt-logo.png" /> (partial)
-<img align="centre" alt="Raspberry Pi" height="64" src="icons/raspberry-pi-logo.png" />
+<img align="centre" alt="Google Cloud" height="48" src="icons/google-cloud-logo.png" />
+<img align="centre" alt="MinIo" height="48" src="icons/minio-logo.png" />
+<img align="centre" alt="MongoDB" height="48" src="icons/mongodb-logo.png" />
+<img align="centre" alt="MQTT" height="48" src="icons/mqtt-logo.png" />
+<img align="centre" alt="Raspberry Pi" height="48" src="icons/raspberry-pi-logo.png" />
 
 ## License
 [Apache 2.0](LICENSE)
