@@ -1,4 +1,4 @@
-from typing import Iterator, Iterable
+from typing import Iterator, Iterable, List
 
 
 def html_table(
@@ -111,7 +111,7 @@ def ascii_table(
 
 BAR_CHARS = [r" ", r"▁", r"▂", r"▃", r"▄", r"▅", r"▆", r"▇", r"█"]
 
-def draw_histogram_bins(bins: Iterable[int]):
+def draw_histogram_bins(bins: List[int]):
     """
     Draws a pre-binned set off histogram data
     """
