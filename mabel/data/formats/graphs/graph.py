@@ -216,26 +216,26 @@ class Graph(object):
         return g
 
 
-    def to_networkx(graph):
+    def to_networkx(self):
         """
         Convert a Diablo graph to a NetworkX graph
         """
         import networkx as nx  # type:ignore
         g = nx.DiGraph()
-        for s, t, r in graph.edges():
+        for s, t, r in self.edges():
             g.add_edge(s, t, relationship=r)
-        for node, attribs in graph.nodes(True):
+        for node, attribs in self.nodes(True):
             g.add_node(node, **attribs)
         return g
 
-    def epitomize(graph):
+    def epitomize(self):
         """
         Summarize a Graph by reducing to only the node_types and relationships
         """
         g = Graph()
-        for s, t, r in graph.edges():
-            node1 = graph[s]
-            node2 = graph[t]
+        for s, t, r in self.edges():
+            node1 = self[s]
+            node2 = self[t]
             if node1 and node2:
                 g.add_edge(node1.get('node_type'), node2.get('node_type'), r)
             if node1:

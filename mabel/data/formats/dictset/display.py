@@ -89,16 +89,16 @@ def ascii_table(
     for header, width in columns.items():
         bars.append('─' * (width + 2))
 
-    # print headers
+    # display headers
     result.append('┌' + '┬'.join(bars) + '┐')
     result.append('│' + '│'.join([k.center(v + 2) for k, v in columns.items()]) + '│')
     result.append('├' + '┼'.join(bars) + '┤')
 
-    # print values
+    # display values
     for row in cache:
         result.append('│' + '│'.join([str(v).center(columns[k] + 2) for k, v in row.items()]) + '│')
 
-    # print footer
+    # display footer
     result.append('└' + '┴'.join(bars) + '┘')
 
     return '\n'.join(result)

@@ -18,7 +18,7 @@ class Groups():
         The 'Groups' object holds the entire dataset in memory so is unsuitable
         for large datasets.
     """
-    __slots__ = ('groups')
+    __slots__ = ('_groups')
 
     def __init__(self, dictset, column):
         groups = {}
@@ -29,7 +29,7 @@ class Groups():
                 groups[my_item.get(column)] = []
             del my_item[column]
             groups[key].append(my_item)
-        self.groups = groups
+        self._groups = groups
 
     def count(self, group=None):
         """
@@ -44,11 +44,11 @@ class Groups():
             if no group is provided, return a dictionary
         """
         if group is None:
-            return {x:len(y) for x,y in self.groups.items()}
+            return {x:len(y) for x,y in self._groups.items()}
         else:
             try:
-                return [len(y) for x,y in self.groups.items() if x == group].pop()
-            except:
+                return [len(y) for x,y in self._groups.items() if x == group].pop()
+            except IndexError:
                 return 0
 
     def aggregate(self, column, method):
@@ -69,7 +69,7 @@ class Groups():
             means = grouped.aggregate('age', maths.mean)
         """
         response = {}
-        for key, items in self.groups.items():
+        for key, items in self._groups.items():
             values = [item.get(column) for item in items if item.get(column) is not None]
             response[key] = method(values)
         return response
@@ -85,16 +85,16 @@ class Groups():
         Returns:
             dictionary
         """
-        return {key:method(items) for key, items in self.groups.items()}
+        return {key:method(items) for key, items in self._groups.items()}
             
     def __len__(self):
         """
         Returns the number of groups in the set.
         """
-        return len(self.groups)
+        return len(self._groups)
 
     def __repr__(self):
         """
         Returns the group names
         """
-        return str(list(self.groups.keys()))
+        return str(list(self._groups.keys()))
