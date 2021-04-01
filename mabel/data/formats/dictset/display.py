@@ -21,26 +21,21 @@ def html_table(
     """
     def _to_html_table(data, limit):
 
-        first_row = True
-        highlight = False
-
         yield '<table class="table table-sm">'
         for counter, record in enumerate(data):
-            if first_row:
+            if counter == 0:
                 yield '<thead class="thead-light"><tr>'
                 for key, value in record.items():
                     yield '<th>' + key + '<th>\n'
                 yield '</tr></thead><tbody>'
-            first_row = False
 
             if counter >= limit:
                 break
 
-            if highlight:
+            if (counter % 2) == 0:
                 yield '<tr style="background-color:#F4F4F4">'
             else:
                 yield '<tr>'
-            highlight = not highlight
             for key, value in record.items():
                 yield '<td>' + str(value) + '<td>\n'
             yield '</tr>'
