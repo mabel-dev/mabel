@@ -17,6 +17,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+
 def get_type(validators):
 
     try:
@@ -37,20 +38,7 @@ def get_type(validators):
 
     return "other"
 
-bar_chars = (' ', '▁', '▂', '▃', '▄', '▅', '▆', '▇', '█')
 
-def _draw_histogram(bins):
-    mx = max([v for k,v in bins.items()])
-    bar_height = (mx / 8)
-    if bar_height == 0:
-        return ' ' * len(bins)
-    
-    histogram = ''
-    for k,v in bins.items():
-        height = int(v / bar_height)
-        histogram += bar_chars[height]
-        
-    return histogram
 
 def _redistribute_bins(bins, number_of_bins=100):
     
@@ -76,12 +64,37 @@ def _redistribute_bins(bins, number_of_bins=100):
                 break
         if binned == False:
             print('miss', old_mid, mn, mx)
-            
+
     return new_bins
 
 def _date_from_epoch(seconds, form='%Y-%m-%d %H:%M:%S'):
     import datetime
     return datetime.datetime.fromtimestamp(seconds).strftime(form)
+
+def _collect_numeric_data(collector, value):
+    if collector.get('max', value) <= value:
+        collector['max'] = value
+    if collector.get('min', value) >= value:
+        collector['min'] = value
+    collector['cumsum'] = collector.get('cumsum', 0) + value
+    collector['mean'] = collector['cumsum'] / collector['items']
+        
+    if collector.get('bins') is None:
+        collector['bins'] = {}
+    binned = False
+    for bounds in collector['bins']:
+        bottom, top = bounds
+        if value >= bottom and value <= top:
+            collector['bins'][bounds] += 1
+            binned = True
+    if not binned:
+        collector['bins'][(value, value)] = 1
+        
+    if len(collector['bins']) > 500:
+        collector['bins'] = _redistribute_bins(collector['bins'], 50)
+
+    return collector
+
 
 MAXIMUM_UNIQUE_VALUES = 100000
 
@@ -90,11 +103,12 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], '../../..'))
 from mabel.data.validator import Schema
 from mabel.adapters.local import FileReader
+from mabel.data.formats.dictset.display import draw_histogram_bins
 from mabel.data import Reader
-schema = Schema('tests/data/formats/tweets.schema')
+schema = Schema('tests/data/formats/parquet/tweets.schema')
 
 
-data = Reader(dataset='tests/data/formats', raw_path=True, inner_reader=FileReader)
+data = Reader(dataset='tests/data/formats/parquet', raw_path=True, inner_reader=FileReader)
 
 summary = {}
 
@@ -104,8 +118,6 @@ for field in schema._validators:
         "items": 0,
         "type": get_type(schema._validators[field])
     }
-
-print(summary)
 
 for i, row in enumerate(data):
     
@@ -120,54 +132,19 @@ for i, row in enumerate(data):
             field_summary['nulls'] += 1
 
         elif field_type == 'numeric':
-            if field_summary.get('max', field_value) <= field_value:
-                field_summary['max'] = field_value
-            if field_summary.get('min', field_value) >= field_value:
-                field_summary['min'] = field_value
-            field_summary['cumsum'] = field_summary.get('cumsum', 0) + field_value
-            field_summary['mean'] = field_summary['cumsum'] / field_summary['items']
-                
-            if field_summary.get('bins') is None:
-                field_summary['bins'] = {}
-            binned = False
-            for bounds in field_summary['bins']:
-                bottom, top = bounds
-                if field_value >= bottom and field_value <= top:
-                    field_summary['bins'][bounds] += 1
-                    binned = True
-            if not binned:
-                field_summary['bins'][(field_value, field_value)] = 1
-                
-            if len(field_summary['bins']) > 500:
-                field_summary['bins'] = _redistribute_bins(field_summary['bins'], 50)
+            field_summary = _collect_numeric_data(field_summary, field_value)
                 
         elif field_type == 'date':
             # convert to epoch seconds
             from dateutil import parser
             field_value = int(parser.parse(field_value).timestamp())
-            
-            if field_summary.get('max', field_value) <= field_value:
-                field_summary['max'] = field_value
-            if field_summary.get('min', field_value) >= field_value:
-                field_summary['min'] = field_value
-                
-            if field_summary.get('bins') is None:
-                field_summary['bins'] = {}
-            binned = False
-            for bounds in field_summary['bins']:
-                bottom, top = bounds
-                if field_value >= bottom and field_value <= top:
-                    field_summary['bins'][bounds] += 1
-                    binned = True
-            if not binned:
-                field_summary['bins'][(field_value, field_value)] = 1
-                
-            if len(field_summary['bins']) > 500:
-                field_summary['bins'] = _redistribute_bins(field_summary['bins'], 50)
+            field_summary = _collect_numeric_data(field_summary, field_value)
 
         elif field_type == 'string':
             if field_summary.get('max_length', len(field_value)) <= len(field_value):
                 field_summary['max_length'] = len(field_value)
+            if field_summary.get('min_length', len(field_value)) >= len(field_value):
+                field_summary['min_length'] = len(field_value)
             if field_summary.get('unique_value_list') is None:
                 field_summary['unique_value_list'] = {hash(field_value)}
             elif len(field_summary['unique_value_list']) < MAXIMUM_UNIQUE_VALUES:
@@ -195,6 +172,7 @@ for date_field in date_fields:
         top = _date_from_epoch(top)
         new_bins[(bottom, top)] = summary[date_field]['bins'][bound]  # type:ignore
     summary[date_field]['bins'] = new_bins
+
 
 def enum_summary(dic):
     s = {k:v for k,v in sorted(dic.items(), key=lambda item: item[1], reverse=True)}
@@ -225,13 +203,16 @@ def human_format(num):
 
 for field in summary:
     field_summary = summary[field]
-    if field_summary['type'] == 'numeric':
-        print(F"[num] {field:20} [count] {field_summary['items']} [empty] {(field_summary['nulls'] / field_summary['items']):.1%} [range] {human_format(field_summary['min'])} to {human_format(field_summary['max'])} [mean] {field_summary['mean']:.2} >{_draw_histogram(field_summary['bins'])}<") 
-    if field_summary['type'] == 'date':
-        print(F"[dte] {field:20} [count] {field_summary['items']} [empty] {(field_summary['nulls'] / field_summary['items']):.1%} [range] {field_summary['min']} to {field_summary['max']} >{_draw_histogram(field_summary['bins'])}<") 
-    if field_summary['type'] == 'other':
+
+    if field_summary['nulls'] == field_summary['items']:
+        print(F"[---] {field:20} [count] { field_summary['items']} EMPTY")
+    elif field_summary['type'] == 'numeric':
+        print(F"[num] {field:20} [count] {field_summary['items']} [empty] {(field_summary['nulls'] / field_summary['items']):.1%} [range] {human_format(field_summary['min'])} to {human_format(field_summary['max'])} [mean] {field_summary['mean']:.2} >{draw_histogram_bins([v for k,v in field_summary['bins'].items()])}<") 
+    elif field_summary['type'] == 'date':
+        print(F"[dte] {field:20} [count] {field_summary['items']} [empty] {(field_summary['nulls'] / field_summary['items']):.1%} [range] {field_summary['min']} to {field_summary['max']} >{draw_histogram_bins([v for k,v in field_summary['bins'].items()])}<") 
+    elif field_summary['type'] == 'other':
         print(F"[oth] {field:20} [count] {field_summary['items']} [empty] {(field_summary['nulls'] / field_summary['items']):.1%}")
-    if field_summary['type'] == 'string':
-        print(F"[str] {field:20} [count] {field_summary['items']} [empty] {(field_summary['nulls'] / field_summary['items']):.1%} [unique] {field_summary['unique_values']}")
-    if field_summary['type'] == 'enum':
+    elif field_summary['type'] == 'string':
+        print(F"[str] {field:20} [count] {field_summary['items']} [empty] {(field_summary['nulls'] / field_summary['items']):.1%} [unique] {field_summary['unique_values']} [longest] {field_summary['max_length']} [shortest] {field_summary['min_length']}")
+    elif field_summary['type'] == 'enum':
         print(F"[enm] {field:20} [count] {field_summary['items']} [empty] {(field_summary['nulls'] / field_summary['items']):.1%} {enum_summary(field_summary['values'])}" )

@@ -5,7 +5,7 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.data.writers.internals.writer_pool import WriterPool
 from mabel.adapters.null import NullWriter
-from mabel.data.formats import display
+from mabel.data.formats.dictset import display
 try:
     from rich import traceback
     traceback.install()

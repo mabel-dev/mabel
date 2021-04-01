@@ -10,7 +10,7 @@ PartitionWriters to recommend for evict.
 import time
 import threading
 from .partition_writer import PartitionWriter
-from ...formats import display
+from ...formats.dictset import display
 
 
 class WriterPool():

@@ -4,7 +4,7 @@ from functools import lru_cache
 from .add_level import add_logging_level
 from .sanitizing_log_formatter import SanitizingLogFormatter
 
-LOG_NAME: str = "MBL"
+LOG_NAME: str = "MABEL"
 LOG_FORMAT: str = '%(name)s | %(levelname)-8s | %(asctime)s | %(filename)s:%(lineno)s:%(funcName)s() | %(message)s'
 
 class LEVELS():

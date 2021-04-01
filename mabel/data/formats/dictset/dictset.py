@@ -6,10 +6,10 @@ to be used for simple operations or pre-filtering and selection before loading
 into structures like Pandas.
 """
 from typing import Iterator, Any, List, Callable
-from .json import serialize, parse
 from .group_by import Groups
 from .records import select_record_fields, order, set_value
-from ...logging import get_logger
+from ..json import serialize, parse
+from ....logging import get_logger
 
 
 INNER_JOIN = 'INNER'
@@ -167,7 +167,7 @@ def drop_duplicates(
     Yields:
         dictionary
     """
-    from ...utils.lru_index import Lru_Index
+    from ....utils.lru_index import Lru_Index
     lru = Lru_Index(size=cache_size)
 
     for record in dictset:

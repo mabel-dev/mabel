@@ -1,4 +1,4 @@
-from typing import Iterator
+from typing import Iterator, Iterable
 
 
 def html_table(
@@ -107,3 +107,37 @@ def ascii_table(
     result.append('└' + '┴'.join(bars) + '┘')
 
     return '\n'.join(result)
+
+
+BAR_CHARS = [r" ", r"▁", r"▂", r"▃", r"▄", r"▅", r"▆", r"▇", r"█"]
+
+def draw_histogram_bins(bins: Iterable[int]):
+    """
+    Draws a pre-binned set off histogram data
+    """
+    mx = max(bins)
+    bar_height = (mx / 8)
+    if bar_height == 0:
+        return ' ' * len(bins)
+    
+    histogram = ''
+    for value in bins:
+        if value == 0:
+            histogram += BAR_CHARS[0]
+        else:
+            height = int(value / bar_height)
+            histogram += BAR_CHARS[height]
+        
+    return histogram
+
+def histogram(values: Iterable[int], number_of_bins: int = 10):
+    """
+    """
+    bins = [0] * number_of_bins
+    mn = min(values)
+    mx = max(values)
+    interval = ((1 + mx) - mn) / (number_of_bins - 1)
+
+    for v in values:
+        bins[int(v / interval)] += 1
+    return draw_histogram_bins(bins)
