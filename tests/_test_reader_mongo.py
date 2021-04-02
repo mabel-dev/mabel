@@ -4,7 +4,7 @@ Test the MQTT reader, not available in most environments
 import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
-from mabel.adapters.mongo import MqttReader
+from mabel.adapters.mongodb import MongoDbReader
 from mabel.data import Reader
 try:
     from rich import traceback
@@ -13,12 +13,13 @@ except ImportError:
     pass
 
 
-def test_mq():
+def test_mongo():
 
     reader = Reader(
-        dataset=os.environ['MQTT_DATASET'],
-        host=os.environ['MQTT_HOST'],
-        inner_reader=MqttReader
+        connection_string="mongodb://10.10.10.30:27017/",
+        dataset='twitter',
+        inner_reader=MongoDbReader,
+        row_format='pass-thru'
     )
 
     for i, item in enumerate(reader):
@@ -26,6 +27,6 @@ def test_mq():
 
 
 if __name__ == "__main__":
-    test_mq()
+    test_mongo()
 
     print('okay')

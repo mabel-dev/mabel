@@ -10,9 +10,10 @@ class MinIoWriter(BaseInnerWriter):
 
     def __init__(
             self,
-            end_point,
-            access_key,
-            secret_key,
+            *,
+            end_point: str,
+            access_key: str,
+            secret_key: str,
             secure: bool = False,
             **kwargs):
         super().__init__(**kwargs)
@@ -36,4 +37,3 @@ class MinIoWriter(BaseInnerWriter):
                     file_stat.st_size)
 
         return _filename
-

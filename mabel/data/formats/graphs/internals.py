@@ -74,7 +74,7 @@ def read_graphml(graphml_file: str):
         for key in g._make_a_list(node.get('data', {})):
             try:
                 data[keys[key['@key']]] = key.get('#text', '')
-            except:
+            except KeyError:
                 skip = True
         if not skip:
             g.add_node(node['@id'], data)

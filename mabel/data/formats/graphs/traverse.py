@@ -24,7 +24,7 @@ class Traverse():
     def __init__(
             self,
             graph,
-            active_nodes: set = set()):
+            active_nodes: set = None):
         """
         Graph Traversal
 
@@ -38,7 +38,9 @@ class Traverse():
         # ensure it is a set
         # - the collection active nodes is immutable
         # - sets are faster for look ups 
-        if type(active_nodes).__name__ == 'set':
+        if not active_nodes:
+            self._active_nodes = set()
+        elif type(active_nodes).__name__ == 'set':
             self._active_nodes = active_nodes
         else:
             self._active_nodes = set(active_nodes)

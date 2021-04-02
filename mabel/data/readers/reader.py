@@ -3,7 +3,7 @@ from .internals.threaded_reader import threaded_reader
 from .internals.experimental_processed_reader import processed_reader
 from .internals.parsers import pass_thru_parser, block_parser, json_parser
 from ..formats.dictset import select_record_fields, select_from
-from ..formats.display import html_table, ascii_table
+from ..formats.dictset.display import html_table, ascii_table
 from ..formats import json
 from ...logging import get_logger
 from ...errors import InvalidCombinationError

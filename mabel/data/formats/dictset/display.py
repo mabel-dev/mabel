@@ -1,4 +1,4 @@
-from typing import Iterator
+from typing import Iterator, Iterable, List
 
 
 def html_table(
@@ -21,26 +21,21 @@ def html_table(
     """
     def _to_html_table(data, limit):
 
-        first_row = True
-        highlight = False
-
         yield '<table class="table table-sm">'
         for counter, record in enumerate(data):
-            if first_row:
+            if counter == 0:
                 yield '<thead class="thead-light"><tr>'
                 for key, value in record.items():
                     yield '<th>' + key + '<th>\n'
                 yield '</tr></thead><tbody>'
-            first_row = False
 
             if counter >= limit:
                 break
 
-            if highlight:
+            if (counter % 2) == 0:
                 yield '<tr style="background-color:#F4F4F4">'
             else:
                 yield '<tr>'
-            highlight = not highlight
             for key, value in record.items():
                 yield '<td>' + str(value) + '<td>\n'
             yield '</tr>'
@@ -94,16 +89,50 @@ def ascii_table(
     for header, width in columns.items():
         bars.append('─' * (width + 2))
 
-    # print headers
+    # display headers
     result.append('┌' + '┬'.join(bars) + '┐')
     result.append('│' + '│'.join([k.center(v + 2) for k, v in columns.items()]) + '│')
     result.append('├' + '┼'.join(bars) + '┤')
 
-    # print values
+    # display values
     for row in cache:
         result.append('│' + '│'.join([str(v).center(columns[k] + 2) for k, v in row.items()]) + '│')
 
-    # print footer
+    # display footer
     result.append('└' + '┴'.join(bars) + '┘')
 
     return '\n'.join(result)
+
+
+BAR_CHARS = [r" ", r"▁", r"▂", r"▃", r"▄", r"▅", r"▆", r"▇", r"█"]
+
+def draw_histogram_bins(bins: List[int]):
+    """
+    Draws a pre-binned set off histogram data
+    """
+    mx = max(bins)
+    bar_height = (mx / 8)
+    if bar_height == 0:
+        return ' ' * len(bins)
+    
+    histogram = ''
+    for value in bins:
+        if value == 0:
+            histogram += BAR_CHARS[0]
+        else:
+            height = int(value / bar_height)
+            histogram += BAR_CHARS[height]
+        
+    return histogram
+
+def histogram(values: Iterable[int], number_of_bins: int = 10):
+    """
+    """
+    bins = [0] * number_of_bins
+    mn = min(values)
+    mx = max(values)
+    interval = ((1 + mx) - mn) / (number_of_bins - 1)
+
+    for v in values:
+        bins[int(v / interval)] += 1
+    return draw_histogram_bins(bins)

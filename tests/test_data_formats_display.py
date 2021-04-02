@@ -2,13 +2,12 @@ import datetime
 import sys
 import os
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
-from mabel.data.formats import display
+from mabel.data.formats.dictset import display
 try:
     from rich import traceback
     traceback.install()
 except ImportError:   # pragma: no cover
     pass
-
 
 
 def test_to_html():
@@ -53,9 +52,20 @@ def test_to_ascii():
     assert " 5 " in axki
 
 
+def test_histograms():
+    
+    data = [1,2,2,3,3,3,4,4,4,4,5,5,5,5,5,6,6,6,6,6,6,7,7,7,7,7,7,7]
+
+    hist = display.histogram(data, 3)
+    assert hist == r"▃█▃"
+
+    hist = display.histogram(data, 7)
+    assert hist == r"▁▂▃▄▅▆█"  
+
 
 if __name__ == "__main__":
     test_to_html()
     test_to_ascii()
+    test_histograms()
     
     print('okay')

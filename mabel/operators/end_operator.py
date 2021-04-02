@@ -20,4 +20,5 @@ from .internals.base_operator import BaseOperator
 class EndOperator(BaseOperator):
 
     def execute(self, data={}, context={}):
+        # do nothing
         pass

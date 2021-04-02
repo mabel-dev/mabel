@@ -141,3 +141,4 @@ _batch/**
 .pypirc
 .vscode/settings.json
 temp
+publish.bat

@@ -44,7 +44,7 @@ class SanitizingLogFormatter(logging.Formatter):
         done_anything = False
 
         try:
-            dirty_record = json.loads(json_part.replace("'", '"'))
+            dirty_record = json.loads(json_part)
         except:
             return record
 

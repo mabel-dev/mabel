@@ -49,7 +49,6 @@ def bisect_way(f, x):
 
 
 
-
 import sys
 import time
 
@@ -61,58 +60,6 @@ def binary(value):
         return data
         #sys.stdout.write(data + '\n')
 
-def scan(value):
-    with open('sorted_twitter.index', 'r') as f:
-        for r in f:
-            j = json.loads(r)
-            if j["key"] == value:
-                return r
-                #sys.stdout.write(r)
-
-def arrow(value):
-    import pyarrow.json as js  # type:ignore
-    table = js.read_json('sorted_twitter.index')
-    
-    mid = 0
-    start = 0
-    end = len(table)
-
-    while (start <= end):
-        mid = (start + end) >> 1
-        mid_value = str(table.take([mid])[0][0])
-        if value == mid_value:
-            return  {k:v[0] for k,v in table.take([mid]).to_pydict().items()}
-        if value < mid_value:
-            end = mid - 1
-        else:
-            start = mid + 1
-    return -1
-
-def arrow_2(value):
-    import pyarrow.json as js  # type:ignore
-    table = js.read_json('sorted_twitter.index')
-
-    column = table.column('key')
-    
-    mid = 0
-    start = 0
-    end = len(table)
-
-    while (start <= end):
-        mid = (start + end) >> 1
-        mid_value = str(column[mid])
-        if value == mid_value:
-            return  {k:v[0] for k,v in table.take([mid]).to_pydict().items()}
-        if value < mid_value:
-            end = mid - 1
-        else:
-            start = mid + 1
-    return -1
-
-from btree import BTree  # type:ignore
-def btree(value):
-    idx = BTree.read_file('sorted_twitter.index')
-    return idx.retrieve(value)
 
 value = '~~kn~~'
 
@@ -120,25 +67,3 @@ t = time.time_ns()
 for rep in range(500):
     r = binary(value)
 print('binary', (time.time_ns() - t) / 1e9, r)
-
-quit()
-
-t = time.time_ns()
-for rep in range(2):
-    r = scan(value)
-print('scan', (time.time_ns() - t) / 1e9, r)
-
-t = time.time_ns()
-for rep in range(2):
-    r = arrow(value)
-print('arrow', (time.time_ns() - t) / 1e9, r)
-
-t = time.time_ns()
-for rep in range(10):
-    r = arrow_2(value)
-print('arrow_2', (time.time_ns() - t) / 1e9, r)
-
-t = time.time_ns()
-for rep in range(1):
-    r = btree(value)
-print('btree', (time.time_ns() - t) / 1e9, r)
