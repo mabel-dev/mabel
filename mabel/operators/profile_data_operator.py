@@ -289,22 +289,17 @@ class ProfileDataOperator(BaseOperator):
         return result
 
 
+if __name__ == "__main__":
 
-schema = Schema('tests/data/formats/parquet/tweets.schema')
-pdo = ProfileDataOperator(
-    schema=schema
-)
-data = Reader(dataset='tests/data/formats/parquet', raw_path=True, inner_reader=FileReader)
-for i, row in enumerate(data):
-    pdo.execute(row, {})    
-pdo.finalize()
-
-
-print("\n", repr(pdo), "\n")
-print(str(pdo))
+    schema = Schema('tests/data/formats/parquet/tweets.schema')
+    pdo = ProfileDataOperator(
+        schema=schema
+    )
+    data = Reader(dataset='tests/data/formats/parquet', raw_path=True, inner_reader=FileReader)
+    for i, row in enumerate(data):
+        pdo.execute(row, {})    
+    pdo.finalize()
 
 
-
-
-
-
+    print("\n", repr(pdo), "\n")
+    print(str(pdo))
