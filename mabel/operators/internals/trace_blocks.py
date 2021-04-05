@@ -41,14 +41,24 @@ def random_int() -> int:
 
 class TraceBlocks():
 
-    __slots__ = ('blocks')
+    __slots__ = ('blocks','proof')
 
     def __init__(
             self,
-            uuid="00000000-0000-0000-0000-000000000000"):
+            uuid="00000000-0000-0000-0000-000000000000",
+            proof:Optional[str] = None):
         """
         Create block chain and seed with the UUID.
+
+        Parameters:
+            uuid: string (UUID) (optional but strongly recommended)
+                Unique identifier for the run
+            proof: string (optional)
+                The set of valid final characters for proofing as a string.
+                The default is None which does no proofing. If you set this
+                wrong, you could end with an endless loop.
         """
+        self.proof = proof
         self.blocks = []
         self.blocks.append({
             "block": 1,
@@ -71,17 +81,19 @@ class TraceBlocks():
         # while loop. Setting this proof to be harder will impact performance
         # as finding a value to satify the proof will block processing.
         
-        #proof = str(random_int())
-        #while self.hash(''.join([proof, previous_block_hash]))[-1] not in ['0', '5']:
-        #    proof = str(random_int())
+        if self.proof
+            proof = str(random_int())
+            while self.hash(''.join([proof, previous_block_hash]))[-1] not in self.proof:
+                proof = str(random_int())
 
         block = {
             "block": len(self.blocks) + 1,
             "timestamp": datetime.datetime.now().isoformat(),
             "previous_block_hash": previous_block_hash,
-            #"proof": proof,
             **kwargs
         }
+        if self.proof:
+            block['proof'] = proof
         self.blocks.append(block)
 
     def __str__(self):
