@@ -1,4 +1,4 @@
-<img align="centre" alt="overlapping arrows" height="92" src="icons/mabel.svg" />
+<img align="centre" alt="overlapping arrows" height="92" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/mabel.svg" />
 
 **mabel** is a platform for authoring data processing systems.
 
@@ -47,11 +47,18 @@ Want to help build mabel? See the [contribution guidance](CONTRIBUTING.md)
 
 ## What Platforms Does It Support?
 
-<img align="centre" alt="Google Cloud" height="48" src="icons/google-cloud-logo.png" />
-<img align="centre" alt="MinIo" height="48" src="icons/minio-logo.png" />
-<img align="centre" alt="MongoDB" height="48" src="icons/mongodb-logo.png" />
-<img align="centre" alt="MQTT" height="48" src="icons/mqtt-logo.png" />
-<img align="centre" alt="Raspberry Pi" height="48" src="icons/raspberry-pi-logo.png" />
+| Service | Support
+|-- |-- 
+| <img align="centre" alt="Google Cloud" height="48" src="icons/google-cloud-logo.png" /> | GCS  Read/Write
+| <img align="centre" alt="MinIo" height="48" src="icons/minio-logo.png" /> | Read/Write
+| <img align="centre" alt="MongoDB" height="48" src="icons/mongodb-logo.png" /> | Read
+| <img align="centre" alt="MQTT" height="48" src="icons/mqtt-logo.png" /> | Read
+| <img align="centre" alt="Raspberry Pi" height="48" src="icons/raspberry-pi-logo.png" /> | Hosting (<img align="centre" alt="Notice" height="16" src="icons/note.svg" />1)
+
+Linux, Docker, MacOS and Windows (<img align="centre" alt="Notice" height="16" src="icons/note.svg" />2) also supported
+
+<img align="centre" alt="Notice" height="16" src="icons/note.svg" />1 - Raspbian fully functional with alternate libraries  
+<img align="centre" alt="Notice" height="16" src="icons/note.svg" />2 - Multi-Processing not available on Windows
 
 ## License
 [Apache 2.0](LICENSE)
