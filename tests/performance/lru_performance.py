@@ -3,7 +3,7 @@ import os
 import sys
 import random
 sys.path.insert(1, os.path.join(sys.path[0], '../..'))
-from mabel.utils.lru_index import Lru_Index
+from mabel.utils.lru_index import LruIndex
 try:
     from rich import traceback
     traceback.install()
@@ -194,7 +194,7 @@ STAR_WARS = [
 
 def lru_performance():
 
-    lru = Lru_Index(size=75)
+    lru = LruIndex(size=75)
 
     values = []
     for i in range(1000):

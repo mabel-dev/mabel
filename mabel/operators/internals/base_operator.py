@@ -10,7 +10,7 @@ import datetime
 import functools
 from typing import Union, List
 from ...logging import get_logger  # type:ignore
-from ...errors import RenderErrorStack, IntegrityError
+from ...errors import render_error_stack, IntegrityError
 from ...data.formats import dictset
 from ...data.formats.json import parse, serialize
 
@@ -134,7 +134,7 @@ class BaseOperator(abc.ABC):
                                 F"error type : {type(err).__name__}\n"
                                 F"details    : {err}\n"
                                 "------------------------------------------------------------------------------------------------------------------------\n"
-                                F"{self._wrap_text(RenderErrorStack(), 120)}\n"
+                                F"{self._wrap_text(render_error_stack(), 120)}\n"
                                 "-------------------------------------------------------  context  ------------------------------------------------------\n"
                                 F"{self._wrap_text(str(context), 120)}\n"
                                 "--------------------------------------------------------  data  --------------------------------------------------------\n"

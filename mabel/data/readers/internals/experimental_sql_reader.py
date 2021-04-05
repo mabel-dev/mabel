@@ -99,13 +99,13 @@ class SqlOperator():
 
     def __init__(
             self,
-            Operator,
+            operator,
             left_operand,
             right_operand):
         self.left_operand = left_operand
         self.right_operand = right_operand
-        self.operation = OPERATORS.get(Operator)
-        self.__name__ = F"SQL_WHERE('{Operator}')"
+        self.operation = OPERATORS.get(operator)
+        self.__name__ = F"SQL_WHERE('{operator}')"
 
     def __call__(self, row):
         _left_operand = _get_operand(self.left_operand, row)

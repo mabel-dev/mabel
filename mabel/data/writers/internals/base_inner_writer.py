@@ -12,6 +12,7 @@ import time
 from functools import lru_cache
 from ....utils import paths
 
+STEM = "{stem}"
 
 class BaseInnerWriter(abc.ABC):
 
@@ -31,8 +32,8 @@ class BaseInnerWriter(abc.ABC):
         if kwargs.get('format', '') in ['lzma', 'zstd', 'parquet']:
             self.extension = '.jsonl.' + kwargs['format']
 
-        self.filename = self.bucket + '/' + path + '{stem}' + self.extension
-        self.filename_without_bucket = path + '{stem}' + self.extension
+        self.filename = self.bucket + '/' + path + STEM + self.extension
+        self.filename_without_bucket = path + STEM + self.extension
 
         if kwargs.get('suppress_path_expansion'):
             self.filename = self.bucket + '/' + path
@@ -40,7 +41,7 @@ class BaseInnerWriter(abc.ABC):
 
     def _build_path(self):
         partition_id = F"{time.time_ns():x}-{self._get_node()}"
-        return self.filename.replace('{stem}', F'{partition_id}')
+        return self.filename.replace(STEM, F'{partition_id}')
 
     @lru_cache(1)
     def _get_node(self):

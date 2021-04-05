@@ -147,6 +147,6 @@ def _render_error_stack():
             yield ''
 
 
-def RenderErrorStack():
+def render_error_stack():
     s = [wrap_text(line, LINE_LENGTH) for line in _render_error_stack()]
     return '\n'.join(s)

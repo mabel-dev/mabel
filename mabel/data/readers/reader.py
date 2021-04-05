@@ -155,9 +155,8 @@ class Reader():
 
         # number of days to walk backwards to find records
         self.step_back_days = int(kwargs.get('step_back_days', 0))
-        if self.step_back_days > 0:
-            if self.reader_class.start_date != self.reader_class.end_date:
-                raise InvalidCombinationError("step_back_days can only be used when the start and end dates are the same")
+        if self.step_back_days > 0 and self.reader_class.start_date != self.reader_class.end_date:
+            raise InvalidCombinationError("step_back_days can only be used when the start and end dates are the same")
 
         if row_format != 'pass-thru' and kwargs.get('extension') == '.parquet':
             raise InvalidCombinationError("`parquet` extension much be used with the `pass-thru` row_format")

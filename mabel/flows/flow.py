@@ -128,7 +128,7 @@ class Flow():
             self,
             operator_name: str = None,
             data: dict = {},
-            context: dict = {}):
+            context: dict = None):
         """
         Walk the dag/flow by:
         - Getting the function of the current node
@@ -136,6 +136,9 @@ class Flow():
         - Find the next step by finding outgoing edges
         - Call this method for the next step
         """
+        if not context:
+            context = {}
+
         operator = self.get_operator(operator_name)
         if operator is None:
             raise Exception(F"Invalid Flow - Operator {operator_name} is invalid")

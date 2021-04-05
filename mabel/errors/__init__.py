@@ -1,5 +1,5 @@
 from .base_exception import BaseException
-from .render_error_stack import RenderErrorStack
+from .render_error_stack import render_error_stack
 from .validation_error import ValidationError
 from .invalid_combination_error import InvalidCombinationError
 from .invalid_data_set_error import InvalidDataSetError

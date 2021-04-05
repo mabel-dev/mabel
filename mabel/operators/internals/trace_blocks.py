@@ -22,6 +22,7 @@ import os
 import ujson
 import hashlib
 import datetime
+from typing import Optional
 
 serialize = ujson.dumps
 
@@ -81,7 +82,7 @@ class TraceBlocks():
         # while loop. Setting this proof to be harder will impact performance
         # as finding a value to satify the proof will block processing.
         
-        if self.proof
+        if self.proof:
             proof = str(random_int())
             while self.hash(''.join([proof, previous_block_hash]))[-1] not in self.proof:
                 proof = str(random_int())
