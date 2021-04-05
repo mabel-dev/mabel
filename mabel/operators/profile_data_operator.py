@@ -18,17 +18,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-import os
-import sys
-sys.path.insert(1, os.path.join(sys.path[0], '../../..'))
-from mabel.data.validator import Schema
-from mabel.adapters.local import FileReader
-from mabel.data import Reader
-
-
-from mabel.operators import BaseOperator
-from mabel.data.formats import json
-from mabel.data.formats.dictset.display import draw_histogram_bins
+from .internals.base_operator import BaseOperator
+from ..data.formats import json
+from ..data.formats.dictset.display import draw_histogram_bins
 
 
 MAXIMUM_UNIQUE_VALUES = 100000
@@ -289,19 +281,3 @@ class ProfileDataOperator(BaseOperator):
         if eliminated < cumsum:
             result += F"[other]: {(cumsum - eliminated) / cumsum:.1%}"
         return result
-
-
-if __name__ == "__main__":
-
-    schema = Schema('tests/data/formats/parquet/tweets.schema')
-    pdo = ProfileDataOperator(
-        schema=schema
-    )
-    data = Reader(dataset='tests/data/formats/parquet', raw_path=True, inner_reader=FileReader)
-    for i, row in enumerate(data):
-        pdo.execute(row, {})    
-    pdo.finalize()
-
-
-    print("\n", repr(pdo), "\n")
-    print(str(pdo))

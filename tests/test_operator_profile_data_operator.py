@@ -37,9 +37,6 @@ def test_profile_operator():
         pdo.execute(entry, {})
 
     pdo.finalize()
-    #print(pdo)
-    #print(repr(pdo))
-
 
     assert(pdo.summary['gender']['type'] == 'enum')
     assert(pdo.summary['name']['type'] == 'string')
