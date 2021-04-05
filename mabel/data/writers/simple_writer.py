@@ -43,7 +43,6 @@ class SimpleWriter():
 
         self.schema = schema
         self.finalized = False
-
         self.batch_date = self._get_writer_date(date)
 
         self.dataset = dataset

@@ -215,12 +215,8 @@ class Schema():
     def __str__(self):
         retval = []
         for key, value in self._validators.items():
-
-            try:
-                val = [str(v).split('.')[0].split(' ')[1] for v in value]
-                val = ','.join(val)
-            except:
-                val = "other"
-
+            val = [str(v).split('.')[0].split(' ')[1] for v in value]
+            val = ','.join(val)
             retval.append({"field": key, "type": val})
+            
         return ascii_table(retval) 

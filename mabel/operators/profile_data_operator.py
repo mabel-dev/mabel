@@ -133,12 +133,15 @@ class ProfileDataOperator(BaseOperator):
     @staticmethod
     def redistribute_bins(bins, number_of_bins=100):
         """
-        redistribute data into fewer bins
+        Redistribute binned data into fewer bins
+
+        This results in items being put into incorrect bins, especially
+        when the data is ordered.
         """
         mn = min([l for l,h in bins])
         mx = max([h for l,h in bins])
         
-        bin_size = (mx - mn) // number_of_bins
+        bin_size = ((mx - mn) + 1) // number_of_bins
         
         new_bins = {}
         for counter in range(number_of_bins - 1):
@@ -169,7 +172,7 @@ class ProfileDataOperator(BaseOperator):
             val = [str(v).split('.')[0].split(' ')[1] for v in validators]
             val = [v for v in val if not v in ['is_null', 'is_other']]
             val = val.pop()
-        except:
+        except (KeyError, ValueError, IndexError):
             val = "other"
         
         if val in ['is_numeric']:
@@ -222,8 +225,8 @@ class ProfileDataOperator(BaseOperator):
         if not binned:
             collector['bins'][(value, value)] = 1
             
-        if len(collector['bins']) > 500:
-            collector['bins'] = ProfileDataOperator.redistribute_bins(collector['bins'], 50)
+        if len(collector['bins']) > 503:   # first prime over 500
+            collector['bins'] = ProfileDataOperator.redistribute_bins(collector['bins'], 101)  # first prime over 100
 
         return collector
 
@@ -254,18 +257,9 @@ class ProfileDataOperator(BaseOperator):
     def short_form(num):
         if not isinstance(num, (int, float)):
             return num
-        return F"{num:2f}"
-
-        if abs(num) < 10000000:
+        if isinstance(num, int) and abs(num) < 10000000:
             return str(num)
-        display = float('{:.2g}'.format(num))
-        magnitude = 0
-        while abs(display) >= 1000:
-            magnitude += 1
-            display /= 1000.0
-        if magnitude < 2:
-            return str(num)
-        return '{}{}'.format('{:1f}'.format(display).rstrip('0').rstrip('.'), ['', 'K', 'M', 'B', 'T', 'P', 'E', 'Z', 'Y', 'Br'][magnitude])
+        return F"{num:.2f}"
 
     @staticmethod
     def enum_summary(dic):

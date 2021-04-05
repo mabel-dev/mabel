@@ -30,7 +30,6 @@ def test_profile_operator():
     }
 
     schema = Schema(TEST_SCHEMA)
-    print(schema)
     pdo = ProfileDataOperator(schema=schema)
 
     for entry in TEST_DATA:
@@ -50,9 +49,22 @@ def test_profile_operator():
     assert(pdo.summary['gender']['values']['male'] == 4)
     assert(pdo.summary['gender']['values']['female'] == 2)
 
+def test_profile_operator_binning():
+
+    TEST_SCHEMA = { "fields": [ { "name": "number",     "type": "numeric" } ] }
+    schema = Schema(TEST_SCHEMA)
+    pdo = ProfileDataOperator(schema=schema)
+
+    for i in range(100000):
+        entry = {'number': i}
+        pdo.execute(entry, {})
+
+    pdo.finalize()
+    print(repr(pdo))
 
 
 if __name__ == "__main__":
     test_profile_operator()
+    test_profile_operator_binning()
 
     print('okay')
