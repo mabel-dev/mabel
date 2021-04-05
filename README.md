@@ -47,14 +47,15 @@ Want to help build mabel? See the [contribution guidance](CONTRIBUTING.md)
 
 ## What Platforms Does It Support?
 
-| Service | Support
-|-- |-- 
-| <img align="centre" alt="Google Cloud" height="48" src="icons/google-cloud-logo.png" /> | GCS  Read/Write
-| <img align="centre" alt="MinIo" height="48" src="icons/minio-logo.png" /> | Read/Write
-| <img align="centre" alt="MongoDB" height="48" src="icons/mongodb-logo.png" /> | Read
-| <img align="centre" alt="MQTT" height="48" src="icons/mqtt-logo.png" /> | Read
-| <img align="centre" alt="MQTT" height="48" src="icons/docker-logo.png" /> | Hosting
-| <img align="centre" alt="Raspberry Pi" height="48" src="icons/raspberry-pi-logo.svg" /> | Hosting (<img align="centre" alt="Notice" height="16" src="icons/note.svg" />1)
+| | Service | Support
+|-- |-- |-- 
+| <img align="centre" alt="Google Cloud Storage" height="48" src="icons/gcs-logo.png" /> | Google Cloud Storage |  Read/Write
+| <img align="centre" alt="MinIo" height="48" src="icons/minio-logo.png" /> | MinIO | Read/Write
+| <img align="centre" alt="MongoDB" height="48" src="icons/mongodb-logo.png" /> | MongoDB | Read
+| <img align="centre" alt="MQTT" height="48" src="icons/mqtt-logo.png" /> | MQTT | Read
+| <img align="centre" alt="Docker" height="48" src="icons/docker-logo.png" /> | Docker | Hosting
+| <img align="centre" alt="Kubernetes" height="48" src="icons/kubernetes-logo.svg" /> | Kubernetes | Hosting
+| <img align="centre" alt="Raspberry Pi" height="48" src="icons/raspberry-pi-logo.svg" /> | Raspberry Pi | Hosting (<img align="centre" alt="Notice" height="16" src="icons/note.svg" />1)
 
 Linux, MacOS and Windows (<img align="centre" alt="Notice" height="16" src="icons/note.svg" />2) also supported
 
