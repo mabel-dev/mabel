@@ -53,9 +53,10 @@ Want to help build mabel? See the [contribution guidance](CONTRIBUTING.md)
 | <img align="centre" alt="MinIo" height="48" src="icons/minio-logo.png" /> | Read/Write
 | <img align="centre" alt="MongoDB" height="48" src="icons/mongodb-logo.png" /> | Read
 | <img align="centre" alt="MQTT" height="48" src="icons/mqtt-logo.png" /> | Read
-| <img align="centre" alt="Raspberry Pi" height="48" src="icons/raspberry-pi-logo.png" /> | Hosting (<img align="centre" alt="Notice" height="16" src="icons/note.svg" />1)
+| <img align="centre" alt="MQTT" height="48" src="icons/docker-logo.png" /> | Hosting
+| <img align="centre" alt="Raspberry Pi" height="48" src="icons/raspberry-pi-logo.svg" /> | Hosting (<img align="centre" alt="Notice" height="16" src="icons/note.svg" />1)
 
-Linux, Docker, MacOS and Windows (<img align="centre" alt="Notice" height="16" src="icons/note.svg" />2) also supported
+Linux, MacOS and Windows (<img align="centre" alt="Notice" height="16" src="icons/note.svg" />2) also supported
 
 <img align="centre" alt="Notice" height="16" src="icons/note.svg" />1 - Raspbian fully functional with alternate libraries  
 <img align="centre" alt="Notice" height="16" src="icons/note.svg" />2 - Multi-Processing not available on Windows
