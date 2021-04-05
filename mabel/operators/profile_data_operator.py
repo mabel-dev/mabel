@@ -54,7 +54,7 @@ class ProfileDataOperator(BaseOperator):
             field_summary = self.summary[field]
             field_summary['items'] += 1
             field_type = field_summary['type']
-            field_value = row.get(field)
+            field_value = data.get(field)
             if field_value is None:
                 field_summary['nulls'] += 1
 
@@ -64,7 +64,7 @@ class ProfileDataOperator(BaseOperator):
             elif field_type == 'date':
                 # convert to epoch seconds and then just treat as a number
                 from dateutil import parser
-                field_value = int(parser.parse(field_value).timestamp())
+                field_value = int(parser.isoparse(field_value).timestamp())
                 field_summary = ProfileDataOperator.profile_numeric_data(field_summary, field_value)
 
             elif field_type == 'string':
@@ -102,6 +102,8 @@ class ProfileDataOperator(BaseOperator):
                 top = ProfileDataOperator.date_from_epoch(top)
                 new_bins[(bottom, top)] = self.summary[date_field]['bins'][bound]  # type:ignore
             self.summary[date_field]['bins'] = new_bins
+            del self.summary[date_field]['mean']
+            del self.summary[date_field]['cumsum']
 
         # change the bin names to strings from tuples
         for k in [k for k in self.summary if 'bins' in self.summary[k]]:
@@ -122,7 +124,7 @@ class ProfileDataOperator(BaseOperator):
                 if field_summary['nulls'] == field_summary['items']:
                     yield F"[---] {field:20} [count] {field_summary['items']} EMPTY"
                 elif field_summary['type'] == 'numeric':
-                    yield F"[num] {field:20} [count] {field_summary['items']} [empty] {(field_summary['nulls'] / field_summary['items']):.1%} [range] {ProfileDataOperator.short_form(field_summary['min'])} to {ProfileDataOperator.short_form(field_summary['max'])} [mean] {field_summary['mean']:.2} >{draw_histogram_bins([v for k,v in field_summary['bins'].items()])}<"
+                    yield F"[num] {field:20} [count] {field_summary['items']} [empty] {(field_summary['nulls'] / field_summary['items']):.1%} [range] {ProfileDataOperator.short_form(field_summary['min'])} to {ProfileDataOperator.short_form(field_summary['max'])} [mean] {ProfileDataOperator.short_form(field_summary['mean'])} >{draw_histogram_bins([v for k,v in field_summary['bins'].items()])}<"
                 elif field_summary['type'] == 'date':
                     yield F"[dte] {field:20} [count] {field_summary['items']} [empty] {(field_summary['nulls'] / field_summary['items']):.1%} [range] {field_summary['min']} to {field_summary['max']} >{draw_histogram_bins([v for k,v in field_summary['bins'].items()])}<"
                 elif field_summary['type'] == 'other':
@@ -182,7 +184,7 @@ class ProfileDataOperator(BaseOperator):
             return "numeric"
         if val in ['is_string', 'is_cve']:
             return "string"
-        if val in ['is_enum', 'is_boolean']:
+        if val in ['is_valid_enum', 'is_boolean']:
             return "enum"
         if val in ['is_date']:
             return "date"
@@ -260,7 +262,7 @@ class ProfileDataOperator(BaseOperator):
     def short_form(num):
         if not isinstance(num, (int, float)):
             return num
-        return F"{num:f}"
+        return F"{num:2f}"
 
         if abs(num) < 10000000:
             return str(num)
