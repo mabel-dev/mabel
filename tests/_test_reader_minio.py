@@ -18,7 +18,8 @@ def test_minio():
             secret_key=os.getenv('MINIO_SECRET_KEY'),
             secure=False,
             dataset='SNAPSHOTS/NVD/NVD_CVE_LIST',
-            inner_reader=MinIoReader
+            inner_reader=MinIoReader,
+            step_back_days=30
     )
 
     for i, item in enumerate(reader):

@@ -50,5 +50,6 @@ class BaseInnerWriter(abc.ABC):
     @abc.abstractclassmethod
     def commit(
             self,
-            source_file_name):
+            byte_data,
+            file_name=None):
         pass

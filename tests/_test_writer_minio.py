@@ -18,7 +18,7 @@ def test_using_batch_writer():
             access_key=os.getenv('MINIO_ACCESS_KEY'),
             secret_key=os.getenv('MINIO_SECRET_KEY'),
             secure=False,
-            dataset='TWITTER/test')
+            dataset='TEST/test')
 
     import time
 
@@ -38,8 +38,12 @@ def test_using_operator():
             access_key=os.getenv('MINIO_ACCESS_KEY'),
             secret_key=os.getenv('MINIO_SECRET_KEY'),
             secure=False,
-            dataset='TWITTER/test')
-
+            dataset='TEST/test')
+    w.execute({"kara":"oke"})
+    w.finalize()
 
 if __name__ == "__main__":
-    pass
+    test_using_batch_writer()
+    test_using_operator()
+
+    print("okay")

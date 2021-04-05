@@ -27,9 +27,13 @@ MAXIMUM_UNIQUE_VALUES = 100000
 
 class ProfileDataOperator(BaseOperator):
 
-    def __init__(self, **kwargs):
+    def __init__(self, 
+            schema = None,
+            inner_writer = None,
+            **kwargs):
         super().__init__(**kwargs)
-        schema = kwargs.get('schema')
+
+        self.inner_writer = inner_writer
         self.fields = schema._validators
 
         self.summary = {}

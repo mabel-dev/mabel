@@ -1,5 +1,7 @@
 import os
+import io
 from ...data.writers.internals.base_inner_writer import BaseInnerWriter
+from ...utils import paths
 try:
     from minio import Minio  # type:ignore
 except ImportError:
@@ -23,17 +25,18 @@ class MinIoWriter(BaseInnerWriter):
 
     def commit(
             self,
-            source_file_name):
+            byte_data,
+            file_name=None):
 
         _filename = self._build_path()
+        bucket, path, filename, ext = paths.get_parts(_filename)
+        if file_name:
+            _filename = bucket + '/' + path + '/' + file_name
 
-        # put the file using the MinIO API
-        with open(source_file_name, 'rb') as file_data:
-            file_stat = os.stat(source_file_name)
-            self.client.put_object(
+        self.client.put_object(
                     self.bucket,
                     _filename,
-                    file_data,
-                    file_stat.st_size)
+                    io.BytesIO(byte_data),
+                    len(byte_data))
 
         return _filename

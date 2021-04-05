@@ -12,9 +12,16 @@ class FileWriter(BaseInnerWriter):
 
     def commit(
             self,
-            source_file_name):
+            byte_data,
+            file_name=None):
 
         _filename = self._build_path()
         bucket, path, filename, ext = paths.get_parts(_filename)
+        if file_name:
+            _filename = bucket + '/' + path + '/' + file_name
+
         os.makedirs(bucket + '/' + path, exist_ok=True)
-        return shutil.copy(source_file_name, _filename)
+        with open(_filename, mode='wb') as file:
+            file.write(byte_data)
+
+        return _filename

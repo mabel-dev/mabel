@@ -6,6 +6,7 @@ Impotent writer for testing, writes to the log to help with debugging.
 #nodoc - don't add to the documentation wiki
 """
 from ...logging import get_logger
+from ...utils import paths
 from ...data.writers.internals.base_inner_writer import BaseInnerWriter
 
 
@@ -18,6 +19,13 @@ class NullWriter(BaseInnerWriter):
 
     def commit(
             self,
-            source_file_name):
-        get_logger().debug(f'null_writer({self.formatted_args}, source_file_name={source_file_name})')
+            byte_data,
+            file_name=None):
+
+        _filename = self._build_path()
+        bucket, path, filename, ext = paths.get_parts(_filename)
+        if file_name:
+            _filename = bucket + '/' + path + '/' + file_name
+
+        get_logger().debug(f'null_writer({self.formatted_args}, {_filename})')
         return "NullWriter"

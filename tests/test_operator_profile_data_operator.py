@@ -29,8 +29,9 @@ def test_profile_operator():
         ]
     }
 
-    schema = Schema(TEST_SCHEMA)
-    pdo = ProfileDataOperator(schema=schema)
+    pdo = ProfileDataOperator(
+            schema=Schema(TEST_SCHEMA),
+            inner_writer=None)
 
     for entry in TEST_DATA:
         pdo.execute(entry, {})
@@ -53,7 +54,9 @@ def test_profile_operator_binning():
 
     TEST_SCHEMA = { "fields": [ { "name": "number",     "type": "numeric" } ] }
     schema = Schema(TEST_SCHEMA)
-    pdo = ProfileDataOperator(schema=schema)
+    pdo = ProfileDataOperator(
+            schema=schema,
+            inner_writer=None)
 
     for i in range(100000):
         entry = {'number': i}

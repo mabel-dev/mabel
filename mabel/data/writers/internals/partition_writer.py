@@ -1,6 +1,7 @@
 import threading
 import tempfile
 import os
+import io
 from typing import Any
 from ...formats.json import serialize
 from ...index import BTree
@@ -75,10 +76,13 @@ class PartitionWriter():
                     pq.write_table(table, self.file_name + '.parquet', compression='ZSTD')
                     self.file_name += '.parquet'
 
-                    print('****', self.file_name)
-
                 if self.file is not None:
-                    committed_partition_name = self.inner_writer.commit(source_file_name=self.file_name)
+                    with open(self.file_name, 'rb') as f:
+                        byte_data = f.read()
+                        
+                    committed_partition_name = self.inner_writer.commit(
+                            byte_data=byte_data,
+                            file_name=None)
                     get_logger().debug(F"Partition Committed - {committed_partition_name} - {self.records_in_partition} records, {self.bytes_in_partition} bytes")
                     try:
                         os.remove(self.file_name)
