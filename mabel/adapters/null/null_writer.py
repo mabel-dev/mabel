@@ -27,5 +27,5 @@ class NullWriter(BaseInnerWriter):
         if file_name:
             _filename = bucket + '/' + path + '/' + file_name
 
-        get_logger().debug(f'null_writer({self.formatted_args}, {_filename})')
+        get_logger().debug(f'null_writer({self.formatted_args}, target_blob=\'{_filename}\')')
         return "NullWriter"

@@ -55,6 +55,6 @@ class SanitizingLogFormatter(logging.Formatter):
                     done_anything = True
 
         if done_anything:
-            parts.append(json.dumps(dirty_record))
+            parts.append(' ' + json.dumps(dirty_record))
             return '|'.join(parts)
         return record

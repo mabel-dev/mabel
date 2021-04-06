@@ -76,18 +76,17 @@ class PartitionWriter():
                     pq.write_table(table, self.file_name + '.parquet', compression='ZSTD')
                     self.file_name += '.parquet'
 
-                if self.file is not None:
-                    with open(self.file_name, 'rb') as f:
-                        byte_data = f.read()
-                        
-                    committed_partition_name = self.inner_writer.commit(
-                            byte_data=byte_data,
-                            file_name=None)
-                    get_logger().debug(F"Partition Committed - {committed_partition_name} - {self.records_in_partition} records, {self.bytes_in_partition} bytes")
-                    try:
-                        os.remove(self.file_name)
-                    except ValueError:
-                        pass
+                with open(self.file_name, 'rb') as f:
+                    byte_data = f.read()
+                    
+                committed_partition_name = self.inner_writer.commit(
+                        byte_data=byte_data,
+                        file_name=None)
+                get_logger().debug(F"Partition Committed - {committed_partition_name} - {self.records_in_partition} records, {self.bytes_in_partition} bytes")
+                try:
+                    os.remove(self.file_name)
+                except ValueError:
+                    pass
 
                 self.bytes_in_partition = 0
                 self.file_name = None

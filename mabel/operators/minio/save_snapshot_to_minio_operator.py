@@ -1,4 +1,3 @@
-import datetime
 from ..internals.base_operator import BaseOperator
 from ...data import BatchWriter
 from ...adapters.minio import MinIoWriter

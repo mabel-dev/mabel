@@ -59,7 +59,7 @@ Want to help build mabel? See the [contribution guidance](CONTRIBUTING.md)
 
 Linux, MacOS and Windows (<img align="centre" alt="Notice" height="16" src="icons/note.svg" />2) also supported
 
-<img align="centre" alt="Notice" height="16" src="icons/note.svg" />1 - Raspbian fully functional with alternate libraries  
+<img align="centre" alt="Notice" height="16" src="icons/note.svg" />1 - Raspbian fully functional with alternate JSON libraries  
 <img align="centre" alt="Notice" height="16" src="icons/note.svg" />2 - Multi-Processing not available on Windows
 
 ## License

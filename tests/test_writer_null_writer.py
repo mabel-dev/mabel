@@ -12,7 +12,7 @@ except ImportError:
 def test_null_writer():
 
     # none of these should do anything
-    nw = NullWriter(dataset='bucket/path/file.extension')
+    nw = NullWriter(dataset='bucket/path')
     assert nw.commit(None, None) == 'NullWriter'
 
 if __name__ == "__main__":

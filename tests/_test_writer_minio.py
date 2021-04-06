@@ -28,8 +28,6 @@ def test_using_batch_writer():
         w.append({"tv":i+100})
     w.finalize()
 
-    print('okay', (start - time.time_ns())/1e9)
-
 
 def test_using_operator():
 
