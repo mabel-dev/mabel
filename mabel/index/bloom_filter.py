@@ -21,8 +21,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from bitarray import bitarray
-import mmh3
+from bitarray import bitarray  # type:ignore
+import mmh3  # type:ignore
 
 
 class BloomFilter():
