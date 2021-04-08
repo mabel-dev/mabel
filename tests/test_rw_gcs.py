@@ -49,7 +49,7 @@ def test_gcs():
         w = BatchWriter(
                 inner_writer=GoogleCloudStorageWriter,
                 project='testing',
-                partition_size=1024,
+                blob_size=1024,
                 dataset=F'{BUCKET_NAME}/test/gcs/dataset')
         for i in range(200):
             w.append({"index":i+300})

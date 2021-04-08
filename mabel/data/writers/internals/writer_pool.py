@@ -1,15 +1,15 @@
 """
-The WriterPool maintains multiple PartitionWriters.
+The WriterPool maintains multiple BlobWriters.
 
 It allows new ParitionWriters be be added to the pool, and when the size of the
 pool exceeds the stated size limit, it can recommend the least recently used
-PartitionWriters to be evicted. Note the pool_size is not a hard limit, there
-can be more active PartitionWriters, this is used to determine how many
-PartitionWriters to recommend for evict.
+BlobWriters to be evicted. Note the pool_size is not a hard limit, there
+can be more active BlobWriters, this is used to determine how many
+BlobWriters to recommend for evict.
 """
 import time
 import threading
-from .partition_writer import PartitionWriter
+from .blob_writer import BlobWriter
 from ...formats.dictset import display
 
 
@@ -48,7 +48,7 @@ class WriterPool():
         new_writer = {
             'identity': identity,
             'last_access': time.time(),
-            'writer': PartitionWriter(dataset=identity, **self.kwargs)
+            'writer': BlobWriter(dataset=identity, **self.kwargs)
         }
         return new_writer
 

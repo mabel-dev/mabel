@@ -47,6 +47,8 @@ Want to help build mabel? See the [contribution guidance](CONTRIBUTING.md)
 
 ## What Platforms Does It Support?
 
+mabel comes with adapters for the following services, or is tested to run on the following platforms:
+
 | | Service | Support
 |-- |-- |-- 
 | <img align="centre" alt="Google Cloud Storage" height="48" src="icons/gcs-logo.png" /> | Google Cloud Storage |  Read/Write
@@ -57,7 +59,9 @@ Want to help build mabel? See the [contribution guidance](CONTRIBUTING.md)
 | <img align="centre" alt="Kubernetes" height="48" src="icons/kubernetes-logo.svg" /> | Kubernetes | Hosting
 | <img align="centre" alt="Raspberry Pi" height="48" src="icons/raspberry-pi-logo.svg" /> | Raspberry Pi | Hosting (<img align="centre" alt="Notice" height="16" src="icons/note.svg" />1)
 
-Linux, MacOS and Windows (<img align="centre" alt="Notice" height="16" src="icons/note.svg" />2) also supported
+Linux, MacOS and Windows (<img align="centre" alt="Notice" height="16" src="icons/note.svg" />2) also supported.
+
+Adapters for other data services can be written. 
 
 <img align="centre" alt="Notice" height="16" src="icons/note.svg" />1 - Raspbian fully functional with alternate JSON libraries  
 <img align="centre" alt="Notice" height="16" src="icons/note.svg" />2 - Multi-Processing not available on Windows

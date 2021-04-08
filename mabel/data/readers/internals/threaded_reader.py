@@ -20,7 +20,7 @@ def threaded_reader(
 
     Parameters:
         items_to_read: list of strings:
-            The name of the partitions (usually files) to read
+            The name of the blobs to read
         reader: BaseReader:
             The Reader object to perform the reading operations
         max_threads: integer (optional):

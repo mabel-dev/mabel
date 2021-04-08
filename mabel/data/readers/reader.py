@@ -21,7 +21,7 @@ path/to/dataset                 <-- this is the value in the dataset params
                                     each run puts the data into a timestamped
                                     frame. Usually you read from the latest
                                     frame when you read the dataset
-                    /partition  <-- the data is split into 32Mb partitions,
+                    /blob       <-- the data is split into 32Mb blobs,
                                     these help keep memory requirements low
                                     and help to avoid small file problems
 """

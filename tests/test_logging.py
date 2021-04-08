@@ -50,7 +50,6 @@ def test_smoke_test():
     logger = get_logger()
     logger.setLevel(LEVELS.DEBUG)
     logger.debug("debug")
-    logger.info("info")
     logger.warning("warn")
     logger.error("error")
     logger.alert("alert")

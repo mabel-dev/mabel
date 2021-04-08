@@ -1,6 +1,6 @@
 """
 Writers are the target specific implementations which commit a temporary file
-created by the PartitionWriter to different systems, such as the filesystem,
+created by the BlobWriter to different systems, such as the filesystem,
 Google Cloud Storage or MinIO.
 
 The primary activity is contained in the .commit() method.
@@ -40,8 +40,8 @@ class BaseInnerWriter(abc.ABC):
             self.filename_without_bucket = path
 
     def _build_path(self):
-        partition_id = F"{time.time_ns():x}-{self._get_node()}"
-        return self.filename.replace(STEM, F'{partition_id}')
+        blob_id = F"{time.time_ns():x}-{self._get_node()}"
+        return self.filename.replace(STEM, F'{blob_id}')
 
     @lru_cache(1)
     def _get_node(self):

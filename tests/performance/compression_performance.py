@@ -18,7 +18,7 @@ import zstandard
 import statistics
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '../..'))
-from mabel.data.formats import display, dictset
+from mabel.data.formats import dictset
 
 def read_file_clear(filename='', chunk_size=32*1024*1024, delimiter="\n"):
     with open(filename, "r", encoding="utf8") as f:
@@ -60,13 +60,13 @@ def write_file_zstandard(filename='', content=[]):
     return []
 
 
-lines = list(read_file_clear('tests/data/formats/tweets.jsonl'))
+lines = list(read_file_clear('tests/data/formats/jsonl/tweets.jsonl'))
 os.makedirs('_temp', exist_ok=True)
 
 def execute_test(func, **kwargs):
     runs = []
 
-    for i in range(5):
+    for i in range(10):
         start = time.perf_counter_ns()
         [r for r in func(**kwargs)]
         runs.append((time.perf_counter_ns() - start) / 1e9)
@@ -107,4 +107,4 @@ result = {
 }
 results.append(result)
 
-print(display.ascii_table(results, 100))
+print(dictset.display.ascii_table(results, 100))

@@ -3,7 +3,7 @@ import datetime
 from typing import Any
 from dateutil import parser
 from .simple_writer import SimpleWriter
-from .internals.partition_writer import PartitionWriter
+from .internals.blob_writer import BlobWriter
 from ..validator import Schema  # type:ignore
 from ...utils import paths
 from ...errors import ValidationError, InvalidDataSetError
@@ -23,8 +23,8 @@ class BatchWriter(SimpleWriter):
             frame_id: str = None, 
             **kwargs):
         """
-        The batch data writer to writes data records into partitions. Batches
-        are written into timestamped folders.
+        The batch data writer to writes data records into blobs. Batches
+        are written into timestamped folders called Partitions.
 
         Parameters:
             dataset: string (optional)
@@ -40,8 +40,8 @@ class BatchWriter(SimpleWriter):
             date: date or string (optional)
                 A date, a string representation of a date to use for
                 creating the dataset. The default is today's date
-            partition_size: integer (optional)
-                The maximum size of partitions, the default is 64Mb
+            blob_size: integer (optional)
+                The maximum size of blobs, the default is 64Mb
             inner_writer: BaseWriter (optional)
                 The component used to commit data, the default writer is the
                 NullWriter
@@ -71,7 +71,7 @@ class BatchWriter(SimpleWriter):
         super().__init__(**kwargs)
 
         # create the writer
-        self.partition_writer = PartitionWriter(**kwargs)
+        self.blob_writer = BlobWriter(**kwargs)
 
     @staticmethod
     def create_frame_id():
