@@ -82,7 +82,7 @@ class BlobWriter():
                 committed_blob_name = self.inner_writer.commit(
                         byte_data=byte_data,
                         file_name=None)
-                get_logger().debug(F"Blob Committed - {committed_blob_name} - {self.records_in_blob} records, {self.bytes_in_blob} bytes")
+                get_logger().debug(F"Blob Committed - {committed_blob_name} - {self.records_in_blob} records, {self.bytes_in_blob} raw bytes, {len(byte_data)} comitted bytes")
                 try:
                     os.remove(self.file_name)
                 except ValueError:

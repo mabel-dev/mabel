@@ -199,7 +199,7 @@ def dedupe():
         values.append(random.choice(STAR_WARS))
     start = time.time_ns()
     for i in range(20):
-        [v for v in drop_duplicates(values)]
+        [v for v in drop_duplicates(values,50)]
     print((time.time_ns() - start) / 1e9)
 
 

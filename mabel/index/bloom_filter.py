@@ -76,23 +76,17 @@ class BloomFilter():
         k = (filter_size/number_of_elements) * BloomFilter._log(2)
         return max(int(k), 2)
 
-    def _get_hashes(self, term):
-        """
-        get the hashes for the term
-        """
-        hashes = [0] * self.hash_count
-        for i in range(self.hash_count):
-            hashes[i] = mmh3.hash(term, seed=i) % self.filter_size
-        return hashes
-
     def add(self, term):
-        hashes = self._get_hashes(term)
-        for h in hashes:
+        for i in range(self.hash_count):
+            h = mmh3.hash(term, seed=i) % self.filter_size
             self.bits[h] = 1
 
     def __contains__(self, term):
-        hashes = self._get_hashes(term)
-        return all([self.bits[h] for h in hashes])
+        for i in range(self.hash_count):
+            h = mmh3.hash(term, seed=i) % self.filter_size
+            if self.bits[h] == 0:
+                return False
+        return True
 
 def write_bloom_filter(bf: BloomFilter, filename: str):
     def int_to_bytes(x: int) -> bytes:
@@ -127,12 +121,12 @@ if __name__ == "__main__":
 
     bf = BloomFilter()
 
-    #with open('tests/data/word_list.txt') as words:
-    #    for word in words:
-    #        bf.add(word.rstrip())
+    with open('tests/data/word_list.txt') as words:
+        for word in words:
+            bf.add(word.rstrip())
     #write_bloom_filter(bf, 'index.bloom')
     #print(bf.filter_size, bf.hash_count)
-    bf = read_bloom_filter('index.bloom')
+    #bf = read_bloom_filter('index.bloom')
     print(bf.filter_size, bf.hash_count)
 
     test_words = ['rick', 'risk', 'rust', 'room', 'roomba', 'bering', 'pomrenke']
@@ -141,9 +135,9 @@ if __name__ == "__main__":
 
     t = time.time_ns()
 
-    for i in range(20000):
-        for w in test_words:
-            w in bf
+    #for i in range(20000):
+    #    for w in test_words:
+    #        w in bf
 
     for w in test_words:
         print(w in bf)
