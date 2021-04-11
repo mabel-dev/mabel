@@ -1,10 +1,10 @@
 import time
 import os
 import sys
-import random
 sys.path.insert(1, os.path.join(sys.path[0], '../..'))
 from mabel.index.bloom_filter import BloomFilter
 from mabel.data.formats.dictset import drop_duplicates
+from mabel.utils import entropy
 try:
     from rich import traceback
     traceback.install()
@@ -196,7 +196,7 @@ STAR_WARS = [
 def dedupe():
     values = []
     for i in range(100000):
-        values.append(random.choice(STAR_WARS))
+        values.append(entropy.random_choice(STAR_WARS))
     start = time.time_ns()
     for i in range(20):
         [v for v in drop_duplicates(values,50)]
@@ -215,7 +215,7 @@ def drop(dictset):
 def filt():
     values = []
     for i in range(100000):
-        values.append(random.choice(STAR_WARS))
+        values.append(entropy.random_choice(STAR_WARS))
     start = time.time_ns()
     for i in range(20):
         a = [v for v in drop(values)]

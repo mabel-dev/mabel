@@ -23,22 +23,11 @@ import ujson
 import hashlib
 import datetime
 from typing import Optional
+from ...utils import entropy
 
-serialize = ujson.dumps
+serialize = ujson.dumps  # prevent circular imports
 
 EMPTY_HASH = "0" * 64
-
-def random_int() -> int:
-    """
-    Select a random integer (16bit)
-
-    This is a RNG suitable for cryptographic use.
-    """
-    ran = 0
-    for b in os.urandom(2):
-        ran = ran * 256 + int(b)
-    return ran
-
 
 class TraceBlocks():
 
@@ -83,9 +72,9 @@ class TraceBlocks():
         # as finding a value to satify the proof will block processing.
         
         if self.proof:
-            proof = str(random_int())
+            proof = str(entropy.random_int())
             while self.hash(''.join([proof, previous_block_hash]))[-1] not in self.proof:
-                proof = str(random_int())
+                proof = str(entropy.random_int())
 
         block = {
             "block": len(self.blocks) + 1,

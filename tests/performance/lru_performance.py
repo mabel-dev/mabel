@@ -1,9 +1,9 @@
 import time
 import os
 import sys
-import random
 sys.path.insert(1, os.path.join(sys.path[0], '../..'))
 from mabel.index.lru_index import LruIndex
+from mabel.utils import entropy
 try:
     from rich import traceback
     traceback.install()
@@ -198,7 +198,7 @@ def lru_performance():
 
     values = []
     for i in range(5000):
-        values.append(random.choice(STAR_WARS))
+        values.append(entropy.random_choice(STAR_WARS))
 
     start = time.time_ns()
 
