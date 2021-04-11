@@ -20,9 +20,10 @@ class failing_operator(BaseOperator):
         
 def test_retry():
     flow = failing_operator(retry_count=3, retry_wait=1) > EndOperator()
-    flow.run(data='', context={})
+    with flow as runner:
+        runner.run(data='', context={})
     global fail_counter
-    assert fail_counter == 3
+    assert fail_counter == 3, fail_counter
 
 if __name__ == "__main__":
     test_retry()

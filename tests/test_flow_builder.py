@@ -32,11 +32,6 @@ def test_flow_builder_valid():
     assert F"NoOpOperator-{id(n)}" in flow.nodes.keys()
     assert len(flow.edges) == 2
 
-    assert hasattr(flow, 'run')
-    assert hasattr(flow, 'finalize')
-
-    flow.finalize()
-
 
 def test_flow_builder_invalid_uninstantiated():
     """
@@ -47,7 +42,6 @@ def test_flow_builder_invalid_uninstantiated():
 
     with pytest.raises(TypeError):
         flow = n > e
-        flow.finalize()
 
 
 def test_flow_builder_invalid_wrong_type():
@@ -59,7 +53,7 @@ def test_flow_builder_invalid_wrong_type():
 
     with pytest.raises(TypeError):
         flow = n > e
-        flow.finalize()
+
 
 class TestOperator(NoOpOperator):
     def execute(self, data={}, context={}):
@@ -90,15 +84,40 @@ def test_branching():
     for source, target in RESULTS.items():
         assert sorted([t.split('-')[0] for s, t in flow.edges if str(s).startswith(source)]) == target
 
-    flow.run('>', {})
-    flow.finalize()
+    with flow as runner:
+        runner.run('>', {})
 
+
+def test_context_manager():
+    z = EndOperator()
+    a = OperatorA()
+    b = OperatorB()
+    c = OperatorC()
+    d = OperatorD()
+
+    flow = a > [b > z, c > d > z]
+    
+    RESULTS = {
+        'OperatorA': ['OperatorB', 'OperatorC'],
+        'OperatorB': ['EndOperator'],
+        'OperatorC': ['OperatorD'],
+        'OperatorD': ['EndOperator']
+    }
+
+    for source, target in RESULTS.items():
+        assert sorted([t.split('-')[0] for s, t in flow.edges if str(s).startswith(source)]) == target
+
+    payloads = ['a','b','c','d','e']
+    with flow as fl:
+        for payload in payloads:
+            fl.run(payload, {})
     
 if __name__ == "__main__":
 
-    #test_flow_builder_valid()
-    #test_flow_builder_invalid_uninstantiated()
-    #test_flow_builder_invalid_wrong_type()
+    test_flow_builder_valid()
+    test_flow_builder_invalid_uninstantiated()
+    test_flow_builder_invalid_wrong_type()
     test_branching()
+    test_context_manager()
 
     print('okay')

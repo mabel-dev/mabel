@@ -218,7 +218,7 @@ def filt():
         values.append(random.choice(STAR_WARS))
     start = time.time_ns()
     for i in range(20):
-        [v for v in drop(values)]
+        a = [v for v in drop(values)]
     print((time.time_ns() - start) / 1e9)
 
 

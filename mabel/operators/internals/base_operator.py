@@ -19,6 +19,16 @@ from ...data.formats.json import parse, serialize
 # interited from
 class BaseOperator(abc.ABC):
 
+    @staticmethod
+    @functools.lru_cache(1)
+    def sigterm():
+        """
+        Create a termination signal - SIGTERM, when the data record is
+        this, we do any closure activities.
+        """
+        full_hash = hashlib.sha256(datetime.datetime.now().isoformat().encode())
+        return "SIGTERM-" + full_hash.hexdigest() 
+
     def __init__(self, **kwargs):
         """
         All Operators should inherit from this class, it will help ensure a

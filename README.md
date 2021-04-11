@@ -1,3 +1,5 @@
+**MABEL IS IN ALPHA - USAGE IS STILL STABLIZING**
+
 <img align="centre" alt="overlapping arrows" height="92" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/mabel.svg" />
 
 **mabel** is a platform for authoring data processing systems.

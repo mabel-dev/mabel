@@ -35,7 +35,7 @@ class BloomFilter():
             fp_rate: float = 0.05):
         self.filter_size = BloomFilter.get_size(number_of_elements, fp_rate)
         self.hash_count = BloomFilter.get_hash_count(self.filter_size, number_of_elements)
-        self.bits = bitarray(self.filter_size, endian='little')
+        self.bits = bitarray(self.filter_size, endian='big')
         self.bits.setall(0)
 
     @staticmethod
@@ -89,9 +89,6 @@ class BloomFilter():
         return True
 
 def write_bloom_filter(bf: BloomFilter, filename: str):
-    def int_to_bytes(x: int) -> bytes:
-        return x.to_bytes((x.bit_length() + 7) // 8, 'big')
-
     with open(filename, 'wb') as fh:
         fh.write(bf.filter_size.to_bytes(4, byteorder='big'))
         fh.write(bf.hash_count.to_bytes(4, byteorder='big'))
@@ -104,7 +101,7 @@ def read_bloom_filter(
     def bytes_to_int(xbytes: bytes) -> int:
         return int.from_bytes(xbytes, 'big')
 
-    bits = bitarray(endian='little')
+    bits = bitarray(endian='big')
     with open(filename, 'rb') as fh:
         filter_size = bytes_to_int(fh.read(4))
         hash_count  = bytes_to_int(fh.read(4))
