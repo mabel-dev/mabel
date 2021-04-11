@@ -1,5 +1,5 @@
 import uuid
-import random
+from ..utils import entropy
 from ..operators.internals.trace_blocks import TraceBlocks
 
 
@@ -36,7 +36,7 @@ class FlowRunner():
 
         # if trace hasn't been explicitly set - randomly select based on a sample rate
         if not context.get('trace') and trace_sample_rate:
-            context['trace'] = random.randint(1, round(1 / trace_sample_rate)) == 1  # nosec
+            context['trace'] = entropy.random_range(1, round(1 / trace_sample_rate)) == 1  # nosec
 
         # start the flow, walk from the nodes with no incoming links
         for operator_name in self.flow.get_entry_points():
