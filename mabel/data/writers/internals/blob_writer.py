@@ -82,7 +82,7 @@ class BlobWriter():
                 committed_blob_name = self.inner_writer.commit(
                         byte_data=byte_data,
                         file_name=None)
-                get_logger().debug(F"Blob Committed - {committed_blob_name} - {self.records_in_blob} records, {self.bytes_in_blob} raw bytes, {len(byte_data)} comitted bytes")
+                get_logger().debug(F"Blob Committed - {committed_blob_name} - {self.records_in_blob:n} records, {self.bytes_in_blob:n} raw bytes, {len(byte_data):n} comitted bytes")
                 try:
                     os.remove(self.file_name)
                 except ValueError:
@@ -109,10 +109,7 @@ class BlobWriter():
 
     def __del__(self):
         # this should never be relied on to save data
-        try:
-            self.commit()
-        except:  # nosec
-            pass 
+        self.commit()
 
     def _create_temp_file_name(self):
         """

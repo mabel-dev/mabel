@@ -5,3 +5,4 @@ from .invalid_combination_error import InvalidCombinationError
 from .invalid_data_set_error import InvalidDataSetError
 from .integrity_error import IntegrityError
 from .invalid_reader_configuration import InvalidReaderConfigError
+from .flow_error import FlowError

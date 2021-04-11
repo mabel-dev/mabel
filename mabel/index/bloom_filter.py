@@ -112,33 +112,3 @@ def read_bloom_filter(
     bf.filter_size = filter_size
     bf.hash_count = hash_count
     return bf
-
-if __name__ == "__main__":
-    import sys
-
-    bf = BloomFilter()
-
-    with open('tests/data/word_list.txt') as words:
-        for word in words:
-            bf.add(word.rstrip())
-    #write_bloom_filter(bf, 'index.bloom')
-    #print(bf.filter_size, bf.hash_count)
-    #bf = read_bloom_filter('index.bloom')
-    print(bf.filter_size, bf.hash_count)
-
-    test_words = ['rick', 'risk', 'rust', 'room', 'roomba', 'bering', 'pomrenke']
-
-    import time
-
-    t = time.time_ns()
-
-    #for i in range(20000):
-    #    for w in test_words:
-    #        w in bf
-
-    for w in test_words:
-        print(w in bf)
-
-    print((time.time_ns() - t) / 1e9)
-
-    print(bf.filter_size, bf.hash_count)

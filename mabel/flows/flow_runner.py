@@ -1,6 +1,7 @@
 import uuid
 from ..utils import entropy
 from ..operators.internals.trace_blocks import TraceBlocks
+from ..errors import FlowError
 
 
 class FlowRunner():
@@ -11,7 +12,7 @@ class FlowRunner():
     def run(
             self,
             data: dict = {},
-            context: dict = {},
+            context: dict = None,
             trace_sample_rate: float = 1/1000):
         """
         Create a `run` of a flow and execute with a specific data object.
@@ -26,6 +27,9 @@ class FlowRunner():
                 The sample for for to emit trace messages for, default is 
                 1/1000.
         """
+        if not context:
+            context = {} 
+
         # create a uuid for the message if it doesn't already have one
         if not context.get('uuid'):
             context['uuid'] = str(uuid.uuid4())
@@ -64,7 +68,7 @@ class FlowRunner():
 
         operator = self.flow.get_operator(operator_name)
         if operator is None:
-            raise Exception(F"Invalid Flow - Operator {operator_name} is invalid")
+            raise FlowError(F"Invalid Flow - Operator {operator_name} is invalid")
         if not hasattr(operator, "error_writer") and hasattr(self, "error_writer"):
             operator.error_writer = self.error_writer  # type:ignore
         out_going_links = self.flow.get_outgoing_links(operator_name)

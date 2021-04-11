@@ -23,7 +23,7 @@ from typing import Any, Union
 def random_string(
         length: int = 64,
         characters: str = string.ascii_letters + string.digits) -> str:
-    result_str = "".join(random_choice(characters) for i in range(length))
+    result_str = "".join(random_choice(characters) for _ in range(length))
     return result_str
 
 

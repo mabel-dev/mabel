@@ -2,5 +2,5 @@
 
 from .base_exception import BaseException
 
-class FlowError(BaseException):
+class IntegrityError(BaseException):
     pass 
