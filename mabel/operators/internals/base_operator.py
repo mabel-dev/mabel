@@ -176,6 +176,11 @@ class BaseOperator(abc.ABC):
             self.logger.alert(F"Failure Rate for {self.name} over last {len(self.last_few_results)} executions is over 50%, aborting.")
             sys.exit(1)
 
+        # If we got SIGTERM, we MUST only pass SIGTERM forward
+        if data == self.sigterm():
+            if isinstance(outcome, tuple) and len(outcome) == 2:
+                return self.sigterm(), outcome[1]
+            return self.sigterm(), context
         return outcome
 
     def read_sensors(self):

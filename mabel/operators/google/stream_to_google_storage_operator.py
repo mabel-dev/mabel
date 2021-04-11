@@ -37,14 +37,12 @@ class StreamToGoogleStorageOperator(BaseOperator):
                 **kwargs)
 
     def execute(self, data: dict = {}, context: dict = {}):
-        self.writer.append(data)
-        return data, context
-
-    def finalize(self):
-        self.writer.finalize()
+        if data == self.sigterm():
+            self.writer.finalize()
+            return self.sigterm, context
+        else:
+            self.writer.append(data)
+            return data, context
 
     def __del__(self):
-        try:
-            self.writer.finalize()
-        except Exception:  # nosec - if this fails, it should be ignored here
-            pass
+        self.writer.finalize()

@@ -5,7 +5,7 @@ monkey-patches to make it easier to use. The decision was made to write a
 specialized, albeit simple, graph library that didn't require monkey-patching.
 """
 from typing import Union, List
-from .bins import FileBin, GoogleCloudStorageBin
+from .bins import FileBin, GoogleCloudStorageBin, MinioBin
 from .flow_runner import FlowRunner
 from ..operators.internals.base_operator import BaseOperator
 
@@ -100,6 +100,17 @@ class Flow():
                 writer = FileBin(                               # type: ignore
                         bin_name=name,                          # type: ignore
                         path=writer.get('path'))                # type: ignore
+                self._attach_writer(writer)
+
+            if class_name == 'minio':
+                writer = MinioBin(                              # type: ignore
+                        bin_name=name,                          # type: ignore
+                        end_point=writer.get('end_point'),      # type: ignore
+                        bucket=writer.get('bucket'),            # type: ignore
+                        path=writer.get('path'),                # type: ignore
+                        access_key=writer.get('access_key'),    # type: ignore
+                        secret_key=writer.get('secret_key'),    # type: ignore
+                        secure=writer.get('secure', True))      # type: ignore
                 self._attach_writer(writer)
 
     def _attach_writer(self, writer):

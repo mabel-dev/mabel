@@ -45,6 +45,6 @@ class MinioBin(BaseBin):
                 self.bucket,
                 filename,
                 record_stream,
-                file_size=len(record_bytes))
+                length=len(record_bytes))
 
         return filename
