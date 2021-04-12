@@ -1,9 +1,9 @@
 from ..internals.base_writer_operator import BaseWriterOperator
-from ...data import StreamWriter
+from ...data import BatchWriter
 from ...adapters.google import GoogleCloudStorageWriter
 
 
-class StreamToGoogleStorageOperator(BaseWriterOperator):
+class GoogleStorageBatchWriter(BaseOperator):
 
     def __init__(
             self,
@@ -13,6 +13,6 @@ class StreamToGoogleStorageOperator(BaseWriterOperator):
 
         kwargs['project'] = project
         super().__init__(
-                writer=StreamWriter,
+                writer=BatchWriter,
                 inner_writer=GoogleCloudStorageWriter,
                 **kwargs)

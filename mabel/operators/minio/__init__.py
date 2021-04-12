@@ -1,1 +1,1 @@
-from .save_snapshot_to_minio_operator import SaveSnapshotToMinIoOperator
+from .minio_batch_writer_operator import MinIoBatchWriterOperator
