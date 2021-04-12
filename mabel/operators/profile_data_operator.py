@@ -77,7 +77,7 @@ class ProfileDataOperator(BaseOperator):
 
         return data, context
 
-    def finalize(self):
+    def finalize(self, context: dict):
         # get rid of the unique values list
         [self.summary[k].pop('unique_value_list') for k in self.fields if 'unique_value_list' in self.summary[k]]
 
@@ -111,7 +111,9 @@ class ProfileDataOperator(BaseOperator):
                 new_bins[label] = v
             self.summary[k]['bins'] = new_bins
 
-        #TODO: finalize() should save the data
+        # put the profile into the context so it gets passed along
+        context['profile'] = self.summary
+        return context
 
     def __str__(self):
         def _inner():

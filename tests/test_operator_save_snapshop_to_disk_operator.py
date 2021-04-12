@@ -18,7 +18,7 @@ def test_save_to_disk_operator():
             dataset="_temp/",
             format='zstd')
     n.execute(data={"this":"is", "a":"record"}, context={})
-    n.finalize()
+    n.finalize({})
 
     assert os.path.exists("_temp")
 

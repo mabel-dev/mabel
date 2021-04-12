@@ -26,12 +26,12 @@ class SaveSnapshotToDiskOperator(BaseOperator):
                 **kwargs)
 
     def execute(self, data: dict = {}, context: dict = {}):
-        if data == self.sigterm():
-            self.writer.finalize()
-            return self.sigterm, context
-        else:
-            self.writer.append(data)
-            return data, context
+        self.writer.append(data)
+        return data, context
+
+    def finalize(self, context):
+        self.writer.finalize()
+        return context
 
     def __del__(self):
         self.writer.finalize()

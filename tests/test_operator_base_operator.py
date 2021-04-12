@@ -14,10 +14,9 @@ fail_counter = 0
 class failing_operator(BaseOperator):
     """ create an Operator which always fails """
     def execute(self, data, context): 
-        if data != self.sigterm():
-            global fail_counter
-            fail_counter += 1
-            raise Exception('Failure')
+        global fail_counter
+        fail_counter += 1
+        raise Exception('Failure')
         return data, context
         
 def test_retry():

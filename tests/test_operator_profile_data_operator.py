@@ -36,7 +36,7 @@ def test_profile_operator():
     for entry in TEST_DATA:
         pdo.execute(entry, {})
 
-    pdo.finalize()
+    pdo.finalize({})
 
     assert(pdo.summary['gender']['type'] == 'enum')
     assert(pdo.summary['name']['type'] == 'string')
@@ -62,7 +62,7 @@ def test_profile_operator_binning():
         entry = {'number': i}
         pdo.execute(entry, {})
 
-    pdo.finalize()
+    outcome = pdo.finalize({})
     print(repr(pdo))
 
 

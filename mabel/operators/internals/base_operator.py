@@ -107,6 +107,14 @@ class BaseOperator(abc.ABC):
         """
         pass  # pragma: no cover
 
+    def finalize(self, context: dict = {}):
+        """
+        Any code to finalize an operator should be implemented here.
+
+        This should return the context to pass along
+        """
+        return context
+
     def __call__(self, data: dict = {}, context: dict = {}):
         """
         DO NOT OVERRIDE THIS METHOD
@@ -114,6 +122,17 @@ class BaseOperator(abc.ABC):
         This method wraps the `execute` method, which must be overridden, to
         to add management of the execution such as sensors and retries.
         """
+        if data == self.sigterm():
+            outcome = None
+            try:
+                outcome = self.finalize(context)
+            except Exception as e:
+                self.logger.error(F"Problem finalizing {self.name} - {type(err).__name__} - {err} - {context.get('uuid')}")
+            finally:
+                if not outcome:
+                    outcome = context
+                return self.sigterm, outcome
+
         if self.commencement_time is None:
             self.commencement_time = datetime.datetime.now()
         self.records_processed += 1
@@ -152,7 +171,7 @@ class BaseOperator(abc.ABC):
                                 "------------------------------------------------------------------------------------------------------------------------\n")
                         error_log_reference = self.error_writer(error_payload)  # type:ignore
                     except Exception as err:
-                        self.logger.error(F"Problem writing to the error bin, a record has been lost. {type(err).__name__} - {err} - {context.get('uuid')}")
+                        self.logger.error(F"Problem writing to the error bin, a record has been lost. {self.name}, {type(err).__name__} - {err} - {context.get('uuid')}")
                     finally:
                         # finally blocks are called following a try/except block regardless of the outcome
                         self.logger.alert(F"{self.name} - {type(error_reference).__name__} - {error_reference} - tried {self.retry_count} times before aborting ({context.get('uuid')}) {error_log_reference}")
@@ -176,11 +195,6 @@ class BaseOperator(abc.ABC):
             self.logger.alert(F"Failure Rate for {self.name} over last {len(self.last_few_results)} executions is over 50%, aborting.")
             sys.exit(1)
 
-        # If we got SIGTERM, we MUST only pass SIGTERM forward
-        if data == self.sigterm():
-            if isinstance(outcome, tuple) and len(outcome) == 2:
-                return self.sigterm(), outcome[1]
-            return self.sigterm(), context
         return outcome
 
     def read_sensors(self):
