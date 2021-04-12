@@ -131,7 +131,7 @@ class BaseOperator(abc.ABC):
             finally:
                 if not outcome:
                     outcome = context
-                return self.sigterm, outcome
+            return self.sigterm, outcome
 
         if self.commencement_time is None:
             self.commencement_time = datetime.datetime.now()
