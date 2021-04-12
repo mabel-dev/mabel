@@ -8,7 +8,7 @@ class StreamToGoogleStorageOperator(BaseWriterOperator):
     def __init__(
             self,
             *,
-            project:str = None
+            project:str = None,
             **kwargs):
 
         kwargs['project'] = project

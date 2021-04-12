@@ -77,7 +77,7 @@ class ProfileDataOperator(BaseOperator):
 
         return data, context
 
-    def finalize(self, context: dict):
+    def finalize(self, context: dict = {}):
         # get rid of the unique values list
         [self.summary[k].pop('unique_value_list') for k in self.fields if 'unique_value_list' in self.summary[k]]
 
@@ -103,12 +103,12 @@ class ProfileDataOperator(BaseOperator):
 
         # change the bin names to strings from tuples
         for k in [k for k in self.summary if 'bins' in self.summary[k]]:
-            new_bins = {}
+            new_bins = {}  # type:ignore
             old_bins = self.summary[k]['bins']
             for ranges, v in old_bins.items():
                 bottom, top = ranges
                 label = F"{ProfileDataOperator.short_form(bottom)} to {ProfileDataOperator.short_form(top)}"
-                new_bins[label] = v
+                new_bins[label] = v  # type:ignore
             self.summary[k]['bins'] = new_bins
 
         # put the profile into the context so it gets passed along

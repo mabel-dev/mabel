@@ -126,7 +126,7 @@ class BaseOperator(abc.ABC):
             outcome = None
             try:
                 outcome = self.finalize(context)
-            except Exception as e:
+            except Exception as err:
                 self.logger.error(F"Problem finalizing {self.name} - {type(err).__name__} - {err} - {context.get('uuid')}")
             finally:
                 if not outcome:

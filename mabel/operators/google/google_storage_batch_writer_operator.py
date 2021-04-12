@@ -3,12 +3,12 @@ from ...data import BatchWriter
 from ...adapters.google import GoogleCloudStorageWriter
 
 
-class GoogleStorageBatchWriter(BaseOperator):
+class GoogleStorageBatchWriter(BaseWriterOperator):
 
     def __init__(
             self,
             *,
-            project:str = None
+            project:str = None,
             **kwargs):
 
         kwargs['project'] = project
