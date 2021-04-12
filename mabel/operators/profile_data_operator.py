@@ -77,7 +77,11 @@ class ProfileDataOperator(BaseOperator):
 
         return data, context
 
-    def finalize(self, context: dict = {}):
+    def finalize(self, context: dict = None):
+
+        if not context:
+            context = {}
+
         # get rid of the unique values list
         [self.summary[k].pop('unique_value_list') for k in self.fields if 'unique_value_list' in self.summary[k]]
 

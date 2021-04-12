@@ -107,12 +107,14 @@ class BaseOperator(abc.ABC):
         """
         pass  # pragma: no cover
 
-    def finalize(self, context: dict = {}):
+    def finalize(self, context: dict = None):
         """
         Any code to finalize an operator should be implemented here.
 
         This should return the context to pass along
         """
+        if not context:
+            context = {}
         return context
 
     def __call__(self, data: dict = {}, context: dict = {}):

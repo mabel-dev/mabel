@@ -21,7 +21,10 @@ class BaseWriterOperator(BaseOperator):
         self.writer.append(data)
         return data, context
 
-    def finalize(self, context):
+    def finalize(self, context: dict = None):
+        if not context:
+            context = {}
+
         self.writer.finalize()
         return context
 
