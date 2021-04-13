@@ -1,4 +1,4 @@
-from .internals.base_operator import BaseOperator
+from ..flows.internals.base_operator import BaseOperator
 
 def match_all(data):
     return True

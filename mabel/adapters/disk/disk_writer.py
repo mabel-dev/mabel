@@ -5,7 +5,7 @@ from ...data.writers.internals.base_inner_writer import BaseInnerWriter
 from ...utils import paths
 
 
-class FileWriter(BaseInnerWriter):
+class DiskWriter(BaseInnerWriter):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

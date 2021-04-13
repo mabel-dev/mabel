@@ -3,7 +3,7 @@ import pytest
 import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
-from mabel.adapters.local import FileReader
+from mabel.adapters.disk import DiskReader
 from mabel.data import Reader
 try:
     from rich import traceback
@@ -14,7 +14,7 @@ except ImportError:   # pragma: no cover
 
 def test_can_read_parquet():
     r = Reader(
-            inner_reader=FileReader,
+            inner_reader=DiskReader,
             row_format='pass-thru',
             dataset='tests/data/formats/parquet',
             raw_path=True)

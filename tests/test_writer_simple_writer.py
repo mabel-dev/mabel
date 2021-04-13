@@ -4,7 +4,7 @@ import os
 import sys
 import glob
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
-from mabel.adapters.local import FileReader, FileWriter
+from mabel.adapters.disk import DiskReader, DiskWriter
 from mabel.adapters.null import NullWriter
 from mabel.data import Reader, SimpleWriter
 try:
@@ -19,7 +19,7 @@ get_logger().setLevel(5)
 
 def do_writer():
     w = SimpleWriter(
-        inner_writer=FileWriter,
+        inner_writer=DiskWriter,
         dataset='_temp'
     )
     for i in range(int(1e5)):
@@ -30,7 +30,7 @@ def do_writer():
 
 def do_writer_compressed(algo):
     w = SimpleWriter(
-        inner_writer=FileWriter,
+        inner_writer=DiskWriter,
         dataset='_temp',
         format=algo
     )
@@ -42,7 +42,7 @@ def do_writer_compressed(algo):
 
 def do_writer_default():
     w = SimpleWriter(
-        inner_writer=FileWriter,
+        inner_writer=DiskWriter,
         dataset='_temp'
     )
     for i in range(int(1e5)):
@@ -57,7 +57,7 @@ def test_reader_writer():
     do_writer()
 
     r = Reader(
-        inner_reader=FileReader,
+        inner_reader=DiskReader,
         dataset='_temp'
     )
     l = len(list(r))
@@ -73,7 +73,7 @@ def test_reader_writer_format_lzma():
     assert len(g) > 0, g
 
     r = Reader(
-        inner_reader=FileReader,
+        inner_reader=DiskReader,
         dataset='_temp'
     )
     l = len(list(r))
@@ -88,7 +88,7 @@ def test_reader_writer_format_zstd():
     assert len(g) > 0, g
 
     r = Reader(
-        inner_reader=FileReader,
+        inner_reader=DiskReader,
         dataset='_temp'
     )
     l = len(list(r))
@@ -103,7 +103,7 @@ def test_reader_writer_format_jsonl():
     assert len(g) > 0, g
 
     r = Reader(
-        inner_reader=FileReader,
+        inner_reader=DiskReader,
         dataset='_temp'
     )
     l = len(list(r))
@@ -118,7 +118,7 @@ def test_reader_writer_format_parquet():
     assert len(g) > 0, g
 
     r = Reader(
-        inner_reader=FileReader,
+        inner_reader=DiskReader,
         row_format='pass-thru',
         dataset='_temp'
     )
@@ -134,7 +134,7 @@ def test_reader_writer_format_default():
     assert len(g) > 0, g
 
     r = Reader(
-        inner_reader=FileReader,
+        inner_reader=DiskReader,
         dataset='_temp'
     )
     l = len(list(r))
@@ -144,7 +144,7 @@ def test_reader_writer_format_default():
 
 def get_data():
     r = Reader(
-        inner_reader=FileReader,
+        inner_reader=DiskReader,
         dataset='tests/data/tweets',
         raw_path=True)
     return r

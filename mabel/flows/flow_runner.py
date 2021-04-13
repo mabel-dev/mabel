@@ -1,6 +1,6 @@
 import uuid
+from .internals.trace_blocks import TraceBlocks
 from ..utils import entropy
-from ..operators.internals.trace_blocks import TraceBlocks
 from ..errors import FlowError
 
 

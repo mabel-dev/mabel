@@ -18,7 +18,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from .internals.base_operator import BaseOperator
+from ..flows.internals.base_operator import BaseOperator
 from ..data.formats import json
 from ..data.formats.dictset.display import draw_histogram_bins
 

@@ -2,7 +2,7 @@ import os
 import sys
 import string
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
-from mabel.operators.internals.trace_blocks import TraceBlocks
+from mabel.flows.internals.trace_blocks import TraceBlocks
 from mabel.data.formats.json import parse, serialize
 from mabel.utils import entropy
 try:

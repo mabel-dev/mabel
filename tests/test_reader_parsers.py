@@ -2,7 +2,7 @@ import datetime
 import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
-from mabel.adapters.local import FileReader
+from mabel.adapters.disk import DiskReader
 from mabel.data import Reader
 try:
     from rich import traceback
@@ -16,7 +16,7 @@ get_logger().setLevel(5)
 
 def test_block_parser():
     r = list(Reader(
-            inner_reader=FileReader,
+            inner_reader=DiskReader,
             dataset='tests/data/tweets',
             row_format="block",
             raw_path=True))
@@ -27,7 +27,7 @@ def test_block_parser():
 
 def test_text_parser():
     r = list(Reader(
-            inner_reader=FileReader,
+            inner_reader=DiskReader,
             dataset='tests/data/tweets',
             row_format="text",
             raw_path=True))
@@ -37,7 +37,7 @@ def test_text_parser():
 
 def test_json_parser():
     r = list(Reader(
-            inner_reader=FileReader,
+            inner_reader=DiskReader,
             dataset='tests/data/tweets',
             row_format="json",
             raw_path=True))
@@ -47,7 +47,7 @@ def test_json_parser():
 
 def test_default_parser():
     r = list(Reader(
-            inner_reader=FileReader,
+            inner_reader=DiskReader,
             dataset='tests/data/tweets',
             raw_path=True))
 

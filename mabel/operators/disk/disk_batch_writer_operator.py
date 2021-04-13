@@ -1,6 +1,6 @@
-from ..internals.base_writer_operator import BaseWriterOperator
+from ...flows.internals.base_writer_operator import BaseWriterOperator
 from ...data import BatchWriter
-from ...adapters.local import FileWriter
+from ...adapters.disk import DiskWriter
 
 
 class DiskBatchWriterOperator(BaseWriterOperator):
@@ -11,5 +11,5 @@ class DiskBatchWriterOperator(BaseWriterOperator):
 
         super().__init__(
                 writer=BatchWriter,
-                inner_writer=FileWriter,
+                inner_writer=DiskWriter,
                 **kwargs)

@@ -2,7 +2,7 @@ import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.data import Reader, BatchWriter
-from mabel.adapters.local import FileReader, FileWriter
+from mabel.adapters.disk import DiskReader, DiskWriter
 try:
     from rich import traceback
     traceback.install()
@@ -16,11 +16,11 @@ get_logger().setLevel(5)
 def test_index():
     # step back through time
     r = Reader(
-        inner_reader=FileReader,
+        inner_reader=DiskReader,
         dataset='tests/data/tweets',
         raw_path=True)
     w = BatchWriter(
-        inner_writer=FileWriter,
+        inner_writer=DiskWriter,
         dataset='_temp/data/tweets',
         index_on=['username']
     )

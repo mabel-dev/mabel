@@ -1,4 +1,4 @@
-from ..internals.base_writer_operator import BaseWriterOperator
+from ...flows.internals.base_writer_operator import BaseWriterOperator
 from ...data import StreamWriter
 from ...adapters.google import GoogleCloudStorageWriter
 

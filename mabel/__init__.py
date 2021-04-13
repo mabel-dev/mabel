@@ -10,3 +10,6 @@ except ImportError:
     pass
 
 from .version import __version__
+
+from .flows.flow import Flow
+from .flows.internals.base_operator import BaseOperator

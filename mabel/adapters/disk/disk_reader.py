@@ -8,7 +8,7 @@ from ...utils import paths, common
 from ...logging import get_logger
 
 
-class FileReader(BaseInnerReader):
+class DiskReader(BaseInnerReader):
 
     def __init__(self, **kwargs):
         """

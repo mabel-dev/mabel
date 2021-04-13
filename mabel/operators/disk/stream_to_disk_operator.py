@@ -1,6 +1,6 @@
-from ..internals.base_writer_operator import BaseWriterOperator
+from ...flows.internals.base_writer_operator import BaseWriterOperator
 from ...data import StreamWriter  # type:ignore
-from ...adapters.local import FileWriter
+from ...adapters.disk import DiskWriter
 
 
 class StreamToDiskOperator(BaseWriterOperator):
@@ -11,5 +11,5 @@ class StreamToDiskOperator(BaseWriterOperator):
 
         super().__init__(
                 writer=StreamWriter,
-                inner_writer=FileWriter,
+                inner_writer=DiskWriter,
                 **kwargs)

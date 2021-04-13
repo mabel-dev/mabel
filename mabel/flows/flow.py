@@ -7,7 +7,7 @@ specialized, albeit simple, graph library that didn't require monkey-patching.
 from typing import Union, List
 from .bins import FileBin, GoogleCloudStorageBin, MinioBin
 from .flow_runner import FlowRunner
-from ..operators.internals.base_operator import BaseOperator
+from .internals.base_operator import BaseOperator
 
 
 class Flow():
