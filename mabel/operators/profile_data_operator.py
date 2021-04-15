@@ -1,4 +1,3 @@
-#no-maintain-checks
 """
 This module is dervied from:
 
@@ -116,7 +115,7 @@ class ProfileDataOperator(BaseOperator):
             self.summary[k]['bins'] = new_bins
 
         # put the profile into the context so it gets passed along
-        context['profile'] = self.summary
+        context['mabel:profile'] = self.summary
         return context
 
     def __str__(self):

@@ -35,11 +35,11 @@ class SimpleWriter():
         """
 
         if dataset.endswith('/'):
-            InvalidDataSetError('DataSet names cannot end with /')
+            InvalidDataSetError('Dataset names cannot end with /')
         if '{' in dataset or '}' in dataset:
-            InvalidDataSetError('DataSet names cannot contain { or }')
+            InvalidDataSetError('Dataset names cannot contain { or }')
         if '%' in dataset:
-            InvalidDataSetError('DataSet names cannot contain %')
+            InvalidDataSetError('Dataset names cannot contain %')
 
         self.schema = schema
         self.finalized = False
@@ -51,6 +51,7 @@ class SimpleWriter():
         self.dataset = paths.build_path(self.dataset, self.batch_date)
 
         # add the values to kwargs
+        kwargs['raw_path'] = True  # we've just added the dates
         kwargs['format'] = format
         kwargs['dataset'] = self.dataset
 

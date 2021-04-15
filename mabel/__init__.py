@@ -9,6 +9,9 @@ try:
 except ImportError:
     pass
 
+import os
+os.system("")
+
 from .version import __version__
 
 from .flows.flow import Flow

@@ -142,4 +142,3 @@ _batch/**
 .vscode/settings.json
 temp
 publish.bat
-NVD_CVE_LIST/**

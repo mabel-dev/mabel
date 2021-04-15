@@ -51,5 +51,5 @@ class BaseInnerWriter(abc.ABC):
     def commit(
             self,
             byte_data,
-            file_name=None):
+            override_blob_name=None):
         pass

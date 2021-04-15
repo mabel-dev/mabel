@@ -9,7 +9,7 @@ from ....index import BTree
 
 BLOB_SIZE = 32*1024*1024  # about 32 files per gigabyte
 BUFFER_SIZE = BLOB_SIZE   # buffer in memory really
-SUPPORTED_FORMATS_ALGORITHMS = {'jsonl', 'lzma', 'zstd', 'parquet'}
+SUPPORTED_FORMATS_ALGORITHMS = ('jsonl', 'lzma', 'zstd', 'parquet')
 
 class BlobWriter():
 
@@ -29,7 +29,7 @@ class BlobWriter():
 
         kwargs['format'] = format
         self.inner_writer = inner_writer(**kwargs)  # type:ignore
-        self.index_on = kwargs.get('index_on', set())
+        #self.index_on = kwargs.get('index_on', set())
         self._open_blob()
 
 
@@ -49,15 +49,15 @@ class BlobWriter():
         self.file.write(serialized)
         self.records_in_blob += 1
 
-        for field in self.index_on:
-            self.indices[field].insert(record.get(field), self.records_in_blob)
+        #for field in self.index_on:
+        #    self.indices[field].insert(record.get(field), self.records_in_blob)
 
         return self.records_in_blob
 
     def commit(self):
 
-        for field in self.index_on:
-            print(self.indices[field].show())
+        #for field in self.index_on:
+        #    print(self.indices[field].show())
         #get_logger().warning("TODO: indices aren't being saved")
 
         if self.bytes_in_blob > 0:
@@ -81,7 +81,7 @@ class BlobWriter():
                     
                 committed_blob_name = self.inner_writer.commit(
                         byte_data=byte_data,
-                        file_name=None)
+                        override_blob_name=None)
                 get_logger().debug(F"Blob Committed - {committed_blob_name} - {self.records_in_blob:n} records, {self.bytes_in_blob:n} raw bytes, {len(byte_data):n} comitted bytes")
                 try:
                     os.remove(self.file_name)
@@ -103,9 +103,9 @@ class BlobWriter():
 
         self.bytes_in_blob = 0
         self.records_in_blob = 0
-        self.indices = {}
-        for field in self.index_on:
-            self.indices[field] = BTree()
+        #self.indices = {}
+        #for field in self.index_on:
+        #    self.indices[field] = BTree()
 
     def __del__(self):
         # this should never be relied on to save data

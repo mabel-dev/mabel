@@ -30,15 +30,17 @@ class GoogleCloudStorageWriter(BaseInnerWriter):
     def commit(
             self,
             byte_data,
-            file_name=None):
+            override_blob_name=None):
 
-        _filename = self._build_path()
-        bucket, path, filename, ext = paths.get_parts(_filename)
-        if file_name:
-            _filename = bucket + '/' + path + '/' + file_name
+        # if we've been given the filename, use that, otherwise get the
+        # name from the path builder
+        if override_blob_name:
+            blob_name = override_blob_name
+        else:
+            blob_name = self._build_path()
 
-        blob = self.gcs_bucket.blob(_filename)
+        blob = self.gcs_bucket.blob(blob_name)
         blob.upload_from_string(
                 byte_data,
                 content_type="application/octet-stream")
-        return _filename
+        return blob_name

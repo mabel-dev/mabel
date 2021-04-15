@@ -2,6 +2,7 @@ import os
 import glob
 import shutil
 from ...data.writers.internals.base_inner_writer import BaseInnerWriter
+from ...logging import get_logger
 from ...utils import paths
 
 
@@ -13,15 +14,23 @@ class DiskWriter(BaseInnerWriter):
     def commit(
             self,
             byte_data,
-            file_name=None):
+            override_blob_name=None):
 
-        _filename = self._build_path()
-        bucket, path, filename, ext = paths.get_parts(_filename)
-        if file_name:
-            _filename = bucket + '/' + path + '/' + file_name
+        try:
+            # if we've been given the filename, use that, otherwise get the
+            # name from the path builder
+            if override_blob_name:
+                blob_name = override_blob_name
+            else:
+                blob_name = self._build_path()
 
-        os.makedirs(bucket + '/' + path, exist_ok=True)
-        with open(_filename, mode='wb') as file:
-            file.write(byte_data)
+            bucket, path, stem, ext = paths.get_parts(blob_name)
 
-        return _filename
+            os.makedirs(bucket + '/' + path, exist_ok=True)
+            with open(blob_name, mode='wb') as file:
+                file.write(byte_data)
+
+            return blob_name
+        except Exception as err:
+            get_logger().error(F'Problem saving blob to disk {type(err).__name__}')
+            raise err

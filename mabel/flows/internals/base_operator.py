@@ -20,14 +20,16 @@ from ...data.formats.json import parse, serialize
 class BaseOperator(abc.ABC):
 
     @staticmethod
-    @functools.lru_cache(1)
     def sigterm():
         """
         Create a termination signal - SIGTERM, when the data record is
         this, we do any closure activities.
         """
-        full_hash = hashlib.sha256(datetime.datetime.now().isoformat().encode())
-        return "SIGTERM-" + full_hash.hexdigest() 
+        @functools.lru_cache(1)
+        def _inner_sigterm():
+            full_hash = hashlib.sha256(datetime.datetime.now().isoformat().encode())
+            return "SIGTERM-" + full_hash.hexdigest()
+        return _inner_sigterm()
 
     def __init__(self, **kwargs):
         """
@@ -133,7 +135,7 @@ class BaseOperator(abc.ABC):
             finally:
                 if not outcome:
                     outcome = context
-            return self.sigterm, outcome
+            return self.sigterm(), outcome
 
         if self.commencement_time is None:
             self.commencement_time = datetime.datetime.now()

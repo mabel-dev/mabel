@@ -39,6 +39,7 @@ def get_logger() -> logging.Logger:
     """
     logger = logging.getLogger(LOG_NAME)
     try:
+        # default is to log WARNING and above
         logger.setLevel(int(os.environ.get('LOGGING_LEVEL', 25)))
     except:  # nosec
         pass # nosec

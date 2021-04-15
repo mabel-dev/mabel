@@ -26,16 +26,18 @@ class MinIoWriter(BaseInnerWriter):
     def commit(
             self,
             byte_data,
-            file_name=None):
+            override_blob_name=None):
 
-        _filename = self._build_path()
-        bucket, path, filename, ext = paths.get_parts(_filename)
-        if file_name:
-            _filename = bucket + '/' + path + '/' + file_name
+        # if we've been given the filename, use that, otherwise get the
+        # name from the path builder
+        if override_blob_name:
+            blob_name = override_blob_name
+        else:
+            blob_name = self._build_path()
 
         self.client.put_object(
                     self.bucket,
-                    _filename,
+                    blob_name,
                     io.BytesIO(byte_data),
                     len(byte_data))
 

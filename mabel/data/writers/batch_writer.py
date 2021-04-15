@@ -65,6 +65,7 @@ class BatchWriter(SimpleWriter):
                 self.dataset + '/' + frame_id,   # type:ignore
                 self.batch_date)
 
+        kwargs['raw_path'] = True  # we've just added the dates
         kwargs['format'] = format
         kwargs['dataset'] = self.dataset
 
