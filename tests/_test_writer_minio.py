@@ -1,8 +1,8 @@
 import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
-from mabel.adapters.minio.minio_writer import MinIoWriter
-from mabel.operators.minio import SaveSnapshotToMinIoOperator
+from mabel.adapters.minio import MinIoWriter
+from mabel.operators.minio import MinIoBatchWriterOperator
 from mabel.data import BatchWriter
 try:
     from rich import traceback
@@ -31,7 +31,7 @@ def test_using_batch_writer():
 
 def test_using_operator():
 
-    w = SaveSnapshotToMinIoOperator(
+    w = MinIoBatchWriterOperator(
             end_point=os.getenv('MINIO_END_POINT'),
             access_key=os.getenv('MINIO_ACCESS_KEY'),
             secret_key=os.getenv('MINIO_SECRET_KEY'),

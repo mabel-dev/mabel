@@ -20,16 +20,18 @@ from ...data.formats.json import parse, serialize
 class BaseOperator(abc.ABC):
 
     @staticmethod
+    @functools.lru_cache(1)
     def sigterm():
         """
         Create a termination signal - SIGTERM, when the data record is
         this, we do any closure activities.
+
+        Change this each cycle to reduce the chances of it being sent
+        accidently (it shouldn't but what could happen is the payload
+        is saved from one job and fed to another)
         """
-        @functools.lru_cache(1)
-        def _inner_sigterm():
-            full_hash = hashlib.sha256(datetime.datetime.now().isoformat().encode())
-            return "SIGTERM-" + full_hash.hexdigest()
-        return _inner_sigterm()
+        full_hash = hashlib.sha256(datetime.datetime.now().isoformat().encode())
+        return "SIGTERM-" + full_hash.hexdigest()
 
     def __init__(self, **kwargs):
         """

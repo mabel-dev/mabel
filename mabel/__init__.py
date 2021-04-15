@@ -10,7 +10,7 @@ except ImportError:
     pass
 
 import os
-os.system("")
+os.system("")  # nosec - added as part of formatting log messages
 
 from .version import __version__
 

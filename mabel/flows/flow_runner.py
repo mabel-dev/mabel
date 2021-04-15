@@ -2,6 +2,7 @@ import uuid
 from .internals.trace_blocks import TraceBlocks
 from ..utils import entropy
 from ..errors import FlowError
+from ..logging import get_logger
 
 
 class FlowRunner():
@@ -42,9 +43,14 @@ class FlowRunner():
         if not context.get('trace') and trace_sample_rate:
             context['trace'] = entropy.random_range(1, round(1 / trace_sample_rate)) == 1  # nosec
 
-        # start the flow, walk from the nodes with no incoming links
-        for operator_name in self.flow.get_entry_points():
-            self._inner_runner(operator_name=operator_name, data=data, context=context)
+        try:
+            # start the flow, walk from the nodes with no incoming links
+            for operator_name in self.flow.get_entry_points():
+                self._inner_runner(operator_name=operator_name, data=data, context=context)
+        except (Exception, SystemExit) as err:
+            # if we have a uncaught failure, make sure it's logged
+            get_logger().alert(F'FLOW ABEND - {type(err).__name__} - {err}')
+            raise err
 
         # if being traced, send the trace to the trace writer
         if context.get('trace', False) and hasattr(self, 'trace_writer'):

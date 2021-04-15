@@ -41,4 +41,4 @@ class MinIoWriter(BaseInnerWriter):
                     io.BytesIO(byte_data),
                     len(byte_data))
 
-        return _filename
+        return blob_name
