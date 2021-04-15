@@ -1,8 +1,8 @@
 import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
-from mabel.adapters.minio.minio_writer import MinIoWriter
-from mabel.operators.minio import SaveSnapshotToMinIoOperator
+from mabel.adapters.minio import MinIoWriter
+from mabel.operators.minio import MinIoBatchWriterOperator
 from mabel.data import BatchWriter
 try:
     from rich import traceback
@@ -18,7 +18,7 @@ def test_using_batch_writer():
             access_key=os.getenv('MINIO_ACCESS_KEY'),
             secret_key=os.getenv('MINIO_SECRET_KEY'),
             secure=False,
-            dataset='TWITTER/test')
+            dataset='TEST/test')
 
     import time
 
@@ -28,18 +28,20 @@ def test_using_batch_writer():
         w.append({"tv":i+100})
     w.finalize()
 
-    print('okay', (start - time.time_ns())/1e9)
-
 
 def test_using_operator():
 
-    w = SaveSnapshotToMinIoOperator(
+    w = MinIoBatchWriterOperator(
             end_point=os.getenv('MINIO_END_POINT'),
             access_key=os.getenv('MINIO_ACCESS_KEY'),
             secret_key=os.getenv('MINIO_SECRET_KEY'),
             secure=False,
-            dataset='TWITTER/test')
-
+            dataset='TEST/test')
+    w.execute({"kara":"oke"})
+    w.finalize()
 
 if __name__ == "__main__":
-    pass
+    test_using_batch_writer()
+    test_using_operator()
+
+    print("okay")

@@ -11,3 +11,5 @@ xmltodict
 psutil
 pyarrow
 rsa>=4.7 # not directly required, pinned by Snyk to avoid a vulnerability
+mmh3
+bitarray

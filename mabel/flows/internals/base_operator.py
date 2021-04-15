@@ -10,7 +10,7 @@ import datetime
 import functools
 from typing import Union, List
 from ...logging import get_logger  # type:ignore
-from ...errors import RenderErrorStack, IntegrityError
+from ...errors import render_error_stack, IntegrityError
 from ...data.formats import dictset
 from ...data.formats.json import parse, serialize
 
@@ -18,6 +18,20 @@ from ...data.formats.json import parse, serialize
 # inheriting ABC is part of ensuring that this class only ever
 # interited from
 class BaseOperator(abc.ABC):
+
+    @staticmethod
+    @functools.lru_cache(1)
+    def sigterm():
+        """
+        Create a termination signal - SIGTERM, when the data record is
+        this, we do any closure activities.
+
+        Change this each cycle to reduce the chances of it being sent
+        accidently (it shouldn't but what could happen is the payload
+        is saved from one job and fed to another)
+        """
+        full_hash = hashlib.sha256(datetime.datetime.now().isoformat().encode())
+        return "SIGTERM-" + full_hash.hexdigest()
 
     def __init__(self, **kwargs):
         """
@@ -97,6 +111,16 @@ class BaseOperator(abc.ABC):
         """
         pass  # pragma: no cover
 
+    def finalize(self, context: dict = None):
+        """
+        Any code to finalize an operator should be implemented here.
+
+        This should return the context to pass along
+        """
+        if not context:
+            context = {}
+        return context
+
     def __call__(self, data: dict = {}, context: dict = {}):
         """
         DO NOT OVERRIDE THIS METHOD
@@ -104,6 +128,17 @@ class BaseOperator(abc.ABC):
         This method wraps the `execute` method, which must be overridden, to
         to add management of the execution such as sensors and retries.
         """
+        if data == self.sigterm():
+            outcome = None
+            try:
+                outcome = self.finalize(context)
+            except Exception as err:
+                self.logger.error(F"Problem finalizing {self.name} - {type(err).__name__} - {err} - {context.get('uuid')}")
+            finally:
+                if not outcome:
+                    outcome = context
+            return self.sigterm(), outcome
+
         if self.commencement_time is None:
             self.commencement_time = datetime.datetime.now()
         self.records_processed += 1
@@ -134,7 +169,7 @@ class BaseOperator(abc.ABC):
                                 F"error type : {type(err).__name__}\n"
                                 F"details    : {err}\n"
                                 "------------------------------------------------------------------------------------------------------------------------\n"
-                                F"{self._wrap_text(RenderErrorStack(), 120)}\n"
+                                F"{self._wrap_text(render_error_stack(), 120)}\n"
                                 "-------------------------------------------------------  context  ------------------------------------------------------\n"
                                 F"{self._wrap_text(str(context), 120)}\n"
                                 "--------------------------------------------------------  data  --------------------------------------------------------\n"
@@ -142,7 +177,7 @@ class BaseOperator(abc.ABC):
                                 "------------------------------------------------------------------------------------------------------------------------\n")
                         error_log_reference = self.error_writer(error_payload)  # type:ignore
                     except Exception as err:
-                        self.logger.error(F"Problem writing to the error bin, a record has been lost. {type(err).__name__} - {err} - {context.get('uuid')}")
+                        self.logger.error(F"Problem writing to the error bin, a record has been lost. {self.name}, {type(err).__name__} - {err} - {context.get('uuid')}")
                     finally:
                         # finally blocks are called following a try/except block regardless of the outcome
                         self.logger.alert(F"{self.name} - {type(error_reference).__name__} - {error_reference} - tried {self.retry_count} times before aborting ({context.get('uuid')}) {error_log_reference}")

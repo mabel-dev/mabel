@@ -10,7 +10,7 @@ def pass_thru_parser(ds):
     yield from ds
 
 def block_parser(ds):
-    """ each partition is read as a block """
+    """ each blob is read as a block """
     if isinstance(ds, str):
         return ds
     yield '\n'.join([r for r in ds])

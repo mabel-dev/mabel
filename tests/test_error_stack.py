@@ -1,7 +1,7 @@
 import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
-from mabel.errors.render_error_stack import _build_error_stack, RenderErrorStack
+from mabel.errors.render_error_stack import _build_error_stack, render_error_stack
 try:
     from rich import traceback
     traceback.install()
@@ -22,7 +22,7 @@ def test_error_stack():
     try:
         create_stack()
     except:
-        stack = RenderErrorStack()
+        stack = render_error_stack()
 
     # don't check the entire stack, look for key words
     assert 'i_fail' in stack

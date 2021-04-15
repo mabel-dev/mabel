@@ -1,4 +1,3 @@
-import random
 import string
 import shutil
 import os
@@ -6,6 +5,7 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.adapters.google import GoogleCloudStorageWriter, GoogleCloudStorageReader
 from mabel.data import Reader, BatchWriter
+from mabel.utils import entropy
 from google.auth.credentials import AnonymousCredentials
 from google.cloud import storage
 from gcp_storage_emulator.server import create_server
@@ -17,7 +17,7 @@ except ImportError:
 
 # randomize the bucket name to avoid collisions on reruns
 CHARACTERS = string.ascii_lowercase + string.digits
-BUCKET_NAME = ''.join(random.choice(CHARACTERS) for i in range(8))
+BUCKET_NAME = entropy.random_string(length=8)
 
 def set_up():
 
@@ -49,7 +49,7 @@ def test_gcs():
         w = BatchWriter(
                 inner_writer=GoogleCloudStorageWriter,
                 project='testing',
-                partition_size=1024,
+                blob_size=1024,
                 dataset=F'{BUCKET_NAME}/test/gcs/dataset')
         for i in range(200):
             w.append({"index":i+300})

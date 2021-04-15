@@ -3,17 +3,27 @@ import hashlib
 import logging
 import ujson as json
 
+# import ujson because importing the mabel json module creates circular
+# references, we use ujson rather than orjson for greatest compatibility
 
+
+# if we find a key which matches these strings, we hash the contents
 KEYS_TO_SANITIZE = ["password$", "pwd$", ".*_secret$", ".*_key$"]
-
+COLOR_EXCHANGES = {
+    ' ALERT    ': '\033[31m' + ' ALERT    ' + '\033[0m',  # RED
+    ' ERROR    ': '\033[33m' + ' ERROR    ' + '\033[0m',  # YELLOW
+    ' DEBUG    ': '\033[32m' + ' DEBUG    ' + '\033[0m',  # GREEN
+    ' AUDIT    ': '\033[35m' + ' AUDIT    ' + '\033[0m',  # MAGENTA
+    ' WARNING  ': '\033[36m' + ' WARNING  ' + '\033[0m',  # CYAN
+}
 
 class SanitizingLogFormatter(logging.Formatter):
 
     def __init__(self, orig_formatter):
         """
         Remove sensitive data from records before saving to external logs.
-        Note that the value is hashed using (SHA256) and the first 16 
-        characters of the hexencoded hash are presented. This information
+        Note that the value is hashed using (SHA256) and only the first 8 
+        characters of the hex-encoded hash are presented. This information
         allows values to be traced without disclosing the actual value. 
 
         The Sanitizer can only sanitize dictionaries, it doesn't
@@ -28,8 +38,15 @@ class SanitizingLogFormatter(logging.Formatter):
     def format(self, record):
         msg = self.orig_formatter.format(record)
         msg = self.sanitize_record(msg)
-        msg = re.sub(r':\/\/(.*?)\@', r'://[REDACTED]', msg)
+        if '://' in msg:
+            msg = re.sub(r':\/\/(.*?)\@', r'://[REDACTED]', msg)
         return msg
+
+    def color_code(self, record):
+        for k, v in COLOR_EXCHANGES.items():
+            if k in record:
+                return record.replace(k, v)
+        return record
 
     def __getattr__(self, attr):
         return getattr(self.orig_formatter, attr)
@@ -39,6 +56,7 @@ class SanitizingLogFormatter(logging.Formatter):
 
     def sanitize_record(self, record):
 
+        record = self.color_code(record)
         parts = record.split('|')
         json_part = parts.pop()
         done_anything = False
@@ -55,6 +73,7 @@ class SanitizingLogFormatter(logging.Formatter):
                     done_anything = True
 
         if done_anything:
-            parts.append(json.dumps(dirty_record))
+            parts.append(' ' + json.dumps(dirty_record))
             return '|'.join(parts)
+
         return record

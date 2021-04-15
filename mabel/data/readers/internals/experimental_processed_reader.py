@@ -76,7 +76,7 @@ def processed_reader(items_to_read, reader, parser, where):
             yield from records
         except:  # nosec
             if time.time() - process_start_time > MAXIMUM_SECONDS_PROCESSES_CAN_RUN:
-                get_logger().info(F'Sending TERMINATE to long running multi-processed processes after {MAXIMUM_SECONDS_PROCESSES_CAN_RUN} seconds total run time')
+                get_logger().debug(F'Sending TERMINATE to long running multi-processed processes after {MAXIMUM_SECONDS_PROCESSES_CAN_RUN} seconds total run time')
                 for flag in process_pool:
                     flag.value = TERMINATE_SIGNAL
  

@@ -14,7 +14,7 @@ The purpose of this Operator is three-fold:
 - Provides opportunity in the future to introduce functionality at the 
   completion of a flow
 """
-from .internals.base_operator import BaseOperator
+from ..flows.internals.base_operator import BaseOperator
 
 
 class EndOperator(BaseOperator):

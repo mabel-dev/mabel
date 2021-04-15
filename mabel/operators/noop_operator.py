@@ -6,7 +6,7 @@ This does nothing - without error, useful for testing.
 It optionally prints the class name - intended to determine when and that
 the Operator was run - for testing.
 """
-from .internals.base_operator import BaseOperator
+from ..flows.internals.base_operator import BaseOperator
 
 
 class NoOpOperator(BaseOperator):

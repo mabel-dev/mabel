@@ -25,11 +25,12 @@ def test_flow_runner():
 
     errored = False
     try:
-        flow.run(data="What is my purpose?")
-        flow.run(data="You pass butter.")
-        flow.run(data="Oh my God.")
-        flow.run(data="Yeah, welcome to the club, pal.")
-        flow.finalize()
+        with flow as runner:
+            runner.run(data="What is my purpose?")
+            runner.run(data="You pass butter.")
+            runner.run(data="Oh my God.")
+            runner.run(data="Yeah, welcome to the club, pal.")
+
     except Exception:
         errored = True
 

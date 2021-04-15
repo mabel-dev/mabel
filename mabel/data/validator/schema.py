@@ -4,6 +4,7 @@ import datetime
 from typing import Any, Union, List
 from ..formats.json import parse
 from ...errors import ValidationError
+from ..formats.dictset.display import ascii_table
 
 
 DEFAULT_MIN = -9223372036854775808
@@ -210,3 +211,12 @@ class Schema():
         Alias for validate
         """
         return self.validate(subject=subject, raise_exception=raise_exception)
+
+    def __str__(self):
+        retval = []
+        for key, value in self._validators.items():
+            val = [str(v).split('.')[0].split(' ')[1] for v in value]
+            val = ','.join(val)
+            retval.append({"field": key, "type": val})
+            
+        return ascii_table(retval) 

@@ -6,7 +6,7 @@ import pytest
 import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
-from mabel.adapters.local import FileReader
+from mabel.adapters.disk import DiskReader
 from mabel.data import Reader
 try:
     from rich import traceback
@@ -23,17 +23,17 @@ def test_can_find_files():
     the test folder has two files in it
     """
     # with a trailing /
-    r = FileReader(dataset='tests/data/tweets/', raw_path=True)
+    r = DiskReader(dataset='tests/data/tweets/', raw_path=True)
     assert len(list(r.get_list_of_blobs())) == 2
 
     # without a trailing /
-    r = FileReader(dataset='tests/data/tweets', raw_path=True)
+    r = DiskReader(dataset='tests/data/tweets', raw_path=True)
     assert len(list(r.get_list_of_blobs())) == 2
 
 
 def test_can_read_files():
     """ ensure we can read the test files """
-    r = FileReader(dataset='tests/data/tweets/', raw_path=True)
+    r = DiskReader(dataset='tests/data/tweets/', raw_path=True)
     for file in r.get_list_of_blobs():
         for index, item in enumerate(r.get_records(file)):
             pass
@@ -42,7 +42,7 @@ def test_can_read_files():
 def test_step_back():
     # step back through time
     r = Reader(
-            inner_reader=FileReader,
+            inner_reader=DiskReader,
             dataset='tests/data/dated/{date}',
             start_date=datetime.date(2021,1,1),
             end_date=datetime.date(2021,1,1),
@@ -52,7 +52,7 @@ def test_step_back():
 def test_step_past():
     # step back through time
     r = Reader(
-            inner_reader=FileReader,
+            inner_reader=DiskReader,
             dataset='tests/data/dated/{date}',
             start_date=datetime.date(2021,1,1),
             end_date=datetime.date(2021,1,1),

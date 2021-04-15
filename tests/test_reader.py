@@ -5,7 +5,7 @@ import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.data import Reader
-from mabel.adapters.local import FileReader
+from mabel.adapters.disk import DiskReader
 from mabel.data.formats import dictset
 try:
     from rich import traceback
@@ -18,7 +18,7 @@ get_logger().setLevel(5)
 
 def test_reader_can_read():
     r = Reader(
-        inner_reader=FileReader,
+        inner_reader=DiskReader,
         dataset='tests/data/tweets',
         raw_path=True
     )
@@ -28,7 +28,7 @@ def test_reader_can_read():
 def test_unknown_format():
     with pytest.raises( (TypeError) ):
         r = Reader(
-            inner_reader=FileReader,
+            inner_reader=DiskReader,
             dataset='tests/data/tweets',
             row_format='csv',
             raw_path=True
@@ -38,7 +38,7 @@ def test_unknown_format():
 
 def test_reader_context():
     counter = 0
-    with Reader(inner_reader=FileReader, dataset='tests/data/tweets', raw_path=True) as r:
+    with Reader(inner_reader=DiskReader, dataset='tests/data/tweets', raw_path=True) as r:
         n = r.read_line()
         while n:
             counter += 1
@@ -48,7 +48,7 @@ def test_reader_context():
 
 
 def test_reader_to_pandas():
-    r = Reader(inner_reader=FileReader, dataset='tests/data/tweets', raw_path=True)
+    r = Reader(inner_reader=DiskReader, dataset='tests/data/tweets', raw_path=True)
     df = r.to_pandas()
 
     assert len(df) == 50
@@ -57,7 +57,7 @@ def test_reader_to_pandas():
 def test_threaded_reader():
     r = Reader(
             thread_count=2,
-            inner_reader=FileReader,
+            inner_reader=DiskReader,
             dataset='tests/data/tweets',
             raw_path=True)
     df = r.to_pandas()
@@ -70,7 +70,7 @@ def test_multiprocess_reader():
     if os.name != 'nt':
         r = Reader(
                 fork_processes=True,
-                inner_reader=FileReader,
+                inner_reader=DiskReader,
                 dataset='tests/data/tweets',
                 raw_path=True)
         df = r.to_pandas()

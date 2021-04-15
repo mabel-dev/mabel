@@ -46,8 +46,8 @@ class StreamWriter(SimpleWriter):
             writer_pool_capacity: integer (optional)
                 The number of writers to leave in the writers pool before 
                 writers are evicted for over capacity, default is 5
-            partition_size: integer (optional)
-                The maximum size of partitions, the default is 64Mb
+            blob_size: integer (optional)
+                The maximum size of blobs, the default is 32Mb
             inner_writer: BaseWriter (optional)
                 The component used to commit data, the default writer is the
                 NullWriter
@@ -87,7 +87,7 @@ class StreamWriter(SimpleWriter):
 
         Returns:
             integer
-                The number of records in the current partition
+                The number of records in the current blob
         """
         # Check the new record conforms to the schema before continuing
         if self.schema and not self.schema.validate(subject=record, raise_exception=False):
@@ -102,8 +102,8 @@ class StreamWriter(SimpleWriter):
         identity = paths.date_format(self.dataset, data_date)
 
         with threading.Lock():
-            partition_writer = self.writer_pool.get_writer(identity)
-            return partition_writer.append(record)
+            blob_writer = self.writer_pool.get_writer(identity)
+            return blob_writer.append(record)
 
     def pool_attendant(self):
         """
@@ -112,11 +112,11 @@ class StreamWriter(SimpleWriter):
         while True:
             with threading.Lock():
                 # search for pool occupants who haven't had a write recently
-                for partition_writer_identity in self.writer_pool.get_stale_writers(self.idle_timeout_seconds):
-                    get_logger().debug(F'Evicting {partition_writer_identity} from the writer pool due to inactivity - limit is {self.idle_timeout_seconds} seconds')
-                    self.writer_pool.remove_writer(partition_writer_identity)
+                for blob_writer_identity in self.writer_pool.get_stale_writers(self.idle_timeout_seconds):
+                    get_logger().debug(F'Evicting {blob_writer_identity} from the writer pool due to inactivity - limit is {self.idle_timeout_seconds} seconds')
+                    self.writer_pool.remove_writer(blob_writer_identity)
                 # if we're over capacity, evict the LRU writers
-                for partition_writer_identity in self.writer_pool.nominate_writers_to_evict():
-                    get_logger().debug(F'Evicting {partition_writer_identity} from the writer pool due the pool being over its {self.writer_pool_capacity} capacity')
-                    self.writer_pool.remove_writer(partition_writer_identity)
+                for blob_writer_identity in self.writer_pool.nominate_writers_to_evict():
+                    get_logger().debug(F'Evicting {blob_writer_identity} from the writer pool due the pool being over its {self.writer_pool_capacity} capacity')
+                    self.writer_pool.remove_writer(blob_writer_identity)
             time.sleep(1)

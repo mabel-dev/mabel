@@ -1,4 +1,6 @@
-<img align="centre" alt="overlapping arrows" height="92" src="icons/mabel.svg" />
+**MABEL IS IN ALPHA - USAGE IS STILL STABLIZING**
+
+<img align="centre" alt="overlapping arrows" height="92" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/mabel.svg" />
 
 **mabel** is a platform for authoring data processing systems.
 
@@ -47,11 +49,24 @@ Want to help build mabel? See the [contribution guidance](CONTRIBUTING.md)
 
 ## What Platforms Does It Support?
 
-<img align="centre" alt="Google Cloud" height="48" src="icons/google-cloud-logo.png" />
-<img align="centre" alt="MinIo" height="48" src="icons/minio-logo.png" />
-<img align="centre" alt="MongoDB" height="48" src="icons/mongodb-logo.png" />
-<img align="centre" alt="MQTT" height="48" src="icons/mqtt-logo.png" />
-<img align="centre" alt="Raspberry Pi" height="48" src="icons/raspberry-pi-logo.png" />
+mabel comes with adapters for the following services, or is tested to run on the following platforms:
+
+| | Service | Support
+|-- |-- |-- 
+| <img align="centre" alt="Google Cloud Storage" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/gcs-logo.png" /> | Google Cloud Storage |  Read/Write
+| <img align="centre" alt="MinIo" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/minio-logo.png" /> | MinIO | Read/Write
+| <img align="centre" alt="MongoDB" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/mongodb-logo.png" /> | MongoDB | Read
+| <img align="centre" alt="MQTT" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/mqtt-logo.png" /> | MQTT | Read
+| <img align="centre" alt="Docker" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/docker-logo.png" /> | Docker | Hosting
+| <img align="centre" alt="Kubernetes" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/kubernetes-logo.svg" /> | Kubernetes | Hosting
+| <img align="centre" alt="Raspberry Pi" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/raspberry-pi-logo.svg" /> | Raspberry Pi | Hosting (<img align="centre" alt="Notice" height="16" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />1)
+
+Linux, MacOS and Windows (<img align="centre" alt="Notice" height="16" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />2) also supported.
+
+Adapters for other data services can be written. 
+
+<img align="centre" alt="Notice" height="16" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />1 - Raspbian fully functional with alternate JSON libraries  
+<img align="centre" alt="Notice" height="16" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />2 - Multi-Processing not available on Windows
 
 ## License
 [Apache 2.0](LICENSE)

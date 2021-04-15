@@ -2,7 +2,7 @@ import time
 import datetime
 from typing import Any
 from dateutil import parser
-from .internals.partition_writer import PartitionWriter
+from .internals.blob_writer import BlobWriter
 from ..validator import Schema  # type:ignore
 from ...utils import paths
 from ...errors import ValidationError, InvalidDataSetError
@@ -35,15 +35,14 @@ class SimpleWriter():
         """
 
         if dataset.endswith('/'):
-            InvalidDataSetError('DataSet names cannot end with /')
+            InvalidDataSetError('Dataset names cannot end with /')
         if '{' in dataset or '}' in dataset:
-            InvalidDataSetError('DataSet names cannot contain { or }')
+            InvalidDataSetError('Dataset names cannot contain { or }')
         if '%' in dataset:
-            InvalidDataSetError('DataSet names cannot contain %')
+            InvalidDataSetError('Dataset names cannot contain %')
 
         self.schema = schema
         self.finalized = False
-
         self.batch_date = self._get_writer_date(date)
 
         self.dataset = dataset
@@ -52,6 +51,7 @@ class SimpleWriter():
         self.dataset = paths.build_path(self.dataset, self.batch_date)
 
         # add the values to kwargs
+        kwargs['raw_path'] = True  # we've just added the dates
         kwargs['format'] = format
         kwargs['dataset'] = self.dataset
 
@@ -61,7 +61,7 @@ class SimpleWriter():
         get_logger().debug(json.serialize(arg_dict))
 
         # create the writer
-        self.partition_writer = PartitionWriter(**kwargs)
+        self.blob_writer = BlobWriter(**kwargs)
 
 
     def append(self, record: dict = {}):
@@ -74,13 +74,13 @@ class SimpleWriter():
 
         Returns:
             integer
-                The number of records in the current partition
+                The number of records in the current blob
         """
         # Check the new record conforms to the schema before continuing
         if self.schema and not self.schema.validate(subject=record, raise_exception=False):
             raise ValidationError(F'Schema Validation Failed ({self.schema.last_error})')
 
-        self.partition_writer.append(record)
+        self.blob_writer.append(record)
 
     def __del__(self):
         if hasattr(self, 'finalized') and not self.finalized:
@@ -89,6 +89,6 @@ class SimpleWriter():
     def finalize(self):
         self.finalized = True
         try:
-            self.partition_writer.commit()
+            self.blob_writer.commit()
         except Exception as e:
             get_logger().error(F"{type(self).__name__} failed to close pool: {type(e).__name__} - {e}")

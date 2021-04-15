@@ -3,8 +3,8 @@ Dictionary Validation Operator
 
 Checks a dictionary against a schema.
 """
-from .internals.base_operator import BaseOperator
-from mabel.data.validator import Schema   # type:ignore
+from ..flows.internals.base_operator import BaseOperator
+from ..data.validator import Schema   # type:ignore
 from typing import Any
 
 
