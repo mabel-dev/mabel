@@ -49,7 +49,7 @@ class FlowRunner():
                 self._inner_runner(operator_name=operator_name, data=data, context=context)
         except (Exception, SystemExit) as err:
             # if we have a uncaught failure, make sure it's logged
-            get_logger().alert(F'FLOW ABEND - {type(err).__name__} - {err}')
+            get_logger().alert(F'FLOW ABEND - {type(err).__name__} - {err}')  # type:ignore
             raise err
 
         # if being traced, send the trace to the trace writer

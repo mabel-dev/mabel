@@ -10,16 +10,12 @@ import ujson as json
 # if we find a key which matches these strings, we hash the contents
 KEYS_TO_SANITIZE = ["password$", "pwd$", ".*_secret$", ".*_key$"]
 COLOR_EXCHANGES = {
-    ' ERROR    ': '\033[31m' + ' ERROR    ' + '\033[0m',  # RED
+    ' ALERT    ': '\033[31m' + ' ALERT    ' + '\033[0m',  # RED
+    ' ERROR    ': '\033[33m' + ' ERROR    ' + '\033[0m',  # YELLOW
+    ' DEBUG    ': '\033[32m' + ' DEBUG    ' + '\033[0m',  # GREEN
     ' AUDIT    ': '\033[35m' + ' AUDIT    ' + '\033[0m',  # MAGENTA
+    ' WARNING  ': '\033[36m' + ' WARNING  ' + '\033[0m',  # CYAN
 }
-"""
-    GREEN = '\033[32m'
-    YELLOW = '\033[33m'
-    BLUE = '\033[34m'
-    MAGENTA = '\033[35m'
-    CYAN = '\033[36m'
-"""
 
 class SanitizingLogFormatter(logging.Formatter):
 
@@ -60,7 +56,8 @@ class SanitizingLogFormatter(logging.Formatter):
 
     def sanitize_record(self, record):
 
-        parts = self.color_code(record).split('|')
+        record = self.color_code(record)
+        parts = record.split('|')
         json_part = parts.pop()
         done_anything = False
 
