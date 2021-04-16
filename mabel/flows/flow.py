@@ -137,7 +137,7 @@ class Flow():
         """
         from ..logging import get_logger
 
-        FlowRunner(self).run(BaseOperator.sigterm(), {})
+        FlowRunner(self)(BaseOperator.sigterm(), {})
         for operator_name in self.nodes.keys():
             operator = self.get_operator(operator_name)
             if operator:

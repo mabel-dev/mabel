@@ -85,7 +85,7 @@ def test_branching():
         assert sorted([t.split('-')[0] for s, t in flow.edges if str(s).startswith(source)]) == target
 
     with flow as runner:
-        runner.run('>', {})
+        runner('>', {})
 
 
 def test_context_manager():
@@ -108,9 +108,9 @@ def test_context_manager():
         assert sorted([t.split('-')[0] for s, t in flow.edges if str(s).startswith(source)]) == target
 
     payloads = ['a','b','c','d','e']
-    with flow as fl:
+    with flow as runner:
         for payload in payloads:
-            fl.run(payload, {})
+            runner(payload, {})
     
 if __name__ == "__main__":
 

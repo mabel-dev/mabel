@@ -10,7 +10,7 @@ class FlowRunner():
     def __init__(self, flow):
         self.flow = flow
 
-    def run(
+    def __call__(
             self,
             data: dict = {},
             context: dict = None,
