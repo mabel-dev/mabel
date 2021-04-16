@@ -13,7 +13,7 @@ from ....logging import get_logger
 
 class BaseInnerReader(abc.ABC):
 
-    VALID_EXTENSIONS = ['.zstd', '.lzma', '.jsonl', '.csv', '.lxml', '.parquet', '.ignore', '.profile', '.index']
+    VALID_EXTENSIONS = ['.zstd', '.lzma', '.jsonl', '.csv', '.lxml', '.parquet', '.ignore', '.profile', '.index', '.bloom']
 
     def _extract_date_part(self, value):
         if isinstance(value, str):

@@ -47,7 +47,7 @@ def test_saving_the_profile():
 
     with flow as runner:
         for entry in TEST_DATA:
-            runner.run(entry, {})
+            runner(entry, {})
 
 
 if __name__ == "__main__":

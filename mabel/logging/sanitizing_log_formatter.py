@@ -10,11 +10,11 @@ import ujson as json
 # if we find a key which matches these strings, we hash the contents
 KEYS_TO_SANITIZE = ["password$", "pwd$", ".*_secret$", ".*_key$"]
 COLOR_EXCHANGES = {
-    ' ALERT    ': '\033[31m' + ' ALERT    ' + '\033[0m',  # RED
-    ' ERROR    ': '\033[33m' + ' ERROR    ' + '\033[0m',  # YELLOW
-    ' DEBUG    ': '\033[32m' + ' DEBUG    ' + '\033[0m',  # GREEN
-    ' AUDIT    ': '\033[35m' + ' AUDIT    ' + '\033[0m',  # MAGENTA
-    ' WARNING  ': '\033[36m' + ' WARNING  ' + '\033[0m',  # CYAN
+    ' ALERT    ': '\033[1;31m' + ' ALERT    ' + '\033[0m',  # BOLD RED
+    ' ERROR    ': '\033[31m' + ' ERROR    ' + '\033[0m',    # RED 
+    ' DEBUG    ': '\033[32m' + ' DEBUG    ' + '\033[0m',    # GREEN
+    ' AUDIT    ': '\033[33m' + ' AUDIT    ' + '\033[0m',    # YELLOW
+    ' WARNING  ': '\033[36m' + ' WARNING  ' + '\033[0m',    # CYAN
 }
 
 class SanitizingLogFormatter(logging.Formatter):
@@ -39,7 +39,7 @@ class SanitizingLogFormatter(logging.Formatter):
         msg = self.orig_formatter.format(record)
         msg = self.sanitize_record(msg)
         if '://' in msg:
-            msg = re.sub(r':\/\/(.*?)\@', r'://[REDACTED]', msg)
+            msg = re.sub(r':\/\/(.*?)\@', r'://<redacted>', msg)
         return msg
 
     def color_code(self, record):

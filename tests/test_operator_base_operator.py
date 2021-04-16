@@ -25,7 +25,7 @@ def test_retry():
     """ test the retry runs the specified amount of time """
     flow = failing_operator(retry_count=3, retry_wait=1) > EndOperator()
     with flow as runner:
-        runner.run(data='', context={})
+        runner(data='', context={})
     global fail_counter
     assert fail_counter == 3, fail_counter
 
