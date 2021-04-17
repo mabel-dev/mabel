@@ -15,11 +15,13 @@ CVE_REGEX = re.compile('cve|CVE-[0-9]{4}-[0-9]{4,}')
 
 def is_boolean(**kwargs):
     def _inner(value: Any) -> bool:
+        """boolean"""
         return str(value).lower() in VALID_BOOLEAN_VALUES
     return _inner
 
 def is_cve(**kwargs):
     def _inner(value):
+        """cve"""
         return CVE_REGEX.match(str(value))
     return _inner
 
@@ -28,6 +30,7 @@ def is_date(**kwargs):
     # date validation at speed is hard, dateutil is great but really slow
     # this is as about as good as validating a string is a date, but isn't
     def _inner(value: Any) -> bool:
+        """date"""
         try:
             if type(value).__name__ in ("datetime", "date", "time"):
                 return True
@@ -55,11 +58,13 @@ def is_date(**kwargs):
 
 def is_list(**kwargs):
     def _inner(value: Any) -> bool:
+        """list"""
         return isinstance(value, (list, set))
     return _inner
 
 def is_null(**kwargs):
     def _inner(value: Any) -> bool:
+        """nullable"""
         return (value is None) or (value == '') or (value == [])
     return _inner
 
@@ -67,6 +72,7 @@ def is_numeric(**kwargs):
     mn = kwargs.get('min') or DEFAULT_MIN
     mx = kwargs.get('max') or DEFAULT_MAX
     def _inner(value: Any) -> bool:
+        """numeric"""
         try:
             n = float(value)
         except (ValueError, TypeError):
@@ -80,6 +86,7 @@ def is_string(**kwargs):
     if pattern:
         regex = re.compile(pattern)
     def _inner(value: Any) -> bool:
+        """string"""
         if pattern is None:
             return type(value).__name__ == "str"
         else:
@@ -89,11 +96,13 @@ def is_string(**kwargs):
 def is_valid_enum(**kwargs):
     symbols = kwargs.get('symbols', set())
     def _inner(value: Any) -> bool:
+        """enum"""
         return value in symbols
     return _inner
 
 def other_validator(**kwargs):
     def _inner(value: Any) -> bool:
+        """other"""
         return True
     return _inner
 
@@ -201,7 +210,7 @@ class Schema():
             if not self._field_validator(subject.get(key), self._validators.get(key, [other_validator])):
                 result = False
                 for v in value:
-                    self.last_error += f"'{key}' ({subject.get(key)}) did not pass validator {str(v)}.\n"
+                    self.last_error += f"'{key}' ({subject.get(key)}) did not pass `{v.__doc__}` validator.\n"
         if raise_exception and not result:
             raise ValidationError(F"Record does not conform to schema - {self.last_error}. ")
         return result
