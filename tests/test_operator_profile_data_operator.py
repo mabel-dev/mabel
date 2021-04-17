@@ -52,14 +52,14 @@ def test_profile_operator():
 
 def test_profile_operator_binning():
 
-    TEST_SCHEMA = { "fields": [ { "name": "number",     "type": "numeric" } ] }
+    TEST_SCHEMA = { "fields": [{"name":"number","type":"numeric"}, {"name":"string","type":"string"}]}
     schema = Schema(TEST_SCHEMA)
     pdo = ProfileDataOperator(
             schema=schema,
             inner_writer=None)
 
     for i in range(100000):
-        entry = {'number': i}
+        entry = {'number': i, 'string':str(i)}
         pdo.execute(entry, {})
 
     outcome = pdo.finalize({})
