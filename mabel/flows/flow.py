@@ -8,6 +8,7 @@ from typing import Union, List
 from .bins import FileBin, GoogleCloudStorageBin, MinioBin
 from .flow_runner import FlowRunner
 from .internals.base_operator import BaseOperator
+from ..errors import FlowError
 
 
 class Flow():
@@ -54,12 +55,37 @@ class Flow():
         """
         return [target for source,target in self.edges if source == name]
 
+    def get_exit_points(self):
+        """
+        Get steps in the flow with no outgoing steps.
+        """
+        sources = {source for source,target in self.edges}
+        return {target for source,target in self.edges if target not in sources}
+
     def get_entry_points(self):
         """
         Get steps in the flow with no incoming steps.
         """
-        targets = {target for source,target in self.edges}
-        return [k for k,v in self.nodes.items() if k not in targets]
+        taregts = {target for source,target in self.edges}
+        return {source for source,target in self.edges if source not in taregts}
+
+    def is_acyclic(self):
+        # cycle over the graph removing a layer of exits each cycle
+        # if we have nodes but no exists, we're cyclic
+        my_edges = self.edges.copy()
+
+        while len(my_edges) > 0:
+            # find all of the exits
+            sources = {source for source,target in my_edges}
+            exits = {target for source,target in my_edges if target not in sources}
+
+            if len(exits) == 0:
+                return False
+
+            # remove the exits
+            new_edges = [(source,target) for source,target in my_edges if target not in exits]
+            my_edges = new_edges
+        return True
 
     def get_operator(self, name):
         """
@@ -128,7 +154,28 @@ class Flow():
             get_logger().error(F"Failed to add writer to flow - {type(err).__name__} - {err}")
             return False
 
+    def _validate_flow(self):
+        from ..operators import EndOperator
+
+        # flow must be more than one item long
+        if len(self.nodes) <= 1:
+            raise FlowError(F"Flow failed validation - Flows must have more than one Operator")
+
+        # flow paths must end with end operators
+        if not all([isinstance(self.get_operator(node), EndOperator) for node in self.get_exit_points()]):
+            raise FlowError(F"Flow failed validation - Flows must end with an EndOperator")
+
+        # flows must be acyclic
+        if not self.is_acyclic():
+             raise FlowError(F"Flow failed validation - Flows must be acyclic")
+
+        # flows must have a single entry-point
+        if len(self.get_entry_points()) != 1:
+            raise FlowError(F"Flow failed validation - Flows must have a single entry point")
+        pass
+
     def __enter__(self):
+        self._validate_flow()
         return FlowRunner(self)
 
     def __exit__(self, *args):
@@ -142,3 +189,32 @@ class Flow():
             operator = self.get_operator(operator_name)
             if operator:
                 get_logger().audit(operator.read_sensors())
+
+    def __repr__(self):
+        if not self.is_acyclic():
+            return "Flow: cannot represent cyclic flows"
+        return '\n'.join(list(self._draw()))
+
+    def _draw(self):
+        for entry in self.get_entry_points():
+            yield(F"{entry}")
+            t = self._tree(entry, "")
+            yield("\n".join(t))
+
+    def _tree(self, node, prefix=""):
+
+        space = "    "
+        branch = " │  "
+        tee = " ├─ "
+        last = " └─ "
+
+        contents = self.get_outgoing_links(node)
+        # contents each get pointers that are ├── with a final └── :
+        pointers = [tee] * (len(contents) - 1) + [last]
+        for pointer, child_node in zip(pointers, contents):
+            yield prefix + pointer + child_node
+            if len(self.get_outgoing_links(node)) > 0:  
+                # extend the prefix and recurse:
+                extension = branch if pointer == tee else space
+                # i.e. space because last, └── , above so no more |
+                yield from self._tree(child_node, prefix=prefix + extension)
