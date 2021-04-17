@@ -107,6 +107,9 @@ class BaseInnerReader(abc.ABC):
             cycle_path = pathlib.Path(paths.build_path(path=self.dataset, date=cycle_date))
             blobs += list(self.get_blobs_at_path(path=cycle_path))
 
+        # remove any BACKOUT data
+        blobs = [blob for blob in blobs if 'BACKOUT' not in blob]
+
         # work out if there's an as_at part
         as_ats = { self._extract_as_at(blob) for blob in blobs if 'as_at_' in blob }
         if as_ats:

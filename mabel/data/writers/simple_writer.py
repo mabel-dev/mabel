@@ -33,7 +33,8 @@ class SimpleWriter():
         """
         Simple Writer provides a basic writer capability.
         """
-
+        if 'BACKOUT' in dataset:
+            InvalidDataSetError('BACKOUT is a reserved word and cannot be used in Dataset names')
         if dataset.endswith('/'):
             InvalidDataSetError('Dataset names cannot end with /')
         if '{' in dataset or '}' in dataset:

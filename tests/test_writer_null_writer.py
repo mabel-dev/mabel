@@ -13,7 +13,7 @@ def test_null_writer():
 
     # none of these should do anything
     nw = NullWriter(dataset='bucket/path')
-    assert nw.commit(None, None) == 'NullWriter'
+    assert nw.commit(None, None).startswith('NullWriter')
 
 if __name__ == "__main__":
     test_null_writer()
