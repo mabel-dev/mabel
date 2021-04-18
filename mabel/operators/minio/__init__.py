@@ -1,1 +1,2 @@
 from .minio_batch_writer_operator import MinIoBatchWriterOperator
+from .stream_to_minio_operator import StreamToMinIoOperator
