@@ -18,10 +18,22 @@ VAMPIRIC_COUNCIL = [
     {'player':'Wesley Snipes','from':'Blade'}
 ]
 
+def _create_bucket():
+    from minio import Minio
+
+    end_point = os.getenv('MINIO_END_POINT')
+    access_key = os.getenv('MINIO_ACCESS_KEY')
+    secret_key=os.getenv('MINIO_SECRET_KEY')
+
+    client = Minio(end_point, access_key, secret_key, secure=False)
+    if not client.bucket_exists("TEST"):
+        client.make_bucket("TEST")
+
 def test_using_batch_writer():
 
     errored = False
     try:
+        _create_bucket()
         w = BatchWriter(
                 inner_writer=MinIoWriter,
                 end_point=os.getenv('MINIO_END_POINT'),
@@ -40,6 +52,8 @@ def test_using_batch_writer():
 
 
 def test_using_operator():
+
+    _create_bucket()
 
     w = MinIoBatchWriterOperator(
             end_point=os.getenv('MINIO_END_POINT'),
