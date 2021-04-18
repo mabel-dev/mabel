@@ -93,6 +93,7 @@ class BlobWriter():
                 self.bytes_in_blob = 0
                 self.file_name = None
 
+
     def _open_blob(self):
         self.file_name = self._create_temp_file_name()
         self.file: Any = open(self.file_name, mode='wb', buffering=BUFFER_SIZE)
