@@ -12,12 +12,12 @@ try:
 except ImportError:   # pragma: no cover
     pass
 
+
 class GoogleCloudStorageReader(BaseInnerReader):
 
     def __init__(self, project: str, **kwargs):
         super().__init__(**kwargs)
         self.project = project
-
 
     def get_blob_stream(self, object_name):
         bucket, object_path, name, extension = paths.get_parts(object_name)
@@ -25,7 +25,6 @@ class GoogleCloudStorageReader(BaseInnerReader):
         stream = blob.download_as_bytes()
         io_stream = io.BytesIO(stream)
         return io_stream
-
 
     def get_blobs_at_path(self, path):
         bucket, object_path, name, extension = paths.get_parts(path)
@@ -42,7 +41,7 @@ class GoogleCloudStorageReader(BaseInnerReader):
         gcs_bucket = client.get_bucket(bucket)
         blobs = list(client.list_blobs(bucket_or_name=gcs_bucket, prefix=object_path))
 
-        yield from [bucket + '/' + blob.name 
+        yield from [bucket + '/' + blob.name
                 for blob in blobs
                 if not blob.name.endswith('/')]
 

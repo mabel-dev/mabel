@@ -76,14 +76,14 @@ class Flow():
 
         while len(my_edges) > 0:
             # find all of the exits
-            sources = {source for source,target in my_edges}
-            exits = {target for source,target in my_edges if target not in sources}
+            sources = {source for source, target in my_edges}
+            exits = {target for source, target in my_edges if target not in sources}
 
             if len(exits) == 0:
                 return False
 
             # remove the exits
-            new_edges = [(source,target) for source,target in my_edges if target not in exits]
+            new_edges = [(source, target) for source, target in my_edges if target not in exits]
             my_edges = new_edges
         return True
 
@@ -159,19 +159,19 @@ class Flow():
 
         # flow must be more than one item long
         if len(self.nodes) <= 1:
-            raise FlowError(F"Flow failed validation - Flows must have more than one Operator")
+            raise FlowError("Flow failed validation - Flows must have more than one Operator")
 
         # flow paths must end with end operators
         if not all([isinstance(self.get_operator(node), EndOperator) for node in self.get_exit_points()]):
-            raise FlowError(F"Flow failed validation - Flows must end with an EndOperator")
+            raise FlowError("Flow failed validation - Flows must end with an EndOperator")
 
         # flows must be acyclic
         if not self.is_acyclic():
-             raise FlowError(F"Flow failed validation - Flows must be acyclic")
+            raise FlowError("Flow failed validation - Flows must be acyclic")
 
         # flows must have a single entry-point
         if len(self.get_entry_points()) != 1:
-            raise FlowError(F"Flow failed validation - Flows must have a single entry point")
+            raise FlowError("Flow failed validation - Flows must have a single entry point")
         pass
 
     def __enter__(self):

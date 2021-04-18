@@ -87,7 +87,11 @@ class BaseInnerReader(abc.ABC):
             with lzma.open(stream, 'rb') as file:  # type:ignore
                 yield from file
         elif blob.endswith('.parquet'):
-            import pyarrow.parquet as pq  # type:ignore
+            try:
+                import pyarrow.parquet as pq  # type:ignore
+            except ImportError:
+                get_logger().error("pyarrow must be installed to read parquet files")
+                return []
             table = pq.read_table(stream)
             for batch in table.to_batches():
                 dict_batch = batch.to_pydict()

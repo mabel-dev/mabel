@@ -21,6 +21,7 @@ from pathlib import Path
 from .graph import Graph
 from .traverse import Traverse
 from ..json import parse
+from ....logging import get_logger
 
 def walk(graph, nids=None):
     """
@@ -54,7 +55,11 @@ def read_graphml(graphml_file: str):
     Returns:
         Graph
     """
-    import xmltodict  # type:ignore
+    try:
+        import xmltodict  # type:ignore
+    except ImportError:
+        get_logger().error("xmltodict must be installed to read graphml files")
+        return None
 
     with open(graphml_file, 'r') as fd:
         xml_dom = xmltodict.parse(fd.read())

@@ -18,6 +18,7 @@ limitations under the License.
 
 from pathlib import Path
 from ..json import serialize
+from ....logging import get_logger
 
 class Graph(object):
     """
@@ -220,7 +221,12 @@ class Graph(object):
         """
         Convert a Diablo graph to a NetworkX graph
         """
-        import networkx as nx  # type:ignore
+        try:
+            import networkx as nx  # type:ignore
+        except ImportError:
+            get_logger().error("networkX must be installed to convert to networkx")
+            return None
+            
         g = nx.DiGraph()
         for s, t, r in self.edges():
             g.add_edge(s, t, relationship=r)
