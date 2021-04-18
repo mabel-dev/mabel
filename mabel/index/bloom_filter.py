@@ -33,6 +33,22 @@ class BloomFilter():
             self,
             number_of_elements: int = 50000,
             fp_rate: float = 0.05):
+        """
+        Bloom Filters are a probabilistic approach to tracking items in a list.
+        They use an array of booleans which are set according to hashes of the
+        data items. Items are considered to be in the list if the booleans at
+        the hashes are set, this results in a degree of false positives. This 
+        is factored into the calculation of the size of the boolean array and
+        the number of hashes.
+
+        This is used in the profiler to track unique string values without
+        having to store the values or hashes of the values (minor errors 
+        with this count is not expected to be a problem)
+
+        This is expected to be used to speed-up searches for data, with
+        .bloom files created to quickly determine if a file probably has the
+        value being looked for (not currently implemented)
+        """
         self.filter_size = BloomFilter.get_size(number_of_elements, fp_rate)
         self.hash_count = BloomFilter.get_hash_count(self.filter_size, number_of_elements)
         self.bits = bitarray(self.filter_size, endian='big')
@@ -77,6 +93,9 @@ class BloomFilter():
         return max(int(k), 2)
 
     def add(self, term):
+        """
+        Add a value to the index
+        """
         for i in range(self.hash_count):
             h = mmh3.hash(term, seed=i) % self.filter_size
             self.bits[h] = 1
@@ -88,27 +107,36 @@ class BloomFilter():
                 return False
         return True
 
-def write_bloom_filter(bf: BloomFilter, filename: str):
-    with open(filename, 'wb') as fh:
-        fh.write(bf.filter_size.to_bytes(4, byteorder='big'))
-        fh.write(bf.hash_count.to_bytes(4, byteorder='big'))
-        bf.bits.tofile(fh)
+    def write_bloom_filter(self, filename: str):
+        """
+        Save the bloom filter to disk
+        """
+        with open(filename, 'wb') as fh:
+            fh.write(b"MB01")
+            fh.write(self.filter_size.to_bytes(4, byteorder='big'))
+            fh.write(self.hash_count.to_bytes(4, byteorder='big'))
+            self.bits.tofile(fh)
 
-def read_bloom_filter(
-        filename: str,
-        number_of_elements: int = 50000):
-    
-    def bytes_to_int(xbytes: bytes) -> int:
-        return int.from_bytes(xbytes, 'big')
+    @staticmethod
+    def read_bloom_filter(
+            filename: str):
+        """
+        Read a bloom filter from disk
+        """
+        def bytes_to_int(xbytes: bytes) -> int:
+            return int.from_bytes(xbytes, 'big')
 
-    bits = bitarray(endian='big')
-    with open(filename, 'rb') as fh:
-        filter_size = bytes_to_int(fh.read(4))
-        hash_count  = bytes_to_int(fh.read(4))
-        bits.fromfile(fh)
+        bits = bitarray(endian='big')
+        with open(filename, 'rb') as fh:
+            magic_string = fh.read(4).decode()
+            if magic_string != 'MB01':
+                raise IndexError(F'{filename} does appear to be a valid bloom file')
+            filter_size = bytes_to_int(fh.read(4))
+            hash_count  = bytes_to_int(fh.read(4))
+            bits.fromfile(fh)
 
-    bf = BloomFilter()
-    bf.bits = bits
-    bf.filter_size = filter_size
-    bf.hash_count = hash_count
-    return bf
+        bf = BloomFilter()
+        bf.bits = bits
+        bf.filter_size = filter_size
+        bf.hash_count = hash_count
+        return bf
