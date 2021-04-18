@@ -20,8 +20,8 @@ jobs:
       - name: install requirements
         run:  pip install -r $GITHUB_WORKSPACE/requirements.txt
 
-      - name: install optional requirements
-        run:  pip install -r $GITHUB_WORKSPACE/requirements-optional.txt
+      - name: install test requirements
+        run:  pip install -r $GITHUB_WORKSPACE/requirements-test.txt
 
       - name: setup MinIo
         run: |
