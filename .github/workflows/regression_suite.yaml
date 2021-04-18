@@ -23,7 +23,7 @@ jobs:
       - name: install optional requirements
         run:  pip install -r $GITHUB_WORKSPACE/requirements-optional.txt
 
-      - name: Setup minio
+      - name: Setup MinIo
         run: |
           docker run -d -p 9000:9000 --name minio \
                      -e "MINIO_ACCESS_KEY=minioadmin" \
@@ -35,9 +35,9 @@ jobs:
       - name: run regression tests
         run: coverage run -m pytest 
         env:
-          MINIO_END_POINT=127.0.0.1:9000
-          MINIO_ACCESS_KEY=minioadmin
-          MINIO_SECRET_KEY=minioadmin
+          MINIO_END_POINT: 127.0.0.1:9000
+          MINIO_ACCESS_KEY: minioadmin
+          MINIO_SECRET_KEY: minioadmin
 
       - name: report on coverage
         run: coverage report --include=mabel* --fail-under=80
