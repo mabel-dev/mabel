@@ -10,6 +10,8 @@ try:
 except ImportError:
     pass
 
+BUCKET_NAME = 'test'
+
 VAMPIRIC_COUNCIL = [
     {'player':'Tilda Swinton','from':'Only Lovers Left Alive'},
     {'player':'Evan Rachel Wood','from':'True Blood'},
@@ -26,8 +28,8 @@ def _create_bucket():
     secret_key=os.getenv('MINIO_SECRET_KEY')
 
     client = Minio(end_point, access_key, secret_key, secure=False)
-    if not client.bucket_exists("TEST"):
-        client.make_bucket("TEST")
+    if not client.bucket_exists(BUCKET_NAME):
+        client.make_bucket(BUCKET_NAME)
 
 def test_using_batch_writer():
 
@@ -40,7 +42,7 @@ def test_using_batch_writer():
                 access_key=os.getenv('MINIO_ACCESS_KEY'),
                 secret_key=os.getenv('MINIO_SECRET_KEY'),
                 secure=False,
-                dataset='TEST/test_writer')
+                dataset=F'{BUCKET_NAME}/test_writer')
 
         for member in VAMPIRIC_COUNCIL:
             w.append(member)
@@ -60,7 +62,7 @@ def test_using_operator():
             access_key=os.getenv('MINIO_ACCESS_KEY'),
             secret_key=os.getenv('MINIO_SECRET_KEY'),
             secure=False,
-            dataset='TEST/test_operator')
+            dataset=F'{BUCKET_NAME}/test_operator')
 
     for member in VAMPIRIC_COUNCIL:
         w.execute(member)
@@ -71,7 +73,7 @@ def test_using_operator():
             access_key=os.getenv('MINIO_ACCESS_KEY'),
             secret_key=os.getenv('MINIO_SECRET_KEY'),
             secure=False,
-            dataset='TEST/test_operator',
+            dataset=F'{BUCKET_NAME}/test_operator',
             inner_reader=MinIoReader
     )
 
