@@ -1,5 +1,3 @@
-**MABEL IS IN ALPHA - USAGE IS STILL STABLIZING**
-
 <img align="centre" alt="overlapping arrows" height="92" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/mabel.svg" />
 
 **mabel** is a platform for authoring data processing systems.
@@ -10,6 +8,7 @@
 [![PyPI Latest Release](https://img.shields.io/pypi/v/mabel.svg)](https://pypi.org/project/mabel/)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=joocer_mabel&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=joocer_mabel)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=joocer_mabel&metric=security_rating)](https://sonarcloud.io/dashboard?id=joocer_mabel)
+[![mabel](https://snyk.io/advisor/python/mabel/badge.svg)](https://snyk.io/advisor/python/mabel)
 
 ## Features
 
