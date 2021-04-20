@@ -17,7 +17,7 @@ except ImportError:
 def test_mongo():
 
     reader = Reader(
-        connection_string="mongodb://10.10.10.30:27017/",
+        connection_string=os.getenv('MONGO_CONNECTION_STRING'),
         dataset='twitter',
         inner_reader=MongoDbReader,
         row_format='pass-thru'

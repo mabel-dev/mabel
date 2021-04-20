@@ -29,8 +29,18 @@ def test_bf():
 
     assert len(collector) <= (size * fp * 2)
 
+def test_bf_persistence():
+
+    b = BloomFilter(1000,0.05)
+    for i in range(5):
+        b.add(F"{i}")
+
+    BloomFilter.write_bloom_filter(b, '_temp/filter.bloom')
+    bf = BloomFilter.read_bloom_filter('_temp/filter.bloom')
+
 
 if __name__ == "__main__":
     test_bf()
+    test_bf_persistence()
 
     print('okay')

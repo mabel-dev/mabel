@@ -58,7 +58,8 @@ def ascii_table(
     """
     Render the dictset as a ASCII table.
 
-    NOTE: This exhausts generators so is only recommended to be used on lists.
+    NOTE:
+        This exhausts generators so is only recommended to be used on lists.
 
     Parameters:
         dictset: iterable of dictionaries

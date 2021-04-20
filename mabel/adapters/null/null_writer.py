@@ -29,5 +29,4 @@ class NullWriter(BaseInnerWriter):
         else:
             blob_name = self._build_path()
 
-        get_logger().debug(f'null_writer({self.formatted_args}, target_blob=\'{blob_name}\')')
-        return "NullWriter"
+        return F"NullWriter({blob_name})"

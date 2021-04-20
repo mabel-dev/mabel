@@ -41,7 +41,7 @@ pip install --upgrade git+https://github.com/joocer/mabel
 -  **[dateutil](https://dateutil.readthedocs.io/en/stable/)**
 -  **[zstandard](https://github.com/indygreg/python-zstandard)**
 
-There are a number of optional dependencies which are usually only required for specific features and functionality. These are listed in the [requirements-optional.txt](requirements-optional.txt) file which is used for testing. The key exception is `orjson` which is the preferred JSON library but not available on all platforms.
+There are a number of optional dependencies which are usually only required for specific features and functionality. These are listed in the [requirements-test.txt](requirements-test.txt) file which is used for testing. The key exception is `orjson` which is the preferred JSON library but not available on all platforms.
 
 ## Contributing
 

@@ -69,8 +69,12 @@ class BlobWriter():
                     pass
 
                 if self.format == "parquet":
-                    from pyarrow import json as js  # type:ignore
-                    import pyarrow.parquet as pq    # type:ignore
+                    try:
+                        from pyarrow import json as js  # type:ignore
+                        import pyarrow.parquet as pq    # type:ignore
+                    except ImportError as err:
+                        get_logger().error("pyarrow must be installed to save as parquet")
+                        raise err
                     
                     table = js.read_json(self.file_name)
                     pq.write_table(table, self.file_name + '.parquet', compression='ZSTD')
@@ -82,6 +86,8 @@ class BlobWriter():
                 committed_blob_name = self.inner_writer.commit(
                         byte_data=byte_data,
                         override_blob_name=None)
+                if 'BACKOUT' in committed_blob_name:
+                    get_logger().warning(F"{self.records_in_blob:n} failed records written to BACKOUT partition {committed_blob_name}")
                 get_logger().debug(F"Blob Committed - {committed_blob_name} - {self.records_in_blob:n} records, {self.bytes_in_blob:n} raw bytes, {len(byte_data):n} comitted bytes")
                 try:
                     os.remove(self.file_name)
@@ -90,6 +96,7 @@ class BlobWriter():
 
                 self.bytes_in_blob = 0
                 self.file_name = None
+
 
     def _open_blob(self):
         self.file_name = self._create_temp_file_name()

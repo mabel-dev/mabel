@@ -21,9 +21,8 @@ limitations under the License.
 from ..flows.internals.base_operator import BaseOperator
 from ..data.formats import json
 from ..data.formats.dictset.display import draw_histogram_bins
+from ..index.bloom_filter import BloomFilter
 
-
-MAXIMUM_UNIQUE_VALUES = 100000
 
 class ProfileDataOperator(BaseOperator):
 
@@ -114,6 +113,9 @@ class ProfileDataOperator(BaseOperator):
                 label = F"{ProfileDataOperator.short_form(bottom)} to {ProfileDataOperator.short_form(top)}"
                 new_bins[label] = v  # type:ignore
             self.summary[k]['bins'] = new_bins
+
+        for k in [k for k in self.summary if 'bloom_filter' in self.summary[k]]:
+            del self.summary[k]['bloom_filter']
 
         # put the profile into the context so it gets passed along
         context['mabel:profile'] = self.summary
@@ -255,11 +257,12 @@ class ProfileDataOperator(BaseOperator):
             collector['max_length'] = len(value)
         if collector.get('min_length', len(value)) >= len(value):
             collector['min_length'] = len(value)
-        if collector.get('unique_value_list') is None:
-            collector['unique_value_list'] = {hash(value)}
-        elif len(collector['unique_value_list']) < MAXIMUM_UNIQUE_VALUES:
-            collector['unique_value_list'].add(hash(value))
-        collector['unique_values'] = len(collector['unique_value_list'])
+        if collector.get('bloom_filter') is None:
+            collector['bloom_filter'] = BloomFilter(number_of_elements=1000000, fp_rate=0.01)
+            collector['unique_values'] = 0
+        if value not in collector['bloom_filter']:
+            collector['bloom_filter'].add(value)
+            collector['unique_values'] += 1
 
         return collector
 

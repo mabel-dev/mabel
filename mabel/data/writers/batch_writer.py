@@ -17,7 +17,6 @@ class BatchWriter(SimpleWriter):
             self,
             *,
             dataset: str,
-            schema: Schema = None,
             format: str = 'zstd',
             date: Any = None,
             frame_id: str = None, 

@@ -87,7 +87,11 @@ class BaseInnerReader(abc.ABC):
             with lzma.open(stream, 'rb') as file:  # type:ignore
                 yield from file
         elif blob.endswith('.parquet'):
-            import pyarrow.parquet as pq  # type:ignore
+            try:
+                import pyarrow.parquet as pq  # type:ignore
+            except ImportError:
+                get_logger().error("pyarrow must be installed to read parquet files")
+                return []
             table = pq.read_table(stream)
             for batch in table.to_batches():
                 dict_batch = batch.to_pydict()
@@ -106,6 +110,9 @@ class BaseInnerReader(abc.ABC):
             # build the path name
             cycle_path = pathlib.Path(paths.build_path(path=self.dataset, date=cycle_date))
             blobs += list(self.get_blobs_at_path(path=cycle_path))
+
+        # remove any BACKOUT data
+        blobs = [blob for blob in blobs if 'BACKOUT' not in blob]
 
         # work out if there's an as_at part
         as_ats = { self._extract_as_at(blob) for blob in blobs if 'as_at_' in blob }
