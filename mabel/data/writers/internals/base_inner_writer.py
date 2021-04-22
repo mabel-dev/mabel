@@ -34,10 +34,7 @@ class BaseInnerWriter(abc.ABC):
 
         self.filename = self.bucket + '/' + path + STEM + self.extension
         self.filename_without_bucket = path + STEM + self.extension
-
-        if kwargs.get('suppress_path_expansion'):
-            self.filename = self.bucket + '/' + path
-            self.filename_without_bucket = path
+        
 
     def _build_path(self):
         blob_id = F"{time.time_ns():x}-{self._get_node()}"
