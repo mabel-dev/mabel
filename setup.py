@@ -20,5 +20,7 @@ setup(
         'ujson',
         'python-dateutil',
         'zstandard'
+        'mmh3',
+        'bitarray'
    ]
 )
