@@ -1,25 +1,25 @@
-name: quality_measures
-on: [push, pull_request]
+name: Maintainability
+on: [push]
+
 jobs:
-  quality_measures:
+  maintainability_checks:
+    name: Maintainability Checks
     runs-on: ubuntu-latest
     steps:
-      - name: check out
+      - name: Checkout code
         uses: actions/checkout@v2
   
-      - name: set up
+      - name: Set Up Environment
         uses: actions/setup-python@v2
         with:
           python-version: '3.8' 
 
-      - name: install component base requirements
+      - name: Install Requirements
         run:  pip install -r $GITHUB_WORKSPACE/requirements.txt
 
-      - name: install test requirements
+      - name: Install Test Requirements
         run:  pip install -r $GITHUB_WORKSPACE/requirements-test.txt
 
-      - name: update non-mabel requirements
-        run:  pip install --upgrade idna mando
 
-      - name: execute_action
+      - name: Execute Test
         uses: joocer/quality-indicators@main

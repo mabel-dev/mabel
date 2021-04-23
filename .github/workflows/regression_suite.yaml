@@ -1,29 +1,28 @@
-name: regression_suite
+name: Regression Suite
 
 on: [push, pull_request]
 
 jobs:
   regression_tests:
+    name: Regression Tests
     runs-on: ubuntu-latest
     steps:
-      - name: check out
+      - name: Checkout code
         uses: actions/checkout@v2
   
-      - name: set up
+      - name: Set Up Environment
         uses: actions/setup-python@v2
         with:
           python-version: '3.8' 
-          
-      - name: install pytest and coverage
-        run:  pip install pytest coverage
         
-      - name: install requirements
-        run:  pip install -r $GITHUB_WORKSPACE/requirements.txt
+      - name: Install Requirements
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade pytest coverage
+          pip install -r $GITHUB_WORKSPACE/requirements.txt
+          pip install -r $GITHUB_WORKSPACE/requirements-test.txt
 
-      - name: install test requirements
-        run:  pip install -r $GITHUB_WORKSPACE/requirements-test.txt
-
-      - name: setup MinIo
+      - name: Setup MinIo
         run: |
           docker run -d -p 9000:9000 --name minio \
                      -e "MINIO_ACCESS_KEY=minioadmin" \
@@ -39,22 +38,23 @@ jobs:
           MINIO_ACCESS_KEY: minioadmin
           MINIO_SECRET_KEY: minioadmin
 
-      - name: report on coverage
+      - name: Execute Test
         run: coverage report --include=mabel* --fail-under=80
 
   mypy:
+    name: Type Checks
     runs-on: ubuntu-latest
     steps:
-      - name: check out
+      - name: Checkout code
         uses: actions/checkout@v2
   
-      - name: set up
+      - name: Set Up Environment
         uses: actions/setup-python@v2
         with:
           python-version: '3.8' 
           
-      - name: install 
+      - name: Install Requirements
         run:  pip install mypy
 
-      - name: run test
+      - name: Execute Test
         run: mypy mabel
