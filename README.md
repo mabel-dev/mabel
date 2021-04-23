@@ -11,16 +11,17 @@
 [![mabel](https://snyk.io/advisor/python/mabel/badge.svg)](https://snyk.io/advisor/python/mabel)
 [![Downloads](https://img.shields.io/pypi/dm/mabel.svg)](https://pypi.org/project/mabel/)
 
-## Features
+## What are its Key Features
 
 -  Programatically define data pipelines
--  Immutable datasets
+-  Treats datasets as immutable
 -  On-the-fly compression
 -  Automatic version tracking of processing operations
 -  Trace messages through the pipeline (random sampling)
--  Automatic retry of operations
+-  Automatic retry of failed operations
+-  Low-memory requirements, even with Tb of data
 
-## Documentation
+## Where Can I Find Documentation
 
 See the [wiki](https://github.com/joocer/mabel/wiki)
 
@@ -35,17 +36,19 @@ From GitHub
 pip install --upgrade git+https://github.com/joocer/mabel
 ~~~
 
-## Dependencies
+## What Dependencies does mabel Have?
 
 -  **[UltraJSON](https://github.com/ultrajson/ultrajson)** (AKA `ujson`) is used where `orjson` is not available. `orjson` is the preferred JSON library but is not available on all platforms and environments so `ujson` is a dependency to ensure a performant JSON library with broad support is available.  
--  **[dateutil](https://dateutil.readthedocs.io/en/stable/)**
--  **[zstandard](https://github.com/indygreg/python-zstandard)**
+-  **[dateutil](https://dateutil.readthedocs.io/en/stable/)** is used to convert dates received as strings
+-  **[zstandard](https://github.com/indygreg/python-zstandard)** is used for real-time compression
+-  **[mmh3](https://github.com/hajimes/mmh3)** is used for non-cryptographic hashing
+-  **[bitarray](https://github.com/ilanschnell/bitarray)** is used for compacting data
 
-There are a number of optional dependencies which are usually only required for specific features and functionality. These are listed in the [requirements-test.txt](requirements-test.txt) file which is used for testing. The key exception is `orjson` which is the preferred JSON library but not available on all platforms.
+There are a number of optional dependencies which are usually only required for specific features and functionality. These are listed in the [requirements-test.txt](https://github.com/joocer/mabel/blob/main/requirements-test.txt) file which is used for testing. The key exception is `orjson` which is the preferred JSON library but not available on all platforms.
 
-## Contributing
+## Can I Contribute?
 
-Want to help build mabel? See the [contribution guidance](CONTRIBUTING.md)
+Want to help build mabel? See the [contribution guidance](https://github.com/joocer/mabel/blob/main/CONTRIBUTING.md)
 
 ## What Platforms Does It Support?
 
@@ -55,8 +58,8 @@ mabel comes with adapters for the following services, or is tested to run on the
 |-- |-- |-- 
 | <img align="centre" alt="Google Cloud Storage" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/gcs-logo.png" /> | Google Cloud Storage |  Read/Write
 | <img align="centre" alt="MinIo" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/minio-logo.png" /> | MinIO | Read/Write
-| <img align="centre" alt="MongoDB" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/mongodb-logo.png" /> | MongoDB | Read
-| <img align="centre" alt="MQTT" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/mqtt-logo.png" /> | MQTT | Read
+| <img align="centre" alt="MongoDB" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/mongodb-logo.png" /> | MongoDB | Read Only
+| <img align="centre" alt="MQTT" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/mqtt-logo.png" /> | MQTT | Read Onlys
 | <img align="centre" alt="Docker" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/docker-logo.png" /> | Docker | Hosting
 | <img align="centre" alt="Kubernetes" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/kubernetes-logo.svg" /> | Kubernetes | Hosting
 | <img align="centre" alt="Raspberry Pi" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/raspberry-pi-logo.svg" /> | Raspberry Pi | Hosting (<img align="centre" alt="Notice" height="16" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />1)
@@ -65,7 +68,7 @@ Linux, MacOS and Windows (<img align="centre" alt="Notice" height="16" src="http
 
 Adapters for other data services can be written. 
 
-<img align="centre" alt="Notice" height="16" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />1 - Raspbian fully functional with alternate JSON libraries  
+<img align="centre" alt="Notice" height="16" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />1 - Raspbian fully functional with `ujson`  
 <img align="centre" alt="Notice" height="16" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />2 - Multi-Processing not available on Windows
 
 ## License
