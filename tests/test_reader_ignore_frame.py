@@ -1,3 +1,4 @@
+# file deepcode ignore unguarded~next~call/test: test scripts only
 import datetime
 import os
 import sys
