@@ -29,7 +29,7 @@ def test_new_log_levels(caplog):
 
     log name, log level, log message
     """
-    if caplog == None:
+    if caplog is None:
         print('unable to test logging interactively - use pytest')
         return
 
