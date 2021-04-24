@@ -101,7 +101,7 @@ class BaseInnerReader(abc.ABC):
         if blob_name.endswith('.zstd'):
             import zstandard  # type:ignore
             with zstandard.open(stream, 'r', encoding='utf8') as file:  # type:ignore
-                for index, row in enumerate(lines):
+                for index, row in enumerate(file):
                     if not rows or index in rows:
                         yield row
         elif blob_name.endswith('.lzma'):
