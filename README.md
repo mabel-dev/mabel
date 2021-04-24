@@ -50,7 +50,7 @@ There are a number of optional dependencies which are usually only required for 
 
 Want to help build mabel? See the [contribution guidance](https://github.com/joocer/mabel/blob/main/CONTRIBUTING.md)
 
-## What Platforms Does It Support?
+## What Platforms Does mabel Support?
 
 mabel comes with adapters for the following services, or is tested to run on the following platforms:
 
@@ -59,7 +59,7 @@ mabel comes with adapters for the following services, or is tested to run on the
 | <img align="centre" alt="Google Cloud Storage" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/gcs-logo.png" /> | Google Cloud Storage |  Read/Write
 | <img align="centre" alt="MinIo" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/minio-logo.png" /> | MinIO | Read/Write
 | <img align="centre" alt="MongoDB" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/mongodb-logo.png" /> | MongoDB | Read Only
-| <img align="centre" alt="MQTT" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/mqtt-logo.png" /> | MQTT | Read Onlys
+| <img align="centre" alt="MQTT" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/mqtt-logo.png" /> | MQTT | Read Only
 | <img align="centre" alt="Docker" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/docker-logo.png" /> | Docker | Hosting
 | <img align="centre" alt="Kubernetes" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/kubernetes-logo.svg" /> | Kubernetes | Hosting
 | <img align="centre" alt="Raspberry Pi" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/raspberry-pi-logo.svg" /> | Raspberry Pi | Hosting (<img align="centre" alt="Notice" height="16" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />1)
