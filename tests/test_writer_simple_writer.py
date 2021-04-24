@@ -6,7 +6,8 @@ import glob
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.adapters.disk import DiskReader, DiskWriter
 from mabel.adapters.null import NullWriter
-from mabel.data import Reader, SimpleWriter
+from mabel.data import SimpleWriter
+from mabel import Reader
 try:
     from rich import traceback
     traceback.install()

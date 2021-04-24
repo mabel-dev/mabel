@@ -1,6 +1,6 @@
 #no-maintain-checks
 from moz_sql_parser import parse  # type:ignore 
-from ....data import Reader
+from ..reader import Reader
 from ....logging import get_logger
 from ...formats import json
 from functools import lru_cache
