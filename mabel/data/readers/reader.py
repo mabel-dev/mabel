@@ -8,24 +8,6 @@ from ..formats import json
 from ...logging import get_logger
 from ...errors import InvalidCombinationError
 
-"""
-The datasets are layed out like this:
-
-path/to/dataset                 <-- this is the value in the dataset params
-    /year_2021
-        /month_03
-            /day_20             <-- datasets are for specific dates, this part
-                                    is added automatically if not specified
-                /as_at_<id>     <-- datasets can't be deleted, if you have a
-                                    correction, you create the dataset again,
-                                    each run puts the data into a timestamped
-                                    frame. Usually you read from the latest
-                                    frame when you read the dataset
-                    /blob       <-- the data is split into 32Mb blobs,
-                                    these help keep memory requirements low
-                                    and help to avoid small file problems
-"""
-
 # available parsers
 PARSERS = {
     "json": json_parser,

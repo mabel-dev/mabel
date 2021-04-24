@@ -89,6 +89,9 @@ class TraceBlocks():
     def __str__(self):
         return serialize(self.blocks, indent=True)
 
+    def __repr__(self):
+        return F"<TraceBlocks with {len(self.blocks)} blocks>"
+
     def hash(self, block):
         try:
             bytes_object = serialize(block)

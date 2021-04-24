@@ -3,6 +3,7 @@
 This module is dervied from:
 
 Cryno: Data Profiling Library
+https://github.com/joocer/cryno
 
 (C) 2021 Justin Joyce.
 
@@ -30,6 +31,17 @@ class ProfileDataOperator(BaseOperator):
             schema = None,
             inner_writer = None,
             **kwargs):
+        """
+        ProfileData Operator is designed to profile streaming data this is done
+        with some approximation, especially when summarizations would require
+        all of the values such as counting unique values or binning values.
+
+        It starts summarizing from 10,000 values. So small datasets should be
+        more accurate.
+
+        Some measures will be pretty much useless the closer it gets to
+        5,000,000 records.
+        """
         super().__init__(**kwargs)
 
         self.inner_writer = inner_writer
@@ -81,8 +93,17 @@ class ProfileDataOperator(BaseOperator):
         if not context:
             context = {}
 
-        # get rid of the unique values list
-        [self.summary[k].pop('unique_value_list') for k in self.fields if 'unique_value_list' in self.summary[k]]
+        for k in [k for k in self.summary if self.summary[k]['type'] == 'string']:
+
+            if len(self.summary[k]['unique_values']) < 10000:
+                # get rid of the unique values list
+                self.summary[k]['unique_values'] = len(self.summary[k]['unique_values'])
+                del self.summary[k]['approx_unique_values']
+            else:
+                del self.summary[k]['unique_values']
+
+            del self.summary[k]['bloom_filter']
+
 
         # rebin all of the binned data into a set of 10 bins
         new_bins = [(k, ProfileDataOperator.redistribute_bins(self.summary[k]['bins'], 10)) for k in self.summary if 'bins' in self.summary[k]]
@@ -113,9 +134,6 @@ class ProfileDataOperator(BaseOperator):
                 label = F"{ProfileDataOperator.short_form(bottom)} to {ProfileDataOperator.short_form(top)}"
                 new_bins[label] = v  # type:ignore
             self.summary[k]['bins'] = new_bins
-
-        for k in [k for k in self.summary if 'bloom_filter' in self.summary[k]]:
-            del self.summary[k]['bloom_filter']
 
         # put the profile into the context so it gets passed along
         context['mabel:profile'] = self.summary
@@ -237,7 +255,7 @@ class ProfileDataOperator(BaseOperator):
         if not binned:
             collector['bins'][(value, value)] = 1
             
-        if len(collector['bins']) > 503:   # first prime over 500
+        if len(collector['bins']) > 10007:   # first prime over 10000
             collector['bins'] = ProfileDataOperator.redistribute_bins(collector['bins'], 101)  # first prime over 100
 
         return collector
@@ -258,11 +276,20 @@ class ProfileDataOperator(BaseOperator):
         if collector.get('min_length', len(value)) >= len(value):
             collector['min_length'] = len(value)
         if collector.get('bloom_filter') is None:
-            collector['bloom_filter'] = BloomFilter(number_of_elements=1000000, fp_rate=0.01)
-            collector['unique_values'] = 0
+            collector['unique_values'] = []
+            collector['bloom_filter'] = BloomFilter(number_of_elements=5000000, fp_rate=0.01)
+            collector['approx_unique_values'] = 0
+
+        # if we have only a few values, count them all
+        if len(collector['unique_values']) < 10000:
+            hashed = hash(value)
+            if not hashed in collector['unique_values']:
+                collector['unique_values'].append(hashed)
+
+        # when we have a lot of values, use a bloom filter
         if value not in collector['bloom_filter']:
             collector['bloom_filter'].add(value)
-            collector['unique_values'] += 1
+            collector['approx_unique_values'] += 1
 
         return collector
 
