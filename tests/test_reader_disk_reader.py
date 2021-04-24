@@ -37,7 +37,17 @@ def test_can_read_files():
     for file in r.get_list_of_blobs():
         for index, item in enumerate(r.get_records(file)):
             pass
-        assert index == 24
+        assert index == 24, index
+
+
+def test_only_read_selected_rows():
+    """ ensure we can read the test files """
+    r = DiskReader(dataset='tests/data/tweets/', raw_path=True)
+    for file in r.get_list_of_blobs():
+        for index, item in enumerate(r.get_records(file, rows=[1,2,3])):
+            pass
+        assert index == 2, index
+
 
 def test_step_back():
     # step back through time
@@ -65,6 +75,7 @@ if __name__ == "__main__":
     test_can_read_files()
     test_step_back()
     test_step_past()
+    test_only_read_selected_rows()
 
     print('okay')
     
