@@ -131,23 +131,24 @@ class Filters():
                 yield record
 
 
-if __name__ == "__main__":
 
+def _inner(filters, data):  # pragma: no cover
 
-    TEST_DATA = [
-        { "name": "Sirius Black", "age": 40, "dob": "1970-01-02", "gender": "male" },
-        { "name": "Harry Potter", "age": 11, "dob": "1999-07-30", "gender": "male" },
-        { "name": "Hermione Grainger", "age": 10, "dob": "1999-12-14", "gender": "female" },
-        { "name": "Fleur Isabelle Delacour", "age": 11, "dob": "1999-02-08", "gender": "female" },
-        { "name": "James Potter", "age": 40, "dob": "1971-12-30", "gender": "male" },
-        { "name": "James Potter", "age": 0, "dob": "2010-12-30", "gender": "male" }
-    ]
+    if isinstance(filters, tuple):
+        key, op, value = filters
+        return OPERATORS[op](record.get(key), value)
 
-    d = Filters(filters=[('age', '==', 11), ('gender', 'in', ('a', 'b', 'male'))])
+    if isinstance(filters, list):
+        for _filter in filters:
+            # if I'm made of tuples, AND them
+            if isinstance(_filter, tuple):
+                r.append(_inner(_filter, data))
+            # if I'm made of lists, OR them
+            elif isinstance(_filter, list):
+                r.append(_inner(_filter, data))
+            
+    return False
 
-    for entry in TEST_DATA:
-        if d.test_record(entry):
-            print(entry)
+if __name__ == "__main__":  # pragma: no cover
 
-    for entry in d.filter_dictset(TEST_DATA):
-        print(entry)
+    
