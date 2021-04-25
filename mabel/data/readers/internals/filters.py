@@ -73,12 +73,18 @@ class Filters():
                 filter will extract the `key` field from the dictionary and
                 compare to the `value` using the operator `op`. Multiple
                 filters are treated as AND, there is no OR at this time.
-                The supported op are: `=` or `==`, `!=`, `<`, `>`, `<=`, `>=`,
-                `in`, `!in` (not in) and `like`. If the `op` is `in` or `!in`,
-                the `value` must be a collection such as a _list_, a _set_ or
-                a _tuple_.
-                `like` performs similar to the SQL operator `%` is a
-                multicharacter wildcard and `_` is a single character wildcard.
+                The supported `op` values are: `=` or `==`, `!=`, `<`, `>`,
+                `<=`, `>=`, `in`, `!in` (not in) and `like`. If the `op` is
+                `in` or `!in`, the `value` must be a collection such as a
+                _list_, a _set_ or a _tuple_.
+                `like` performs similar to the SQL operator, `%` is a
+                multi-character wildcard and `_` is a single character
+                wildcard.
+
+        Examples:
+            filters = Filters([('name', '==', 'john')])
+            filters = Filters([('name', '!=', 'john'),('name', '!=', 'tom')])
+
         """
         if filters:
             self.filters = filters

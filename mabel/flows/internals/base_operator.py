@@ -315,3 +315,6 @@ class BaseOperator(abc.ABC):
             for line in text.splitlines():
                 yield fill(line, line_len)
         return '\n'.join(list(_inner(text)))
+
+    def __repr__(self):
+        return F"<{self.name}, version: {self.version()}>"
