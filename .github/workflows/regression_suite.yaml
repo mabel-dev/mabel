@@ -41,6 +41,11 @@ jobs:
       - name: Execute Test
         run: coverage report --include=mabel* --fail-under=80
 
+      - name: "Upload coverage to Codecov"
+        uses: codecov/codecov-action@v1
+        with:
+          fail_ci_if_error: true
+
   mypy:
     name: Type Checks
     runs-on: ubuntu-latest
