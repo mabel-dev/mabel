@@ -1,8 +1,8 @@
-from typing import Callable, Optional, Iterable, Tuple
+from typing import Callable, Optional, Iterable, Tuple, List
 from .internals.threaded_reader import threaded_reader
 from .internals.experimental_processed_reader import processed_reader
 from .internals.parsers import pass_thru_parser, block_parser, json_parser
-from .internals.data_filter import DataFilter
+from .internals.filters import Filters
 from ..formats.dictset import select_record_fields, select_from
 from ..formats.dictset.display import html_table, ascii_table
 from ..formats import json
@@ -25,8 +25,8 @@ class Reader():
         *,  # force all paramters to be keyworded
         select: list = ['*'],
         dataset: str = None,
-        where: Callable = None,
-        filters: Optional[Iterable[Tuple]] = None,
+        where: Optional[Callable] = None,
+        filters: Optional[List[Tuple[str, str, object]]] = None,
         inner_reader = None,   # type:ignore
         row_format: str = "json",
         **kwargs):
@@ -59,6 +59,7 @@ class Reader():
             dataset: string:
                 The path to the data
             where: callable (optional):
+                **TO BE DEPRECATED**
                 A method (function or lambda expression) to filter the returned
                 records, where the function returns True the record is
                 returned, False the record is skipped. The default is all
@@ -67,13 +68,11 @@ class Reader():
                 **EXPERIMENTAL**
                 Rows which do not match the filter predicate will be removed
                 from scanned data. Default is no filtering.
-
                 Each tuple has format: (`key`, `op`, `value`) and compares the
                 key with the value. The supported op are: `=` or `==`, `!=`, 
                 `<`, `>`, `<=`, `>=`, `in`, `!in` (not in) and `like`. If the 
                 `op` is `in` or `!in`, the `value` must be a collection such as
                 a _list_, a _set_ or a _tuple_.
-
                 `like` performs similar to the SQL operator `%` is a
                 multicharacter wildcard and `_` is a single character wildcard.
             inner_reader: BaseReader (optional):
@@ -170,11 +169,12 @@ class Reader():
 
         self.filters = None
         if filters:
-            self.filters = DataFilter(filters)   
+            self.filters = Filters(filters)   
             get_logger().warning("FILTERS IS EXPERIMENTAL")
             if where:
                 raise InvalidCombinationError('Where and Filters can not be used at the same time')
-
+        if where:
+            get_logger().warning("`where` is a deprecation target, use `filters` or `dictset.select_from` instead")
         
     """
     Iterable
@@ -207,7 +207,7 @@ class Reader():
             ds = self._parse(ds)
 
             if self.filters:
-                yield from self.filters.filter_list(ds)
+                yield from self.filters.filter_dictset(ds)
             else:
                 yield from select_from(ds, where=self.where)
         elif self.fork_processes:
@@ -218,7 +218,7 @@ class Reader():
                 ds = self.reader_class.get_records(blob)
                 ds = self._parse(ds)
                 if self.filters:
-                    yield from self.filters.filter_list(ds)
+                    yield from self.filters.filter_dictset(ds)
                 else:
                     yield from select_from(ds, where=self.where)
 
