@@ -5,11 +5,10 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel import Reader
 from mabel.adapters.disk import DiskReader
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:   # pragma: no cover
-    pass
+from rich import traceback
+
+traceback.install()
+
 
 
 def test_ignore_flag():
@@ -40,15 +39,8 @@ def test_ignore_flag_step_back_days():
     print(next(records))
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_ignore_flag()
     test_ignore_flag_step_back_days()
 
     print('okay')
-
-
-if __name__ == "__main__":
-    test_ignore_flag()
-
-    print('okay')
-    

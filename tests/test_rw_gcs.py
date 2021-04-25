@@ -10,11 +10,10 @@ from mabel.utils import entropy
 from google.auth.credentials import AnonymousCredentials
 from google.cloud import storage
 from gcp_storage_emulator.server import create_server
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:
-    pass
+from rich import traceback
+
+traceback.install()
+
 
 # randomize the bucket name to avoid collisions on reruns
 CHARACTERS = string.ascii_lowercase + string.digits
@@ -72,7 +71,7 @@ def test_gcs():
         server.stop()
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_gcs()
 
     print('okay')

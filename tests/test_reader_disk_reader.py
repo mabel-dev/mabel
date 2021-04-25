@@ -8,14 +8,10 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.adapters.disk import DiskReader
 from mabel import Reader
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:   # pragma: no cover
-    pass
+from rich import traceback
 
-from mabel.logging import get_logger
-get_logger().setLevel(5)
+traceback.install()
+
 
 def test_can_find_files():
     """
@@ -70,7 +66,7 @@ def test_step_past():
     with pytest.raises(SystemExit):
         assert len(list(r)) == 0
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_can_find_files()
     test_can_read_files()
     test_step_back()

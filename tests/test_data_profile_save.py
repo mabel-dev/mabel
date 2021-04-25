@@ -6,12 +6,9 @@ from mabel.operators.disk import DiskBatchWriterOperator
 from mabel.operators.minio import MinIoBatchWriterOperator
 from mabel.data.validator import Schema
 from mabel import Flow
+from rich import traceback
 
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:
-    pass
+traceback.install()
 
 
 def test_saving_the_profile():
@@ -50,6 +47,6 @@ def test_saving_the_profile():
             runner(entry, {})
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_saving_the_profile()
     print('okay')

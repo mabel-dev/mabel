@@ -5,11 +5,9 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.operators import EndOperator
 from mabel.errors import IntegrityError
 from mabel import BaseOperator
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:
-    pass
+from rich import traceback
+
+traceback.install()
 
 fail_counter = 0
 
@@ -40,7 +38,7 @@ def test_sigterm():
         sig_terms.append(failing_operator.sigterm())
     assert all([sig_terms[i] == sig_terms[i+1] for i in range(len(sig_terms) - 1)]), sig_terms
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_retry()
     test_sigterm()
 

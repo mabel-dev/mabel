@@ -7,11 +7,9 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.logging import get_logger
 from mabel.operators import EndOperator, NoOpOperator
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:
-    pass
+from rich import traceback
+
+traceback.install()
 
 
 def test_flow_runner():
@@ -37,7 +35,7 @@ def test_flow_runner():
     assert not errored
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
 
     test_flow_runner()
 

@@ -1,4 +1,7 @@
 from helpers import Mock
+from rich import traceback
+
+traceback.install()
 
 
 def test_mock():
@@ -11,5 +14,5 @@ def test_mock():
     assert mock.child().name() == 'My parent is a Mock'
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_mock()

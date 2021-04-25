@@ -5,11 +5,10 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.adapters.disk import DiskReader
 from mabel import Reader
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:   # pragma: no cover
-    pass
+from rich import traceback
+
+traceback.install()
+
 
 
 def test_reader_filters_no_filter():
@@ -49,7 +48,7 @@ def test_reader_filters_multiple_filter():
 
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_reader_filters_no_filter()
     test_reader_filters_single_filter()
     test_reader_filters_multiple_filter()

@@ -5,12 +5,10 @@ import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.utils.common import date_range
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:
-    pass
 import datetime
+from rich import traceback
+
+traceback.install()
 
 
 def test_date_range():
@@ -22,9 +20,7 @@ def test_date_range():
     assert len(drange) == 366
 
 
-
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_date_range()
-
 
     print('okay')

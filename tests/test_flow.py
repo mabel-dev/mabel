@@ -9,12 +9,9 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.flows import Flow
 from mabel.errors import FlowError
 from mabel.operators import EndOperator
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:
-    pass
+from rich import traceback
 
+traceback.install()
 
 def test_flow_operations():
 
@@ -92,7 +89,7 @@ def test_flow_validator():
         f._validate_flow()
     assert "Flows must have a single entry point" in str(e.value), str(e.value)
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_flow_operations()
     test_flow_validator()
 

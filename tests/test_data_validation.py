@@ -8,11 +8,9 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.data.validator import Schema
 from mabel.data.formats.json import serialize
 from mabel.errors import ValidationError
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:   # pragma: no cover
-    pass
+from rich import traceback
+
+traceback.install()
 
 
 def test_validator_all_valid_values():
@@ -299,7 +297,7 @@ def test_validator_cve_format():
     assert (test.validate(VALID_TEST_DATA)), test.last_error
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_validator_all_valid_values()
     test_validator_invalid_string()
     test_validator_invalid_number()

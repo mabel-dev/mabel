@@ -4,14 +4,10 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.adapters.disk import DiskReader
 from mabel import Reader
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:   # pragma: no cover
-    pass
+from rich import traceback
 
-from mabel.logging import get_logger
-get_logger().setLevel(5)
+traceback.install()
+
 
 
 def test_block_parser():
@@ -55,7 +51,7 @@ def test_default_parser():
     assert isinstance(r[0], dict)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_block_parser()
     test_text_parser()
     test_json_parser()

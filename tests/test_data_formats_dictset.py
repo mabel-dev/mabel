@@ -3,11 +3,9 @@ import sys
 import os
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.data.formats import dictset
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:   # pragma: no cover
-    pass
+from rich import traceback
+
+traceback.install()
 
 
 def test_select_record_fields():
@@ -272,7 +270,7 @@ def test_jsonify():
         assert r['key'] == i
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_select_record_fields()
     test_order()
     test_join_inner()

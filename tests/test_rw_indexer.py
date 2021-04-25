@@ -4,14 +4,9 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.data import BatchWriter
 from mabel import Reader
 from mabel.adapters.disk import DiskReader, DiskWriter
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:   # pragma: no cover
-    pass
+from rich import traceback
 
-from mabel.logging import get_logger
-get_logger().setLevel(5)
+traceback.install()
 
 
 def test_index():
@@ -29,7 +24,7 @@ def test_index():
         w.append(item)
     w.finalize()
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_index()
 
     print('okay')

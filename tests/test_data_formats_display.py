@@ -3,12 +3,9 @@ import sys
 import os
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.data.formats.dictset import display
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:   # pragma: no cover
-    pass
+from rich import traceback
 
+traceback.install()
 
 def test_to_html():
     ds = [
@@ -63,7 +60,7 @@ def test_histograms():
     assert hist == r"▁▂▃▄▅▆█"  
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_to_html()
     test_to_ascii()
     test_histograms()

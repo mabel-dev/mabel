@@ -6,6 +6,9 @@ from data.graph_data import build_graph, graph_is_as_expected
 from mabel.data.formats import graphs
 import shutil
 from pathlib import Path
+from rich import traceback
+
+traceback.install()
 
 def test_save_graph():
     # test the save and read of diablo native graphs
@@ -38,7 +41,7 @@ def test_read_graphml():
     graph = graphs.read_graphml('tests/data/test.graphml')
     graph_is_as_expected(graph)
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
 
     test_save_graph()
     test_networkx()

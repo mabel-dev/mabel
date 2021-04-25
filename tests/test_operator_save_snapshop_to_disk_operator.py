@@ -3,11 +3,9 @@ import sys
 import shutil
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.operators.disk import DiskBatchWriterOperator
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:
-    pass
+from rich import traceback
+
+traceback.install()
  
 
 def test_save_to_disk_operator():
@@ -25,7 +23,7 @@ def test_save_to_disk_operator():
     shutil.rmtree('_temp', ignore_errors=True)
     
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_save_to_disk_operator()
 
     print('okay')

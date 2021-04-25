@@ -5,11 +5,10 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.flows.internals.trace_blocks import TraceBlocks
 from mabel.data.formats.json import parse, serialize
 from mabel.utils import entropy
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:   # pragma: no cover
-    pass
+from rich import traceback
+
+traceback.install()
+
 
 
 def test_hashes():
@@ -46,7 +45,7 @@ def test_hashes():
         previous_block = block
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_hashes()
 
     print('okay')

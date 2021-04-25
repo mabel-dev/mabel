@@ -4,10 +4,12 @@ long enough series of tests (think billions)
 """
 import sys
 import os
-
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.utils import entropy
 import collections
+from rich import traceback
+
+traceback.install()
 
 
 def test_random_string():
@@ -68,7 +70,7 @@ def test_random_choice():
         assert choice in options
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_random_string()
     test_random_int()
     test_random_range()

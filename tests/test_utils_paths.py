@@ -9,11 +9,10 @@ import os
 import pathlib
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.utils import paths
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:   # pragma: no cover
-    pass
+from rich import traceback
+
+traceback.install()
+
 
 
 def test_blob_paths_get_paths():
@@ -53,7 +52,7 @@ def test_blob_paths_builder():
     assert path == str(pathlib.PurePosixPath("year_2000") / "month_09" / "day_19" / "2000-09-19") + '/'
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_blob_paths_get_paths()
     test_blob_paths_builder()
 

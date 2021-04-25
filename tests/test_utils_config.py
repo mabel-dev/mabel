@@ -4,11 +4,9 @@ import os
 import pytest
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.utils import common
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:   # pragma: no cover
-    pass
+from rich import traceback
+
+traceback.install()
 
 
 def test_utils_config():
@@ -21,7 +19,7 @@ def test_utils_config():
         common.build_context(config_file='tests/data/invalid.config')
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_utils_config()
 
     print('okay')
