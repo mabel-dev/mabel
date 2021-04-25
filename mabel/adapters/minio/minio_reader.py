@@ -6,7 +6,7 @@ from ...utils import paths, common
 from ...data.readers.internals.base_inner_reader import BaseInnerReader
 try:
     from minio import Minio  # type:ignore
-except ImportError:
+except ImportError:  # pragma: no cover
     pass
 
 
