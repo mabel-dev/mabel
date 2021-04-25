@@ -8,7 +8,7 @@ import pytest
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.flows import Flow
 from mabel.errors import FlowError
-from mabel.operators import EndOperator
+from mabel.operators import EndOperator, NoOpOperator
 from rich import traceback
 
 traceback.install()
@@ -89,8 +89,20 @@ def test_flow_validator():
         f._validate_flow()
     assert "Flows must have a single entry point" in str(e.value), str(e.value)
 
+
+def test_flow_render():
+    flow = NoOpOperator() > [NoOpOperator() > EndOperator(), EndOperator()]
+    render = repr(flow)
+
+    assert render.startswith('NoOpOperator')
+    assert '\n ├─ NoOpOperator' in render
+    assert '\n │   └─ EndOperator' in render
+    assert '\n └─ EndOperator' in render
+
+
 if __name__ == "__main__":  # pragma: no cover
     test_flow_operations()
     test_flow_validator()
+    test_flow_render()
 
     print('okay')
