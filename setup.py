@@ -19,7 +19,7 @@ setup(
    install_requires=[
         'ujson',
         'python-dateutil',
-        'zstandard'
+        'zstandard',
         'mmh3',
         'bitarray'
    ]
