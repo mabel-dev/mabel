@@ -10,7 +10,14 @@ from rich import traceback
 
 traceback.install()
 
-
+TEST_DATA = [
+    { "name": "Sirius Black", "age": 40, "dob": "1970-01-02", "gender": "male" },
+    { "name": "Harry Potter", "age": 11, "dob": "1999-07-30", "gender": "male" },
+    { "name": "Hermione Grainger", "age": 10, "dob": "1999-12-14", "gender": "female" },
+    { "name": "Fleur Isabelle Delacour", "age": 11, "dob": "1999-02-08", "gender": "female" },
+    { "name": "James Potter", "age": 40, "dob": "1971-12-30", "gender": "male" },
+    { "name": "James Potter", "age": 0, "dob": "2010-12-30", "gender": "male" }
+]
 
 def test_reader_filters_no_filter():
     """ ensure the reader filter is working as expected """
@@ -49,29 +56,11 @@ def test_reader_filters_multiple_filter():
 
 def test_filters():
 
-    TEST_DATA = [
-        { "name": "Sirius Black", "age": 40, "dob": "1970-01-02", "gender": "male" },
-        { "name": "Harry Potter", "age": 11, "dob": "1999-07-30", "gender": "male" },
-        { "name": "Hermione Grainger", "age": 10, "dob": "1999-12-14", "gender": "female" },
-        { "name": "Fleur Isabelle Delacour", "age": 11, "dob": "1999-02-08", "gender": "female" },
-        { "name": "James Potter", "age": 40, "dob": "1971-12-30", "gender": "male" },
-        { "name": "James Potter", "age": 0, "dob": "2010-12-30", "gender": "male" }
-    ]
-
     d = Filters(filters=[('age', '==', 11), ('gender', 'in', ('a', 'b', 'male'))])
     assert len(list(d.filter_dictset(TEST_DATA))) == 1
 
 
 def test_empty_filters():
-
-    TEST_DATA = [
-        { "name": "Sirius Black", "age": 40, "dob": "1970-01-02", "gender": "male" },
-        { "name": "Harry Potter", "age": 11, "dob": "1999-07-30", "gender": "male" },
-        { "name": "Hermione Grainger", "age": 10, "dob": "1999-12-14", "gender": "female" },
-        { "name": "Fleur Isabelle Delacour", "age": 11, "dob": "1999-02-08", "gender": "female" },
-        { "name": "James Potter", "age": 40, "dob": "1971-12-30", "gender": "male" },
-        { "name": "James Potter", "age": 0, "dob": "2010-12-30", "gender": "male" }
-    ]
 
     d = Filters(filters=None)
     assert len(list(d.filter_dictset(TEST_DATA))) == 6
@@ -79,17 +68,28 @@ def test_empty_filters():
 
 def test_like_filters():
 
-    TEST_DATA = [
-        { "name": "Sirius Black", "age": 40, "dob": "1970-01-02", "gender": "male" },
-        { "name": "Harry Potter", "age": 11, "dob": "1999-07-30", "gender": "male" },
-        { "name": "Hermione Grainger", "age": 10, "dob": "1999-12-14", "gender": "female" },
-        { "name": "Fleur Isabelle Delacour", "age": 11, "dob": "1999-02-08", "gender": "female" },
-        { "name": "James Potter", "age": 40, "dob": "1971-12-30", "gender": "male" },
-        { "name": "James Potter", "age": 0, "dob": "2010-12-30", "gender": "male" }
-    ]
-
     d = Filters(filters=[('dob', 'like', '%-12-%')])
     assert len(list(d.filter_dictset(TEST_DATA))) == 3
+
+
+def test_combined_filters():
+
+    # just a tuple
+    filter01 = Filters(('name', '==', 'Harry Potter'))
+    # a tuple in a list
+    filter02 = Filters([('name', '==', 'Harry Potter')])
+    # ANDed conditions
+    filter03 = Filters([('name', 'like', '%otter%'), ('gender', '==', 'male'), ('age', '<=', 15), ('age', '>=', 5)])
+    # ORed conditions
+    filter04 = Filters([[('name', '==', 'Harry Potter')],[('name', '==', 'Hermione Grainger')]])
+    # no conditions
+    filter05 = Filters()
+    
+    assert len([a for a in filter01.filter_dictset(TEST_DATA)]) == 1
+    assert len([a for a in filter02.filter_dictset(TEST_DATA)]) == 1
+    assert len([a for a in filter03.filter_dictset(TEST_DATA)]) == 1
+    assert len([a for a in filter04.filter_dictset(TEST_DATA)]) == 2
+    assert len([a for a in filter05.filter_dictset(TEST_DATA)]) == 6
 
 if __name__ == "__main__":  # pragma: no cover
     test_reader_filters_no_filter()
@@ -98,6 +98,7 @@ if __name__ == "__main__":  # pragma: no cover
     test_filters()
     test_empty_filters()
     test_like_filters()
+    test_combined_filters()
 
     print('okay')
     
