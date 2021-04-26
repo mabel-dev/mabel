@@ -8,14 +8,10 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.adapters.disk import DiskReader
 from mabel import Reader
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:   # pragma: no cover
-    pass
+from rich import traceback
 
-from mabel.logging import get_logger
-get_logger().setLevel(5)
+traceback.install()
+
 
 def test_can_find_files():
     """
@@ -37,7 +33,17 @@ def test_can_read_files():
     for file in r.get_list_of_blobs():
         for index, item in enumerate(r.get_records(file)):
             pass
-        assert index == 24
+        assert index == 24, index
+
+
+def test_only_read_selected_rows():
+    """ ensure we can read the test files """
+    r = DiskReader(dataset='tests/data/tweets/', raw_path=True)
+    for file in r.get_list_of_blobs():
+        for index, item in enumerate(r.get_records(file, rows=[1,2,3])):
+            pass
+        assert index == 2, index
+
 
 def test_step_back():
     # step back through time
@@ -60,11 +66,12 @@ def test_step_past():
     with pytest.raises(SystemExit):
         assert len(list(r)) == 0
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_can_find_files()
     test_can_read_files()
     test_step_back()
     test_step_past()
+    test_only_read_selected_rows()
 
     print('okay')
     

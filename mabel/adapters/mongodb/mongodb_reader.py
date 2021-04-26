@@ -32,8 +32,11 @@ class MongoDbReader(BaseInnerReader):
     def get_list_of_blobs(self):
         return self.database.list_collection_names()
 
-    def get_records(self, blob) -> Iterable[str]:
-        collection = self.database[blob]  # type:ignore
+    def get_records(
+            self,
+            blob_name: str,
+            rows: Optional[Iterable[int]] = None) -> Iterable[str]:
+        collection = self.database[blob_name]  # type:ignore
         chunks = self._iterate_by_chunks(
                 collection,
                 self.chunk_size,

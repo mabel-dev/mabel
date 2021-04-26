@@ -2,11 +2,9 @@ import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.errors.render_error_stack import _build_error_stack, render_error_stack
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:  # pragma: no cover
-    pass
+from rich import traceback
+
+traceback.install()
 
 
 def i_fail():
@@ -29,9 +27,8 @@ def test_error_stack():
     assert 'This is a forced error to test the error stack' in stack, stack
     assert 'test_error_stack' in stack
 
-    print(stack)
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_error_stack()
 
     print("okay")

@@ -8,14 +8,9 @@ from mabel.adapters.disk import DiskReader, DiskWriter
 from mabel.adapters.null import NullWriter
 from mabel.data import SimpleWriter
 from mabel import Reader
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:
-    pass
+from rich import traceback
 
-from mabel.logging import get_logger
-get_logger().setLevel(5)
+traceback.install()
 
 
 def do_writer():
@@ -151,7 +146,7 @@ def get_data():
     return r
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_reader_writer()
     test_reader_writer_format_lzma()
     test_reader_writer_format_zstd()

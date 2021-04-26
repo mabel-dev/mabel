@@ -5,7 +5,6 @@ import io
 from typing import Any
 from ...formats.json import serialize
 from ....logging import get_logger
-from ....index import BTree
 
 BLOB_SIZE = 32*1024*1024  # about 32 files per gigabyte
 BUFFER_SIZE = BLOB_SIZE   # buffer in memory really
@@ -112,7 +111,7 @@ class BlobWriter():
         self.records_in_blob = 0
         #self.indices = {}
         #for field in self.index_on:
-        #    self.indices[field] = BTree()
+        #    self.indices[field] = []
 
     def __del__(self):
         # this should never be relied on to save data

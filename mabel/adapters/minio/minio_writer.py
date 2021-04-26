@@ -4,7 +4,7 @@ from ...data.writers.internals.base_inner_writer import BaseInnerWriter
 from ...utils import paths
 try:
     from minio import Minio  # type:ignore
-except ImportError:
+except ImportError:  # pragma: no cover
     pass
 
 

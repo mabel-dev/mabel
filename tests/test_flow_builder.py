@@ -10,11 +10,9 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.logging import get_logger
 from mabel.operators import FilterOperator, EndOperator, NoOpOperator
 from mabel.flows import Flow
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:  # pragma: no cover
-    pass
+from rich import traceback
+
+traceback.install()
 
 
 def test_flow_builder_valid():
@@ -111,8 +109,9 @@ def test_context_manager():
     with flow as runner:
         for payload in payloads:
             runner(payload, {})
-    
-if __name__ == "__main__":
+
+
+if __name__ == "__main__":  # pragma: no cover
 
     test_flow_builder_valid()
     test_flow_builder_invalid_uninstantiated()

@@ -6,14 +6,9 @@ import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.data.readers.internals.base_inner_reader import BaseInnerReader
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:   # pragma: no cover
-    pass
+from rich import traceback
 
-from mabel.logging import get_logger
-get_logger().setLevel(5)
+traceback.install()
 
 
 class EmptyReader(BaseInnerReader):
@@ -47,7 +42,7 @@ def test_dates_as_string():
     assert subject.start_date == START_DATE, subject.start_date
     assert subject.end_date == END_DATE   
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_start_date_only()
     test_end_date_only()
     test_start_and_end_dates()

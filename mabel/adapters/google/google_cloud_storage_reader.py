@@ -35,7 +35,7 @@ class GoogleCloudStorageReader(BaseInnerReader):
                 credentials=AnonymousCredentials(),
                 project=self.project,
             )
-        else:
+        else:  # pragma: no cover
             client = storage.Client(project=self.project)
 
         gcs_bucket = client.get_bucket(bucket)
@@ -57,7 +57,7 @@ def get_blob(
             credentials=AnonymousCredentials(),
             project=project,
         )
-    else:
+    else:  # pragma: no cover
         client = storage.Client(project=project)
 
     gcs_bucket = client.get_bucket(bucket)

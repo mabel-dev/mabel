@@ -20,7 +20,9 @@ sys.path.clear()
 sys.path.insert(1, os.path.join(base, '..'))
 sys.path.insert(1, os.path.join(base, '../..'))
 from mabel.data.formats.json import parse, serialize
+from rich import traceback
 
+traceback.install()
 
 will_normally_fail = {
     "string": "string",
@@ -44,7 +46,7 @@ def test_json_serializing():
     assert isinstance(b, bytes), "didn't return bytes"
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_json_serializing()
 
     print('okay')

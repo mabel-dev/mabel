@@ -3,11 +3,9 @@ import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.index.bloom_filter import BloomFilter
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:
-    pass
+from rich import traceback
+
+traceback.install()
 
 
 def test_bf():
@@ -39,7 +37,7 @@ def test_bf_persistence():
     bf = BloomFilter.read_bloom_filter('_temp/filter.bloom')
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_bf()
     test_bf_persistence()
 

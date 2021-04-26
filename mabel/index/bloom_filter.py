@@ -129,7 +129,7 @@ class BloomFilter():
         bits = bitarray(endian='big')
         with open(filename, 'rb') as fh:
             magic_string = fh.read(4).decode()
-            if magic_string != 'MB01':
+            if magic_string != 'MB01':  # pragma: no cover
                 raise IndexError(F'{filename} does appear to be a valid bloom file')
             filter_size = bytes_to_int(fh.read(4))
             hash_count  = bytes_to_int(fh.read(4))

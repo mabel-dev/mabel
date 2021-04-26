@@ -3,11 +3,9 @@ import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.index.lru_index import LruIndex
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:
-    pass
+from rich import traceback
+
+traceback.install()
 
 item_1 = 'one'
 item_2 = 'two'
@@ -38,7 +36,7 @@ def test_lru():
     assert not lru(item_1), item_1  # confirm item_1 was ejected above
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_lru()
 
     print('okay')

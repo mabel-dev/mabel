@@ -3,11 +3,9 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.operators import ProfileDataOperator
 from mabel.data.validator import Schema
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:
-    pass
+from rich import traceback
+
+traceback.install()
 
 
 def test_profile_operator():
@@ -66,7 +64,7 @@ def test_profile_operator_binning():
     print(repr(pdo))
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_profile_operator()
     test_profile_operator_binning()
 

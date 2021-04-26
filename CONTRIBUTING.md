@@ -35,6 +35,12 @@ Pull requests should pass:
 - maintainability index for each module above 50
 
 
+Check-ins should have prefixes:
+- `[MBL-nnn]` items relating to Jira tickets
+- `[FIX]` items fixing bugs
+- `[TEST]` improvements to testing
+
+
 Docstrings should look like:
 ~~~python
 def sample_method(param_1, param_2):

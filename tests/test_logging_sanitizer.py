@@ -6,11 +6,9 @@ import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.logging.sanitizing_log_formatter import SanitizingLogFormatter
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:
-    pass
+from rich import traceback
+
+traceback.install()
 
 
 def test_sanitizing_log_formatter_pass_thru():
@@ -48,7 +46,7 @@ def test_sanitizing_log_formatter_predefined_redaction_keys():
     assert 'private' not in redacted_record_key
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_sanitizing_log_formatter_pass_thru()
     test_sanitizing_log_formatter_redact_simple_case()
     test_sanitizing_log_formatter_mixed_redact_and_keep()

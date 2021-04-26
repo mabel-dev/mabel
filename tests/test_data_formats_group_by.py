@@ -3,11 +3,9 @@ import sys
 import os
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.data.formats import dictset
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:   # pragma: no cover
-    pass
+from rich import traceback
+
+traceback.install()
 
 def summarize(ds):
     res = []
@@ -67,7 +65,7 @@ def test_group_by():
     assert groups.aggregate('value', sum).get('eve') == 13
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_group_by()
     test_group_by_advanced()
 

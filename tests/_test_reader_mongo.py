@@ -7,11 +7,9 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.adapters.mongodb import MongoDbReader
 from mabel import Reader
 from mabel.data.formats import dictset
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:
-    pass
+from rich import traceback
+
+traceback.install()
 
 
 def test_mongo():
@@ -28,7 +26,7 @@ def test_mongo():
         print(i, type(item), item)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_mongo()
 
     print('okay')

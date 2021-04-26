@@ -5,7 +5,7 @@ import abc
 import pathlib
 import datetime
 from io import IOBase
-from typing import Iterable
+from typing import Iterable, Optional
 from dateutil import parser
 from ...formats import json
 from ....utils import common, paths
@@ -69,24 +69,48 @@ class BaseInnerReader(abc.ABC):
         """
         pass
 
-    def get_records(self, blob) -> Iterable[str]:
+    def get_records(
+            self,
+            blob_name: str,
+            rows: Optional[Iterable[int]] = None) -> Iterable[str]:
         """
         Handle the different file formats.
 
         Handling here allows the blob stores to be pretty dumb, they
         just need to be able to store and recall blobs.
-        """
-        stream = self.get_blob_stream(blob)
 
-        if blob.endswith('.zstd'):
+        Parameters:
+            blob_name: string
+                The name of the blob to read records from
+            rows: list of integers (optional)
+                The row numbers of the blob to retrieve records from, the
+                default (None) is all of the rows. An empty set returns an
+                empty Iterable from this method
+
+        Returns:
+            Iterable of the rows
+        """
+        # if the rows has been set but the set is empty, return empty list
+        if isinstance(rows, (set,list)):
+            if len(rows) == 0:
+                return []
+            rows = set(rows)
+
+        stream = self.get_blob_stream(blob_name)
+
+        if blob_name.endswith('.zstd'):
             import zstandard  # type:ignore
             with zstandard.open(stream, 'r', encoding='utf8') as file:  # type:ignore
-                yield from file
-        elif blob.endswith('.lzma'):
+                for index, row in enumerate(file):
+                    if not rows or index in rows:
+                        yield row
+        elif blob_name.endswith('.lzma'):
             import lzma
             with lzma.open(stream, 'rb') as file:  # type:ignore
-                yield from file
-        elif blob.endswith('.parquet'):
+                for index, row in enumerate(file):
+                    if not rows or index in rows:
+                        yield row
+        elif blob_name.endswith('.parquet'):
             try:
                 import pyarrow.parquet as pq  # type:ignore
             except ImportError:
@@ -96,11 +120,15 @@ class BaseInnerReader(abc.ABC):
             for batch in table.to_batches():
                 dict_batch = batch.to_pydict()
                 for index in range(len(batch)):
-                    yield json.serialize({k:v[index] for k,v in dict_batch.items()})  # type:ignore
+                    if not rows or index in rows:
+                        yield json.serialize({k:v[index] for k,v in dict_batch.items()})  # type:ignore
         else:  # assume text in lines format
             text = stream.read().decode('utf8')  # type:ignore
             lines = text.splitlines()
-            yield from [item for item in lines if len(item) > 0]
+            for index, row in enumerate(lines):
+                if not rows or index in rows:
+                    if len(row) > 0:
+                        yield row
 
 
     def get_list_of_blobs(self):

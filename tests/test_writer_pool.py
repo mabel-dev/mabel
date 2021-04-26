@@ -6,11 +6,10 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.data.writers.internals.writer_pool import WriterPool
 from mabel.adapters.null import NullWriter
 from mabel.data.formats.dictset import display
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:
-    pass
+from rich import traceback
+
+traceback.install()
+
 
 def test_writer_pool_lru():
     pool = WriterPool(3, inner_writer=NullWriter)
@@ -59,7 +58,7 @@ def test_writer_add_and_remove():
 
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_writer_pool_lru()
     test_writer_add_and_remove()
 

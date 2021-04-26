@@ -4,7 +4,7 @@ from ...utils import paths
 try:
     from google.auth.credentials import AnonymousCredentials  # type:ignore
     from google.cloud import storage  # type:ignore
-except ImportError:
+except ImportError:  # pragma: no cover
     pass
 
 
@@ -22,7 +22,7 @@ class GoogleCloudStorageWriter(BaseInnerWriter):
                 credentials=AnonymousCredentials(),
                 project=project,
             )
-        else:
+        else:  # pragma: no cover
             client = storage.Client(project=project)
         self.gcs_bucket = client.get_bucket(self.bucket)
         self.filename = self.filename_without_bucket

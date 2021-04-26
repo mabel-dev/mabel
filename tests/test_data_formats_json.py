@@ -10,7 +10,9 @@ import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.data.formats.json import parse, serialize
+from rich import traceback
 
+traceback.install()
 
 will_normally_fail = {
     "string": "string",
@@ -69,7 +71,7 @@ def test_json_parsing():
     assert obj.get('number') == 100
     assert obj.get('string') == 'string'
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_json_serialization()
     test_json_serialization_multiline()
     test_json_parsing()

@@ -7,13 +7,10 @@ from mabel.adapters.disk import DiskWriter, DiskReader
 from mabel.data.readers.internals.experimental_sql_reader import SqlReader
 from mabel.logging import get_logger
 import shutil
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:   # pragma: no cover
-    pass
+from rich import traceback
 
-get_logger().setLevel(5)
+traceback.install()
+
 
 def do_writer():
     w = BatchWriter(
@@ -57,7 +54,7 @@ def test_sql():
     shutil.rmtree('_temp', ignore_errors=True)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_sql()
     test_most_basic_sql()
 

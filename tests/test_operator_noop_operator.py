@@ -5,11 +5,9 @@ import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.operators import NoOpOperator
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:
-    pass
+from rich import traceback
+
+traceback.install()
 
 
 def test_noop_operator():
@@ -24,7 +22,7 @@ def test_noop_operator():
     assert c == in_c
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_noop_operator()
 
     print('okay')

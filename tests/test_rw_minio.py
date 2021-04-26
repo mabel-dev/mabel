@@ -5,11 +5,10 @@ from mabel.adapters.minio import MinIoWriter, MinIoReader
 from mabel.operators.minio import MinIoBatchWriterOperator
 from mabel.data import BatchWriter
 from mabel import Reader
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:
-    pass
+from rich import traceback
+
+traceback.install()
+
 
 BUCKET_NAME = 'test'
 
@@ -85,7 +84,7 @@ def test_using_operator():
     assert item == VAMPIRIC_COUNCIL[i]
 
     
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_using_batch_writer()
     test_using_operator()
 

@@ -7,26 +7,23 @@ import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel import Reader
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:
-    pass
+from rich import traceback
+
+traceback.install()
 
 
 def test_reader_all_good():
     failed = False
 
-    if True:
-#    try:
+    try:
         reader = Reader(
                 project='',
                 select=['a', 'b'],
                 dataset='',
                 date_range=(datetime.datetime.now(), datetime.datetime.now()),
                 row_format='json')
-#    except TypeError:
-#        failed = True
+    except TypeError:
+        failed = True
 
     assert not failed
     
@@ -63,7 +60,7 @@ def test_format_not_known():
                 row_format='excel')
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_reader_all_good()
     test_reader_select_not_list()
     test_reader_where_not_callable()

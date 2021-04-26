@@ -6,13 +6,12 @@ from mabel.adapters.disk import DiskWriter, DiskReader
 from mabel.data import StreamWriter
 from mabel import Reader
 from mabel.data.validator import Schema
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:
-    pass
 import shutil
 from pathlib import Path
+from rich import traceback
+
+traceback.install()
+
 
 DATA_SET = [
     {'key': 6},
@@ -53,7 +52,7 @@ def test_writer_backout():
 
     assert len(list(r)) == 8
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_writer_backout()
 
     print('okay')

@@ -1,7 +1,8 @@
-from typing import Callable, Optional
+from typing import Callable, Optional, Iterable, Tuple, List
 from .internals.threaded_reader import threaded_reader
 from .internals.experimental_processed_reader import processed_reader
 from .internals.parsers import pass_thru_parser, block_parser, json_parser
+from .internals.filters import Filters
 from ..formats.dictset import select_record_fields, select_from
 from ..formats.dictset.display import html_table, ascii_table
 from ..formats import json
@@ -24,7 +25,8 @@ class Reader():
         *,  # force all paramters to be keyworded
         select: list = ['*'],
         dataset: str = None,
-        where: Callable = None,
+        where: Optional[Callable] = None,
+        filters: Optional[List[Tuple[str, str, object]]] = None,
         inner_reader = None,   # type:ignore
         row_format: str = "json",
         **kwargs):
@@ -57,13 +59,25 @@ class Reader():
             dataset: string:
                 The path to the data
             where: callable (optional):
+                **TO BE DEPRECATED**
                 A method (function or lambda expression) to filter the returned
                 records, where the function returns True the record is
                 returned, False the record is skipped. The default is all
                 records
+            filters: List of tuples (optional)
+                **EXPERIMENTAL**
+                Rows which do not match the filter predicate will be removed
+                from scanned data. Default is no filtering.
+                Each tuple has format: (`key`, `op`, `value`) and compares the
+                key with the value. The supported op are: `=` or `==`, `!=`, 
+                `<`, `>`, `<=`, `>=`, `in`, `!in` (not in) and `like`. If the 
+                `op` is `in` or `!in`, the `value` must be a collection such as
+                a _list_, a _set_ or a _tuple_.
+                `like` performs similar to the SQL operator `%` is a
+                multicharacter wildcard and `_` is a single character wildcard.
             inner_reader: BaseReader (optional):
-                The reader class to perform the data access Operators, the default
-                is GoogleCloudStorageReader
+                The reader class to perform the data access Operators, the
+                default is GoogleCloudStorageReader
             row_format: string (optional):
                 Controls how the data is interpretted. 'json' will parse to a
                 dictionary before _select_ or _where_ is applied, 'text' will 
@@ -82,7 +96,8 @@ class Reader():
                 The number of days to look back if data for the current date is
                 not available.
             fork_processes: boolean (experimental):
-                **DO NOT USE** Create parallel processes to read data files
+                **EXPERIMENTAL**
+                Create parallel processes to read data files
 
         Yields:
             dictionary (string if data format is 'text')
@@ -152,7 +167,15 @@ class Reader():
         if self.fork_processes:
             get_logger().warning("FORKED READER IS EXPERIMENTAL")
 
-
+        self.filters = None
+        if filters:
+            self.filters = Filters(filters)   
+            get_logger().warning("FILTERS IS EXPERIMENTAL")
+            if where:
+                raise InvalidCombinationError('Where and Filters can not be used at the same time')
+        if where:
+            get_logger().warning("`where` is a deprecation target, use `filters` or `dictset.select_from` instead")
+        
     """
     Iterable
 
@@ -182,7 +205,11 @@ class Reader():
         if self.thread_count > 0:
             ds = threaded_reader(blob_list, self.reader_class, self.thread_count)
             ds = self._parse(ds)
-            yield from select_from(ds, where=self.where)
+
+            if self.filters:
+                yield from self.filters.filter_dictset(ds)
+            else:
+                yield from select_from(ds, where=self.where)
         elif self.fork_processes:
             yield from processed_reader(list(blob_list), self.reader_class, self._parse, self.where)
         else:
@@ -190,7 +217,10 @@ class Reader():
                 get_logger().debug(F"Reading from {blob}")
                 ds = self.reader_class.get_records(blob)
                 ds = self._parse(ds)
-                yield from select_from(ds, where=self.where)
+                if self.filters:
+                    yield from self.filters.filter_dictset(ds)
+                else:
+                    yield from select_from(ds, where=self.where)
 
     def __iter__(self):
         return self

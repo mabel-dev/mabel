@@ -6,11 +6,9 @@ import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.logging import LEVELS, get_logger, set_log_name
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:
-    pass
+from rich import traceback
+
+traceback.install()
 
 LOG_NAME = "TEST_SCRIPTS"
 set_log_name(LOG_NAME)
@@ -29,7 +27,7 @@ def test_new_log_levels(caplog):
 
     log name, log level, log message
     """
-    if caplog == None:
+    if caplog is None:
         print('unable to test logging interactively - use pytest')
         return
 
@@ -89,7 +87,7 @@ def test_adding_logging_levels_fails_if_the_level_already_exists():
         failed = True
     assert failed
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_smoke_test()
     test_log_sanitizer()
     test_adding_logging_levels_fails_if_the_level_already_exists()

@@ -6,11 +6,9 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.adapters.mqtt import MqttReader
 from mabel import Reader
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:
-    pass
+from rich import traceback
+
+traceback.install()
 
 
 def test_mq():
@@ -25,7 +23,7 @@ def test_mq():
         print(i, item)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_mq()
 
     print('okay')

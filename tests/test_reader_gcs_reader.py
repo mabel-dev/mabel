@@ -4,11 +4,10 @@ import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.adapters.google import GoogleCloudStorageReader
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:   # pragma: no cover
-    pass
+from rich import traceback
+
+traceback.install()
+
 
 
 def test_blockers():
@@ -22,7 +21,7 @@ def test_blockers():
         r = GoogleCloudStorageReader(project='project')
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_blockers()
 
     print('okay')

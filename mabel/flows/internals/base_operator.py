@@ -281,6 +281,7 @@ class BaseOperator(abc.ABC):
                 label = type(operator).__name__
                 if hasattr(operator, '__name__'):
                     label = operator.__name__
+                #  deepcode ignore return~not~implemented: appears to be false positive
                 raise TypeError(F"Operator {label} must inherit BaseOperator, this error also occurs when the Operator has not been correctly instantiated.")
         # this variable only exists to build the graph, we don't need it
         # anymore so destroy it
@@ -314,3 +315,6 @@ class BaseOperator(abc.ABC):
             for line in text.splitlines():
                 yield fill(line, line_len)
         return '\n'.join(list(_inner(text)))
+
+    def __repr__(self):
+        return F"<{self.name}, version: {self.version()}>"

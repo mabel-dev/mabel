@@ -4,11 +4,9 @@ import time
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.operators import EndOperator
 from mabel import BaseOperator, operatify
-try:
-    from rich import traceback
-    traceback.install()
-except ImportError:
-    pass
+from rich import traceback
+
+traceback.install()
 
 DATASET = [
     {'secret':'123'},
@@ -36,7 +34,7 @@ def test_operatify():
     assert error == False
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     test_operatify()
 
     print('okay')

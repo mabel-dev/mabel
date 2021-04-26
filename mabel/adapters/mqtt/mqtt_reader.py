@@ -2,12 +2,15 @@
 import io
 import glob
 import datetime
-import paho.mqtt.client as mqtt
 from typing import Iterable, Tuple, Optional, List
 from ...data.readers.internals.base_inner_reader import BaseInnerReader
 from ...utils import paths, common
 from ...logging import get_logger
 from ...errors import InvalidReaderConfigError
+try:
+    import paho.mqtt.client as mqtt
+except ImportError:  # pragma: no cover
+    pass
 
 
 # pip install paho-mqtt
