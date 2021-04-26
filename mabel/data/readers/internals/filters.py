@@ -137,7 +137,6 @@ class Filters():
             self.filters = filters
             self.empty_filter = False
         else:
-            self.filters = None
             self.empty_filter = True
 
 
