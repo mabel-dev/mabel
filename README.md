@@ -13,6 +13,10 @@
 [![deepcode](https://www.deepcode.ai/api/gh/badge?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybTEiOiJnaCIsIm93bmVyMSI6Impvb2NlciIsInJlcG8xIjoibWFiZWwiLCJpbmNsdWRlTGludCI6ZmFsc2UsImF1dGhvcklkIjoyNTcxMiwiaWF0IjoxNjE5MjUyNzkxfQ.UtjaLJQjVxoQjesfMXuQ-tnbvJBUEzMUSJAC_neucek)](https://www.deepcode.ai/app/gh/joocer/mabel/_/dashboard?utm_content=gh%2Fjoocer%2Fmabel)
 [![Downloads](https://img.shields.io/pypi/dm/mabel.svg)](https://pypi.org/project/mabel/)
 
+- **Documentation** [https://github.com/joocer/mabel/wiki](https://github.com/joocer/mabel/wiki)
+- **Source Code**  [https://github.com/joocer/mabel](https://github.com/joocer/mabel)
+- **Bug Reports** [https://github.com/joocer/mabel/issues](https://github.com/joocer/mabel/issues)
+
 ## What are its Key Features
 
 -  Programatically define data pipelines
@@ -22,10 +26,6 @@
 -  Trace messages through the pipeline (random sampling)
 -  Automatic retry of failed operations
 -  Low-memory requirements, even with Tb of data
-
-## Where Can I Find Documentation
-
-See the [wiki](https://github.com/joocer/mabel/wiki)
 
 ## How Do I Get It?
 

@@ -12,6 +12,7 @@ from enum import Enum
 from functools import lru_cache
 from typing import Optional, Any, Iterable, List, Tuple, Union
 from ....errors import InvalidSyntaxError
+from ....logging import get_logger
 import re
 
 
@@ -133,9 +134,26 @@ class Filters():
         if filters:
             self.predicates = filters
             self.empty_filter = False
+            # record the filters, will help optimize indicies later
+            get_logger().info(f"filter columns: {self._get_filter_columns(filters)}")
         else:
             self.empty_filter = True
 
+    def _get_filter_columns(self, predicate):
+        if predicate is None:
+            return []
+        if isinstance(predicate, tuple):
+            key, op, value = predicate
+            return [key]
+        if isinstance(predicate, list):
+            if all([isinstance(p, tuple) for p in predicate]):
+                return [k for k,o,v in predicate]
+            if all([isinstance(p, list) for p in predicate]):
+                columns = []
+                for p in predicate:
+                    columns += self._get_filter_columns(p)
+                return columns
+        return []
 
     def filter_dictset(
             self,
