@@ -29,7 +29,7 @@ def test_flow_runner():
             runner(data="Oh my God.")
             runner(data="Yeah, welcome to the club, pal.")
 
-    except Exception:
+    except Exception:  # pragma: no cover
         errored = True
 
     assert not errored

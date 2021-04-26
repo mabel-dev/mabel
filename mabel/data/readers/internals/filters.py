@@ -37,8 +37,6 @@ def _lt(x,y):   return x < y
 def _gt(x,y):   return x > y
 def _lte(x,y):  return x <= y
 def _gte(x,y):  return x >= y
-def _and(x,y):  return x and y
-def _or(x,y):   return x or y
 def _like(x,y): return _sql_like_fragment_to_regex(y).match(str(x))
 def _in(x,y):   return x in y
 def _nin(x,y):  return x not in y
@@ -46,18 +44,19 @@ def true(x):    return True
 
 # convert text representation of operators to functions
 OPERATORS = {
-    '='   : _eq,
-    '=='  : _eq,
-    '!='  : _neq,
-    '<'   : _lt,
-    '>'   : _gt,
-    '<='  : _lte,
-    '>='  : _gte,
-    'and' : _and,
-    'or'  : _or,
-    'like': _like,
-    'in'  : _in,
-    '!in' : _nin
+    '='     : _eq,
+    '=='    : _eq,
+    'is'    : _eq,
+    '!='    : _neq,
+    '<'     : _lt,
+    '>'     : _gt,
+    '<='    : _lte,
+    '>='    : _gte,
+    'like'  : _like,
+    'is in' : _in,
+    'in'    : _in,
+    '!in'   : _nin,
+    'not in': _nin,
 }
 
 def evaluate(
@@ -104,7 +103,7 @@ def evaluate(
 
 class Filters():
 
-    __slots__ = ('empty_filter', 'filters')
+    __slots__ = ('empty_filter', 'predicates')
 
     def __init__(
             self,
@@ -132,7 +131,7 @@ class Filters():
 
         """
         if filters:
-            self.filters = filters
+            self.predicates = filters
             self.empty_filter = False
         else:
             self.empty_filter = True
@@ -152,5 +151,5 @@ class Filters():
             dictionary
         """
         for record in dictset:
-            if self.empty_filter or evaluate(self.filters, record):
+            if self.empty_filter or evaluate(self.predicates, record):
                 yield record

@@ -16,7 +16,7 @@ MAXIMUM_SECONDS_PROCESSES_CAN_RUN = 600  # 5 minutes
 TERMINATE_SIGNAL = -1
 
 
-def _inner_process(flag, reader, source_queue, reply_queue, parser, where):
+def _inner_process(flag, reader, source_queue, reply_queue, parser, where):  # pragma: no cover
 
     try:
         source = source_queue.get(timeout=0.1)
@@ -40,7 +40,7 @@ def _inner_process(flag, reader, source_queue, reply_queue, parser, where):
     get_logger().debug('Terminating background process')
 
 
-def processed_reader(items_to_read, reader, parser, where):
+def processed_reader(items_to_read, reader, parser, where):  # pragma: no cover
 
     if os.name == 'nt':
         raise NotImplementedError('Reader Multi Processing not available on Windows platforms')

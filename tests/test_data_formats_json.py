@@ -40,7 +40,7 @@ def test_json_serialization():
 
     try:
         b = serialize(will_normally_fail)
-    except:
+    except:  # pragma: no cover
         failed = True
 
     assert not failed, "didn't process all types"

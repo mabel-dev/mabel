@@ -13,8 +13,6 @@ traceback.install()
 LOG_NAME = "TEST_SCRIPTS"
 set_log_name(LOG_NAME)
 
-def alert():
-  pass
 
 def test_new_log_levels(caplog):
     """
@@ -27,17 +25,19 @@ def test_new_log_levels(caplog):
 
     log name, log level, log message
     """
-    if caplog is None:
+    if caplog is None:  # pragma: no cover
         print('unable to test logging interactively - use pytest')
         return
 
     logger = get_logger()
 
     logger.audit("this is a sample audit")
-    assert caplog.record_tuples.pop() == (LOG_NAME, LEVELS.AUDIT, "this is a sample audit")
+    res = caplog.record_tuples.pop()
+    assert res  == (LOG_NAME, LEVELS.AUDIT, "this is a sample audit")
 
     logger.alert("this is a sample alert")
-    assert caplog.record_tuples.pop() == (LOG_NAME, LEVELS.ALERT, "this is a sample alert")
+    res = caplog.record_tuples.pop()
+    assert res == (LOG_NAME, LEVELS.ALERT, "this is a sample alert")
 
   
 def test_smoke_test():

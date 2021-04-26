@@ -112,17 +112,17 @@ class Reader():
             InvalidCombinationError
                 Forking and Threading can not be used at the same time
         """
-        if not isinstance(select, list):
+        if not isinstance(select, list):  # pragma: no cover
             raise TypeError("Reader 'select' parameter must be a list")
         if where is not None and not hasattr(where, '__call__'):
             raise TypeError("Reader 'where' parameter must be Callable or None")
 
         # load the line converter
         self._parse = PARSERS.get(row_format.lower())
-        if self._parse is None:
+        if self._parse is None:  # pragma: no cover
             raise TypeError(F"Row format unsupported: {row_format} - valid options are {list(PARSERS.keys())}.")
 
-        if dataset is None and kwargs.get('from_path'):
+        if dataset is None and kwargs.get('from_path'):  # pragma: no cover
             dataset = kwargs['from_path']
             get_logger().warning('DEPRECATION: Reader \'from_path\' parameter will be replaced with \'dataset\' ')
 
@@ -152,17 +152,17 @@ class Reader():
 
         # number of days to walk backwards to find records
         self.step_back_days = int(kwargs.get('step_back_days', 0))
-        if self.step_back_days > 0 and self.reader_class.start_date != self.reader_class.end_date:
+        if self.step_back_days > 0 and self.reader_class.start_date != self.reader_class.end_date:  # pragma: no cover
             raise InvalidCombinationError("step_back_days can only be used when the start and end dates are the same")
 
-        if row_format != 'pass-thru' and kwargs.get('extension') == '.parquet':
+        if row_format != 'pass-thru' and kwargs.get('extension') == '.parquet':  # pragma: no cover
             raise InvalidCombinationError("`parquet` extension much be used with the `pass-thru` row_format")
 
         """ FEATURES IN DEVELOPMENT """
 
         # multiprocessed reader
         self.fork_processes = bool(kwargs.get('fork_processes', False))
-        if self.thread_count > 0 and self.fork_processes:
+        if self.thread_count > 0 and self.fork_processes:  # pragma: no cover
             raise InvalidCombinationError('Forking and Threading can not be used at the same time')
         if self.fork_processes:
             get_logger().warning("FORKED READER IS EXPERIMENTAL")
@@ -277,11 +277,11 @@ class Reader():
         """
         try:
             import pandas as pd  # type:ignore
-        except ImportError:
+        except ImportError:  # pragma: no cover
             raise ImportError("Pandas must be installed to use 'to_pandas'")
         return pd.DataFrame(self)
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no cover
 
         def is_running_from_ipython():
             """
