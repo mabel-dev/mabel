@@ -11,10 +11,8 @@ any indices at this point.
 from enum import Enum
 from functools import lru_cache
 from typing import Optional, Any, Iterable, List, Tuple, Union
-#from ....errors import InvalidSyntaxError
+from ....errors import InvalidSyntaxError
 import re
-
-InvalidSyntaxError = Exception
 
 
 # https://codereview.stackexchange.com/a/248421
