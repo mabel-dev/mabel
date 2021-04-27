@@ -46,8 +46,6 @@ pip install --upgrade git+https://github.com/joocer/mabel
 -  **[UltraJSON](https://github.com/ultrajson/ultrajson)** (AKA `ujson`) is used where `orjson` is not available. (<img align="centre" alt="Notice" height="16" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />1)
 -  **[dateutil](https://dateutil.readthedocs.io/en/stable/)** is used to convert dates received as strings
 -  **[zstandard](https://github.com/indygreg/python-zstandard)** is used for real-time compression
--  **[mmh3](https://github.com/hajimes/mmh3)** is used for non-cryptographic hashing
--  **[bitarray](https://github.com/ilanschnell/bitarray)** is used for compacting data
 
 There are a number of optional dependencies which are usually only required for specific features and functionality. These are listed in the [requirements-test.txt](https://github.com/joocer/mabel/blob/main/requirements-test.txt) file which is used for testing. The key exception is `orjson` which is the preferred JSON library but not available on all platforms.
 
