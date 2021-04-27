@@ -59,8 +59,8 @@ representative at an online or offline event.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the community leaders responsible for enforcement DMing 
-@mabel09368465 on Twitter.
+reported to the community leaders responsible for enforcement via Google Groups:
+[mabel-team@googlegroups.com](mabel-team@googlegroups.com).
 
 All complaints will be reviewed and investigated promptly and fairly.
 

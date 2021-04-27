@@ -13,7 +13,14 @@
 [![deepcode](https://www.deepcode.ai/api/gh/badge?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybTEiOiJnaCIsIm93bmVyMSI6Impvb2NlciIsInJlcG8xIjoibWFiZWwiLCJpbmNsdWRlTGludCI6ZmFsc2UsImF1dGhvcklkIjoyNTcxMiwiaWF0IjoxNjE5MjUyNzkxfQ.UtjaLJQjVxoQjesfMXuQ-tnbvJBUEzMUSJAC_neucek)](https://www.deepcode.ai/app/gh/joocer/mabel/_/dashboard?utm_content=gh%2Fjoocer%2Fmabel)
 [![Downloads](https://img.shields.io/pypi/dm/mabel.svg)](https://pypi.org/project/mabel/)
 
-## What are its Key Features
+
+- **Documentation** [GitHub Wiki](https://github.com/joocer/mabel/wiki)
+- **Bug Reports** [GitHub Issues](https://github.com/joocer/mabel/issues/new/choose)
+- **Source Code**  [GitHub](https://github.com/joocer/mabel)
+- **Discussions** [GitHub Discussions](https://github.com/joocer/mabel/discussions)
+
+
+## Key Features
 
 -  Programatically define data pipelines
 -  Treats datasets as immutable
@@ -23,11 +30,7 @@
 -  Automatic retry of failed operations
 -  Low-memory requirements, even with Tb of data
 
-## Where Can I Find Documentation
-
-See the [wiki](https://github.com/joocer/mabel/wiki)
-
-## How Do I Get It?
+## Installation
 
 From PyPI (recommended)
 ~~~
@@ -38,21 +41,22 @@ From GitHub
 pip install --upgrade git+https://github.com/joocer/mabel
 ~~~
 
-## What Dependencies does mabel Have?
+## Dependencies
 
--  **[UltraJSON](https://github.com/ultrajson/ultrajson)** (AKA `ujson`) is used where `orjson` is not available. `orjson` is the preferred JSON library but is not available on all platforms and environments so `ujson` is a dependency to ensure a performant JSON library with broad support is available.  
+-  **[UltraJSON](https://github.com/ultrajson/ultrajson)** (AKA `ujson`) is used where `orjson` is not available. (<img align="centre" alt="Notice" height="16" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />1)
 -  **[dateutil](https://dateutil.readthedocs.io/en/stable/)** is used to convert dates received as strings
 -  **[zstandard](https://github.com/indygreg/python-zstandard)** is used for real-time compression
--  **[mmh3](https://github.com/hajimes/mmh3)** is used for non-cryptographic hashing
--  **[bitarray](https://github.com/ilanschnell/bitarray)** is used for compacting data
 
 There are a number of optional dependencies which are usually only required for specific features and functionality. These are listed in the [requirements-test.txt](https://github.com/joocer/mabel/blob/main/requirements-test.txt) file which is used for testing. The key exception is `orjson` which is the preferred JSON library but not available on all platforms.
 
 ## Can I Contribute?
 
+All contributions, bug reports, bug fixes, documentation improvements,
+enhancements, and ideas are welcome.
+
 Want to help build mabel? See the [contribution guidance](https://github.com/joocer/mabel/blob/main/CONTRIBUTING.md)
 
-## What Platforms Does mabel Support?
+## Platform Support?
 
 mabel comes with adapters for the following services, or is tested to run on the following platforms:
 
@@ -72,7 +76,8 @@ Linux, MacOS and Windows (<img align="centre" alt="Notice" height="16" src="http
 Adapters for other data services can be written. 
 
 <img align="centre" alt="Notice" height="16" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />1 - Raspbian fully functional with `ujson`  
-<img align="centre" alt="Notice" height="16" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />2 - Multi-Processing not available on Windows
+<img align="centre" alt="Notice" height="16" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />2 - Multi-Processing not available on Windows. Alternate indexing libraries may be used on Windows.
 
 ## License
+
 [Apache 2.0](LICENSE)

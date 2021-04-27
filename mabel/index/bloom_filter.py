@@ -20,8 +20,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-
-from bitarray import bitarray  # type:ignore
+try:
+    from bitarray import bitarray  # type:ignore
+except ImportError:
+    from .bitarray import bitarray
+    from ..logging import get_logger
+    get_logger().warning("bitarray library not found, using pure-python implementation instead")
 import mmh3  # type:ignore
 
 

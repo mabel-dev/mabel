@@ -9,6 +9,7 @@ from ....logging import get_logger
 BLOB_SIZE = 32*1024*1024  # about 32 files per gigabyte
 BUFFER_SIZE = BLOB_SIZE   # buffer in memory really
 SUPPORTED_FORMATS_ALGORITHMS = ('jsonl', 'lzma', 'zstd', 'parquet')
+MAXIMUM_RECORDS = 64000   # needs to be less than 2^16-1
 
 class BlobWriter():
 
@@ -40,7 +41,7 @@ class BlobWriter():
         # if this write would exceed the blob size, close it so another
         # blob will be created
         self.bytes_in_blob += len(serialized) + 1
-        if self.bytes_in_blob > self.maximum_blob_size:
+        if self.bytes_in_blob > self.maximum_blob_size or self.records_in_blob == MAXIMUM_RECORDS:
             self.commit()
             self._open_blob()
 

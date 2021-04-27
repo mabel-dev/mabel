@@ -34,7 +34,7 @@ def set_up():
     bucket = client.bucket(BUCKET_NAME)
     try:
         bucket = client.create_bucket(bucket)
-    except:
+    except:  # pragma: no cover
         pass
 
     return server
@@ -65,7 +65,7 @@ def test_gcs():
         l = list(r)
 
         assert len(l) == 200, len(l)
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         raise e
     finally:
         server.stop()

@@ -10,9 +10,10 @@ except ImportError:
     pass
 
 import os
-os.system("")  # nosec - added as part of formatting log messages
-
 from .version import __version__
+
+if os.environ.get('RESOURCE_MONITORING', False):
+    from .utils.resource_monitoring import ResourceMonitor
 
 from .flows.flow import Flow
 from .data.readers.reader import Reader

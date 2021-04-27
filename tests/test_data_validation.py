@@ -72,7 +72,7 @@ def test_validator_invalid_schema():
     result = True
     try:
         Schema({"name": "string"})
-    except:
+    except:  # pragma: no cover
         result = False
     assert (not result)
     
@@ -157,7 +157,7 @@ def test_validator_loaders():
     try:
         test = Schema(TEST_SCHEMA_DICT)
         test.validate({"string_field": "pass"})
-    except Exception:
+    except Exception:  # pragma: no cover
         failed = True
     assert not failed, "load schema from dictionary"
 
@@ -165,7 +165,7 @@ def test_validator_loaders():
     try:
         test = Schema(TEST_SCHEMA_STRING)
         test.validate({"string_field": "pass"})
-    except Exception:
+    except Exception:  # pragma: no cover
         failed = True
     assert not failed, "load schema from string"
 
@@ -173,7 +173,7 @@ def test_validator_loaders():
     try:
         test = Schema(TEST_SCHEMA_FILE)
         test.validate({"string_field": "pass"})
-    except Exception:
+    except Exception:  # pragma: no cover
         failed = True
     assert not failed, "load schema from file"
 
@@ -222,7 +222,7 @@ def test_unknown_type():
     failed = False
     try:
         test = Schema(TEST_SCHEMA)
-    except ValueError:
+    except ValueError:  # pragma: no cover
         failed = True
 
     assert failed
@@ -237,7 +237,7 @@ def test_raise_exception():
     failed = False
     try:
         test.validate(TEST_DATA, raise_exception=True)
-    except ValidationError:
+    except ValidationError:  # pragma: no cover
         failed = True
 
     assert failed
