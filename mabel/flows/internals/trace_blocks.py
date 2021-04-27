@@ -19,13 +19,13 @@ the user must update the audit log and this trace block.
 #nodoc - don't add to the documentation wiki
 """
 import os
-import ujson
+import json
 import hashlib
 import datetime
 from typing import Optional
 from ...utils import entropy
 
-serialize = ujson.dumps  # prevent circular imports
+serialize = json.dumps  # prevent circular imports
 
 EMPTY_HASH = "0" * 64
 
