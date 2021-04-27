@@ -49,7 +49,10 @@ class MqttReader(BaseInnerReader):
         # not used but must be present
         pass
 
-    def get_records(self, blob) -> Iterable[str]:
+    def get_records(
+            self,
+            blob_name: str,
+            rows: Optional[Iterable[int]] = None) -> Iterable[str]:
         """
         Override this method to just return records as they appear
         on the queue

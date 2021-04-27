@@ -29,7 +29,6 @@ class BlobWriter():
 
         kwargs['format'] = format
         self.inner_writer = inner_writer(**kwargs)  # type:ignore
-        #self.index_on = kwargs.get('index_on', set())
         self._open_blob()
 
 
@@ -49,16 +48,9 @@ class BlobWriter():
         self.file.write(serialized)
         self.records_in_blob += 1
 
-        #for field in self.index_on:
-        #    self.indices[field].insert(record.get(field), self.records_in_blob)
-
         return self.records_in_blob
 
     def commit(self):
-
-        #for field in self.index_on:
-        #    print(self.indices[field].show())
-        #get_logger().warning("TODO: indices aren't being saved")
 
         if self.bytes_in_blob > 0:
             with threading.Lock():
@@ -110,9 +102,6 @@ class BlobWriter():
 
         self.bytes_in_blob = 0
         self.records_in_blob = 0
-        #self.indices = {}
-        #for field in self.index_on:
-        #    self.indices[field] = []
 
     def __del__(self):
         # this should never be relied on to save data
