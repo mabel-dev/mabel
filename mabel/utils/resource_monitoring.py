@@ -1,8 +1,7 @@
 import threading
 import os
 from time import sleep
-#from ..logging import get_logger
-import logging
+from ..logging import get_logger
 
 can_use_resource_lib = True
 try:
@@ -27,13 +26,13 @@ class ResourceMonitor():
             else:
                 memory_usage = self.process.memory_info()[0]
             self.max_memory_usage = max(self.max_memory_usage, memory_usage)
-            print(F"memory", memory_usage)
+            get_logger().info({"memory":memory_usage})
             sleep(self.frequency)
 
         return self.max_memory_usage
 
     def __del__(self):
-        print(F'max usage {self.max_memory_usage}')
+        get_logger().debug({"max_memory":self.max_memory_usage})
 
 
 monitor = ResourceMonitor()
