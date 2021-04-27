@@ -34,7 +34,7 @@ class bitarray():
 
     def setall(self, value=0):
         for i in range(self.size):
-            self[i] = value
+            self.__setitem__(i, value)
 
     def __setitem__(self, bit, value):
         b = self.bits[bit>>3]

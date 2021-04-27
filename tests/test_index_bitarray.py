@@ -21,15 +21,16 @@ def test_index_bitarray():
 
     SIZE = 32
     bits = bitarray(SIZE)
+
     bits.setall(1)
+    assert repr(bits) == "bitarray('11111111111111111111111111111111')"
+    bits.setall(0)
+    assert repr(bits) == "bitarray('00000000000000000000000000000000')"
 
     for step in range(5):
         for i in range(0, SIZE, step+1):
             bits[i] = abs(bits[i] - 1)
-        assert repr(bits) == EXPECTED_RESULTS[step]
-        
-
-
+        assert repr(bits) == EXPECTED_RESULTS[step], repr(bits)
 
 if __name__ == "__main__":  # pragma: no cover
     test_index_bitarray()
