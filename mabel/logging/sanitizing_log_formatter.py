@@ -48,6 +48,11 @@ class SanitizingLogFormatter(logging.Formatter):
                 return record.replace(k, v)
         return record
 
+    def colorize(self, record):
+        #[MBL-70]
+        # https://gist.github.com/vratiu/9780109
+        return record
+
     def __getattr__(self, attr):
         return getattr(self.orig_formatter, attr)
 
