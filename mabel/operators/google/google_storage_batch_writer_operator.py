@@ -3,7 +3,7 @@ from ...data import BatchWriter
 from ...adapters.google import GoogleCloudStorageWriter
 
 
-class GoogleStorageBatchWriter(BaseWriterOperator):
+class GoogleStorageBatchWriterOperator(BaseWriterOperator):
 
     def __init__(
             self,

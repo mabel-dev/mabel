@@ -3,7 +3,7 @@ from ...data import StreamWriter
 from ...adapters.minio import MinIoWriter
 
 
-class StreamToMinIoOperator(BaseWriterOperator):
+class MinIoStreamWriterOperator(BaseWriterOperator):
 
     def __init__(
             self,

@@ -21,15 +21,25 @@ def test_index_bitarray():
 
     SIZE = 32
     bits = bitarray(SIZE)
+
     bits.setall(1)
+    assert repr(bits) == "bitarray('11111111111111111111111111111111')", "set one way"
+    bits.setall(0)
+    assert repr(bits) == "bitarray('00000000000000000000000000000000')", "set the other way"
+    bits.setall(1)
+    assert repr(bits) == "bitarray('11111111111111111111111111111111')", "set back the first way"
+    bits.setall(1)
+    assert repr(bits) == "bitarray('11111111111111111111111111111111')", "set the same way"
+    bits.setall(0)
+    assert repr(bits) == "bitarray('00000000000000000000000000000000')", "swap"
+    bits.setall(0)
+    assert repr(bits) == "bitarray('00000000000000000000000000000000')", "set the same way the other way"
 
     for step in range(5):
         for i in range(0, SIZE, step+1):
             bits[i] = abs(bits[i] - 1)
-        assert repr(bits) == EXPECTED_RESULTS[step]
-        
-
-
+        print(bits)
+        assert repr(bits) == EXPECTED_RESULTS[step], repr(bits)
 
 if __name__ == "__main__":  # pragma: no cover
     test_index_bitarray()

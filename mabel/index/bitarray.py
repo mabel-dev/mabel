@@ -27,21 +27,21 @@ class bitarray():
 
     def __init__(
             self,
-            size: int,
+            size: int = 0,
             endian: str = ''):
         self.size = size
         self.bits = [0 for i in range((size+7)>>3)]
 
     def setall(self, value=0):
         for i in range(self.size):
-            self[i] == value
+            self.__setitem__(i, value)
 
     def __setitem__(self, bit, value):
         b = self.bits[bit>>3]
         if value:
             self.bits[bit>>3] = b | 1 << (bit % 8)
         else:
-            self.bits[bit>>3] = b ^ 1 << (bit % 8)
+            self.bits[bit>>3] = b & ~(1 << (bit % 8))
 
     def __getitem__(self, bit):
         b = self.bits[bit>>3]
@@ -52,3 +52,15 @@ class bitarray():
             for i in range(self.size):
                 yield str(self[i])
         return F"bitarray('{''.join(list(_inner()))}')"
+
+    def tofile(self, filehandle):
+        filehandle.write(bytes(self.bits))
+
+    def fromfile(self, filehandle):
+        self.size = 0
+        b = filehandle.read(1)
+        while b:
+            i = int.from_bytes(b, byteorder="big")
+            self.size += 8
+            self.bits.append(i)
+            b = filehandle.read(1)

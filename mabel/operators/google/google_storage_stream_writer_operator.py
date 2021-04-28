@@ -3,7 +3,7 @@ from ...data import StreamWriter
 from ...adapters.google import GoogleCloudStorageWriter
 
 
-class StreamToGoogleStorageOperator(BaseWriterOperator):
+class GoogleStorageStreamWriterOperator(BaseWriterOperator):
 
     def __init__(
             self,

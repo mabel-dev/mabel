@@ -1,7 +1,8 @@
+import os
 import re
 import hashlib
 import logging
-import ujson as json
+import json
 
 # import ujson because importing the mabel json module creates circular
 # references, we use ujson rather than orjson for greatest compatibility
@@ -43,9 +44,15 @@ class SanitizingLogFormatter(logging.Formatter):
         return msg
 
     def color_code(self, record):
-        for k, v in COLOR_EXCHANGES.items():
-            if k in record:
-                return record.replace(k, v)
+        if os.environ.get("COLORIZE_LOGS", False):
+            for k, v in COLOR_EXCHANGES.items():
+                if k in record:
+                    return record.replace(k, v)
+        return record
+
+    def colorize(self, record):
+        #[MBL-70]
+        # https://gist.github.com/vratiu/9780109
         return record
 
     def __getattr__(self, attr):
