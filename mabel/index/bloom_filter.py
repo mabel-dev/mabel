@@ -71,7 +71,7 @@ class BloomFilter():
             number_of_elements: integer
                 The number of items expected to be stored in filter
             fp_rate: float (optional)
-                False Positive rate (0 to 1), default 0.95
+                False Positive rate (0 to 1), default 0.05
 
         Returns:
             integer
@@ -136,7 +136,7 @@ class BloomFilter():
             if magic_string != 'MB01':  # pragma: no cover
                 raise IndexError(F'{filename} does appear to be a valid bloom file')
             filter_size = bytes_to_int(fh.read(4))
-            hash_count  = bytes_to_int(fh.read(4))
+            hash_count  = bytes_to_int(fh.read(4)) 
             bits.fromfile(fh)
 
         bf = BloomFilter()
