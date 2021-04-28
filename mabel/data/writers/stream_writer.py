@@ -91,9 +91,6 @@ class StreamWriter(SimpleWriter):
         # get the appropritate writer from the pool and append the record
         # the writer identity is the base of the path where the partitions
         # are written.
-        data_date = self.batch_date
-        if data_date is None:
-            data_date = datetime.date.today()
 
         # Check the new record conforms to the schema
         # unlike the batch writer, we don't want to bail out if we have a
@@ -101,10 +98,10 @@ class StreamWriter(SimpleWriter):
         # partition
         if self.schema and not self.schema.validate(subject=record, raise_exception=False):
             print('validation')
-            identity = paths.date_format(self.dataset, data_date) + 'BACKOUT/'
+            identity = paths.date_format(self.dataset, datetime.date.today()) + 'BACKOUT/'
             get_logger().warning(F'Schema Validation Failed ({self.schema.last_error}) - message being written to {identity}')
         else:
-            identity = paths.date_format(self.dataset, data_date)
+            identity = paths.date_format(self.dataset, datetime.date.today())
 
         with threading.Lock():
             blob_writer = self.writer_pool.get_writer(identity)

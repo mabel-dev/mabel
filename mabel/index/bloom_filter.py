@@ -20,13 +20,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+from ..logging import get_logger
 try:
     from bitarray import bitarray  # type:ignore
 except ImportError:
     from .bitarray import bitarray
-    from ..logging import get_logger
     get_logger().warning("bitarray library not found, using pure-python implementation instead")
-import mmh3  # type:ignore
+
 
 
 class BloomFilter():
@@ -100,11 +100,21 @@ class BloomFilter():
         """
         Add a value to the index
         """
+        try:
+            import mmh3  # type:ignore
+        except ImportError:
+            get_logger().warning("Library 'mmh3' is required for this functionality.") 
+
         for i in range(self.hash_count):
             h = mmh3.hash(term, seed=i) % self.filter_size
             self.bits[h] = 1
 
     def __contains__(self, term):
+        try:
+            import mmh3  # type:ignore
+        except ImportError:
+            get_logger().warning("Library 'mmh3' is required for this functionality.") 
+
         for i in range(self.hash_count):
             h = mmh3.hash(term, seed=i) % self.filter_size
             if self.bits[h] == 0:

@@ -3,7 +3,7 @@ from ...data import StreamWriter  # type:ignore
 from ...adapters.disk import DiskWriter
 
 
-class StreamToDiskOperator(BaseWriterOperator):
+class DiskStreamWriterOperator(BaseWriterOperator):
 
     def __init__(
             self,
