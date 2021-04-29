@@ -20,14 +20,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from ..logging import get_logger
-try:
-    from bitarray import bitarray  # type:ignore
-except ImportError:
-    from .bitarray import bitarray
-    get_logger().warning("bitarray library not found, using pure-python implementation instead")
-
-
 
 class BloomFilter():
 
@@ -53,6 +45,19 @@ class BloomFilter():
         .bloom files created to quickly determine if a file probably has the
         value being looked for (not currently implemented)
         """
+        from ..logging import get_logger
+        
+        try:
+            from bitarray import bitarray  # type:ignore
+        except ImportError:
+            from .bitarray import bitarray
+            get_logger().warning("`bitarray` library not found, using pure-python implementation.")
+        
+        try:
+            import mmh3  # type:ignore
+        except ImportError:
+            get_logger().warning("Library 'mmh3' is required for this functionality (BloomFilter).") 
+        
         self.filter_size = BloomFilter.get_size(number_of_elements, fp_rate)
         self.hash_count = BloomFilter.get_hash_count(self.filter_size, number_of_elements)
         self.bits = bitarray(self.filter_size, endian='big')
@@ -100,21 +105,11 @@ class BloomFilter():
         """
         Add a value to the index
         """
-        try:
-            import mmh3  # type:ignore
-        except ImportError:
-            get_logger().warning("Library 'mmh3' is required for this functionality.") 
-
         for i in range(self.hash_count):
             h = mmh3.hash(term, seed=i) % self.filter_size
             self.bits[h] = 1
 
     def __contains__(self, term):
-        try:
-            import mmh3  # type:ignore
-        except ImportError:
-            get_logger().warning("Library 'mmh3' is required for this functionality.") 
-
         for i in range(self.hash_count):
             h = mmh3.hash(term, seed=i) % self.filter_size
             if self.bits[h] == 0:
@@ -137,9 +132,12 @@ class BloomFilter():
         """
         Read a bloom filter from disk
         """
+        
         def bytes_to_int(xbytes: bytes) -> int:
             return int.from_bytes(xbytes, 'big')
 
+        bf = BloomFilter()
+        
         bits = bitarray(endian='big')
         with open(filename, 'rb') as fh:
             magic_string = fh.read(4).decode()
@@ -149,7 +147,6 @@ class BloomFilter():
             hash_count  = bytes_to_int(fh.read(4)) 
             bits.fromfile(fh)
 
-        bf = BloomFilter()
         bf.bits = bits
         bf.filter_size = filter_size
         bf.hash_count = hash_count
