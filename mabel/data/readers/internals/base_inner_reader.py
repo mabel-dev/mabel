@@ -5,15 +5,18 @@ import abc
 import pathlib
 import datetime
 from io import IOBase
+from enum import Enum
 from typing import Iterable, Optional
 from dateutil import parser
 from ...formats import json
 from ....utils import common, paths
 from ....logging import get_logger
 
+
+
 class BaseInnerReader(abc.ABC):
 
-    VALID_EXTENSIONS = ['.zstd', '.lzma', '.jsonl', '.csv', '.lxml', '.parquet', '.ignore', '.profile', '.index', '.bloom']
+    VALID_EXTENSIONS = ['.json', '.zstd', '.lzma', '.jsonl', '.csv', '.lxml', '.parquet', '.ignore', '.profile', '.index', '.bloom']
 
     def _extract_date_part(self, value):
         if isinstance(value, str):
