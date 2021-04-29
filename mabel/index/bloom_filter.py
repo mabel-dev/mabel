@@ -20,6 +20,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+try:
+    from bitarray import bitarray  # type:ignore
+except ImportError:
+    from .bitarray import bitarray
 
 class BloomFilter():
 
@@ -44,20 +48,7 @@ class BloomFilter():
         This is expected to be used to speed-up searches for data, with
         .bloom files created to quickly determine if a file probably has the
         value being looked for (not currently implemented)
-        """
-        from ..logging import get_logger
-        
-        try:
-            from bitarray import bitarray  # type:ignore
-        except ImportError:
-            from .bitarray import bitarray
-            get_logger().warning("`bitarray` library not found, using pure-python implementation.")
-        
-        try:
-            import mmh3  # type:ignore
-        except ImportError:
-            get_logger().warning("Library 'mmh3' is required for this functionality (BloomFilter).") 
-        
+        """        
         self.filter_size = BloomFilter.get_size(number_of_elements, fp_rate)
         self.hash_count = BloomFilter.get_hash_count(self.filter_size, number_of_elements)
         self.bits = bitarray(self.filter_size, endian='big')
@@ -105,11 +96,13 @@ class BloomFilter():
         """
         Add a value to the index
         """
+        import mmh3  # type:ignore
         for i in range(self.hash_count):
             h = mmh3.hash(term, seed=i) % self.filter_size
             self.bits[h] = 1
 
     def __contains__(self, term):
+        import mmh3  # type:ignore
         for i in range(self.hash_count):
             h = mmh3.hash(term, seed=i) % self.filter_size
             if self.bits[h] == 0:
