@@ -1,5 +1,6 @@
 import os
 import logging
+from typing import Optional
 from functools import lru_cache
 from .add_level import add_logging_level
 from .sanitizing_log_formatter import SanitizingLogFormatter
@@ -29,6 +30,7 @@ class LEVELS():
 def set_log_name(log_name: str):
     global LOG_NAME
     LOG_NAME = log_name
+    get_logger.cache_clear()
 
 @lru_cache(1)
 def get_logger() -> logging.Logger:
@@ -38,15 +40,15 @@ def get_logger() -> logging.Logger:
     Python's logging module).
     """
     logger = logging.getLogger(LOG_NAME)
-    try:
-        # default is to log WARNING and above
-        logger.setLevel(int(os.environ.get('LOGGING_LEVEL', 25)))
-    except:  # nosec
-        pass # nosec
+
+    # default is to log WARNING and above
+    logger.setLevel(int(os.environ.get('LOGGING_LEVEL', 25)))
 
     # add the TRACE, AUDIT and ALERT levels to the logger
-    add_logging_level("AUDIT", LEVELS.AUDIT)
-    add_logging_level("ALERT", LEVELS.ALERT)
+    if not hasattr(logger, 'audit'):
+        add_logging_level("AUDIT", LEVELS.AUDIT)
+    if not hasattr(logging, 'alert'):
+        add_logging_level("ALERT", LEVELS.ALERT)
 
     # configure the logger
     mabel_logging_handler = logging.StreamHandler()    
