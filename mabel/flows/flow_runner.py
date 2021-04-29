@@ -31,13 +31,13 @@ class FlowRunner():
         if not context:
             context = {} 
 
-        # create a uuid for the message if it doesn't already have one
-        if not context.get('uuid'):
-            context['uuid'] = str(uuid.uuid4())
+        # create a run_id for the message if it doesn't already have one
+        if not context.get('run_id'):
+            context['run_id'] = str(uuid.uuid4())
 
         # create a tracer for the message
         if not context.get('execution_trace'):
-            context['execution_trace'] = TraceBlocks(uuid=context['uuid'])
+            context['execution_trace'] = TraceBlocks(uuid=context['run_id'])
 
         # if trace hasn't been explicitly set - randomly select based on a sample rate
         if not context.get('trace') and trace_sample_rate:
@@ -54,7 +54,7 @@ class FlowRunner():
 
         # if being traced, send the trace to the trace writer
         if context.get('trace', False) and hasattr(self, 'trace_writer'):
-            self.trace_writer(context['execution_trace'], id_=str(context.get('uuid')))  #type:ignore
+            self.trace_writer(context['execution_trace'], id_=str(context.get('run_id')))  #type:ignore
 
 
     def _inner_runner(

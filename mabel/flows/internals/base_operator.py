@@ -133,7 +133,7 @@ class BaseOperator(abc.ABC):
             try:
                 outcome = self.finalize(context)
             except Exception as err:
-                self.logger.error(F"Problem finalizing {self.name} - {type(err).__name__} - {err} - {context.get('uuid')}")
+                self.logger.error(F"Problem finalizing {self.name} - {type(err).__name__} - {err} - {context.get('run_id')}")
             finally:
                 if not outcome:
                     outcome = context
@@ -157,7 +157,7 @@ class BaseOperator(abc.ABC):
                 self.errors += 1
                 attempts_to_go -= 1
                 if attempts_to_go:
-                    self.logger.error(F"{self.name} - {type(err).__name__} - {err} - retry in {self.retry_wait} seconds ({context.get('uuid')})")
+                    self.logger.error(F"{self.name} - {type(err).__name__} - {err} - retry in {self.retry_wait} seconds ({context.get('run_id')})")
                     time.sleep(self.retry_wait)
                 else:
                     error_log_reference = ''
@@ -177,10 +177,10 @@ class BaseOperator(abc.ABC):
                                 "------------------------------------------------------------------------------------------------------------------------\n")
                         error_log_reference = self.error_writer(error_payload)  # type:ignore
                     except Exception as err:
-                        self.logger.error(F"Problem writing to the error bin, a record has been lost. {self.name}, {type(err).__name__} - {err} - {context.get('uuid')}")
+                        self.logger.error(F"Problem writing to the error bin, a record has been lost. {self.name}, {type(err).__name__} - {err} - {context.get('run_id')}")
                     finally:
                         # finally blocks are called following a try/except block regardless of the outcome
-                        self.logger.alert(F"{self.name} - {type(error_reference).__name__} - {error_reference} - tried {self.retry_count} times before aborting ({context.get('uuid')}) {error_log_reference}")
+                        self.logger.alert(F"{self.name} - {type(error_reference).__name__} - {error_reference} - tried {self.retry_count} times before aborting ({context.get('run_id')}) {error_log_reference}")
                     outcome = None
                     # add a failure to the last_few_results list
                     self.last_few_results.append(0)
@@ -194,7 +194,7 @@ class BaseOperator(abc.ABC):
                                                  operator_version=self.version(),
                                                  execution_ns=my_execution_time,
                                                  data_block=serialize(data))
-            self.logger.audit(F"{context.get('uuid')} {self.name} {data_hash}")
+            self.logger.audit(F"{context.get('run_id')} {self.name} {data_hash}")
 
         # if there is a high failure rate, abort
         if sum(self.last_few_results) < (len(self.last_few_results) / 2):

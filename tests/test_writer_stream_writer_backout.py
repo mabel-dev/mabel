@@ -30,20 +30,19 @@ TEST_FOLDER = '_temp/path'
 
 def test_writer_backout():
 
-    if Path(TEST_FOLDER).exists():
+    if Path(TEST_FOLDER).exists():  # pragma: no cover
         shutil.rmtree(TEST_FOLDER)
 
-    # none of these should do anything
     w = StreamWriter(
             dataset=TEST_FOLDER,
             inner_writer=DiskWriter,
             schema=Schema(SCHEMA),
-            idle_timeout_seconds=2)
+            idle_timeout_seconds=1)
 
     for record in DATA_SET:
         w.append(record)
 
-    time.sleep(3)
+    time.sleep(4)
 
     r = Reader(
             dataset=TEST_FOLDER,

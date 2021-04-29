@@ -39,6 +39,7 @@ Check-ins should have prefixes:
 - `[MBL-nnn]` items relating to Jira tickets
 - `[FIX]` items fixing bugs
 - `[TEST]` improvements to testing
+- `[TIDY]` non-functional, commentary and cosmetic changes
 
 
 Docstrings should look like:
