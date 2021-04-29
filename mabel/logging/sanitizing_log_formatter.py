@@ -43,13 +43,13 @@ class SanitizingLogFormatter(logging.Formatter):
             msg = re.sub(r':\/\/(.*?)\@', r'://<redacted>', msg)
         return msg
     
-    def _can_colorize():
+    def _can_colorize(self):
         colorterm = os.environ.get('COLORTERM', '').lower()
         term = os.environ.get('TERM', '').lower()
         return 'yes' in colorterm or 'true' in colorterm or '256' in term        
 
     def color_code(self, record):
-        if _can_colorize():
+        if self._can_colorize():
             for k, v in COLOR_EXCHANGES.items():
                 if k in record:
                     return record.replace(k, v)
