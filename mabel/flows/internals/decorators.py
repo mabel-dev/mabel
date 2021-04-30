@@ -3,7 +3,7 @@ from ...logging import get_logger
 import types
 
 
-class DecoratorOperator(BaseOperator):
+class DecoratedOperator(BaseOperator):
 
     def __init__(self, func=None):
         super().__init__()
@@ -14,6 +14,6 @@ class DecoratorOperator(BaseOperator):
         response = self.func(data)
         return response, context
 
-def operatify(func):
-    operator = DecoratorOperator(func=func)
+def operator(func):
+    operator = DecoratedOperator(func=func)
     return operator
