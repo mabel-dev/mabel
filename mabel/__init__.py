@@ -6,13 +6,13 @@ try:
     from pathlib import Path
     env_path = Path('.') / '.env'
     load_dotenv(dotenv_path=env_path)
-except ImportError:
+except ImportError:  # pragma: no cover
     pass
 
 import os
 from .version import __version__
 
-if os.environ.get('RESOURCE_MONITORING', False):
+if os.environ.get('RESOURCE_MONITORING', False):  # pragma: no cover
     from .utils.resource_monitoring import ResourceMonitor
 
 from .flows.flow import Flow
