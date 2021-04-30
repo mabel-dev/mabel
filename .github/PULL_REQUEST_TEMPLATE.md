@@ -4,4 +4,4 @@ Thank you for opening a Pull Request! Before submitting your PR, there are a few
 - [ ] Code coverage does not decrease (if any source code was changed)
 - [ ] Appropriate docs were updated (if necessary)
 
-Fixes #<issue_number_goes_here> 🦕
+Fixes #<issue_number_goes_here>
