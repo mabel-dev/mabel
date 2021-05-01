@@ -14,10 +14,10 @@
 [![Downloads](https://img.shields.io/pypi/dm/mabel.svg)](https://pypi.org/project/mabel/)
 
 
-- **Documentation** [GitHub Wiki](https://github.com/joocer/mabel/wiki)
-- **Bug Reports** [GitHub Issues](https://github.com/joocer/mabel/issues/new/choose)
-- **Source Code**  [GitHub](https://github.com/joocer/mabel)
-- **Discussions** [GitHub Discussions](https://github.com/joocer/mabel/discussions)
+**Documentation** [GitHub Wiki](https://github.com/joocer/mabel/wiki)  
+**Bug Reports** [GitHub Issues](https://github.com/joocer/mabel/issues/new/choose)  
+**Source Code**  [GitHub](https://github.com/joocer/mabel)  
+**Discussions** [GitHub Discussions](https://github.com/joocer/mabel/discussions)
 
 
 ## Key Features
@@ -40,6 +40,11 @@ From GitHub
 ~~~
 pip install --upgrade git+https://github.com/joocer/mabel
 ~~~
+
+## Guides
+
+[How to Write a Flow](https://github.com/joocer/mabel/wiki/how_to_write_a_flow)  
+[How to Read Data](https://github.com/joocer/mabel/wiki/how_to_read_a_dataset)
 
 ## Dependencies
 
