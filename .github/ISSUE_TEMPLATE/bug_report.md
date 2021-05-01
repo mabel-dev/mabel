@@ -20,12 +20,12 @@ Steps to reproduce the behaviour:
 **Expected behaviour**
 A clear and concise description of what you expected to happen.
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+**Screenshots or Logs**
+If applicable, add screenshots or logs to help explain your problem.
+!! Be aware not to publish any sensitive information in what you upload.
 
 **Environment (please complete the following information):**
  - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
  - Version [e.g. 22]
 
 **Additional context**

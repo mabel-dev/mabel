@@ -13,4 +13,4 @@ def block_parser(ds):
     """ each blob is read as a block """
     if isinstance(ds, str):
         return ds
-    yield '\n'.join([r for r in ds])
+    yield '\n'.join([r for r in ds])    # pragma: no cover

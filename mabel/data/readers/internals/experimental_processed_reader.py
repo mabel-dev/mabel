@@ -20,7 +20,7 @@ def _inner_process(flag, reader, source_queue, reply_queue, parser, where):  # p
 
     try:
         source = source_queue.get(timeout=0.1)
-    except Exception:
+    except Exception:    # pragma: no cover
         source = None
 
     while source is not None and flag.value != TERMINATE_SIGNAL:
@@ -33,7 +33,7 @@ def _inner_process(flag, reader, source_queue, reply_queue, parser, where):  # p
             reply_queue.put(chunk, timeout=60)  
         try:
             source = source_queue.get(timeout=0.1)
-        except Exception:
+        except Exception:    # pragma: no cover
             source = None
 
     flag.value = TERMINATE_SIGNAL
@@ -42,7 +42,7 @@ def _inner_process(flag, reader, source_queue, reply_queue, parser, where):  # p
 
 def processed_reader(items_to_read, reader, parser, where):  # pragma: no cover
 
-    if os.name == 'nt':
+    if os.name == 'nt':    # pragma: no cover
         raise NotImplementedError('Reader Multi Processing not available on Windows platforms')
 
     process_pool = []

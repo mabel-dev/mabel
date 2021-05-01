@@ -5,6 +5,7 @@ from: https://stackoverflow.com/a/35804945
 """
 
 import logging
+import json
 
 def add_logging_level(level_name, level_num, method_name=None):
     """
@@ -41,6 +42,9 @@ def add_logging_level(level_name, level_num, method_name=None):
     # http://stackoverflow.com/q/2183233/2988730, especially
     # http://stackoverflow.com/a/13638084/2988730
     def log_for_level(self, message, *args, **kwargs):
+        # if we've added the level,it doesn't format the message as JSON
+        if isinstance(message, dict):
+            message = json.dumps(message)
         if self.isEnabledFor(level_num):
             self._log(level_num, message, args, **kwargs)
     def log_to_root(message, *args, **kwargs):

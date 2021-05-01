@@ -76,5 +76,5 @@ def threaded_reader(
             # don't wait forever
             records = reply_queue.get(timeout=10)  
             yield from records
-        except queue.Empty:
+        except queue.Empty:    # pragma: no cover
             pass  #  most likely reason get being here is a race condition

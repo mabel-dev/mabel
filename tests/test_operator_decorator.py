@@ -3,7 +3,7 @@ import sys
 import time
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.operators import EndOperator
-from mabel import BaseOperator, operatify
+from mabel import BaseOperator, operator
 from rich import traceback
 
 traceback.install()
@@ -13,7 +13,7 @@ DATASET = [
     {'secret':'456'}
 ]
 
-@operatify
+@operator
 def do_something(data):
     data['secret'] = hash(data.get('secret'))
     print(data)

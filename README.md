@@ -14,10 +14,11 @@
 [![Downloads](https://img.shields.io/pypi/dm/mabel.svg)](https://pypi.org/project/mabel/)
 
 
-- **Documentation** [GitHub Wiki](https://github.com/joocer/mabel/wiki)
-- **Bug Reports** [GitHub Issues](https://github.com/joocer/mabel/issues/new/choose)
-- **Source Code**  [GitHub](https://github.com/joocer/mabel)
-- **Discussions** [GitHub Discussions](https://github.com/joocer/mabel/discussions)
+**Documentation** [GitHub Wiki](https://github.com/joocer/mabel/wiki)  
+**Bug Reports** [GitHub Issues](https://github.com/joocer/mabel/issues/new/choose)  
+**Feature Requests** [GitHub Issues](https://github.com/joocer/mabel/issues/new/choose)  
+**Source Code**  [GitHub](https://github.com/joocer/mabel)  
+**Discussions** [GitHub Discussions](https://github.com/joocer/mabel/discussions)
 
 
 ## Key Features
@@ -41,6 +42,11 @@ From GitHub
 pip install --upgrade git+https://github.com/joocer/mabel
 ~~~
 
+## Guides
+
+[How to Write a Flow](https://github.com/joocer/mabel/wiki/how_to_write_a_flow)  
+[How to Read Data](https://github.com/joocer/mabel/wiki/how_to_read_a_dataset)
+
 ## Dependencies
 
 -  **[UltraJSON](https://github.com/ultrajson/ultrajson)** (AKA `ujson`) is used where `orjson` is not available. (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />1)
@@ -54,7 +60,7 @@ There are a number of optional dependencies which are usually only required for 
 All contributions, bug reports, bug fixes, documentation improvements,
 enhancements, and ideas are welcome.
 
-Want to help build mabel? See the [contribution guidance](https://github.com/joocer/mabel/blob/main/CONTRIBUTING.md)
+Want to help build mabel? See the [contribution guidance](https://github.com/joocer/mabel/blob/main/.github/CONTRIBUTING.md)
 
 ## Platform Support?
 

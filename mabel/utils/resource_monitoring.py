@@ -31,9 +31,6 @@ class ResourceMonitor():
 
         return self.max_memory_usage
 
-    def __del__(self):
-        get_logger().debug({"max_memory":self.max_memory_usage})
-
 
 monitor = ResourceMonitor()
 resource_thread = threading.Thread(target=monitor.resource_usage)

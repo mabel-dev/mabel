@@ -76,7 +76,7 @@ def evaluate(
     the `value` is a literal.
     """
     # No filter doesn't filter
-    if predicate is None:
+    if predicate is None:    # pragma: no cover
         return True
 
     # If we have a tuple extract out the key, operator and value
@@ -97,9 +97,9 @@ def evaluate(
             return any([evaluate(p, record) for p in predicate])
 
         # if we're here the structure of the filter is wrong
-        raise InvalidSyntaxError('Unable to evaluate Filter')
+        raise InvalidSyntaxError('Unable to evaluate Filter')    # pragma: no cover
 
-    raise InvalidSyntaxError('Unable to evaluate Filter')
+    raise InvalidSyntaxError('Unable to evaluate Filter')    # pragma: no cover
 
 
 class Filters():
@@ -153,7 +153,7 @@ class Filters():
                 for p in predicate:
                     columns += self._get_filter_columns(p)
                 return columns
-        return []
+        return []    # pragma: no cover
 
     def filter_dictset(
             self,

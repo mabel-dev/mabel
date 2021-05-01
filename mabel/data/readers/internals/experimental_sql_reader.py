@@ -156,7 +156,7 @@ class SqlReader():
         # it's not as good but is still a significant performance improvement
         thread_count = 0
         fork_processes = True
-        if os.name == 'nt':
+        if os.name == 'nt':    # pragma: no cover
             thread_count = 4
             fork_processes = False
 

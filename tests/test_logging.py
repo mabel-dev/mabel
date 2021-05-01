@@ -62,10 +62,10 @@ def test_log_sanitizer():
     error.
     """
     logger = get_logger()
-    logger.audit({"password": "top secret"})
-    logger.audit('{"password": "top secret"}')
-    logger.audit('password:topsecret')
-    logger.audit(['password', 'top secret'])
+    logger.audit({"password": "top secret 1"})
+    logger.audit('{"password": "top secret 2"}')
+    logger.audit('password:topsecret3')
+    logger.audit(['password', 'top secret 4'])
 
 def test_adding_logging_levels_fails_if_the_level_already_exists():
 
