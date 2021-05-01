@@ -3,6 +3,7 @@ import re
 import hashlib
 import logging
 import json  # we use json rather than ujson/orjson for greatest compatibility
+from functools import lru_cache
 
 COLORS = {
     "{OFF}": "\033[0m",             # Text Reset
