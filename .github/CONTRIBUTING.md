@@ -1,8 +1,19 @@
 # Contribution Guide
 
+We'd love to accept your patches and contributions to this project. There are
+just a few small guidelines you need to follow.
 
-Code should look like:
-- Imports on separate lines (imports then froms)
+All submissions, including submissions by project members, require review. We
+use GitHub pull requests for this purpose. Consult 
+[GitHub Help](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests)
+for more information on using pull requests.
+
+We have included a number of tests which run automatically when code is
+submitted, these tests should pass.
+
+For consistent style, code should look like:
+
+- Imports on separate lines (`imports` then `froms`)
 - Four space tabs
 - Variables should be in `snake_case`
 - Classes should be in `PascalCase`
@@ -16,23 +27,17 @@ Code should look like:
 
 Code should have:
 - Corresponding unit/regression tests
-- Attributed external sources - even if there is no explicit license requirement, The context of the source may help others reading the code later.
+- Attributed external sources - even if there is no explicit license
+  requirement
 
 
 A note about comments:
 - Computers will interpret anything, humans need help interpreting code
 - Prefer readable code over verbose comments
-- Humans struggle with threading, recursion, parallelization, variables called 'x' and more than 10, of anything
+- Humans struggle with threading, recursion, parallelization, variables
+  called `x` and more than 10... of anything
 - Comments should be more than just the code in other words
 - Good variable names and well-written code doesn't need comments
-
-
-Pull requests should pass:
-- bandit (secure coding practices)
-- mypy (type hints)
-- pytest (regression tests)
-- test coverage should not be reduced (current bar is 80%)
-- maintainability index for each module above 50
 
 
 Check-ins should have prefixes:
@@ -44,7 +49,9 @@ Check-ins should have prefixes:
 
 Docstrings should look like:
 ~~~python
-def sample_method(param_1, param_2):
+def sample_method(
+        param_1: str,
+        param_2: Optional[int] = None) -> bool:
 """
 A short description of what the method does.
 

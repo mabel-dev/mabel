@@ -16,6 +16,7 @@
 
 **Documentation** [GitHub Wiki](https://github.com/joocer/mabel/wiki)  
 **Bug Reports** [GitHub Issues](https://github.com/joocer/mabel/issues/new/choose)  
+**Feature Requests** [GitHub Issues](https://github.com/joocer/mabel/issues/new/choose)  
 **Source Code**  [GitHub](https://github.com/joocer/mabel)  
 **Discussions** [GitHub Discussions](https://github.com/joocer/mabel/discussions)
 
@@ -59,7 +60,7 @@ There are a number of optional dependencies which are usually only required for 
 All contributions, bug reports, bug fixes, documentation improvements,
 enhancements, and ideas are welcome.
 
-Want to help build mabel? See the [contribution guidance](https://github.com/joocer/mabel/blob/main/CONTRIBUTING.md)
+Want to help build mabel? See the [contribution guidance](https://github.com/joocer/mabel/blob/main/.github/CONTRIBUTING.md)
 
 ## Platform Support?
 
