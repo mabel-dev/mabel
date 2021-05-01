@@ -76,7 +76,22 @@ class SanitizingLogFormatter(logging.Formatter):
             msg = re.sub(r':\/\/(.*?)\@', r'://{BOLD_PURPLE}<redacted>{OFF}', msg)
         return msg
     
+    @lru_cache(1)
     def _can_colorize(self):
+
+        def is_running_from_ipython():
+            """
+            True when running in Jupyter
+            """
+            try:
+                from IPython import get_ipython  # type:ignore
+                return get_ipython() is not None
+            except Exception:
+                return False
+
+        if is_running_from_ipython():
+            return True
+
         colorterm = os.environ.get('COLORTERM', '').lower()
         term = os.environ.get('TERM', '').lower()
         return 'yes' in colorterm or 'true' in colorterm or '256' in term        
