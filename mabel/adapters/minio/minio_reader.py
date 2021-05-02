@@ -3,6 +3,7 @@ MinIo Reader - also works with AWS
 """
 import io
 from ...data.readers.internals.base_inner_reader import BaseInnerReader
+from ...utils import paths, common
 try:
     from minio import Minio  # type:ignore
 except ImportError:  # pragma: no cover
