@@ -56,14 +56,18 @@ pip install --upgrade git+https://github.com/joocer/mabel
 
 There are a number of optional dependencies which are usually only required for specific features and functionality. These are listed in the [requirements-test.txt](https://github.com/joocer/mabel/blob/main/requirements-test.txt) file which is used for testing. The key exception is `orjson` which is the preferred JSON library but not available on all platforms.
 
-## Can I Contribute?
+## How Can I Contribute?
 
 All contributions, bug reports, bug fixes, documentation improvements,
 enhancements, and ideas are welcome.
 
+If you have a suggestion for an improvement or a bug, 
+[raise a ticket](https://github.com/joocer/mabel/issues/new/choose) or start a
+[discussion](https://github.com/joocer/mabel/discussions).
+
 Want to help build mabel? See the [contribution guidance](https://github.com/joocer/mabel/blob/main/.github/CONTRIBUTING.md)
 
-## Platform Support?
+## Platform Support
 
 mabel comes with adapters for the following services, or is tested to run on the following platforms:
 
