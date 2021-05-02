@@ -20,6 +20,7 @@ setup(
         'ujson',
         'python-dateutil',
         'zstandard',
-        'mmh3'
+        'mmh3',
+        'pydantic'
    ]
 )

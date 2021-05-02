@@ -1,36 +1,45 @@
-from pydantic import BaseModel
 import mmh3  # type:ignore
 from operator import itemgetter
+from pydantic import BaseModel
+import struct
 
 UNSET = 65535
 MAX_INDEX = 4294967295
+STRUCT_DEF = "I H H"
 
 class IndexEntry(BaseModel):
     value: int
-    row: int
-    count: int = UNSET
+    offset: int
+    count: int
 
 class Indexer():
+
+    def _to_bin(self, entry: IndexEntry):
+        return struct.pack(STRUCT_DEF, entry.value, entry.offset, entry.count)
+
+    def _from_bin(self, buffer):
+        struct.unpack(STRUCT_DEF, buffer)
 
     def __init__(self):
         self._index = []
 
     def index_dictset(self, dictset, column):
 
+        temp = []
         for offset, row in enumerate(dictset):
             if row.get(column):
                 entry = {
                         "value": mmh3.hash(row[column]) % MAX_INDEX,
                         "row": offset
                 }
-            self._index.append(entry)
+            temp.append(entry)
 
-        self._index = sorted(self._index, key=itemgetter("value"))
-
-    # bytes to int
-    # into to bytes
-
-    # read and write structs
+        for i in sorted(temp, key=itemgetter("value")):
+            self._index.append(self._to_bin(IndexEntry(
+                value=i['value'],
+                offset=i['row'],
+                count=1
+            )))
 
     def index(self):
         return self._index
