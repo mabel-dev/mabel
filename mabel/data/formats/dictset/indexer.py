@@ -1,6 +1,6 @@
 import mmh3  # type:ignore
 from operator import itemgetter
-from pydantic import BaseModel
+from pydantic import BaseModel    # type:ignore
 import struct
 
 UNSET = 65535
