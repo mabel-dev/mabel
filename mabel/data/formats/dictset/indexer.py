@@ -8,7 +8,7 @@ from pydantic import BaseModel    # type:ignore
 UNSET = 65535  # 2^16 - 1
 MAX_INDEX = 4294967295  # 2^32 - 1
 STRUCT_DEF = "I H H"  # 4 byte unsigned int, 2 byte unsigned int, 2 byte unsigned int
-RECORD_SIZE = struct.calcsize(STRUCT_DEF)
+RECORD_SIZE = struct.calcsize(STRUCT_DEF)  # this should be 8
 
 
 class IndexEntry(BaseModel):
@@ -52,11 +52,17 @@ class Indexer():
                         "row": offset
                 }
             temp.append(entry)
+        last_value = None
         for i in sorted(temp, key=itemgetter("value")):
+            if i['value'] == last_value:
+                count += 1
+            else:
+                count = 1
             self._index += IndexEntry(
                     value=i['value'],
                     offset=i['row'],
-                    count=1).to_bin()
+                    count=count).to_bin()
+            last_value = i['value']
 
     def to_stream(self):
         return io.BytesIO(self._index)
@@ -68,20 +74,16 @@ class Indexer():
     def __repr__(self):
         return str(len(self._index))
 
-    def search(self, search_term):
-        value = mmh3.hash(search_term) % MAX_INDEX
-        print(value)
-
-        stream = self.to_stream()
-        left, right = 0, int(len(self._index) / RECORD_SIZE)
-
+    @staticmethod
+    def _locate_record(value, stream, records):
+        """
+        Use a binary search algorithm to search the index
+        """
+        left, right = 0, records
         while left <= right:
             middle = (left + right) >> 1
-
             stream.seek(RECORD_SIZE * middle)
             entry = IndexEntry.from_bin(stream.read(RECORD_SIZE))
-            print(middle, '\t', entry)
-
             if entry.value == value:
                 return entry.offset
             elif entry.value > value:
@@ -90,11 +92,21 @@ class Indexer():
                 left = middle + 1
         return -1
 
+    def search(self, search_term):
+        value = mmh3.hash(search_term) % MAX_INDEX
+        stream = self.to_stream()
+        records = int(len(self._index) / RECORD_SIZE)
+
+        found_location = Indexer._locate_record(value, stream, records)
+        
+        # the found_location is the fastest record to be found, this could
+        # be the first, last or middle of the set. The count field tells
+        # us how many rows to go back, but not how many forward
+
+        return [found_location]
+
+
 if __name__ == "__main__":
-
-
-
-
 
 
 
@@ -250,4 +262,4 @@ if __name__ == "__main__":
     i = Indexer()
     i.index_dictset(THE_LIST, "description")
 
-    print(i.search("Broke up Randy & Pinky"))
+    print(i.search("Neglected Randy"), RECORD_SIZE)
