@@ -10,26 +10,23 @@ except ImportError:
     can_use_resource_lib = False
     import psutil  # type:ignore
 
-
 class ResourceMonitor():
+
+    slots = ('frequency')
+
     def __init__(self, frequency=1):
-        self.keep_measuring = True
         self.frequency = frequency
-        self.max_memory_usage = 0
         if not can_use_resource_lib:
             self.process = psutil.Process(os.getpid())
 
     def resource_usage(self):
-        while self.keep_measuring:
+        while True:
             if can_use_resource_lib:
                 memory_usage = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
             else:
                 memory_usage = self.process.memory_info()[0]
-            self.max_memory_usage = max(self.max_memory_usage, memory_usage)
             get_logger().info({"memory":memory_usage})
             sleep(self.frequency)
-
-        return self.max_memory_usage
 
 
 monitor = ResourceMonitor()

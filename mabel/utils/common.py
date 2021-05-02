@@ -5,7 +5,12 @@ from ..data.formats.json import parse, serialize
 from ..logging import get_logger
 
 
-def date_range(start_date: Optional[datetime.date], end_date: Optional[datetime.date]):
+def date_range(
+        start_date: Optional[datetime.date],
+        end_date: Optional[datetime.date]):
+    """
+    An interator over a range of dates
+    """
     # if dates aren't provided, use today
     if not end_date:
         end_date = datetime.date.today()
@@ -23,25 +28,22 @@ def build_context(**kwargs: dict):
     """
     Build Context takes an arbitrary dictionary and merges with a dictionary
     which reflects configuration read from a json file.
-
-    It builds start and end dates, either from either source or defaults to
-    today.
     """
     def read_config(config_file):
         # read the job configuration
         try:
             file_location = glob.glob('**/' + config_file, recursive=True).pop()
-            get_logger().debug(F'Reading configuration from {file_location}.')
+            get_logger().debug(F'Reading configuration from `{file_location}`.')
             with open(file_location, 'r') as f:
                 config = parse(f.read())
             return config
         except IndexError as e:
-            raise IndexError(F'Error: {e}, Likely Cause: Config file {config_file} not found')
+            raise IndexError(F'Error: {e}, Likely Cause: Config file `{config_file}` not found')
         except ValueError as e:
-            raise ValueError(F'Error: {e}, Likely Cause: Config file {config_file} incorrectly formatted')
+            raise ValueError(F'Error: {e}, Likely Cause: Config file `{config_file}` incorrectly formatted')
         except Exception as e:
             if type(e).__name__ == 'JSONDecodeError':
-                raise ValueError(F'Config file {config_file} not valid JSON')
+                raise ValueError(F'Config file `{config_file}` not valid JSON')
             else:
                 raise
 

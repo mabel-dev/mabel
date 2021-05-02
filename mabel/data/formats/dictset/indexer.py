@@ -3,11 +3,15 @@ from operator import itemgetter
 from pydantic import BaseModel    # type:ignore
 import struct
 
-UNSET = 65535
-MAX_INDEX = 4294967295
-STRUCT_DEF = "I H H"
+UNSET = 65535  # 2^16 - 1
+MAX_INDEX = 4294967295  # 2^32 - 1
+STRUCT_DEF = "I H H"  # 4 byte unsigned int, 2 byte unsigned int, 2 byte unsigned int
+
 
 class IndexEntry(BaseModel):
+    """
+    Python friendly representation of index entries
+    """
     value: int
     offset: int
     count: int
@@ -19,6 +23,12 @@ class Indexer():
 
     def _from_bin(self, buffer):
         struct.unpack(STRUCT_DEF, buffer)
+
+    def to_io_stream(self):
+        pass
+
+    def search(self, values):
+        pass
 
     def __init__(self):
         self._index = []
