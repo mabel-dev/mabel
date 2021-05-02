@@ -1,41 +1,50 @@
+import io
 import mmh3  # type:ignore
+import struct
 from operator import itemgetter
 from pydantic import BaseModel    # type:ignore
-import struct
+
 
 UNSET = 65535  # 2^16 - 1
 MAX_INDEX = 4294967295  # 2^32 - 1
 STRUCT_DEF = "I H H"  # 4 byte unsigned int, 2 byte unsigned int, 2 byte unsigned int
+RECORD_SIZE = struct.calcsize(STRUCT_DEF)
 
 
 class IndexEntry(BaseModel):
     """
-    Python friendly representation of index entries
+    Python friendly representation of index entries.
+
+    Includes binary translations.
     """
     value: int
     offset: int
     count: int
 
+    def to_bin(self) -> bytes:
+        return struct.pack(
+                STRUCT_DEF,
+                self.value,
+                self.offset,
+                self.count)
+
+    @staticmethod
+    def from_bin(buffer):
+        value, offset, count = struct.unpack(STRUCT_DEF, buffer)
+        return IndexEntry(
+                value=value,
+                offset=offset,
+                count=count)
+
+
 class Indexer():
 
-    def _to_bin(self, entry: IndexEntry):
-        return struct.pack(STRUCT_DEF, entry.value, entry.offset, entry.count)
-
-    def _from_bin(self, buffer):
-        struct.unpack(STRUCT_DEF, buffer)
-
-    def to_io_stream(self):
-        pass
-
-    def search(self, values):
-        pass
-
     def __init__(self):
-        self._index = []
+        self._index = bytes()
 
     def index_dictset(self, dictset, column):
-
         temp = []
+        self._index = bytes()
         for offset, row in enumerate(dictset):
             if row.get(column):
                 entry = {
@@ -43,18 +52,53 @@ class Indexer():
                         "row": offset
                 }
             temp.append(entry)
-
         for i in sorted(temp, key=itemgetter("value")):
-            self._index.append(self._to_bin(IndexEntry(
-                value=i['value'],
-                offset=i['row'],
-                count=1
-            )))
+            self._index += IndexEntry(
+                    value=i['value'],
+                    offset=i['row'],
+                    count=1).to_bin()
 
-    def index(self):
-        return self._index
+    def to_stream(self):
+        return io.BytesIO(self._index)
+
+    @staticmethod
+    def read_file(filename):
+        pass
+
+    def __repr__(self):
+        return str(len(self._index))
+
+    def search(self, search_term):
+        value = mmh3.hash(search_term) % MAX_INDEX
+        print(value)
+
+        stream = self.to_stream()
+        left, right = 0, int(len(self._index) / RECORD_SIZE)
+
+        while left <= right:
+            middle = (left + right) >> 1
+
+            stream.seek(RECORD_SIZE * middle)
+            entry = IndexEntry.from_bin(stream.read(RECORD_SIZE))
+            print(middle, '\t', entry)
+
+            if entry.value == value:
+                return entry.offset
+            elif entry.value > value:
+                right = middle - 1
+            else:
+                left = middle + 1
+        return -1
 
 if __name__ == "__main__":
+
+
+
+
+
+
+
+
 
     THE_LIST = [
         {"number": "1", "description": "Stole ten dollars from a guy at the Camden Market"},
@@ -206,4 +250,4 @@ if __name__ == "__main__":
     i = Indexer()
     i.index_dictset(THE_LIST, "description")
 
-    print(i.index())
+    print(i.search("Broke up Randy & Pinky"))
