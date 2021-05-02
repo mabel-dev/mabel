@@ -1,6 +1,5 @@
 import os
 from ...data.writers.internals.base_inner_writer import BaseInnerWriter
-from ...utils import paths
 try:
     from google.auth.credentials import AnonymousCredentials  # type:ignore
     from google.cloud import storage  # type:ignore

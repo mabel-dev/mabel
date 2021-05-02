@@ -1,8 +1,7 @@
 """
-MinIo Reader - may work with AWS
+MinIo Reader - also works with AWS
 """
 import io
-from ...utils import paths, common
 from ...data.readers.internals.base_inner_reader import BaseInnerReader
 try:
     from minio import Minio  # type:ignore

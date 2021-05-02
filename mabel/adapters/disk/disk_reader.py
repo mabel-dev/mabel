@@ -1,11 +1,7 @@
 import io
 import glob
-import datetime
 import pathlib
-from typing import Iterator, Tuple, Optional, List
 from ...data.readers.internals.base_inner_reader import BaseInnerReader
-from ...utils import paths, common
-from ...logging import get_logger
 
 
 class DiskReader(BaseInnerReader):
@@ -13,14 +9,10 @@ class DiskReader(BaseInnerReader):
     def __init__(self, **kwargs):
         """
         File System Reader
-        
-        Parameters:
-            extension: string (optional)
         """
         super().__init__(**kwargs)
 
     def get_blobs_at_path(self, path):
-        import pathlib
         if path.exists(): 
             blobs = path.rglob("*")
             return [blob.as_posix() 
