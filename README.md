@@ -11,7 +11,7 @@
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=joocer_mabel&metric=security_rating)](https://sonarcloud.io/dashboard?id=joocer_mabel)
 [![mabel](https://snyk.io/advisor/python/mabel/badge.svg)](https://snyk.io/advisor/python/mabel)
 [![deepcode](https://www.deepcode.ai/api/gh/badge?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybTEiOiJnaCIsIm93bmVyMSI6Impvb2NlciIsInJlcG8xIjoibWFiZWwiLCJpbmNsdWRlTGludCI6ZmFsc2UsImF1dGhvcklkIjoyNTcxMiwiaWF0IjoxNjE5MjUyNzkxfQ.UtjaLJQjVxoQjesfMXuQ-tnbvJBUEzMUSJAC_neucek)](https://www.deepcode.ai/app/gh/joocer/mabel/_/dashboard?utm_content=gh%2Fjoocer%2Fmabel)
-[![Downloads](https://img.shields.io/pypi/dm/mabel.svg)](https://pypi.org/project/mabel/)
+[![Downloads](https://pepy.tech/badge/mabel)](https://pepy.tech/project/mabel)
 
 
 **Documentation** [GitHub Wiki](https://github.com/joocer/mabel/wiki)  
@@ -52,6 +52,7 @@ pip install --upgrade git+https://github.com/joocer/mabel
 -  **[UltraJSON](https://github.com/ultrajson/ultrajson)** (AKA `ujson`) is used where `orjson` is not available. (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />1)
 -  **[dateutil](https://dateutil.readthedocs.io/en/stable/)** is used to convert dates received as strings
 -  **[zstandard](https://github.com/indygreg/python-zstandard)** is used for real-time compression
+-  **[mmh3](https://github.com/hajimes/mmh3)** is used for non-cryptographic hashing
 
 There are a number of optional dependencies which are usually only required for specific features and functionality. These are listed in the [requirements-test.txt](https://github.com/joocer/mabel/blob/main/requirements-test.txt) file which is used for testing. The key exception is `orjson` which is the preferred JSON library but not available on all platforms.
 
