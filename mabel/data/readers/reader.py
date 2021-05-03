@@ -2,7 +2,7 @@ import sys
 import os.path
 from typing import Callable, Optional, Iterable, Tuple, List
 from .internals.threaded_reader import threaded_reader
-from .internals.experimental_processed_reader import processed_reader
+from .internals.alpha_processed_reader import processed_reader
 from .internals.parsers import pass_thru_parser, block_parser, json_parser
 from .internals.filters import Filters
 from ..formats.dictset import select_record_fields, select_from
@@ -97,8 +97,8 @@ class Reader():
             step_back_days: integer (optional):
                 The number of days to look back if data for the current date is
                 not available.
-            fork_processes: boolean (experimental):
-                **EXPERIMENTAL**
+            fork_processes: boolean (alpha):
+                **ALPHA**
                 Create parallel processes to read data files
 
         Yields:
@@ -172,14 +172,14 @@ class Reader():
         # threaded reader
         self.thread_count = int(kwargs.get('thread_count', 0))
         if self.thread_count > 0:
-            get_logger().warning("Threaded Reader is Experimental - it's interface may change and some features may not be supported")
+            get_logger().warning("Threaded Reader is Alpha - it's interface may change and some features may not be supported")
 
         # multiprocessed reader
         self.fork_processes = bool(kwargs.get('fork_processes', False))
         if self.thread_count > 0 and self.fork_processes:  # pragma: no cover
             raise InvalidCombinationError('Forking and Threading can not be used at the same time')
         if self.fork_processes:
-            get_logger().warning("Forked Reader is Experimental - it's interface may change and some features may not be supported")
+            get_logger().warning("Forked Reader is Alpha - it's interface may change and some features may not be supported")
 
         
     """
@@ -195,7 +195,6 @@ class Reader():
         Returns all of the columns in a filter which the operation benefits
         from an index
         """
-        print(predicate)
         INDEXABLE_OPS = {'=', '==', 'is', 'in'}
         if predicate is None:
             return []

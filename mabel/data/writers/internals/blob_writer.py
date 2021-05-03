@@ -5,11 +5,22 @@ import io
 from typing import Any
 from ...formats.json import serialize
 from ....logging import get_logger
+from ....utils.paths import get_parts
+from ....index.index import IndexEntry
+
 
 BLOB_SIZE = 32*1024*1024  # about 32 files per gigabyte
 BUFFER_SIZE = BLOB_SIZE   # buffer in memory really
 SUPPORTED_FORMATS_ALGORITHMS = ('jsonl', 'lzma', 'zstd', 'parquet')
 MAXIMUM_RECORDS = 64000   # needs to be less than 2^16-1
+
+
+def safe_field_name(field_name):
+    """strip all the non-alphanums from a field name"""
+    import re
+    pattern = re.compile('[\W_]+')
+    return pattern.sub('', field_name)
+
 
 class BlobWriter():
 
@@ -20,6 +31,10 @@ class BlobWriter():
             blob_size: int = BLOB_SIZE,
             format: str = 'zstd',
             **kwargs):
+
+        self.indexes = kwargs.get('indexes', [])
+        if self.indexes != []:
+            get_logger().warning("Index functionality is Alpha - interface and features subject to change.")
 
         self.format = format
         self.maximum_blob_size = blob_size
@@ -32,9 +47,20 @@ class BlobWriter():
         self._open_blob()
 
 
+
     def append(self, record: dict = {}):
         # serialize the record
         serialized = serialize(record, as_bytes=True) + b'\n'  # type:ignore
+
+        # TODO: create an index builder, this is duplicate and ugly
+        MAX_INDEX = 4294967295  # 2^32 - 1
+        import mmh3  # type:ignore
+        for column in self.indexes:
+            if record.get(column):
+                self.index_builders[column].append(
+                    {
+                        "value": mmh3.hash(record[column]) % MAX_INDEX,
+                        "position": self.records_in_blob})
 
         # the newline isn't counted so add 1 to get the actual length
         # if this write would exceed the blob size, close it so another
@@ -78,6 +104,32 @@ class BlobWriter():
                 committed_blob_name = self.inner_writer.commit(
                         byte_data=byte_data,
                         override_blob_name=None)
+
+                # TODO: commit index here
+                index = bytes()
+                from operator import itemgetter
+                for column in self.indexes:
+                    temp = self.index_builders[column]
+                    previous_value = None
+                    for i, row in enumerate(sorted(temp, key=itemgetter("value"))):
+                        if row['value'] == previous_value:
+                            count += 1
+                        else:
+                            count = 1
+                        index += IndexEntry(
+                                value=row['value'],
+                                location=row['position'],
+                                count=count).to_bin()
+                        previous_value = row['value']
+                    
+                    bucket, path, stem, suffix = get_parts(committed_blob_name)
+                    index_name = bucket + '/' + path + '_SYS.' + stem + '.' + safe_field_name(column) + '.index'
+                    
+                    committed_index_name = self.inner_writer.commit(
+                        byte_data=io.BytesIO(index).read(),
+                        override_blob_name=index_name)
+                    # TODO: END
+
                 if 'BACKOUT' in committed_blob_name:
                     get_logger().warning(F"{self.records_in_blob:n} failed records written to BACKOUT partition `{committed_blob_name}`")
                 get_logger().debug(F"Blob Committed - `{committed_blob_name}` - {self.records_in_blob:n} records, {self.bytes_in_blob:n} raw bytes, {len(byte_data):n} comitted bytes")
@@ -99,6 +151,11 @@ class BlobWriter():
         if self.format == 'zstd':
             import zstandard  # type:ignore
             self.file = zstandard.open(self.file_name, mode='wb')
+
+        # create index builders
+        self.index_builders = {}
+        for column in self.indexes:
+            self.index_builders[column] = []
 
         self.bytes_in_blob = 0
         self.records_in_blob = 0

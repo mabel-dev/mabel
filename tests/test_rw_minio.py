@@ -4,7 +4,7 @@ sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.adapters.minio import MinIoWriter, MinIoReader
 from mabel.operators.minio import MinIoBatchWriterOperator
 from mabel.data import BatchWriter
-from mabel import Reader
+from mabel.data import Reader
 from rich import traceback
 
 traceback.install()

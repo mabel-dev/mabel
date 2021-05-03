@@ -45,8 +45,11 @@ class BatchWriter(SimpleWriter):
                 The component used to commit data, the default writer is the
                 NullWriter
             frame_id: string (optional)
+
             raw_path: boolean (optional)
-                Don't add any date 
+                Don't automatically add any date parts to dataset names
+            indexes: collection (optional)
+                Index on these columns, the default is to not index
 
         Note:
             Different inner_writers may take or require additional parameters.

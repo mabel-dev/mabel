@@ -5,7 +5,7 @@ import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.adapters.mongodb import MongoDbReader
-from mabel import Reader
+from mabel.data import Reader
 from mabel.data.formats import dictset
 from rich import traceback
 

@@ -4,7 +4,7 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.adapters.disk import DiskWriter, DiskReader
 from mabel.data import StreamWriter
-from mabel import Reader
+from mabel.data import Reader
 from mabel.data.validator import Schema
 import shutil
 from pathlib import Path

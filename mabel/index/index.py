@@ -23,7 +23,7 @@ Terminology:
 
 def safe_field_name(field_name):
     """strip all the non-alphanums from a field name"""
-    import re, string;
+    import re
     pattern = re.compile('[\W_]+')
     return pattern.sub('', field_name)
 
@@ -60,7 +60,7 @@ class Index():
             self,
             index: io.BytesIO):
         if isinstance(index, io.BytesIO):
-            self.index = index
+            self._index = index
             # go to the end of the stream
             index.seek(0,2)
             # divide the size of the stream by the record size to get the
@@ -100,8 +100,8 @@ class Index():
                 location=-1,
                 count=-1
             )
-        self.index.seek(RECORD_SIZE * location)
-        return IndexEntry.from_bin(self.index.read(RECORD_SIZE))
+        self._index.seek(RECORD_SIZE * location)
+        return IndexEntry.from_bin(self._index.read(RECORD_SIZE))
 
     def _locate_record(self, value):
         """

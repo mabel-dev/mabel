@@ -97,7 +97,6 @@ class StreamWriter(SimpleWriter):
         # problem here, instead we're going to save the file to a BACKOUT
         # partition
         if self.schema and not self.schema.validate(subject=record, raise_exception=False):
-            print('validation')
             identity = paths.date_format(self.dataset, datetime.date.today()) + 'BACKOUT/'
             get_logger().warning(F'Schema Validation Failed ({self.schema.last_error}) - message being written to {identity}')
         else:
