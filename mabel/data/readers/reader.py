@@ -221,6 +221,7 @@ class Reader():
 
     def _create_line_reader(self):
         blob_list = self.reader_class.get_list_of_blobs()
+        readable_blobs = [b for b in blob_list if not self._is_system_file(b)]
 
         # handle stepping back if the option is set
         if self.step_back_days > 0:
@@ -233,12 +234,10 @@ class Reader():
             if self.reader_class.days_stepped_back > 0:
                 get_logger().warning(F"Stepped back {self.reader_class.days_stepped_back} days to {self.reader_class.start_date} to find last data, my limit is {self.step_back_days} days.")
 
-        get_logger().debug(F"Reader found {len([b for b in blob_list if not self._is_system_file(b)])} sources to read data from.")
+        get_logger().debug(F"Reader found {len(readable_blobs)} sources to read data from.")
         
         if self.thread_count > 0:
-            bl = [b for b in blob_list if not self._is_system_file(b)]
-
-            ds = threaded_reader(bl, self.reader_class, self.thread_count)
+            ds = threaded_reader(readable_blobs, self.reader_class, self.thread_count)
             ds = self._parse(ds)
 
             if self.filters:
@@ -246,10 +245,9 @@ class Reader():
             else:
                 yield from select_from(ds, where=self.where)
         elif self.fork_processes:
-            bl = [b for b in blob_list if not self._is_system_file(b)]
-            yield from processed_reader(list(bl), self.reader_class, self._parse, self.where)
+            yield from processed_reader(readable_blobs, self.reader_class, self._parse, self.where)
         else:
-            for blob in [b for b in blob_list if not self._is_system_file(b)]:
+            for blob in readable_blobs:
                 get_logger().debug(F"Reading from `{blob}`")
 
                 # If an index exists, get the rows we're interestedin from the index
