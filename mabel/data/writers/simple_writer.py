@@ -61,6 +61,9 @@ class SimpleWriter():
         arg_dict['inner_writer'] = F"{arg_dict.get('inner_writer', {}).__name__}"  # type:ignore
         get_logger().debug(json.serialize(arg_dict))
 
+        # default index
+        kwargs['indexes'] = kwargs.get('indexes', [])
+
         # create the writer
         self.blob_writer = BlobWriter(**kwargs)
 

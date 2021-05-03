@@ -31,7 +31,7 @@ sys.path.insert(1, os.path.join(sys.path[0], '../..'))
 from mabel import Reader
 from mabel.adapters.disk import DiskReader
 
-user_name = "Remmy"
+user_name = "Verizon Support"
 
 print('indexed\t:', time_it("tests/data/index/is", user_name))
 print('not indexed\t:', time_it("tests/data/index/not", user_name))

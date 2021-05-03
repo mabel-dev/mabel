@@ -23,7 +23,7 @@ Terminology:
 
 def safe_field_name(field_name):
     """strip all the non-alphanums from a field name"""
-    import re, string;
+    import re
     pattern = re.compile('[\W_]+')
     return pattern.sub('', field_name)
 
