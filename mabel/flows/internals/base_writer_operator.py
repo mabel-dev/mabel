@@ -32,7 +32,7 @@ class BaseWriterOperator(BaseOperator):
             # if we have a profiler in the path, it will 
             profile = context.get('mabel:profile')
             if profile:
-                timestamp = datetime.datetime.now().strftime('_as_at_%Y%m%d-%H%M%S')
+                timestamp = datetime.datetime.now().strftime('_SYS.as_at_%Y%m%d-%H%M%S')
                 profile_path = self.writer.dataset + 'profile' + timestamp + '.json'
 
                 fn_bucket, fn_path, fn_stem, fn_ext = paths.get_parts(self.inner_writer.filename)

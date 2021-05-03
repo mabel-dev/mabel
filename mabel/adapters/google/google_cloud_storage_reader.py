@@ -4,8 +4,8 @@ Google Cloud Storage Reader
 import io
 import os
 from ...data.readers.internals.base_inner_reader import BaseInnerReader
-from ...utils import common, paths
 from ...logging import get_logger
+from ...utils import paths
 try:
     from google.auth.credentials import AnonymousCredentials  # type:ignore
     from google.cloud import storage  # type:ignore

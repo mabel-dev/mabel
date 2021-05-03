@@ -24,6 +24,9 @@ from ..data.formats import json
 from ..data.formats.dictset.display import draw_histogram_bins
 from ..index.bloom_filter import BloomFilter
 
+ACCURATE_THRESHOLD = 5000
+BLOOM_FILTER_SIZE = 2500000
+
 
 class ProfileDataOperator(BaseOperator):
 
@@ -36,11 +39,12 @@ class ProfileDataOperator(BaseOperator):
         with some approximation, especially when summarizations would require
         all of the values such as counting unique values or binning values.
 
-        It starts summarizing from 10,000 values. So small datasets should be
-        more accurate.
+        It starts summarizing from 5,000 values, small datasets will be more
+        accurate. Some measures will be pretty much useless the closer it gets
+        to 2,500,000 records.
 
-        Some measures will be pretty much useless the closer it gets to
-        5,000,000 records.
+        These limits are in place to reduce memory overheads, even with the 
+        approaches taken this is pretty memory hungry.
         """
         super().__init__(**kwargs)
 
@@ -95,7 +99,7 @@ class ProfileDataOperator(BaseOperator):
 
         for k in [k for k in self.summary if self.summary[k]['type'] == 'string']:
 
-            if len(self.summary[k]['unique_values']) < 10000:
+            if len(self.summary[k]['unique_values']) < ACCURATE_THRESHOLD:
                 # get rid of the unique values list
                 self.summary[k]['unique_values'] = len(self.summary[k]['unique_values'])
                 del self.summary[k]['approx_unique_values']
@@ -277,11 +281,13 @@ class ProfileDataOperator(BaseOperator):
             collector['min_length'] = len(value)
         if collector.get('bloom_filter') is None:
             collector['unique_values'] = []
-            collector['bloom_filter'] = BloomFilter(number_of_elements=5000000, fp_rate=0.01)
+            collector['bloom_filter'] = BloomFilter(
+                    number_of_elements=BLOOM_FILTER_SIZE,
+                    fp_rate=0.01)
             collector['approx_unique_values'] = 0
 
         # if we have only a few values, count them all
-        if len(collector['unique_values']) < 10000:
+        if len(collector['unique_values']) < ACCURATE_THRESHOLD:
             hashed = hash(value)
             if not hashed in collector['unique_values']:
                 collector['unique_values'].append(hashed)

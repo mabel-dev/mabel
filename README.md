@@ -1,6 +1,8 @@
 <img align="centre" alt="overlapping arrows" height="92" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/mabel.svg" />
 
-**mabel** is a platform for authoring data processing systems.
+**mabel** is a fully-portable Data Engineering platform designed to run on low-spec compute nodes.
+
+There is no server component, **mabel** just runs when you need it, where you want it.
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/joocer/mabel/blob/master/LICENSE)
 [![Regression Suite](https://github.com/joocer/mabel/actions/workflows/regression_suite.yaml/badge.svg)](https://github.com/joocer/mabel/actions/workflows/regression_suite.yaml)
@@ -11,7 +13,7 @@
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=joocer_mabel&metric=security_rating)](https://sonarcloud.io/dashboard?id=joocer_mabel)
 [![mabel](https://snyk.io/advisor/python/mabel/badge.svg)](https://snyk.io/advisor/python/mabel)
 [![deepcode](https://www.deepcode.ai/api/gh/badge?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybTEiOiJnaCIsIm93bmVyMSI6Impvb2NlciIsInJlcG8xIjoibWFiZWwiLCJpbmNsdWRlTGludCI6ZmFsc2UsImF1dGhvcklkIjoyNTcxMiwiaWF0IjoxNjE5MjUyNzkxfQ.UtjaLJQjVxoQjesfMXuQ-tnbvJBUEzMUSJAC_neucek)](https://www.deepcode.ai/app/gh/joocer/mabel/_/dashboard?utm_content=gh%2Fjoocer%2Fmabel)
-[![Downloads](https://img.shields.io/pypi/dm/mabel.svg)](https://pypi.org/project/mabel/)
+[![Downloads](https://pepy.tech/badge/mabel)](https://pepy.tech/project/mabel)
 
 
 **Documentation** [GitHub Wiki](https://github.com/joocer/mabel/wiki)  
@@ -20,6 +22,22 @@
 **Source Code**  [GitHub](https://github.com/joocer/mabel)  
 **Discussions** [GitHub Discussions](https://github.com/joocer/mabel/discussions)
 
+## Focus on What Matters
+
+We've built **mabel** to enable Data Analysts to write complex data engineering tasks quickly and easily, so they could get on with doing what they do best.
+
+~~~python
+from mabel import operator
+from mabel.operators import EndOperator
+
+@operator
+def say_hello(name):
+    print(F"Hello, {name}!")
+
+flow = say_hello > EndOperator()
+with flow as runner:
+    runner("world")  # Hello, world!
+~~~
 
 ## Key Features
 
@@ -49,22 +67,17 @@ pip install --upgrade git+https://github.com/joocer/mabel
 
 ## Dependencies
 
--  **[UltraJSON](https://github.com/ultrajson/ultrajson)** (AKA `ujson`) is used where `orjson` is not available. (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />1)
 -  **[dateutil](https://dateutil.readthedocs.io/en/stable/)** is used to convert dates received as strings
+-  **[mmh3](https://github.com/hajimes/mmh3)** is used for non-cryptographic hashing
+-  **[pydantic](https://pydantic-docs.helpmanual.io/)** is used to define internal data models  
+-  **[UltraJSON](https://github.com/ultrajson/ultrajson)** (AKA `ujson`) is used where `orjson` is not available. (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />1)
 -  **[zstandard](https://github.com/indygreg/python-zstandard)** is used for real-time compression
 
 There are a number of optional dependencies which are usually only required for specific features and functionality. These are listed in the [requirements-test.txt](https://github.com/joocer/mabel/blob/main/requirements-test.txt) file which is used for testing. The key exception is `orjson` which is the preferred JSON library but not available on all platforms.
 
-## Can I Contribute?
+## Integrations
 
-All contributions, bug reports, bug fixes, documentation improvements,
-enhancements, and ideas are welcome.
-
-Want to help build mabel? See the [contribution guidance](https://github.com/joocer/mabel/blob/main/.github/CONTRIBUTING.md)
-
-## Platform Support?
-
-mabel comes with adapters for the following services, or is tested to run on the following platforms:
+mabel comes with adapters for the following services:
 
 | | Service | Support
 |-- |-- |-- 
@@ -73,16 +86,37 @@ mabel comes with adapters for the following services, or is tested to run on the
 | <img align="centre" alt="AWS S3" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/s3-logo.png" /> | S3 | Read/Write
 | <img align="centre" alt="MongoDB" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/mongodb-logo.png" /> | MongoDB | Read Only
 | <img align="centre" alt="MQTT" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/mqtt-logo.png" /> | MQTT | Read Only
-| <img align="centre" alt="Docker" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/docker-logo.png" /> | Docker | Hosting
-| <img align="centre" alt="Kubernetes" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/kubernetes-logo.svg" /> | Kubernetes | Hosting
-| <img align="centre" alt="Raspberry Pi" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/raspberry-pi-logo.svg" /> | Raspberry Pi | Hosting (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />1)
 
-Linux, MacOS and Windows (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />2) also supported.
+## Deployment and Execution
+
+mabel supports running on a range of platforms:
+
+| | Platform |
+|-- |-- |
+| <img align="centre" alt="Docker" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/docker-logo.png" /> | Docker
+| <img align="centre" alt="Kubernetes" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/kubernetes-logo.svg" /> | Kubernetes
+| <img align="centre" alt="Raspberry Pi" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/raspberry-pi-logo.svg" /> | Raspberry Pi (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg">1)
+| <img align="centre" alt="Windows" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/windows-logo.png" /> | Windows (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />2)
+| <img align="centre" alt="Linux" height="48" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/linux-logo.jpg" /> | Linux (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />3)
+
+MacOS also supported.
 
 Adapters for other data services can be written. 
 
-<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />1 - Raspbian fully functional with `ujson`  
-<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />2 - Multi-Processing not available on Windows. Alternate indexing libraries may be used on Windows.
+<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />1 - Raspbian fully functional with `ujson`.  
+<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />2 - Multi-Processing not available on Windows. Alternate indexing libraries may be used on Windows.  
+<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />3 - Tested against Debian and Ubuntu.
+
+## How Can I Contribute?
+
+All contributions, bug reports, bug fixes, documentation improvements,
+enhancements, and ideas are welcome.
+
+If you have a suggestion for an improvement or a bug, 
+[raise a ticket](https://github.com/joocer/mabel/issues/new/choose) or start a
+[discussion](https://github.com/joocer/mabel/discussions).
+
+Want to help build mabel? See the [contribution guidance](https://github.com/joocer/mabel/blob/main/.github/CONTRIBUTING.md).
 
 ## License
 

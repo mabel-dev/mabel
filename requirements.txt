@@ -1,3 +1,5 @@
 ujson
 python-dateutil
 zstandard
+mmh3
+pydantic

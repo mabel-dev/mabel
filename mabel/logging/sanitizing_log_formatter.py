@@ -3,6 +3,7 @@ import re
 import hashlib
 import logging
 import json  # we use json rather than ujson/orjson for greatest compatibility
+from functools import lru_cache
 
 COLORS = {
     "{OFF}": "\033[0m",             # Text Reset
@@ -76,7 +77,22 @@ class SanitizingLogFormatter(logging.Formatter):
             msg = re.sub(r':\/\/(.*?)\@', r'://{BOLD_PURPLE}<redacted>{OFF}', msg)
         return msg
     
+    @lru_cache(1)
     def _can_colorize(self):
+
+        def is_running_from_ipython():
+            """
+            True when running in Jupyter
+            """
+            try:
+                from IPython import get_ipython  # type:ignore
+                return get_ipython() is not None
+            except Exception:
+                return False
+
+        if is_running_from_ipython():
+            return True
+
         colorterm = os.environ.get('COLORTERM', '').lower()
         term = os.environ.get('TERM', '').lower()
         return 'yes' in colorterm or 'true' in colorterm or '256' in term        
@@ -115,6 +131,10 @@ class SanitizingLogFormatter(logging.Formatter):
         try:
             dirty_record = json.loads(json_part)
         except:
+
+            json_part = re.sub("`(.*)`", r"`{BOLD_YELLOW}\1{OFF}`", json_part)
+
+
             parts.append(json_part)
             record = '|'.join(parts)
             return self.colorize(record)
