@@ -47,7 +47,8 @@ with flow as runner:
 -  Automatic version tracking of processing operations
 -  Trace messages through the pipeline (random sampling)
 -  Automatic retry of failed operations
--  Low-memory requirements, even with Tb of data
+-  Low-memory requirements, even with terabytes of data
+-  Indexing and partitioning of data for fast reads 
 
 ## Installation
 
@@ -105,7 +106,7 @@ Adapters for other data services can be written.
 
 <img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />1 - Raspbian fully functional with `ujson`.  
 <img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />2 - Multi-Processing not available on Windows. Alternate indexing libraries may be used on Windows.  
-<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />3 - Tested against Debian and Ubuntu.
+<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/joocer/mabel/main/icons/note.svg" />3 - Tested on Debian and Ubuntu.
 
 ## How Can I Contribute?
 
