@@ -1,10 +1,10 @@
 import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
-from mabel import Reader
+from mabel.data import Reader
 from mabel.data import BatchWriter
 from mabel.adapters.disk import DiskWriter, DiskReader
-from mabel.data.readers.internals.experimental_sql_reader import SqlReader
+from mabel.data.readers.internals.alpha_sql_reader import SqlReader
 from mabel.logging import get_logger
 import shutil
 from rich import traceback

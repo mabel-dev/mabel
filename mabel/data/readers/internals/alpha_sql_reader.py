@@ -119,7 +119,7 @@ class SqlReader():
             sql_statement: str,
             **kwargs):
         """
-        THIS IS EXPERIMENTAL
+        THIS IS ALPHA - interface and features subject to change
 
         Use basic SQL queries to filter Reader.
 
@@ -132,7 +132,7 @@ class SqlReader():
             `dataset` is taken from SQL FROM
             `where` is taken from SQL WHERE
         """
-        get_logger().warning("SQL READER IS EXPERIMENTAL")
+        get_logger().warning("SQL Reader is Alpha - interface and features subject to change")
 
         sql = parse(sql_statement)
         get_logger().debug(json.serialize(sql))

@@ -9,13 +9,12 @@ sys.path.insert(1, os.path.join(sys.path[0], '../..'))
 from mabel.adapters.null import NullWriter
 from mabel.logging import get_logger
 from mabel.data.validator import Schema
-from mabel.data import BatchWriter
-from mabel.adapters.disk import DiskWriter
+from mabel.data import BatchWriter, Reader
+from mabel.adapters.disk import DiskWriter, DiskReader
 import orjson as json
     
 
 logger = get_logger()
-logger.setLevel(100)
 
 schema_definition = {
     "fields": [
@@ -63,18 +62,27 @@ def read_file(filename, chunk_size=32*1024*1024, delimiter="\n"):
             yield carry_forward
 
 
-schema = Schema(schema_definition)
-lines = read_jsonl('tests/data/index/not/tweets.jsonl')
+#schema = Schema(schema_definition)
+#lines = read_jsonl('tests/data/index/not/tweets.jsonl')
 
+#writer = BatchWriter(
+#        inner_writer=DiskWriter,
+#        dataset='_temp/idx',
+#        #schema=schema,
+#        indexes=['user_name']
+#)
 
-writer = BatchWriter(
-        inner_writer=DiskWriter,
+#for record in lines:
+#    writer.append(record)
+#writer.finalize()
+
+reader = Reader(
+        inner_reader=DiskReader,
         dataset='_temp/idx',
-        #schema=schema,
-        indexes=['user_name']
+        filters=('user_name', '==', "Remy")
 )
+i = 0
+for i, r in enumerate(reader):
+    print(i,r)
 
-for record in lines:
-    writer.append(record)
-writer.finalize()
-
+print(i)
