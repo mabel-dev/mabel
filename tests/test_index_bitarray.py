@@ -41,7 +41,26 @@ def test_index_bitarray():
         print(bits)
         assert repr(bits) == EXPECTED_RESULTS[step], repr(bits)
 
+def test_read_write():
+
+    SIZE = 32
+    bits = bitarray(SIZE)
+    bits.setall(0)
+    for i in range(0, SIZE, 2):
+        bits[i] = 1
+
+    with open('_temp/bits', 'wb') as b:
+        bits.tofile(b)
+
+    bobs = bitarray()
+    with open('_temp/bits', 'rb') as r:
+        bobs.fromfile(r)
+
+    assert repr(bobs) == "bitarray('10101010101010101010101010101010')"
+
+
 if __name__ == "__main__":  # pragma: no cover
     test_index_bitarray()
+    test_read_write()
 
     print('okay')
