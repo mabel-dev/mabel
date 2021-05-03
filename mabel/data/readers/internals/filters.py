@@ -117,7 +117,7 @@ class Filters():
                 Each tuple has format: (`key`, `op`, `value`). When run the
                 filter will extract the `key` field from the dictionary and
                 compare to the `value` using the operator `op`. Multiple
-                filters are treated as AND, there is no OR at this time.
+                filters are treated as AND, lists of ANDs are treated as ORs.
                 The supported `op` values are: `=` or `==`, `!=`, `<`, `>`,
                 `<=`, `>=`, `in`, `!in` (not in) and `like`. If the `op` is
                 `in` or `!in`, the `value` must be a collection such as a

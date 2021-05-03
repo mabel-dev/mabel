@@ -20,17 +20,17 @@ def test_can_find_files():
     """
     # with a trailing /
     r = DiskReader(dataset='tests/data/tweets/', raw_path=True)
-    assert len(list(r.get_list_of_blobs())) == 2
+    assert len(list(r.get_list_of_blobs())) == 4  # 2 data, 2 index
 
     # without a trailing /
     r = DiskReader(dataset='tests/data/tweets', raw_path=True)
-    assert len(list(r.get_list_of_blobs())) == 2
+    assert len(list(r.get_list_of_blobs())) == 4  # 2 data, 2 index
 
 
 def test_can_read_files():
     """ ensure we can read the test files """
     r = DiskReader(dataset='tests/data/tweets/', raw_path=True)
-    for file in r.get_list_of_blobs():
+    for file in [b for b in r.get_list_of_blobs() if '/_SYS.' not in b]:
         for index, item in enumerate(r.get_records(file)):
             pass
         assert index == 24, index
@@ -39,7 +39,7 @@ def test_can_read_files():
 def test_only_read_selected_rows():
     """ ensure we can read the test files """
     r = DiskReader(dataset='tests/data/tweets/', raw_path=True)
-    for file in r.get_list_of_blobs():
+    for file in [b for b in r.get_list_of_blobs() if '/_SYS.' not in b]:
         for index, item in enumerate(r.get_records(file, rows=[1,2,3])):
             pass
         assert index == 2, index

@@ -21,6 +21,13 @@ Terminology:
     Row       : a record in the target file
 """
 
+def safe_field_name(field_name):
+    """strip all the non-alphanums from a field name"""
+    import re, string;
+    pattern = re.compile('[\W_]+')
+    return pattern.sub('', field_name)
+
+
 class IndexEntry(BaseModel):
     """
     Python friendly representation of index entries.

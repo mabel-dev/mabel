@@ -1,3 +1,5 @@
+import sys
+import os.path
 from typing import Callable, Optional, Iterable, Tuple, List
 from .internals.threaded_reader import threaded_reader
 from .internals.experimental_processed_reader import processed_reader
@@ -8,6 +10,7 @@ from ..formats.dictset.display import html_table, ascii_table
 from ..formats import json
 from ...logging import get_logger
 from ...errors import InvalidCombinationError
+from ...index.index import Index, safe_field_name
 
 # available parsers
 PARSERS = {
@@ -65,7 +68,6 @@ class Reader():
                 returned, False the record is skipped. The default is all
                 records
             filters: List of tuples (optional)
-                **EXPERIMENTAL**
                 Rows which do not match the filter predicate will be removed
                 from scanned data. Default is no filtering.
                 Each tuple has format: (`key`, `op`, `value`) and compares the
@@ -158,6 +160,16 @@ class Reader():
         if row_format != 'pass-thru' and kwargs.get('extension') == '.parquet':  # pragma: no cover
             raise InvalidCombinationError("`parquet` extension much be used with the `pass-thru` row_format")
 
+        self.filters = None
+        self.indexable_fields = []
+        if filters:
+            self.filters = Filters(filters)   
+            self.indexable_fields = self._get_indexable_filter_columns(self.filters.predicates)
+            if where:
+                raise InvalidCombinationError('Where and Filters can not be used at the same time')
+        if where:
+            get_logger().warning("`where` will be deprecated, use `filters` or `dictset.select_from` instead")
+
         """ FEATURES IN DEVELOPMENT """
 
         # multiprocessed reader
@@ -167,14 +179,6 @@ class Reader():
         if self.fork_processes:
             get_logger().warning("FORKED READER IS EXPERIMENTAL")
 
-        self.filters = None
-        if filters:
-            self.filters = Filters(filters)   
-            get_logger().warning("FILTERS IS EXPERIMENTAL")
-            if where:
-                raise InvalidCombinationError('Where and Filters can not be used at the same time')
-        if where:
-            get_logger().warning("`where` is a deprecation target, use `filters` or `dictset.select_from` instead")
         
     """
     Iterable
@@ -184,6 +188,34 @@ class Reader():
         for line in Reader("file"):
             print(line)
     """
+    def _get_indexable_filter_columns(self, predicate):
+        """
+        Returns all of the columns in a filter which the operation benefits
+        from an index
+        """
+        print(predicate)
+        INDEXABLE_OPS = {'=', '==', 'is', 'in'}
+        if predicate is None:
+            return []
+        if isinstance(predicate, tuple):
+            key, op, value = predicate
+            if op in INDEXABLE_OPS:
+                return [(key, value,)]
+        if isinstance(predicate, list):
+            if all([isinstance(p, tuple) for p in predicate]):
+                return [(k,v,) for k,o,v in predicate if o in INDEXABLE_OPS]
+            if all([isinstance(p, list) for p in predicate]):
+                columns = []
+                for p in predicate:
+                    columns += self._get_indexable_filter_columns(p)
+                return columns
+        return []    # pragma: no cover
+
+    def _is_system_file(self, filename):
+        if '_SYS.' in filename:
+            base = os.path.basename(filename)
+            return base.startswith('_SYS.')
+        return False
 
     def _create_line_reader(self):
         blob_list = self.reader_class.get_list_of_blobs()
@@ -195,12 +227,11 @@ class Reader():
                 blob_list = self.reader_class.get_list_of_blobs()
             if self.step_back_days < self.reader_class.days_stepped_back:
                 get_logger().alert(F"No data found in last {self.step_back_days} days - aborting")
-                import sys
                 sys.exit(-1) 
             if self.reader_class.days_stepped_back > 0:
                 get_logger().warning(F"Stepped back {self.reader_class.days_stepped_back} days to {self.reader_class.start_date} to find last data, my limit is {self.step_back_days} days.")
 
-        get_logger().debug(F"Reader found {len(blob_list)} sources to read data from.")
+        get_logger().debug(F"Reader found {len([b for b in blob_list if not self._is_system_file(b)])} sources to read data from.")
         
         if self.thread_count > 0:
             ds = threaded_reader(blob_list, self.reader_class, self.thread_count)
@@ -213,9 +244,23 @@ class Reader():
         elif self.fork_processes:
             yield from processed_reader(list(blob_list), self.reader_class, self._parse, self.where)
         else:
-            for blob in blob_list:
+            for blob in [b for b in blob_list if not self._is_system_file(b)]:
                 get_logger().debug(F"Reading from `{blob}`")
-                ds = self.reader_class.get_records(blob)
+
+                # If an index exists, get the rows we're interestedin from the index
+                rows = None
+                for field, filter_value in self.indexable_fields:
+                    path, file = os.path.split(blob)
+                    stem, ext = os.path.splitext(file)
+                    index_file = path + '/_SYS.' + stem + '.' + safe_field_name(field) + '.index'
+                    if index_file in blob_list:
+                        get_logger().debug(F"Reading from INDEX `{index_file}`")
+                        index_stream = self.reader_class.get_blob_stream(index_file)
+                        index = Index(index_stream)
+                        rows = rows or []
+                        rows += index.search(filter_value)
+
+                ds = self.reader_class.get_records(blob, rows)
                 ds = self._parse(ds)
                 if self.filters:
                     yield from self.filters.filter_dictset(ds)
