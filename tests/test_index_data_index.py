@@ -1,118 +1,14 @@
-import io
-import mmh3  # type:ignore
-import struct
-from operator import itemgetter
-from pydantic import BaseModel    # type:ignore
+import datetime
+import sys
+import os
+import pytest
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
+from mabel.index.index import Index
+from rich import traceback
 
+traceback.install()
 
-UNSET = 65535  # 2^16 - 1
-MAX_INDEX = 4294967295  # 2^32 - 1
-STRUCT_DEF = "I H H"  # 4 byte unsigned int, 2 byte unsigned int, 2 byte unsigned int
-RECORD_SIZE = struct.calcsize(STRUCT_DEF)  # this should be 8
-
-
-class IndexEntry(BaseModel):
-    """
-    Python friendly representation of index entries.
-
-    Includes binary translations.
-    """
-    value: int
-    offset: int
-    count: int
-
-    def to_bin(self) -> bytes:
-        return struct.pack(
-                STRUCT_DEF,
-                self.value,
-                self.offset,
-                self.count)
-
-    @staticmethod
-    def from_bin(buffer):
-        value, offset, count = struct.unpack(STRUCT_DEF, buffer)
-        return IndexEntry(
-                value=value,
-                offset=offset,
-                count=count)
-
-
-class Indexer():
-
-    def __init__(self):
-        self._index = bytes()
-
-    def index_dictset(self, dictset, column):
-        temp = []
-        self._index = bytes()
-        for offset, row in enumerate(dictset):
-            if row.get(column):
-                entry = {
-                        "value": mmh3.hash(row[column]) % MAX_INDEX,
-                        "row": offset
-                }
-            temp.append(entry)
-        last_value = None
-        for i in sorted(temp, key=itemgetter("value")):
-            if i['value'] == last_value:
-                count += 1
-            else:
-                count = 1
-            self._index += IndexEntry(
-                    value=i['value'],
-                    offset=i['row'],
-                    count=count).to_bin()
-            last_value = i['value']
-
-    def to_stream(self):
-        return io.BytesIO(self._index)
-
-    @staticmethod
-    def read_file(filename):
-        pass
-
-    def __repr__(self):
-        return str(len(self._index))
-
-    @staticmethod
-    def _locate_record(value, stream, records):
-        """
-        Use a binary search algorithm to search the index
-        """
-        left, right = 0, records
-        while left <= right:
-            middle = (left + right) >> 1
-            stream.seek(RECORD_SIZE * middle)
-            entry = IndexEntry.from_bin(stream.read(RECORD_SIZE))
-            if entry.value == value:
-                return entry.offset
-            elif entry.value > value:
-                right = middle - 1
-            else:
-                left = middle + 1
-        return -1
-
-    def search(self, search_term):
-        value = mmh3.hash(search_term) % MAX_INDEX
-        stream = self.to_stream()
-        records = int(len(self._index) / RECORD_SIZE)
-
-        found_location = Indexer._locate_record(value, stream, records)
-        
-        # the found_location is the fastest record to be found, this could
-        # be the first, last or middle of the set. The count field tells
-        # us how many rows to go back, but not how many forward
-
-        return [found_location]
-
-
-if __name__ == "__main__":
-
-
-
-
-
-    THE_LIST = [
+THE_LIST = [
         {"number": "1", "description": "Stole ten dollars from a guy at the Camden Market"},
         {"number": "2", "description": "Took money from car coin holder"},
         {"number": "3", "description": "Copped a feel off old (Miss Jones?) but I think she liked..."},
@@ -259,7 +155,17 @@ if __name__ == "__main__":
         {"number": "277", "description": "Broke up Randy & Pinky"}
     ]
 
-    i = Indexer()
-    i.index_dictset(THE_LIST, "description")
 
-    print(i.search("Neglected Randy"), RECORD_SIZE)
+def test_data_index():
+
+    idx = Index.build_index(THE_LIST, "description")
+
+    for loc, entry in enumerate(THE_LIST):
+        rows = idx.search(entry['description'])
+        assert loc in rows, entry['description']
+
+
+if __name__ == "__main__":  # pragma: no cover
+    test_data_index()
+
+    print('okay')
