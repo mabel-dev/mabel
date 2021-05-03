@@ -97,6 +97,10 @@ class BaseInnerReader(abc.ABC):
             if len(rows) == 0:
                 return []
             rows = set(rows)
+            all_rows = False
+        else:
+            all_rows = True
+            rows = set([-1])
 
         stream = self.get_blob_stream(blob_name)
 
@@ -104,13 +108,13 @@ class BaseInnerReader(abc.ABC):
             import zstandard  # type:ignore
             with zstandard.open(stream, 'r', encoding='utf8') as file:  # type:ignore
                 for index, row in enumerate(file):
-                    if not rows or index in rows:
+                    if all_rows or index in rows:
                         yield row
         elif blob_name.endswith('.lzma'):
             import lzma
             with lzma.open(stream, 'rb') as file:  # type:ignore
                 for index, row in enumerate(file):
-                    if not rows or index in rows:
+                    if all_rows or index in rows:
                         yield row
         elif blob_name.endswith('.parquet'):
             try:
@@ -122,15 +126,14 @@ class BaseInnerReader(abc.ABC):
             for batch in table.to_batches():
                 dict_batch = batch.to_pydict()
                 for index in range(len(batch)):
-                    if not rows or index in rows:
+                    if all_rows or index in rows:
                         yield json.serialize({k:v[index] for k,v in dict_batch.items()})  # type:ignore
         else:  # assume text in lines format
             text = stream.read().decode('utf8')  # type:ignore
             lines = text.splitlines()
             for index, row in enumerate(lines):
-                if not rows or index in rows:
-                    if len(row) > 0:
-                        yield row
+                if all_rows or index in rows:
+                    yield row
 
 
     def get_list_of_blobs(self):

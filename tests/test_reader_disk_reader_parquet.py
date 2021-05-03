@@ -18,10 +18,11 @@ def test_can_read_parquet():
             dataset='tests/data/formats/parquet',
             raw_path=True)
 
+    i = 0
     for i, row in enumerate(r):
         pass
 
-    assert i == 57580
+    assert i == 57580, i
     assert isinstance(row, str)
 
 if __name__ == "__main__":  # pragma: no cover

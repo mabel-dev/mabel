@@ -195,7 +195,6 @@ class Reader():
         Returns all of the columns in a filter which the operation benefits
         from an index
         """
-        print(predicate)
         INDEXABLE_OPS = {'=', '==', 'is', 'in'}
         if predicate is None:
             return []
