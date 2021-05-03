@@ -31,15 +31,15 @@ jobs:
                      -v /tmp/config:/root/.minio \
                      minio/minio server /data
 
-      - name: run regression tests
+      - name: Run Regression Tests
         run: coverage run -m pytest 
         env:
           MINIO_END_POINT: 127.0.0.1:9000
           MINIO_ACCESS_KEY: minioadmin
           MINIO_SECRET_KEY: minioadmin
 
-      - name: Execute Test
-        run: coverage report --include=mabel* --fail-under=80
+      - name: Check Coverage
+        run: coverage report --include=mabel* --fail-under=85
 
       - name: "Upload coverage to Codecov"
         uses: codecov/codecov-action@v1

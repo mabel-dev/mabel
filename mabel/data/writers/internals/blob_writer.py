@@ -79,8 +79,8 @@ class BlobWriter():
                         byte_data=byte_data,
                         override_blob_name=None)
                 if 'BACKOUT' in committed_blob_name:
-                    get_logger().warning(F"{self.records_in_blob:n} failed records written to BACKOUT partition {committed_blob_name}")
-                get_logger().debug(F"Blob Committed - {committed_blob_name} - {self.records_in_blob:n} records, {self.bytes_in_blob:n} raw bytes, {len(byte_data):n} comitted bytes")
+                    get_logger().warning(F"{self.records_in_blob:n} failed records written to BACKOUT partition `{committed_blob_name}`")
+                get_logger().debug(F"Blob Committed - `{committed_blob_name}` - {self.records_in_blob:n} records, {self.bytes_in_blob:n} raw bytes, {len(byte_data):n} comitted bytes")
                 try:
                     os.remove(self.file_name)
                 except ValueError:

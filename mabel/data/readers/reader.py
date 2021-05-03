@@ -214,7 +214,7 @@ class Reader():
             yield from processed_reader(list(blob_list), self.reader_class, self._parse, self.where)
         else:
             for blob in blob_list:
-                get_logger().debug(F"Reading from {blob}")
+                get_logger().debug(F"Reading from `{blob}`")
                 ds = self.reader_class.get_records(blob)
                 ds = self._parse(ds)
                 if self.filters:

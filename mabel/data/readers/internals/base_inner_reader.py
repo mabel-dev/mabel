@@ -151,12 +151,12 @@ class BaseInnerReader(abc.ABC):
             as_at = as_ats.pop()
             # the .ignore file means the frame shouldn't be used 
             while any([blob for blob in blobs if as_at + '/.ignore' in blob]):
-                get_logger().debug(F".ignore file found in frame {as_at}, ignoring")
+                get_logger().debug(F".ignore file found in frame `{as_at}``, ignoring")
                 if len(as_ats) > 0:
                     as_at = as_ats.pop()
                 else:
                     return []
-            get_logger().debug(F"Reading from DataSet frame {as_at}")
+            get_logger().debug(F"Reading from DataSet frame `{as_at}`")
             blobs = [blob for blob in blobs if as_at in blob]
 
         return blobs
