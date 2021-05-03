@@ -236,7 +236,9 @@ class Reader():
         get_logger().debug(F"Reader found {len([b for b in blob_list if not self._is_system_file(b)])} sources to read data from.")
         
         if self.thread_count > 0:
-            ds = threaded_reader(blob_list, self.reader_class, self.thread_count)
+            bl = [b for b in blob_list if not self._is_system_file(b)]
+
+            ds = threaded_reader(bl, self.reader_class, self.thread_count)
             ds = self._parse(ds)
 
             if self.filters:
@@ -244,7 +246,8 @@ class Reader():
             else:
                 yield from select_from(ds, where=self.where)
         elif self.fork_processes:
-            yield from processed_reader(list(blob_list), self.reader_class, self._parse, self.where)
+            bl = [b for b in blob_list if not self._is_system_file(b)]
+            yield from processed_reader(list(bl), self.reader_class, self._parse, self.where)
         else:
             for blob in [b for b in blob_list if not self._is_system_file(b)]:
                 get_logger().debug(F"Reading from `{blob}`")
