@@ -149,9 +149,6 @@ class Reader():
         arg_dict['row_format'] = F'{row_format}'
         get_logger().debug(json.serialize(arg_dict))
 
-        # threaded reader
-        self.thread_count = int(kwargs.get('thread_count', 0))
-
         # number of days to walk backwards to find records
         self.step_back_days = int(kwargs.get('step_back_days', 0))
         if self.step_back_days > 0 and self.reader_class.start_date != self.reader_class.end_date:  # pragma: no cover
@@ -172,12 +169,17 @@ class Reader():
 
         """ FEATURES IN DEVELOPMENT """
 
+        # threaded reader
+        self.thread_count = int(kwargs.get('thread_count', 0))
+        if self.thread_count > 0:
+            get_logger().warning("Threaded Reader is Experimental - it's interface may change and some features may not be supported")
+
         # multiprocessed reader
         self.fork_processes = bool(kwargs.get('fork_processes', False))
         if self.thread_count > 0 and self.fork_processes:  # pragma: no cover
             raise InvalidCombinationError('Forking and Threading can not be used at the same time')
         if self.fork_processes:
-            get_logger().warning("FORKED READER IS EXPERIMENTAL")
+            get_logger().warning("Forked Reader is Experimental - it's interface may change and some features may not be supported")
 
         
     """
