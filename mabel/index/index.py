@@ -4,6 +4,8 @@ import struct
 from operator import itemgetter
 from pydantic import BaseModel    # type:ignore
 from functools import lru_cache
+from typing import Iterable
+
 
 UNSET = 65535  # 2^16 - 1
 MAX_INDEX = 4294967295  # 2^32 - 1
@@ -39,6 +41,9 @@ class IndexEntry(BaseModel):
     count: int
 
     def to_bin(self) -> bytes:
+        """
+        Convert a model to _bytes_
+        """
         return struct.pack(
                 STRUCT_DEF,
                 self.value,
@@ -47,6 +52,9 @@ class IndexEntry(BaseModel):
 
     @staticmethod
     def from_bin(buffer):
+        """
+        Convert _bytes_ to a model
+        """
         value, location, count = struct.unpack(STRUCT_DEF, buffer)
         return IndexEntry(
                 value=value,
@@ -59,6 +67,12 @@ class Index():
     def __init__(
             self,
             index: io.BytesIO):
+        """
+        A data index which speeds up reading data files.
+
+        The file format is fixed-length binary, the search algorithm is a
+        classic binary search.
+        """
         if isinstance(index, io.BytesIO):
             self._index = index
             # go to the end of the stream
@@ -68,32 +82,34 @@ class Index():
             self.size = index.tell() // RECORD_SIZE
 
     @staticmethod
-    def build_index(dictset, column):
-        temp = []
-        index = bytes()
-        for position, row in enumerate(dictset):
-            if row.get(column):
-                entry = {
-                        "value": mmh3.hash(row[column]) % MAX_INDEX,
-                        "position": position
-                }
-            temp.append(entry)
-        previous_value = None
-        for i, row in enumerate(sorted(temp, key=itemgetter("value"))):
-            #print(i, row)
-            if row['value'] == previous_value:
-                count += 1
-            else:
-                count = 1
-            index += IndexEntry(
-                    value=row['value'],
-                    location=row['position'],
-                    count=count).to_bin()
-            previous_value = row['value']
-        return Index(io.BytesIO(index))
+    def build_index(
+            dictset: Iterable[dict],
+            column_name: str) -> io.BytesIO:
+        """
+        Build an index from a dictset.
 
-    @lru_cache(8)
-    def _get_entry(self, location):
+        Parameters:
+            dictset: iterable of dictionaries
+                The dictset to index
+            column_name: string
+                The name of the index which will be indexed
+
+        Returns:
+            io.BytesIO
+        """
+        # We do this in two-steps
+        # 1) Build an intermediate form of the index as a list of entries
+        # 2) Conver that intermediate form into a binary index
+        builder = IndexBuilder(column_name)
+        for position, row in enumerate(dictset):
+            builder.add(position, row)
+        return builder.build()
+
+    @lru_cache(16)  # the maximum length is 2^16 
+    def _get_entry(self, location: int):
+        """
+        get a specific entry from the index
+        """
         if location >= self.size:
             return IndexEntry(
                 value=-1,
@@ -119,7 +135,13 @@ class Index():
                 left = middle + 1
         return -1, None
 
-    def search(self, search_term):
+    def search(
+            self,
+            search_term) -> Iterable:
+        """
+        Search the index for a value. Returns a list of row numbers, if the
+        value is not found, the list is empty.
+        """
         # hash the value and make fit in a four byte unsinged int
         value = mmh3.hash(search_term) % MAX_INDEX
 
@@ -142,5 +164,36 @@ class Index():
         return {self._get_entry(loc).location for loc in range(start_location, end_location, 1)}
 
 
-    def __repr__(self):
-        return str(len(self._index))
+class IndexBuilder():
+
+    slots = ('column_name', 'temporary_index')
+
+    def __init__(
+            self,
+            column_name:str):
+        self.column_name = column_name
+        self.temporary_index = []
+
+    def add(self, position, record):
+        if record.get(self.column_name):
+            entry = {
+                    "value": mmh3.hash(record[self.column_name]) % MAX_INDEX,
+                    "position": position
+            }
+            self.temporary_index.append(entry)
+
+    def build(self) -> Index:
+        previous_value = None
+        index = bytes()
+        self.temporary_index = sorted(self.temporary_index, key=itemgetter("value"))
+        for row in self.temporary_index:
+            if row['value'] == previous_value:
+                count += 1
+            else:
+                count = 1
+            index += IndexEntry(
+                    value=row['value'],
+                    location=row['position'],
+                    count=count).to_bin()
+            previous_value = row['value']
+        return Index(io.BytesIO(index))

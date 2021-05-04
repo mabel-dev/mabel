@@ -62,19 +62,19 @@ def read_file(filename, chunk_size=32*1024*1024, delimiter="\n"):
             yield carry_forward
 
 
-#schema = Schema(schema_definition)
-#lines = read_jsonl('tests/data/index/not/tweets.jsonl')
+schema = Schema(schema_definition)
+lines = read_jsonl('tests/data/index/not/tweets.jsonl')
 
-#writer = BatchWriter(
-#        inner_writer=DiskWriter,
-#        dataset='_temp/idx',
-#        #schema=schema,
-#        indexes=['user_name']
-#)
+writer = BatchWriter(
+        inner_writer=DiskWriter,
+        dataset='_temp/idx',
+        #schema=schema,
+        indexes=['user_name']
+)
 
-#for record in lines:
-#    writer.append(record)
-#writer.finalize()
+for record in lines:
+    writer.append(record)
+writer.finalize()
 
 reader = Reader(
         inner_reader=DiskReader,
