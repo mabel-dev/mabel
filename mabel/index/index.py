@@ -176,11 +176,16 @@ class IndexBuilder():
 
     def add(self, position, record):
         if record.get(self.column_name):
-            entry = {
-                    "value": mmh3.hash(record[self.column_name]) % MAX_INDEX,
-                    "position": position
-            }
-            self.temporary_index.append(entry)
+            # index lists of items separately
+            values = record[self.column_name]
+            if not isinstance(values, list):
+                values = [values]
+            for value in values:
+                entry = {
+                        "value": mmh3.hash(value) % MAX_INDEX,
+                        "position": position
+                }
+                self.temporary_index.append(entry)
 
     def build(self) -> Index:
         previous_value = None

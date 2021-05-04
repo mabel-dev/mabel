@@ -3,7 +3,7 @@ import sys
 import os
 import pytest
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
-from mabel.index.index import Index
+from mabel.index.index import Index, IndexBuilder
 from rich import traceback
 
 traceback.install()
@@ -155,6 +155,21 @@ THE_LIST = [
         {"number": "277", "description": "Broke up Randy & Pinky"}
     ]
 
+COMPOUNDS = [
+        {"name":"water", "elements":["hydrogen", "oxygen"]},
+        {"name":"ammonia", "elements":["nitrogen","hydrogen"]},
+        {"name":"carbon monoxide", "elements":["carbon","oxygen"]},
+        {"name":"carbon dioxide", "elements":["carbon","oxygen"]},
+        {"name":"sodium chloride", "elements":["sodium","chlorine"]},
+        {"name":"sodium hydroxide", "elements":["sodium","oxygen","hydrogen"]},
+        {"name":"calcium chloride", "elements":["calcium","chlorine"]},
+        {"name":"calcium carbonate", "elements":["calcium","carbon","oxygen"]},
+        {"name":"calcium nitrate", "elements":["calcium","nitrogen","oxygen"]},
+        {"name":"calcium phosphate", "elements":["calcium","phosphorus","oxygen"]},
+        {"name":"calcium sulfate", "elements":["calcium","sulfur","oxygen"]},
+        {"name":"methane", "elements":["carbon","hyrogen"]},
+        {"name":"ethanol", "elements":["carbon","hydrogen","oxygen"]}
+]
 
 def test_data_index():
 
@@ -165,7 +180,19 @@ def test_data_index():
         assert loc in rows, entry['description']
 
 
+def test_complex_indexes():
+    """test that we build lists of items into an index"""
+    ib = IndexBuilder("elements")
+    for i, compound in enumerate(COMPOUNDS):
+        ib.add(i, compound)
+    idx = ib.build()
+
+    for row in idx.search("sodium"):
+        assert "sodium" in COMPOUNDS[row]['elements']
+
+
 if __name__ == "__main__":  # pragma: no cover
     test_data_index()
+    test_complex_indexes()
 
     print('okay')
