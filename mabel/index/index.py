@@ -84,7 +84,7 @@ class Index():
     @staticmethod
     def build_index(
             dictset: Iterable[dict],
-            column_name: str) -> Index:
+            column_name: str):
         """
         Build an index from a dictset.
 
