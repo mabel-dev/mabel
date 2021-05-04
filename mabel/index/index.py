@@ -84,7 +84,7 @@ class Index():
     @staticmethod
     def build_index(
             dictset: Iterable[dict],
-            column_name: str) -> io.BytesIO:
+            column_name: str) -> Index:
         """
         Build an index from a dictset.
 
@@ -171,8 +171,8 @@ class IndexBuilder():
     def __init__(
             self,
             column_name:str):
-        self.column_name = column_name
-        self.temporary_index = []
+        self.column_name:str = column_name
+        self.temporary_index: Iterable[dict] = []
 
     def add(self, position, record):
         if record.get(self.column_name):
@@ -185,6 +185,7 @@ class IndexBuilder():
     def build(self) -> Index:
         previous_value = None
         index = bytes()
+        count:int = 0
         self.temporary_index = sorted(self.temporary_index, key=itemgetter("value"))
         for row in self.temporary_index:
             if row['value'] == previous_value:
