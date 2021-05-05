@@ -138,6 +138,16 @@ def test_reader_writer_format_default():
     assert l == 200000, l
 
 
+def test_write_to_path_logged():
+
+    # none of these should do anything
+    nw = SimpleWriter(
+            inner_writer=NullWriter,
+            to_path='bucket/path')
+    nw.append({"abc":"def"})
+    print(nw.finalize())
+
+
 def get_data():
     r = Reader(
         inner_reader=DiskReader,
@@ -153,5 +163,6 @@ if __name__ == "__main__":  # pragma: no cover
     test_reader_writer_format_jsonl()
     test_reader_writer_format_parquet()
     test_reader_writer_format_default()
+    test_write_to_path_logged()
 
     print('okay')

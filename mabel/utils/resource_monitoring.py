@@ -1,5 +1,6 @@
-import threading
 import os
+import json
+import threading
 from time import sleep
 from ..logging import get_logger
 
@@ -25,7 +26,7 @@ class ResourceMonitor():
                 memory_usage = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
             else:
                 memory_usage = self.process.memory_info()[0]
-            get_logger().info({"memory":memory_usage})
+            get_logger().info(json.dumps({"memory":memory_usage}))
             sleep(self.frequency)
 
 

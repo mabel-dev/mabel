@@ -6,7 +6,7 @@ from typing import Any
 from ...formats.json import serialize
 from ....logging import get_logger
 from ....utils.paths import get_parts
-from ....index.index import IndexEntry
+from ....index.index import IndexBuilder
 
 
 BLOB_SIZE = 32*1024*1024  # about 32 files per gigabyte
@@ -52,15 +52,9 @@ class BlobWriter():
         # serialize the record
         serialized = serialize(record, as_bytes=True) + b'\n'  # type:ignore
 
-        # TODO: create an index builder, this is duplicate and ugly
-        MAX_INDEX = 4294967295  # 2^32 - 1
-        import mmh3  # type:ignore
+        # add the columns to the index
         for column in self.indexes:
-            if record.get(column):
-                self.index_builders[column].append(
-                    {
-                        "value": mmh3.hash(record[column]) % MAX_INDEX,
-                        "position": self.records_in_blob})
+            self.index_builders[column].add(self.records_in_blob, record)
 
         # the newline isn't counted so add 1 to get the actual length
         # if this write would exceed the blob size, close it so another
@@ -105,30 +99,17 @@ class BlobWriter():
                         byte_data=byte_data,
                         override_blob_name=None)
 
-                # TODO: commit index here
-                index = bytes()
-                from operator import itemgetter
                 for column in self.indexes:
-                    temp = self.index_builders[column]
-                    previous_value = None
-                    for i, row in enumerate(sorted(temp, key=itemgetter("value"))):
-                        if row['value'] == previous_value:
-                            count += 1
-                        else:
-                            count = 1
-                        index += IndexEntry(
-                                value=row['value'],
-                                location=row['position'],
-                                count=count).to_bin()
-                        previous_value = row['value']
+                    index = self.index_builders[column].build()
                     
                     bucket, path, stem, suffix = get_parts(committed_blob_name)
                     index_name = bucket + '/' + path + '_SYS.' + stem + '.' + safe_field_name(column) + '.index'
                     
+                    index_stream = index._index
+                    index_stream.seek(0)
                     committed_index_name = self.inner_writer.commit(
-                        byte_data=io.BytesIO(index).read(),
+                        byte_data=index_stream.read(),
                         override_blob_name=index_name)
-                    # TODO: END
 
                 if 'BACKOUT' in committed_blob_name:
                     get_logger().warning(F"{self.records_in_blob:n} failed records written to BACKOUT partition `{committed_blob_name}`")
@@ -155,7 +136,7 @@ class BlobWriter():
         # create index builders
         self.index_builders = {}
         for column in self.indexes:
-            self.index_builders[column] = []
+            self.index_builders[column] = IndexBuilder(column)
 
         self.bytes_in_blob = 0
         self.records_in_blob = 0
