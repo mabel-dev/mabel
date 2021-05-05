@@ -25,7 +25,6 @@ class SimpleWriter():
     def __init__(
             self,
             *,
-            dataset: str,
             schema: Schema = None,
             format: str = 'zstd',
             date: Any = None,
@@ -33,6 +32,11 @@ class SimpleWriter():
         """
         Simple Writer provides a basic writer capability.
         """
+        dataset = kwargs.get('dataset')
+        if kwargs.get('to_path'):  # pragma: no cover
+            get_logger().warning('DEPRECATION: Writer \'to_path\' parameter has been replaced with \'dataset\' ')
+            dataset = kwargs.pop('to_path')
+
         if 'BACKOUT' in dataset:
             InvalidDataSetError('BACKOUT is a reserved word and cannot be used in Dataset names')
         if dataset.endswith('/'):
@@ -45,10 +49,6 @@ class SimpleWriter():
         self.schema = schema
         self.finalized = False
         self.batch_date = self._get_writer_date(date)
-
-        if dataset is None and kwargs.get('to_path'):  # pragma: no cover
-            dataset = kwargs['to_path']
-            get_logger().warning('DEPRECATION: Writer \'to_path\' parameter will be replaced with \'dataset\' ')
 
         self.dataset = dataset
         if "{date" not in self.dataset and not kwargs.get('raw_path', False):
@@ -92,7 +92,7 @@ class SimpleWriter():
 
     def __del__(self):
         if hasattr(self, 'finalized') and not self.finalized:
-            get_logger().error(F"{type(self).__name__} has not been finalized - data may be lost, make sure you're call .finalize()")
+            get_logger().error(F"{type(self).__name__} has not been finalized - data may be lost, make sure you call .finalize()")
 
     def finalize(self):
         self.finalized = True

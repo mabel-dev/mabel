@@ -18,9 +18,9 @@ class BaseInnerWriter(abc.ABC):
 
     def __init__(
             self,
-            dataset: str,
             **kwargs):
 
+        dataset = kwargs.get('dataset')
         self.bucket, path, _, _ = paths.get_parts(dataset)
 
         if self.bucket == '/':

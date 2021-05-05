@@ -8,10 +8,10 @@ traceback.install()
 
 
 def test_null_writer():
-
     # none of these should do anything
     nw = NullWriter(dataset='bucket/path')
     assert nw.commit(None, None).startswith('NullWriter')
+
 
 if __name__ == "__main__":  # pragma: no cover
     test_null_writer()
