@@ -46,6 +46,10 @@ class SimpleWriter():
         self.finalized = False
         self.batch_date = self._get_writer_date(date)
 
+        if dataset is None and kwargs.get('to_path'):  # pragma: no cover
+            dataset = kwargs['to_path']
+            get_logger().warning('DEPRECATION: Writer \'to_path\' parameter will be replaced with \'dataset\' ')
+
         self.dataset = dataset
         if "{date" not in self.dataset and not kwargs.get('raw_path', False):
             self.dataset += '/{datefolders}'
