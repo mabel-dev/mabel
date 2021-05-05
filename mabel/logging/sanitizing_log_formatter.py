@@ -131,9 +131,7 @@ class SanitizingLogFormatter(logging.Formatter):
         try:
             dirty_record = json.loads(json_part)
         except:
-
             json_part = re.sub("`(.*)`", r"`{BOLD_YELLOW}\1{OFF}`", json_part)
-
 
             parts.append(json_part)
             record = '|'.join(parts)
