@@ -2,7 +2,7 @@ import os
 import re
 import hashlib
 import logging
-import json  # we use json rather than ujson/orjson for greatest compatibility
+import ujson as json  # use ujson rather than orjson for compatibility
 from functools import lru_cache
 
 COLORS = {
@@ -130,7 +130,7 @@ class LogFormatter(logging.Formatter):
 
         try:
             dirty_record = json.loads(json_part)
-        except:
+        except ValueError:
             dirty_record = {"message": json_part.strip()}
 
         if isinstance(dirty_record, dict):
