@@ -143,7 +143,7 @@ class Index():
         value is not found, the list is empty.
         """
         # hash the value and make fit in a four byte unsinged int
-        value = mmh3.hash(search_term) % MAX_INDEX
+        value = mmh3.hash(F"{search_term}") % MAX_INDEX
 
         # search for an instance of the value in the index
         location, found_entry = self._locate_record(value)
@@ -182,7 +182,7 @@ class IndexBuilder():
                 values = [values]
             for value in values:
                 entry = {
-                        "value": mmh3.hash(value) % MAX_INDEX,
+                        "value": mmh3.hash(F"{value}") % MAX_INDEX,
                         "position": position
                 }
                 self.temporary_index.append(entry)
