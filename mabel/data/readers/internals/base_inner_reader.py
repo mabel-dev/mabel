@@ -1,6 +1,7 @@
 """
 Base Inner Reader
 """
+import os
 import abc
 import pathlib
 import datetime
@@ -10,7 +11,63 @@ from dateutil import parser
 from ...formats import json
 from ....utils import common, paths
 from ....logging import get_logger
+from ....errors import MissingDependencyError
 
+
+def zstd_reader(stream, rows, all_rows):
+    """
+    Read zstandard compressed files
+    """
+    # zstandard should always be present
+    import zstandard  # type:ignore
+    with zstandard.open(stream, 'r', encoding='utf8') as file:  # type:ignore
+        for index, row in enumerate(file):
+            if all_rows or index in rows:
+                yield row
+
+def lzma_reader(stream, rows, all_rows):
+    """
+    Read LZMA compressed files
+    """
+    # lzma should always be present
+    import lzma
+    with lzma.open(stream, 'rb') as file:  # type:ignore
+        for index, row in enumerate(file):
+            if all_rows or index in rows:
+                yield row
+
+def parquet_reader(stream, rows, all_rows):
+    """
+    Read parquet formatted files
+    """
+    try:
+        import pyarrow.parquet as pq  # type:ignore
+    except ImportError:
+        message = "`pyarrow` must be installed to read .parquet files"
+        get_logger().error(message)
+        raise MissingDependencyError(message)
+    table = pq.read_table(stream)
+    for batch in table.to_batches():
+        dict_batch = batch.to_pydict()
+        for index in range(len(batch)):
+            if all_rows or index in rows:
+                yield json.serialize({k:v[index] for k,v in dict_batch.items()})  # type:ignore
+
+def text_reader(stream, rows, all_rows):
+    """
+    Default reader, assumes text format
+    """
+    text = stream.read().decode('utf8')  # type:ignore
+    lines = text.splitlines()
+    for index, row in enumerate(lines):
+        if all_rows or index in rows:
+            yield row
+
+READERS = {
+    ".zstd": zstd_reader,
+    ".lzma": lzma_reader,
+    ".parquet": parquet_reader
+}
 
 
 class BaseInnerReader(abc.ABC):
@@ -71,6 +128,7 @@ class BaseInnerReader(abc.ABC):
         """
         pass
 
+
     def get_records(
             self,
             blob_name: str,
@@ -102,38 +160,10 @@ class BaseInnerReader(abc.ABC):
             all_rows = True
             rows = set([-1])
 
+        path, ext = os.path.splitext(blob_name)
         stream = self.get_blob_stream(blob_name)
 
-        if blob_name.endswith('.zstd'):
-            import zstandard  # type:ignore
-            with zstandard.open(stream, 'r', encoding='utf8') as file:  # type:ignore
-                for index, row in enumerate(file):
-                    if all_rows or index in rows:
-                        yield row
-        elif blob_name.endswith('.lzma'):
-            import lzma
-            with lzma.open(stream, 'rb') as file:  # type:ignore
-                for index, row in enumerate(file):
-                    if all_rows or index in rows:
-                        yield row
-        elif blob_name.endswith('.parquet'):
-            try:
-                import pyarrow.parquet as pq  # type:ignore
-            except ImportError:
-                get_logger().error("pyarrow must be installed to read parquet files")
-                return []
-            table = pq.read_table(stream)
-            for batch in table.to_batches():
-                dict_batch = batch.to_pydict()
-                for index in range(len(batch)):
-                    if all_rows or index in rows:
-                        yield json.serialize({k:v[index] for k,v in dict_batch.items()})  # type:ignore
-        else:  # assume text in lines format
-            text = stream.read().decode('utf8')  # type:ignore
-            lines = text.splitlines()
-            for index, row in enumerate(lines):
-                if all_rows or index in rows:
-                    yield row
+        yield from READERS.get(ext, text_reader)(stream, rows, all_rows)
 
 
     def get_list_of_blobs(self):
