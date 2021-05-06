@@ -125,9 +125,6 @@ class LogFormatter(logging.Formatter):
         parts = record.split('|')
         json_part = parts.pop()
 
-        parts[0] = "{BOLD_CYAN}" + F"{parts[0]}" + "{OFF}"
-        parts[2] = "{BOLD_WHITE}" + F"{parts[2]}" + "{OFF}"
-
         try:
             dirty_record = json.loads(json_part)
         except ValueError:

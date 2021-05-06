@@ -6,7 +6,7 @@ from .add_level import add_logging_level
 from .log_formatter import LogFormatter
 
 LOG_NAME: str = "MABEL"
-LOG_FORMAT: str = '%(name)s | %(levelname)-8s | %(asctime)s | {GREEN}%(funcName)s(){OFF} | {YELLOW}%(filename)s{OFF}:{PURPLE}%(lineno)s{OFF} | %(message)s'
+LOG_FORMAT: str = '{BOLD_CYAN}%(name)s{OFF} | %(levelname)-8s | %(asctime)s | {GREEN}%(funcName)s(){OFF} | {YELLOW}%(filename)s{OFF}:{PURPLE}%(lineno)s{OFF} | %(message)s'
 
 class LEVELS():
     """
