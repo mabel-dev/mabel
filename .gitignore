@@ -142,3 +142,4 @@ _batch/**
 .vscode/settings.json
 temp
 publish.bat
+SNAPSHOTS/

@@ -84,12 +84,15 @@ def test_combined_filters():
     filter04 = Filters([[('name', '==', 'Harry Potter')],[('name', '==', 'Hermione Grainger')]])
     # no conditions
     filter05 = Filters()
+    # IN conditions
+    filter06 = Filters(('name', 'in', ["Fleur Isabelle Delacour", "Hermione Grainger"]))
     
     assert len([a for a in filter01.filter_dictset(TEST_DATA)]) == 1
     assert len([a for a in filter02.filter_dictset(TEST_DATA)]) == 1
     assert len([a for a in filter03.filter_dictset(TEST_DATA)]) == 1
     assert len([a for a in filter04.filter_dictset(TEST_DATA)]) == 2
     assert len([a for a in filter05.filter_dictset(TEST_DATA)]) == 6
+    assert len([a for a in filter06.filter_dictset(TEST_DATA)]) == 2
 
 if __name__ == "__main__":  # pragma: no cover
     test_reader_filters_no_filter()

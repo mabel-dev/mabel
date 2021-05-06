@@ -135,13 +135,9 @@ class Index():
                 left = middle + 1
         return -1, None
 
-    def search(
+    def _inner_search(
             self,
             search_term) -> Iterable:
-        """
-        Search the index for a value. Returns a list of row numbers, if the
-        value is not found, the list is empty.
-        """
         # hash the value and make fit in a four byte unsinged int
         value = mmh3.hash(F"{search_term}") % MAX_INDEX
 
@@ -161,7 +157,22 @@ class Index():
             end_location += 1
 
         # extract the row numbers in the target dataset
-        return {self._get_entry(loc).location for loc in range(start_location, end_location, 1)}
+        return [self._get_entry(loc).location for loc in range(start_location, end_location, 1)]
+
+
+    def search(
+            self,
+            search_term) -> Iterable:
+        """
+        Search the index for a value. Returns a list of row numbers, if the
+        value is not found, the list is empty.
+        """
+        if not isinstance(search_term, (list, set, tuple)):
+            search_term = [search_term]
+        result = []
+        for term in search_term:
+            result += self._inner_search(term)
+        return set(result)
 
 
 class IndexBuilder():
