@@ -1,3 +1,4 @@
+#nodoc - don't add to the documentation wiki
 """
 This exception should be used when a lazy import fails
 """
