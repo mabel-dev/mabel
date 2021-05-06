@@ -83,7 +83,7 @@ def evaluate(
     # and do the evaluation
     if isinstance(predicate, tuple):
         key, op, value = predicate
-        return OPERATORS[op](F"{record.get(key, '')}", F"{value}")
+        return OPERATORS[op](record.get(key, ''), value)
 
     if isinstance(predicate, list):
         # Are all of the entries tuples?
