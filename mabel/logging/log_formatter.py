@@ -52,7 +52,7 @@ COLOR_EXCHANGES = {
     ' INFO     ': '{BOLD_WHITE} INFO     {OFF}'
 }
 
-class SanitizingLogFormatter(logging.Formatter):
+class LogFormatter(logging.Formatter):
 
     def __init__(self, orig_formatter):
         """
@@ -131,19 +131,17 @@ class SanitizingLogFormatter(logging.Formatter):
         try:
             dirty_record = json.loads(json_part)
         except:
-            json_part = re.sub("`(.*)`", r"`{BOLD_YELLOW}\1{OFF}`", json_part)
-
-            parts.append(json_part)
-            record = '|'.join(parts)
-            return self.colorize(record)
+            dirty_record = {"message": json_part.strip()}
 
         if isinstance(dirty_record, dict):
             clean_record = {}
             for key, value in dirty_record.items():
                 if any([True for expression in KEYS_TO_SANITIZE if re.match(expression, key, re.IGNORECASE)]):
-                    clean_record["{BOLD_BLUE}" + key + "{OFF}"] = '{BOLD_PURPLE}<redacted:' + self.hash_it(str(value)) + '>{OFF}'
+                    clean_record["{BLUE}" + key + "{OFF}"] = '{PURPLE}<redacted:' + self.hash_it(str(value)) + '>{OFF}'
                 else:
-                    clean_record["{BOLD_BLUE}" + key + "{OFF}"] = "{BOLD_YELLOW}" + F"{value}" + "{OFF}" 
+                    value = re.sub("`(.*)`", r"`{YELLOW}\1{GREEN}`", F"{value}")
+                    value = re.sub("'(.*)'", r"'{YELLOW}\1{GREEN}'", F"{value}")
+                    clean_record["{BLUE}" + key + "{OFF}"] = "{GREEN}" + F"{value}" + "{OFF}" 
 
             parts.append(' ' + json.dumps(clean_record))
         

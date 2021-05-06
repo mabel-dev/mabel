@@ -8,12 +8,12 @@ advantage of the filters.
 This current implementation is a step toward that, it does not use
 any indices at this point.
 """
+import re
 from enum import Enum
 from functools import lru_cache
 from typing import Optional, Any, Iterable, List, Tuple, Union
 from ....errors import InvalidSyntaxError
 from ....logging import get_logger
-import re
 
 
 # https://codereview.stackexchange.com/a/248421
@@ -135,7 +135,7 @@ class Filters():
             self.predicates = filters
             self.empty_filter = False
             # record the filters, will help optimize indicies later
-            get_logger().info(f"filter columns: {self._get_filter_columns(filters)}")
+            get_logger().info({"filter_columns": self._get_filter_columns(filters)})
         else:
             self.empty_filter = True
 
@@ -153,7 +153,7 @@ class Filters():
                 for p in predicate:
                     columns += self._get_filter_columns(p)
                 return columns
-        return []    # pragma: no cover
+        return []  # pragma: no cover
 
     def filter_dictset(
             self,

@@ -3,10 +3,10 @@ import logging
 from typing import Optional
 from functools import lru_cache
 from .add_level import add_logging_level
-from .sanitizing_log_formatter import SanitizingLogFormatter
+from .log_formatter import LogFormatter
 
 LOG_NAME: str = "MABEL"
-LOG_FORMAT: str = '%(name)s | %(levelname)-8s | %(asctime)s | {YELLOW}%(filename)s{OFF}:{PURPLE}%(lineno)s{OFF}:{GREEN}%(funcName)s(){OFF} | %(message)s'
+LOG_FORMAT: str = '%(name)s | %(levelname)-8s | %(asctime)s | {GREEN}%(funcName)s(){OFF} | {YELLOW}%(filename)s{OFF}:{PURPLE}%(lineno)s{OFF} | %(message)s'
 
 class LEVELS():
     """
@@ -50,9 +50,15 @@ def get_logger() -> logging.Logger:
     if not hasattr(logging, 'alert'):
         add_logging_level("ALERT", LEVELS.ALERT)
 
+    # override the existing handlers for these levels
+    add_logging_level("DEBUG", LEVELS.DEBUG)
+    add_logging_level("INFO", LEVELS.INFO)
+    add_logging_level("WARNING", LEVELS.WARNING)
+    add_logging_level("ERROR", LEVELS.ERROR)
+
     # configure the logger
     mabel_logging_handler = logging.StreamHandler()    
-    formatter = SanitizingLogFormatter(logging.Formatter(LOG_FORMAT, datefmt="%Y-%m-%dT%H:%M:%S%z"))
+    formatter = LogFormatter(logging.Formatter(LOG_FORMAT, datefmt="%Y-%m-%dT%H:%M:%S%z"))
     mabel_logging_handler.setFormatter(formatter)
     logger.addHandler(mabel_logging_handler)
 
