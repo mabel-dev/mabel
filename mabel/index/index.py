@@ -169,7 +169,7 @@ class Index():
         """
         if not isinstance(search_term, (list, set, tuple)):
             search_term = [search_term]
-        result = []
+        result:list = []
         for term in search_term:
             result += self._inner_search(term)
         return set(result)
