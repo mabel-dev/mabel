@@ -6,8 +6,8 @@ from ...formats import dictset
 
 def threaded_reader(
         items_to_read: list, 
-        reader, 
-        max_threads: int = 4):
+        blob_list,
+        reader):
     """
     Speed up reading sets of files - such as multiple days worth of log-per-day
     files.
@@ -16,16 +16,13 @@ def threaded_reader(
     file using this function won't show any improvement.
 
     NOTE:
-        This compromises ordering for speed
+        This compromises record ordering to achieve speed increases
 
     Parameters:
         items_to_read: list of strings:
             The name of the blobs to read
-        reader: BaseReader:
+        reader: Reader:
             The Reader object to perform the reading operations
-        max_threads: integer (optional):
-            The number of threads to use to perform the read with, defaults
-            to 4, is limited to 8.
 
     Yields:
         dictionary (or string)
@@ -45,7 +42,7 @@ def threaded_reader(
         except IndexError:
             source = None
         while source:
-            source_reader = reader.get_records(source)
+            source_reader = reader._read_blob(source, blob_list)
             for chunk in dictset.page_dictset(source_reader, 256):
                 reply_queue.put(chunk)  # this will wait until there's a slot
             try:
@@ -53,12 +50,11 @@ def threaded_reader(
             except IndexError:
                 source = None
 
-
     source_queue = items_to_read.copy()
 
     # scale the number of threads, if we have more than the number of files
     # we're reading, will have threads that never complete
-    t = min(len(source_queue), max_threads, 8)
+    t = min(len(source_queue), reader.thread_count, 8)
     reply_queue: queue.Queue = queue.Queue(t * 8)
 
     # start the threads
@@ -67,7 +63,6 @@ def threaded_reader(
         thread.daemon = True
         thread.start()
         thread_pool.append(thread)
-        time.sleep(0.01)  # offset the start of the threads
 
     # when the threads are all complete and all the records have been read from
     # the reply queue, we're done

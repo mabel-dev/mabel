@@ -38,7 +38,7 @@ def _lt(x,y):   return x < y
 def _gt(x,y):   return x > y
 def _lte(x,y):  return x <= y
 def _gte(x,y):  return x >= y
-def _like(x,y): return _sql_like_fragment_to_regex(y).match(str(x))
+def _like(x,y): return _sql_like_fragment_to_regex(y.lower()).match(str(x).lower())
 def _in(x,y):   return x in y
 def _nin(x,y):  return x not in y
 def true(x):    return True

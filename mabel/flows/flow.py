@@ -20,6 +20,7 @@ class Flow():
         """
         self.nodes = {}
         self.edges = []
+        self.has_run = False
 
     def add_operator(self, name, operator):
         """
@@ -174,6 +175,8 @@ class Flow():
             raise FlowError("Flow failed validation - Flows must have a single entry point")
 
     def __enter__(self):
+        if self.has_run:
+            raise FlowError("Flows can only have a single runner, either loop after creating the runner or build the flow again.")
         self._validate_flow()
         return FlowRunner(self)
 
@@ -188,6 +191,7 @@ class Flow():
             operator = self.get_operator(operator_name)
             if operator:
                 get_logger().audit(operator.read_sensors())
+        self.has_run = True
 
     def __repr__(self):
         if not self.is_acyclic():
