@@ -80,6 +80,8 @@ def test_combined_filters():
     filter02 = Filters([('name', '==', 'Harry Potter')])
     # ANDed conditions
     filter03 = Filters([('name', 'like', '%otter%'), ('gender', '==', 'male'), ('age', '<=', 15), ('age', '>=', 5)])
+    # ANDed conditions - case insensitive LIKE
+    filter03a = Filters([('name', 'like', '%pOTTER%'), ('gender', '==', 'male'), ('age', '<=', 15), ('age', '>=', 5)])
     # ORed conditions
     filter04 = Filters([[('name', '==', 'Harry Potter')],[('name', '==', 'Hermione Grainger')]])
     # no conditions
@@ -90,6 +92,7 @@ def test_combined_filters():
     assert len([a for a in filter01.filter_dictset(TEST_DATA)]) == 1
     assert len([a for a in filter02.filter_dictset(TEST_DATA)]) == 1
     assert len([a for a in filter03.filter_dictset(TEST_DATA)]) == 1
+    assert len([a for a in filter03a.filter_dictset(TEST_DATA)]) == 1
     assert len([a for a in filter04.filter_dictset(TEST_DATA)]) == 2
     assert len([a for a in filter05.filter_dictset(TEST_DATA)]) == 6
     assert len([a for a in filter06.filter_dictset(TEST_DATA)]) == 2
