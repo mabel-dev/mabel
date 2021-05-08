@@ -13,6 +13,7 @@ from ...logging import get_logger
 from ...errors import InvalidCombinationError
 from ...index.index import Index, safe_field_name
 
+
 # available parsers
 PARSERS = {
     "json": json_parser,
@@ -95,6 +96,7 @@ class Reader():
                 The end date of the range to read over - if used with
                 _date_range_, this value will be preferred, default is today
             thread_count: integer (optional):
+                **BETA**
                 Use multiple threads to read data files, the default is to not
                 use additional threads, the maximum number of threads is 8
             step_back_days: integer (optional):
@@ -147,7 +149,6 @@ class Reader():
         arg_dict = kwargs.copy()
         arg_dict['select'] = F'{select}'
         arg_dict['dataset'] = F'{dataset}'
-        arg_dict['where'] = F'{where.__name__ if not where is None else "Select All"}'
         arg_dict['inner_reader'] = F'{inner_reader.__name__}'  # type:ignore
         arg_dict['row_format'] = F'{row_format}'
         get_logger().debug(json.serialize(arg_dict))
@@ -275,6 +276,7 @@ class Reader():
 
         elif self.fork_processes:
             yield from processed_reader(readable_blobs, self.reader_class, self._parse, self.where)
+
         else:
             for blob in readable_blobs:
                 yield from self._read_blob(blob, blob_list)
