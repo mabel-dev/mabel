@@ -1,5 +1,6 @@
 import sys
 import os.path
+import threading
 from typing import Callable, Optional, Iterable, Tuple, List
 from .internals.threaded_reader import threaded_reader
 from .internals.alpha_processed_reader import processed_reader
@@ -174,7 +175,7 @@ class Reader():
         # threaded reader
         self.thread_count = int(kwargs.get('thread_count', 0))
         if self.thread_count > 0:
-            get_logger().warning("Threaded Reader is Alpha - it's interface may change and some features may not be supported")
+            get_logger().warning("Threaded Reader is Beta - use in production systems is not recommended")
 
         # multiprocessed reader
         self.fork_processes = bool(kwargs.get('fork_processes', False))
@@ -196,6 +197,9 @@ class Reader():
         """
         Returns all of the columns in a filter which the operation benefits
         from an index
+
+        This creates an list of tuples of (field,value) that we can feed to the
+        index search.
         """
         INDEXABLE_OPS = {'=', '==', 'is', 'in'}
         if predicate is None:
@@ -220,6 +224,35 @@ class Reader():
             return base.startswith('_SYS.')
         return False
 
+    def _read_blob(self, blob, blob_list):
+        """
+        This wraps the blob reader, including the filters and indexers
+        """
+        get_logger().debug(F"Reading from `{blob}`, thread: {threading.get_ident()}")
+        # If an index exists, get the rows we're interested in from the index
+        rows = None
+        for field, filter_value in self.indexable_fields:
+            # does an index file for this file and record exist
+            path, file = os.path.split(blob)
+            stem, ext = os.path.splitext(file)
+            index_file = path + '/_SYS.' + stem + '.' + safe_field_name(field) + '.index'
+            if index_file in blob_list:
+                get_logger().debug(F"Reading from INDEX `{index_file}`")
+                # read the index file and search it for the term
+                index_stream = self.reader_class.get_blob_stream(index_file)
+                index = Index(index_stream)
+                rows = rows or []
+                rows += index.search(filter_value)
+        # read the rows from the file
+        ds = self.reader_class.get_records(blob, rows)
+        # reformat the rows
+        ds = self._parse(ds)
+        # filter the rows, either with the filters or `dictset.select_from`
+        if self.filters:
+            yield from self.filters.filter_dictset(ds)
+        else:
+            yield from select_from(ds, where=self.where)
+
     def _create_line_reader(self):
         blob_list = self.reader_class.get_list_of_blobs()
 
@@ -238,39 +271,13 @@ class Reader():
         get_logger().debug(F"Reader found {len(readable_blobs)} sources to read data from.")
         
         if self.thread_count > 0:
-            ds = threaded_reader(readable_blobs, self.reader_class, self.thread_count)
-            ds = self._parse(ds)
+            yield from threaded_reader(readable_blobs, blob_list, self)
 
-            if self.filters:
-                yield from self.filters.filter_dictset(ds)
-            else:
-                yield from select_from(ds, where=self.where)
         elif self.fork_processes:
             yield from processed_reader(readable_blobs, self.reader_class, self._parse, self.where)
         else:
             for blob in readable_blobs:
-                get_logger().debug(F"Reading from `{blob}`")
-
-                # If an index exists, get the rows we're interestedin from the index
-                rows = None
-                for field, filter_value in self.indexable_fields:
-                    path, file = os.path.split(blob)
-                    stem, ext = os.path.splitext(file)
-                    index_file = path + '/_SYS.' + stem + '.' + safe_field_name(field) + '.index'
-                    if index_file in blob_list:
-                        get_logger().debug(F"Reading from INDEX `{index_file}`")
-                        index_stream = self.reader_class.get_blob_stream(index_file)
-                        index = Index(index_stream)
-                        rows = rows or []
-                        rows += index.search(filter_value)
-
-                if isinstance(rows, list) or rows is None:
-                    ds = self.reader_class.get_records(blob, rows)
-                    ds = self._parse(ds)
-                    if self.filters:
-                        yield from self.filters.filter_dictset(ds)
-                    else:
-                        yield from select_from(ds, where=self.where)
+                yield from self._read_blob(blob, blob_list)
 
 
     def __iter__(self):
