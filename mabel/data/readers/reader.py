@@ -72,11 +72,13 @@ class Reader():
                 from scanned data. Default is no filtering.
                 Each tuple has format: (`key`, `op`, `value`) and compares the
                 key with the value. The supported op are: `=` or `==`, `!=`, 
-                `<`, `>`, `<=`, `>=`, `in`, `!in` (not in) and `like`. If the 
-                `op` is `in` or `!in`, the `value` must be a collection such as
-                a _list_, a _set_ or a _tuple_.
+                `<`, `>`, `<=`, `>=`, `in`, `!in` (not in)  and `like`. If the
+                 `op` is `in` or `!in`, the `value` must be a collection such
+                as a _list_, a _set_ or a _tuple_.
                 `like` performs similar to the SQL operator `%` is a
                 multicharacter wildcard and `_` is a single character wildcard.
+                If a field is indexed, it will be used only for '==' and 
+                'contains' operations.
             inner_reader: BaseReader (optional):
                 The reader class to perform the data access Operators, the
                 default is GoogleCloudStorageReader
@@ -262,12 +264,14 @@ class Reader():
                         rows = rows or []
                         rows += index.search(filter_value)
 
-                ds = self.reader_class.get_records(blob, rows)
-                ds = self._parse(ds)
-                if self.filters:
-                    yield from self.filters.filter_dictset(ds)
-                else:
-                    yield from select_from(ds, where=self.where)
+                if isinstance(rows, list) or rows is None:
+                    ds = self.reader_class.get_records(blob, rows)
+                    ds = self._parse(ds)
+                    if self.filters:
+                        yield from self.filters.filter_dictset(ds)
+                    else:
+                        yield from select_from(ds, where=self.where)
+
 
     def __iter__(self):
         return self

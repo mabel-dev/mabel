@@ -50,10 +50,12 @@ class SimpleWriter():
         self.finalized = False
         self.batch_date = self._get_writer_date(date)
 
-        self.dataset = dataset
-        if "{date" not in self.dataset and not kwargs.get('raw_path', False):
-            self.dataset += '/{datefolders}'
-        self.dataset = paths.build_path(self.dataset, self.batch_date)
+        self.dataset_template = dataset
+        if "{date" not in self.dataset_template and not kwargs.get('raw_path', False):
+            self.dataset_template += '/{datefolders}'
+            self.raw_path = True
+
+        self.dataset = paths.build_path(self.dataset_template, self.batch_date)
 
         # add the values to kwargs
         kwargs['raw_path'] = True  # we've just added the dates

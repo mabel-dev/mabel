@@ -1,8 +1,15 @@
+# just used by testing code
+freezegun
+rich
+pytest
+coverage
+mypy
+
+# used for optional functionality
 google_cloud_storage>=1.35
 pandas
 orjson
 matplotlib
-rich
 python-dotenv
 networkx
 moz-sql-parser

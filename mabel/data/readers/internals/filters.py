@@ -54,10 +54,9 @@ OPERATORS = {
     '<='    : _lte,
     '>='    : _gte,
     'like'  : _like,
-    'is in' : _in,
     'in'    : _in,
     '!in'   : _nin,
-    'not in': _nin,
+    'not in': _nin
 }
 
 def evaluate(

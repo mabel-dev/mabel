@@ -19,7 +19,6 @@ class StreamWriter(SimpleWriter):
             dataset: str,
             format: str = 'zstd',
             idle_timeout_seconds: int = 30,
-            date: Any = None,
             writer_pool_capacity: int = 5,
             **kwargs):
         """
@@ -39,9 +38,6 @@ class StreamWriter(SimpleWriter):
             idle_timeout_seconds: integer (optional)
                 The number of seconds to wait before evicting writers from the
                 pool for inactivity, default is 30 seconds
-            date: date or string (optional)
-                A date, a string representation of a date to use for
-                creating the dataset. The default is today's date
             writer_pool_capacity: integer (optional)
                 The number of writers to leave in the writers pool before 
                 writers are evicted for over capacity, default is 5
@@ -54,6 +50,9 @@ class StreamWriter(SimpleWriter):
         Note:
             Different inner_writers may take or require additional parameters.
         """
+        if kwargs.get('date'):
+            get_logger().warning("Cannot specify a `date` for the StreamWriter.")
+
         # add the values to kwargs
         kwargs['format'] = format
         kwargs['dataset'] = dataset
@@ -96,11 +95,12 @@ class StreamWriter(SimpleWriter):
         # unlike the batch writer, we don't want to bail out if we have a
         # problem here, instead we're going to save the file to a BACKOUT
         # partition
+
+        identity = paths.date_format(self.dataset_template, datetime.date.today())
+        
         if self.schema and not self.schema.validate(subject=record, raise_exception=False):
-            identity = paths.date_format(self.dataset, datetime.date.today()) + 'BACKOUT/'
+            identity += '/BACKOUT/'
             get_logger().warning(F'Schema Validation Failed ({self.schema.last_error}) - message being written to {identity}')
-        else:
-            identity = paths.date_format(self.dataset, datetime.date.today())
 
         with threading.Lock():
             blob_writer = self.writer_pool.get_writer(identity)
