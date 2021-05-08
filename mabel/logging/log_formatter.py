@@ -2,7 +2,7 @@ import os
 import re
 import hashlib
 import logging
-import json  # we use json rather than ujson/orjson for greatest compatibility
+import ujson as json  # use ujson rather than orjson for compatibility
 from functools import lru_cache
 
 COLORS = {
@@ -52,7 +52,7 @@ COLOR_EXCHANGES = {
     ' INFO     ': '{BOLD_WHITE} INFO     {OFF}'
 }
 
-class SanitizingLogFormatter(logging.Formatter):
+class LogFormatter(logging.Formatter):
 
     def __init__(self, orig_formatter):
         """
@@ -125,25 +125,20 @@ class SanitizingLogFormatter(logging.Formatter):
         parts = record.split('|')
         json_part = parts.pop()
 
-        parts[0] = "{BOLD_CYAN}" + F"{parts[0]}" + "{OFF}"
-        parts[2] = "{BOLD_WHITE}" + F"{parts[2]}" + "{OFF}"
-
         try:
             dirty_record = json.loads(json_part)
-        except:
-            json_part = re.sub("`(.*)`", r"`{BOLD_YELLOW}\1{OFF}`", json_part)
-
-            parts.append(json_part)
-            record = '|'.join(parts)
-            return self.colorize(record)
+        except ValueError:
+            dirty_record = {"message": json_part.strip()}
 
         if isinstance(dirty_record, dict):
             clean_record = {}
             for key, value in dirty_record.items():
                 if any([True for expression in KEYS_TO_SANITIZE if re.match(expression, key, re.IGNORECASE)]):
-                    clean_record["{BOLD_BLUE}" + key + "{OFF}"] = '{BOLD_PURPLE}<redacted:' + self.hash_it(str(value)) + '>{OFF}'
+                    clean_record["{BLUE}" + key + "{OFF}"] = '{PURPLE}<redacted:' + self.hash_it(str(value)) + '>{OFF}'
                 else:
-                    clean_record["{BOLD_BLUE}" + key + "{OFF}"] = "{BOLD_YELLOW}" + F"{value}" + "{OFF}" 
+                    value = re.sub("`(.*)`", r"`{YELLOW}\1{GREEN}`", F"{value}")
+                    value = re.sub("'(.*)'", r"'{YELLOW}\1{GREEN}'", F"{value}")
+                    clean_record["{BLUE}" + key + "{OFF}"] = "{GREEN}" + F"{value}" + "{OFF}" 
 
             parts.append(' ' + json.dumps(clean_record))
         

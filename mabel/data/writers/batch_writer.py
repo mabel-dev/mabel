@@ -73,6 +73,8 @@ class BatchWriter(SimpleWriter):
 
         super().__init__(**kwargs)
 
+        self.dataset = paths.build_path(self.dataset, self.batch_date)
+
         # create the writer
         self.blob_writer = BlobWriter(**kwargs)
 

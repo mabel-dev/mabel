@@ -5,7 +5,7 @@ directly
 import os
 import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
-from mabel.logging.sanitizing_log_formatter import SanitizingLogFormatter
+from mabel.logging.log_formatter import LogFormatter
 from rich import traceback
 
 traceback.install()
@@ -13,7 +13,7 @@ traceback.install()
 
 def test_sanitizing_log_formatter_pass_thru():
     # test we can just pass-thru a basic formatted message
-    sanitizer = SanitizingLogFormatter(None)
+    sanitizer = LogFormatter(None)
     sanitized = sanitizer.sanitize_record("log name | log level | date | location | message")
     assert "log name" in sanitized
     assert "log level" in sanitized
@@ -23,14 +23,14 @@ def test_sanitizing_log_formatter_pass_thru():
 
 def test_sanitizing_log_formatter_redact_simple_case():
     # test that the password entry is removed from the log
-    sanitizer = SanitizingLogFormatter(None)
+    sanitizer = LogFormatter(None)
     redacted_record = sanitizer.sanitize_record('log name | log level | date | location | {"password":"secret"}')
     assert 'secret' not in redacted_record
     assert 'redacted' in redacted_record
 
 def test_sanitizing_log_formatter_mixed_redact_and_keep():
     # test that data is passed through when redacting
-    sanitizer = SanitizingLogFormatter(None)
+    sanitizer = LogFormatter(None)
     redacted_record = sanitizer.sanitize_record('log name | log level | date | location | {"username":"chunkylover53@aol.com","password":"secret"}')
     assert 'chunkylover53@aol.com' in redacted_record
     assert 'secret' not in redacted_record
@@ -39,7 +39,7 @@ def test_sanitizing_log_formatter_mixed_redact_and_keep():
 def test_sanitizing_log_formatter_predefined_redaction_keys():
     # test all the predefined markers for redaction work
 
-    sanitizer = SanitizingLogFormatter(None)
+    sanitizer = LogFormatter(None)
     
     redacted_record_password = sanitizer.sanitize_record('log name | log level | date | location | {"password":"private"}')
     assert 'private' not in redacted_record_password

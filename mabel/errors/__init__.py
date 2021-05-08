@@ -7,3 +7,4 @@ from .integrity_error import IntegrityError
 from .invalid_reader_configuration import InvalidReaderConfigError
 from .flow_error import FlowError
 from .invalid_syntax import InvalidSyntaxError
+from .missing_dependency_error import MissingDependencyError

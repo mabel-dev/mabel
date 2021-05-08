@@ -33,11 +33,11 @@ def test_new_log_levels(caplog):
 
     logger.audit("this is a sample audit")
     res = caplog.record_tuples.pop()
-    assert res  == (LOG_NAME, LEVELS.AUDIT, "this is a sample audit")
+    assert res  == (LOG_NAME, LEVELS.AUDIT, "this is a sample audit"), res
 
     logger.alert("this is a sample alert")
     res = caplog.record_tuples.pop()
-    assert res == (LOG_NAME, LEVELS.ALERT, "this is a sample alert")
+    assert res == (LOG_NAME, LEVELS.ALERT, "this is a sample alert"), res
 
   
 def test_smoke_test():
@@ -67,28 +67,8 @@ def test_log_sanitizer():
     logger.audit('password:topsecret3')
     logger.audit(['password', 'top secret 4'])
 
-def test_adding_logging_levels_fails_if_the_level_already_exists():
-
-    from mabel.logging import add_level
-
-    add_level.add_logging_level('test', 25)
-
-    failed = False
-    try:
-        add_level.add_logging_level('test', 25)
-    except:
-        failed = True
-    assert failed
-
-    failed = False
-    try:
-        add_level.add_logging_level('none', 25, alert)
-    except:
-        failed = True
-    assert failed
 
 if __name__ == "__main__":  # pragma: no cover
     test_smoke_test()
     test_log_sanitizer()
-    test_adding_logging_levels_fails_if_the_level_already_exists()
     test_new_log_levels(None)
