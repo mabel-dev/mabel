@@ -12,8 +12,14 @@ try:
 except ImportError:   # pragma: no cover
     pass
 
+#from ...data.readers.reader import Reader
+#Reader.__init__().add_rule({"name":"project","required":True})
 
 class GoogleCloudStorageReader(BaseInnerReader):
+
+    RULES = [
+        {"name":"project", "required":False}
+    ]
 
     def __init__(self, project: str, **kwargs):
         super().__init__(**kwargs)

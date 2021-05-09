@@ -31,7 +31,7 @@ sys.path.insert(1, os.path.join(sys.path[0], '../..'))
 from mabel.data import Reader
 from mabel.adapters.disk import DiskReader
 
-#os.environ['REDIS_HOST'] = ""
+os.environ['REDIS_HOST'] = ""
 
 user_name = "Verizon Support"
 

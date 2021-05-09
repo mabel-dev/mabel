@@ -12,6 +12,13 @@ except ImportError:  # pragma: no cover
 
 class MinIoReader(BaseInnerReader):
 
+    RULES = [
+        {"name":"end_point", "required":True},
+        {"name":"access_key", "required":True},
+        {"name":"secret_key", "required":True},
+        {"name":"secure", "required":True}
+    ]
+
     def __init__(
             self,
             end_point: str,

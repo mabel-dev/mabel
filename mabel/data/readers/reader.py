@@ -14,6 +14,7 @@ from ...logging import get_logger
 from ...errors import InvalidCombinationError
 from ...index.index import Index, safe_field_name
 from ...internals.adapters.redis import RedisAdapter
+from ...utils.parameter_validator import validate
 
 
 # available parsers
@@ -24,9 +25,28 @@ PARSERS = {
     "pass-thru": pass_thru_parser
 }
 
+RULES = [
+    {"name":"self", "required":True, "warning":None, "incompatible_with":[]},
+    {"name":"select", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"dataset", "required":True, "warning":None, "incompatible_with":[]},
+    {"name":"from_path", "required":False, "warning":"DEPRECATION: Reader \'from_path\' parameter will be replaced with \'dataset\'", "incompatible_with":['dataset']},
+    {"name":"where", "required":False, "warning":"`where` will be deprecated, use `filters` or `dictset.select_from` instead", "incompatible_with":['filters']},
+    {"name":"filters", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"inner_reader", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"row_format", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"thread_count", "required":False, "warning":"Threaded Reader is Beta - use in production systems is not recommended", "incompatible_with":[]},
+    {"name":"raw_path", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"fork_processes", "required":False, "warning":"Forked Reader is Alpha - it's interface may change and some features may not be supported", "incompatible_with":['thread_count']},
+    {"name":"start_date", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"end_date", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"step_back_days", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"extension", "required":False, "warning":None, "incompatible_with":[]},
+]
+
 
 class Reader():
 
+    @validate(RULES)
     def __init__(
         self,
         *,  # force all paramters to be keyworded
@@ -133,7 +153,6 @@ class Reader():
 
         if dataset is None and kwargs.get('from_path'):  # pragma: no cover
             dataset = kwargs['from_path']
-            get_logger().warning('DEPRECATION: Reader \'from_path\' parameter will be replaced with \'dataset\' ')
 
         # lazy loading of dependency
         if inner_reader is None:
@@ -168,24 +187,14 @@ class Reader():
         if filters:
             self.filters = Filters(filters)   
             self.indexable_fields = self._get_indexable_filter_columns(self.filters.predicates)
-            if where:
-                raise InvalidCombinationError('Where and Filters can not be used at the same time')
-        if where:
-            get_logger().warning("`where` will be deprecated, use `filters` or `dictset.select_from` instead")
 
         """ FEATURES IN DEVELOPMENT """
 
         # threaded reader
         self.thread_count = int(kwargs.get('thread_count', 0))
-        if self.thread_count > 0:
-            get_logger().warning("Threaded Reader is Beta - use in production systems is not recommended")
 
         # multiprocessed reader
         self.fork_processes = bool(kwargs.get('fork_processes', False))
-        if self.thread_count > 0 and self.fork_processes:  # pragma: no cover
-            raise InvalidCombinationError('Forking and Threading can not be used at the same time')
-        if self.fork_processes:
-            get_logger().warning("Forked Reader is Alpha - it's interface may change and some features may not be supported")
 
         
     """
