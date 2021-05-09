@@ -249,22 +249,13 @@ class Reader():
             stem, ext = os.path.splitext(file)
             index_file = path + '/_SYS.' + stem + '.' + safe_field_name(field) + '.index'
 
-            # read the index from REDIS
-            index_stream = RedisAdapter.retrieve_object(index_file)
-
-            if not index_stream and index_file in blob_list:
+            if index_file in blob_list:
                 get_logger().debug(F"Reading index from blob `{index_file}`")
-                # read the index file and search it for the term
                 index_stream = self.reader_class.get_blob_stream(index_file)
-                RedisAdapter.set_object(index_file, index_stream.read())
-            elif index_stream:
-                get_logger().debug(F"Reading index from Redis `{index_file}`")
-                index_stream = io.BytesIO(index_stream)
-
-            if index_stream:
                 index = Index(index_stream)
                 rows = rows or []
                 rows += index.search(filter_value)
+
         # read the rows from the file
         ds = self.reader_class.get_records(blob, rows)
         # reformat the rows
