@@ -1,3 +1,4 @@
+import io
 import sys
 import os.path
 import threading
@@ -12,6 +13,7 @@ from ..formats import json
 from ...logging import get_logger
 from ...errors import InvalidCombinationError
 from ...index.index import Index, safe_field_name
+from ...internals.adapters.redis import RedisAdapter
 
 
 # available parsers
@@ -237,10 +239,20 @@ class Reader():
             path, file = os.path.split(blob)
             stem, ext = os.path.splitext(file)
             index_file = path + '/_SYS.' + stem + '.' + safe_field_name(field) + '.index'
-            if index_file in blob_list:
-                get_logger().debug(F"Reading from INDEX `{index_file}`")
+
+            # read the index from REDIS
+            index_stream = RedisAdapter.retrieve_object(index_file)
+
+            if not index_stream and index_file in blob_list:
+                get_logger().debug(F"Reading index from blob `{index_file}`")
                 # read the index file and search it for the term
                 index_stream = self.reader_class.get_blob_stream(index_file)
+                RedisAdapter.set_object(index_file, index_stream.read())
+            elif index_stream:
+                get_logger().debug(F"Reading index from Redis `{index_file}`")
+                index_stream = io.BytesIO(index_stream)
+
+            if index_stream:
                 index = Index(index_stream)
                 rows = rows or []
                 rows += index.search(filter_value)

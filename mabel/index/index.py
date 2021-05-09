@@ -3,7 +3,6 @@ import mmh3  # type:ignore
 import struct
 from operator import itemgetter
 from pydantic import BaseModel    # type:ignore
-from functools import lru_cache
 from typing import Iterable
 
 
@@ -105,7 +104,6 @@ class Index():
             builder.add(position, row)
         return builder.build()
 
-    @lru_cache(16)  # the maximum length is 2^16 
     def _get_entry(self, location: int):
         """
         get a specific entry from the index
