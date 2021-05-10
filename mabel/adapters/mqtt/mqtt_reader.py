@@ -20,7 +20,7 @@ class MqttReader(BaseInnerReader):
 
     def __init__(self, **kwargs):
 
-        if not mqtt_installed:
+        if not mqtt_installed:  # pragma: no cover
             raise MissingDependencyError("`paho-mqtt` is missing, please install or include in requirements.txt")
 
         super().__init__(**kwargs)

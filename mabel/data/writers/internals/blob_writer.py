@@ -7,6 +7,7 @@ from ...formats.json import serialize
 from ....logging import get_logger
 from ....utils.paths import get_parts
 from ....index.index import IndexBuilder
+from ....errors import MissingDependencyError
 
 
 BLOB_SIZE = 32*1024*1024  # about 32 files per gigabyte
@@ -84,7 +85,7 @@ class BlobWriter():
                     try:
                         from pyarrow import json as js  # type:ignore
                         import pyarrow.parquet as pq    # type:ignore
-                    except ImportError as err:
+                    except ImportError as err:  # pragma: no cover
                         raise MissingDependencyError("`pyarrow` is missing, please install or includein requirements.txt")
                     
                     table = js.read_json(self.file_name)

@@ -6,12 +6,12 @@ May support AWS S3 - untested
 import time
 import io
 from .base_bin import BaseBin
+from ...errors import MissingDependencyError
 try:
     from minio import Minio  # type:ignore
     minio_installed = True
 except ImportError:  # pragma: no cover
     minio_installed = False
-
 
 
 class MinioBin(BaseBin):
@@ -28,7 +28,7 @@ class MinioBin(BaseBin):
 
         if not minio_installed:  # pragma: no cover
             raise MissingDependencyError("`minio` is missing, please install or include in requirements.txt")
-            
+
         self.client = Minio(end_point, access_key, secret_key, secure=secure)
         self.bucket = bucket
         self.path = path

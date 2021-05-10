@@ -58,7 +58,7 @@ def read_graphml(graphml_file: str):
     """
     try:
         import xmltodict  # type:ignore
-    except ImportError:
+    except ImportError:  # pragma: no cover
         raise MissingDependencyError('`xmltodict` is missing, please install or include in requirements.txt')
 
     with open(graphml_file, 'r') as fd:

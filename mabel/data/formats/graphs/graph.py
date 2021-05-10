@@ -224,7 +224,7 @@ class Graph(object):
         """
         try:
             import networkx as nx  # type:ignore
-        except ImportError:
+        except ImportError:  # pragma: no cover
             raise MissingDependencyError('`networx` is missing, please install or include in requirements.txt')
             
         g = nx.DiGraph()

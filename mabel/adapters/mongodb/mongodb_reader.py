@@ -22,7 +22,7 @@ class MongoDbReader(BaseInnerReader):
             connection_string: str,
             **kwargs):
 
-        if not mongo_installed:
+        if not mongo_installed:  # pragma: no cover
             raise MissingDependencyError("`pymongo` is missing, please install or include in requirements.txt")
 
         super().__init__(**kwargs)

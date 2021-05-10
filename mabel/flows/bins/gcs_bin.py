@@ -3,10 +3,11 @@ Google Cloud Storage Bin Writer
 """
 import time
 from .base_bin import BaseBin
+from ...errors import MissingDependencyError
 try:
     from google.cloud import storage  # type:ignore
     google_cloud_storage_installed = True
-except ImportError:
+except ImportError:  # pragma: no cover
     google_cloud_storage_installed = False
 
 
