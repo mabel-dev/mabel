@@ -1,3 +1,4 @@
+import io
 import sys
 import os.path
 import threading
@@ -10,8 +11,9 @@ from ..formats.dictset import select_record_fields, select_from
 from ..formats.dictset.display import html_table, ascii_table
 from ..formats import json
 from ...logging import get_logger
-from ...errors import InvalidCombinationError
+from ...errors import InvalidCombinationError, MissingDependencyError
 from ...index.index import Index, safe_field_name
+from ...utils.parameter_validator import validate
 
 
 # available parsers
@@ -22,9 +24,28 @@ PARSERS = {
     "pass-thru": pass_thru_parser
 }
 
+RULES = [
+    {"name":"self", "required":True, "warning":None, "incompatible_with":[]},
+    {"name":"select", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"dataset", "required":True, "warning":None, "incompatible_with":[]},
+    {"name":"from_path", "required":False, "warning":"DEPRECATION: Reader \'from_path\' parameter will be replaced with \'dataset\'", "incompatible_with":['dataset']},
+    {"name":"where", "required":False, "warning":"`where` will be deprecated, use `filters` or `dictset.select_from` instead", "incompatible_with":['filters']},
+    {"name":"filters", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"inner_reader", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"row_format", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"thread_count", "required":False, "warning":"Threaded Reader is Beta - use in production systems is not recommended", "incompatible_with":[]},
+    {"name":"raw_path", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"fork_processes", "required":False, "warning":"Forked Reader is Alpha - it's interface may change and some features may not be supported", "incompatible_with":['thread_count']},
+    {"name":"start_date", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"end_date", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"step_back_days", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"extension", "required":False, "warning":None, "incompatible_with":[]},
+]
+
 
 class Reader():
 
+    @validate(RULES)
     def __init__(
         self,
         *,  # force all paramters to be keyworded
@@ -131,7 +152,6 @@ class Reader():
 
         if dataset is None and kwargs.get('from_path'):  # pragma: no cover
             dataset = kwargs['from_path']
-            get_logger().warning('DEPRECATION: Reader \'from_path\' parameter will be replaced with \'dataset\' ')
 
         # lazy loading of dependency
         if inner_reader is None:
@@ -166,24 +186,14 @@ class Reader():
         if filters:
             self.filters = Filters(filters)   
             self.indexable_fields = self._get_indexable_filter_columns(self.filters.predicates)
-            if where:
-                raise InvalidCombinationError('Where and Filters can not be used at the same time')
-        if where:
-            get_logger().warning("`where` will be deprecated, use `filters` or `dictset.select_from` instead")
 
         """ FEATURES IN DEVELOPMENT """
 
         # threaded reader
         self.thread_count = int(kwargs.get('thread_count', 0))
-        if self.thread_count > 0:
-            get_logger().warning("Threaded Reader is Beta - use in production systems is not recommended")
 
         # multiprocessed reader
         self.fork_processes = bool(kwargs.get('fork_processes', False))
-        if self.thread_count > 0 and self.fork_processes:  # pragma: no cover
-            raise InvalidCombinationError('Forking and Threading can not be used at the same time')
-        if self.fork_processes:
-            get_logger().warning("Forked Reader is Alpha - it's interface may change and some features may not be supported")
 
         
     """
@@ -237,13 +247,14 @@ class Reader():
             path, file = os.path.split(blob)
             stem, ext = os.path.splitext(file)
             index_file = path + '/_SYS.' + stem + '.' + safe_field_name(field) + '.index'
+
             if index_file in blob_list:
-                get_logger().debug(F"Reading from INDEX `{index_file}`")
-                # read the index file and search it for the term
+                get_logger().debug(F"Reading index from blob `{index_file}`")
                 index_stream = self.reader_class.get_blob_stream(index_file)
                 index = Index(index_stream)
                 rows = rows or []
                 rows += index.search(filter_value)
+
         # read the rows from the file
         ds = self.reader_class.get_records(blob, rows)
         # reformat the rows
@@ -338,7 +349,7 @@ class Reader():
         try:
             import pandas as pd  # type:ignore
         except ImportError:  # pragma: no cover
-            raise ImportError("Pandas must be installed to use 'to_pandas'")
+            raise MissingDependencyError("`pands` is missing, pleaseinstall or include in requirements.txt")
         return pd.DataFrame(self)
 
     def __repr__(self):  # pragma: no cover

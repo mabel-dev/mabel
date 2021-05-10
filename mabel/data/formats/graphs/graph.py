@@ -19,6 +19,7 @@ limitations under the License.
 from pathlib import Path
 from ..json import serialize
 from ....logging import get_logger
+from ....errors import MissingDependencyError
 
 class Graph(object):
     """
@@ -223,9 +224,8 @@ class Graph(object):
         """
         try:
             import networkx as nx  # type:ignore
-        except ImportError:
-            get_logger().error("networkX must be installed to convert to networkx")
-            return None
+        except ImportError:  # pragma: no cover
+            raise MissingDependencyError('`networx` is missing, please install or include in requirements.txt')
             
         g = nx.DiGraph()
         for s, t, r in self.edges():

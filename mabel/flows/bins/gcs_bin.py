@@ -1,12 +1,14 @@
 """
 Google Cloud Storage Bin Writer
 """
-try:
-    from google.cloud import storage  # type:ignore
-except ImportError:
-    pass
 import time
 from .base_bin import BaseBin
+from ...errors import MissingDependencyError
+try:
+    from google.cloud import storage  # type:ignore
+    google_cloud_storage_installed = True
+except ImportError:  # pragma: no cover
+    google_cloud_storage_installed = False
 
 
 class GoogleCloudStorageBin(BaseBin):
@@ -17,6 +19,10 @@ class GoogleCloudStorageBin(BaseBin):
             project: str,
             bucket: str,
             path: str):
+
+        if not google_cloud_storage_installed:  # pragma: no cover
+            raise MissingDependencyError("`google-cloud-storage` is missing, please install or include in requirements.txt")
+
         client = storage.Client(project=project)
         self.bucket = client.get_bucket(bucket)
         self.path = path

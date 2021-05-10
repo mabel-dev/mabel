@@ -22,6 +22,7 @@ from .graph import Graph
 from .traverse import Traverse
 from ..json import parse
 from ....logging import get_logger
+from ....errors import MissingDependencyError
 
 def walk(graph, nids=None):
     """
@@ -57,9 +58,8 @@ def read_graphml(graphml_file: str):
     """
     try:
         import xmltodict  # type:ignore
-    except ImportError:
-        get_logger().error("xmltodict must be installed to read graphml files")
-        return None
+    except ImportError:  # pragma: no cover
+        raise MissingDependencyError('`xmltodict` is missing, please install or include in requirements.txt')
 
     with open(graphml_file, 'r') as fd:
         xml_dom = xmltodict.parse(fd.read())

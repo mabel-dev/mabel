@@ -2,8 +2,6 @@ import io
 import mmh3  # type:ignore
 import struct
 from operator import itemgetter
-from pydantic import BaseModel    # type:ignore
-from functools import lru_cache
 from typing import Iterable
 
 
@@ -30,16 +28,12 @@ def safe_field_name(field_name):
     return pattern.sub('', field_name)
 
 
-class IndexEntry(BaseModel):
+class IndexEntry():
     """
     Python friendly representation of index entries.
 
     Includes binary translations for reading and writing to the index.
     """
-    value: int
-    location: int
-    count: int
-
     def to_bin(self) -> bytes:
         """
         Convert a model to _bytes_
@@ -60,6 +54,12 @@ class IndexEntry(BaseModel):
                 value=value,
                 location=location,
                 count=count)
+
+
+    def __init__(self, value, location, count):
+        self.value = value
+        self.location = location
+        self.count = count
 
 
 class Index():
@@ -105,7 +105,6 @@ class Index():
             builder.add(position, row)
         return builder.build()
 
-    @lru_cache(16)  # the maximum length is 2^16 
     def _get_entry(self, location: int):
         """
         get a specific entry from the index

@@ -20,7 +20,8 @@ def test_reader_all_good():
                 project='',
                 select=['a', 'b'],
                 dataset='',
-                date_range=(datetime.datetime.now(), datetime.datetime.now()),
+                start_date=datetime.datetime.now(),
+                end_date=datetime.datetime.now(),
                 row_format='json')
     except TypeError:
         failed = True
@@ -34,7 +35,8 @@ def test_reader_select_not_list():
                 project='',
                 select='everything',
                 dataset='',
-                date_range=(datetime.datetime.now(), datetime.datetime.now()),
+                start_date=datetime.datetime.now(),
+                end_date=datetime.datetime.now(),
                 row_format='json')
 
 
@@ -45,7 +47,8 @@ def test_reader_where_not_callable():
                 select=['a', 'b'],
                 dataset='',
                 where=True,
-                date_range=(datetime.datetime.now(), datetime.datetime.now()),
+                start_date=datetime.datetime.now(),
+                end_date=datetime.datetime.now(),
                 row_format='json')
 
 
@@ -56,7 +59,8 @@ def test_format_not_known():
                 project='',
                 select=['a', 'b'],
                 dataset='',
-                date_range=datetime.datetime.now(),
+                start_date=datetime.datetime.now(),
+                end_date=datetime.datetime.now(),
                 row_format='excel')
 
 

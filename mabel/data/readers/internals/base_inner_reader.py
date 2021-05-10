@@ -42,10 +42,8 @@ def parquet_reader(stream, rows, all_rows):
     """
     try:
         import pyarrow.parquet as pq  # type:ignore
-    except ImportError:
-        message = "`pyarrow` must be installed to read .parquet files"
-        get_logger().error(message)
-        raise MissingDependencyError(message)
+    except ImportError:  # pragma: no cover
+        raise MissingDependencyError("`pyarrow` is missing, please install or include in requirements.txt")
     table = pq.read_table(stream)
     for batch in table.to_batches():
         dict_batch = batch.to_pydict()
@@ -72,7 +70,7 @@ READERS = {
 
 class BaseInnerReader(abc.ABC):
 
-    VALID_EXTENSIONS = ('.json', '.zstd', '.lzma', '.jsonl', '.csv', '.lxml', '.parquet', '.ignore', '.profile', '.index', '.bloom')
+    VALID_EXTENSIONS = ('.txt', '.json', '.zstd', '.lzma', '.jsonl', '.csv', '.lxml', '.parquet', '.ignore', '.profile', '.index', '.bloom')
 
     def _extract_date_part(self, value):
         if isinstance(value, str):

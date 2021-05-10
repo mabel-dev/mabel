@@ -6,11 +6,12 @@ from typing import Iterable, Tuple, Optional, List
 from ...data.readers.internals.base_inner_reader import BaseInnerReader
 from ...utils import paths, common
 from ...logging import get_logger
-from ...errors import InvalidReaderConfigError
+from ...errors import InvalidReaderConfigError, MissingDependencyError
 try:
     import paho.mqtt.client as mqtt
+    mqtt_installed = True
 except ImportError:  # pragma: no cover
-    pass
+    mqtt_installed = False
 
 
 # pip install paho-mqtt
@@ -18,6 +19,10 @@ except ImportError:  # pragma: no cover
 class MqttReader(BaseInnerReader):
 
     def __init__(self, **kwargs):
+
+        if not mqtt_installed:  # pragma: no cover
+            raise MissingDependencyError("`paho-mqtt` is missing, please install or include in requirements.txt")
+
         super().__init__(**kwargs)
         self.dataset = kwargs.get('dataset')
         self.host = kwargs.get('host')

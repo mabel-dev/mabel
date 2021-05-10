@@ -4,18 +4,27 @@ Google Cloud Storage Reader
 import io
 import os
 from ...data.readers.internals.base_inner_reader import BaseInnerReader
+from ...errors import MissingDependencyError
 from ...logging import get_logger
 from ...utils import paths
 try:
     from google.auth.credentials import AnonymousCredentials  # type:ignore
     from google.cloud import storage  # type:ignore
+    google_cloud_storage_installed = True
 except ImportError:   # pragma: no cover
-    pass
+    google_cloud_storage_installed = False
 
 
 class GoogleCloudStorageReader(BaseInnerReader):
 
+    RULES = [
+        {"name":"project", "required":False}
+    ]
+
     def __init__(self, project: str, **kwargs):
+        if not google_cloud_storage_installed:  # pragma: no cover
+            raise MissingDependencyError("`google-cloud-storage` is missing, please install or include in requirements.txt")
+
         super().__init__(**kwargs)
         self.project = project
 

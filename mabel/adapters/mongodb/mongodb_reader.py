@@ -7,10 +7,12 @@ import io
 from typing import Iterable, Tuple, Optional, List
 import datetime
 from ...data.readers.internals.base_inner_reader import BaseInnerReader
+from ...errors import MissingDependencyError
 try:
     import pymongo     # type:ignore
+    mongo_installed = True
 except ImportError:    # pragma: no cover
-    pass
+    mongo_installed = False
 
 
 class MongoDbReader(BaseInnerReader):
@@ -19,6 +21,9 @@ class MongoDbReader(BaseInnerReader):
             self,
             connection_string: str,
             **kwargs):
+
+        if not mongo_installed:  # pragma: no cover
+            raise MissingDependencyError("`pymongo` is missing, please install or include in requirements.txt")
 
         super().__init__(**kwargs)
 
