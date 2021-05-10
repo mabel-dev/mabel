@@ -70,7 +70,7 @@ READERS = {
 
 class BaseInnerReader(abc.ABC):
 
-    VALID_EXTENSIONS = ('.json', '.zstd', '.lzma', '.jsonl', '.csv', '.lxml', '.parquet', '.ignore', '.profile', '.index', '.bloom')
+    VALID_EXTENSIONS = ('.txt', '.json', '.zstd', '.lzma', '.jsonl', '.csv', '.lxml', '.parquet', '.ignore', '.profile', '.index', '.bloom')
 
     def _extract_date_part(self, value):
         if isinstance(value, str):
