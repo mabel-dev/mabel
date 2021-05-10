@@ -22,7 +22,7 @@ class GoogleCloudStorageReader(BaseInnerReader):
     ]
 
     def __init__(self, project: str, **kwargs):
-        if not google_cloud_storage_installed:
+        if not google_cloud_storage_installed:  # pragma: no cover
             raise MissingDependencyError("`google-cloud-storage` is missing, please install or include in requirements.txt")
 
         super().__init__(**kwargs)

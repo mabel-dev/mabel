@@ -21,7 +21,7 @@ class MinIoWriter(BaseInnerWriter):
             secure: bool = False,
             **kwargs):
 
-        if not minio_installed:
+        if not minio_installed:  # pragma: no cover
             raise MissingDependencyError("`minio` is missing, please install or include in requirements.txt")
         super().__init__(**kwargs)
 
