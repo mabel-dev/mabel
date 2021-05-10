@@ -4,10 +4,12 @@ MinIo Reader - also works with AWS
 import io
 from ...data.readers.internals.base_inner_reader import BaseInnerReader
 from ...utils import paths, common
+from ...errors import MissingDependencyError
 try:
     from minio import Minio  # type:ignore
+    minio_installed = True
 except ImportError:  # pragma: no cover
-    pass
+    minio_installed = False
 
 
 class MinIoReader(BaseInnerReader):
@@ -25,6 +27,10 @@ class MinIoReader(BaseInnerReader):
             access_key: str,
             secret_key: str,
             **kwargs):
+
+        if not minio_installed:
+            raise MissingDependencyError("`minio` is missing, please install or include in requirements.txt")
+
         super().__init__(**kwargs)
         secure = kwargs.get('secure', True)
         self.minio = Minio(end_point, access_key, secret_key, secure=secure)

@@ -1,1 +1,0 @@
-from .redis_adapter import RedisAdapter

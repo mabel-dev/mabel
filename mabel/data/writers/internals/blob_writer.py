@@ -85,8 +85,7 @@ class BlobWriter():
                         from pyarrow import json as js  # type:ignore
                         import pyarrow.parquet as pq    # type:ignore
                     except ImportError as err:
-                        get_logger().error("pyarrow must be installed to save as parquet")
-                        raise err
+                        raise MissingDependencyError("`pyarrow` is missing, please install or includein requirements.txt")
                     
                     table = js.read_json(self.file_name)
                     pq.write_table(table, self.file_name + '.parquet', compression='ZSTD')

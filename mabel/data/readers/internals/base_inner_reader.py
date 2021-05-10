@@ -43,9 +43,7 @@ def parquet_reader(stream, rows, all_rows):
     try:
         import pyarrow.parquet as pq  # type:ignore
     except ImportError:
-        message = "`pyarrow` must be installed to read .parquet files"
-        get_logger().error(message)
-        raise MissingDependencyError(message)
+        raise MissingDependencyError("`pyarrow` is missing, please install or include in requirements.txt")
     table = pq.read_table(stream)
     for batch in table.to_batches():
         dict_batch = batch.to_pydict()

@@ -11,9 +11,8 @@ from ..formats.dictset import select_record_fields, select_from
 from ..formats.dictset.display import html_table, ascii_table
 from ..formats import json
 from ...logging import get_logger
-from ...errors import InvalidCombinationError
+from ...errors import InvalidCombinationError, MissingDependencyError
 from ...index.index import Index, safe_field_name
-from ...internals.adapters.redis import RedisAdapter
 from ...utils.parameter_validator import validate
 
 
@@ -350,7 +349,7 @@ class Reader():
         try:
             import pandas as pd  # type:ignore
         except ImportError:  # pragma: no cover
-            raise ImportError("Pandas must be installed to use 'to_pandas'")
+            raise MissingDependencyError("`pands` is missing, pleaseinstall or include in requirements.txt")
         return pd.DataFrame(self)
 
     def __repr__(self):  # pragma: no cover

@@ -1,11 +1,13 @@
 import os
 import io
 from ...data.writers.internals.base_inner_writer import BaseInnerWriter
+from ...errors import MissingDependencyError
 from ...utils import paths
 try:
     from minio import Minio  # type:ignore
+    minio_installed = True
 except ImportError:  # pragma: no cover
-    pass
+    minio_installed = False
 
 
 class MinIoWriter(BaseInnerWriter):
@@ -18,6 +20,9 @@ class MinIoWriter(BaseInnerWriter):
             secret_key: str,
             secure: bool = False,
             **kwargs):
+
+        if not minio_installed:
+            raise MissingDependencyError("`minio` is missing, please install or include in requirements.txt")
         super().__init__(**kwargs)
 
         self.client = Minio(end_point, access_key, secret_key, secure=secure)

@@ -1,10 +1,12 @@
 import os
 from ...data.writers.internals.base_inner_writer import BaseInnerWriter
+from ...errors import MissingDependencyError
 try:
     from google.auth.credentials import AnonymousCredentials  # type:ignore
     from google.cloud import storage  # type:ignore
-except ImportError:  # pragma: no cover
-    pass
+    google_cloud_storage_installed = True
+except ImportError:   # pragma: no cover
+    google_cloud_storage_installed = False
 
 
 class GoogleCloudStorageWriter(BaseInnerWriter):
@@ -13,6 +15,9 @@ class GoogleCloudStorageWriter(BaseInnerWriter):
             self,
             project: str,
             **kwargs):
+        if not google_cloud_storage_installed:
+            raise MissingDependencyError("`google-cloud-storage` is missing, please install or include in requirements.txt")
+
         super().__init__(**kwargs)
 
         # this means we're testing
