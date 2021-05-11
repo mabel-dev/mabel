@@ -7,9 +7,8 @@ into structures like Pandas.
 """
 from typing import Iterator, Any, List, Callable
 from .group_by import Groups
-from .records import select_record_fields, order, set_value
+from .records import select_record_fields, set_value, order
 from ..json import serialize, parse
-from ....logging import get_logger
 
 
 INNER_JOIN = 'INNER'

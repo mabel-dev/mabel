@@ -1,8 +1,7 @@
-import io
 import sys
 import os.path
 import threading
-from typing import Callable, Optional, Iterable, Tuple, List
+from typing import Callable, Optional, Tuple, List
 from .internals.threaded_reader import threaded_reader
 from .internals.alpha_processed_reader import processed_reader
 from .internals.parsers import pass_thru_parser, block_parser, json_parser
@@ -40,6 +39,7 @@ RULES = [
     {"name":"end_date", "required":False, "warning":None, "incompatible_with":[]},
     {"name":"step_back_days", "required":False, "warning":None, "incompatible_with":[]},
     {"name":"extension", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"project", "required":False, "warning":None, "incompatible_with":[]},
 ]
 
 

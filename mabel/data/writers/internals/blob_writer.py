@@ -1,7 +1,6 @@
 import threading
 import tempfile
 import os
-import io
 from typing import Any
 from ...formats.json import serialize
 from ....logging import get_logger
@@ -12,7 +11,7 @@ from ....errors import MissingDependencyError
 
 BLOB_SIZE = 32*1024*1024  # about 32 files per gigabyte
 BUFFER_SIZE = BLOB_SIZE   # buffer in memory really
-SUPPORTED_FORMATS_ALGORITHMS = ('jsonl', 'lzma', 'zstd', 'parquet')
+SUPPORTED_FORMATS_ALGORITHMS = ('jsonl', 'lzma', 'zstd', 'parquet', 'txt')
 MAXIMUM_RECORDS = 64000   # needs to be less than 2^16-1
 
 
@@ -51,7 +50,10 @@ class BlobWriter():
 
     def append(self, record: dict = {}):
         # serialize the record
-        serialized = serialize(record, as_bytes=True) + b'\n'  # type:ignore
+        if self.format == 'txt':
+            serialized = str(record).encode() + b'\n'
+        else:
+            serialized = serialize(record, as_bytes=True) + b'\n'  # type:ignore
 
         # add the columns to the index
         for column in self.indexes:

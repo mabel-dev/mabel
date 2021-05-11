@@ -9,7 +9,6 @@ This current implementation is a step toward that, it does not use
 any indices at this point.
 """
 import re
-from enum import Enum
 from functools import lru_cache
 from typing import Optional, Any, Iterable, List, Tuple, Union
 from ....errors import InvalidSyntaxError

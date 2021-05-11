@@ -1,14 +1,8 @@
-import time
 import datetime
 from typing import Any
-from dateutil import parser
 from .simple_writer import SimpleWriter
 from .internals.blob_writer import BlobWriter
-from ..validator import Schema  # type:ignore
 from ...utils import paths
-from ...errors import ValidationError, InvalidDataSetError
-from ...logging import get_logger
-from ...data.formats import json
 
 
 class BatchWriter(SimpleWriter):

@@ -1,7 +1,6 @@
 """
 Functions to help with handling file paths
 """
-import os
 import pathlib
 import datetime
 from uuid import uuid4

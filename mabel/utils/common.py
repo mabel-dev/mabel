@@ -1,7 +1,7 @@
 import glob
 import datetime
 from typing import Optional
-from ..data.formats.json import parse, serialize
+from ..data.formats.json import parse
 from ..logging import get_logger
 
 

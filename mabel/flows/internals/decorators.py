@@ -1,6 +1,4 @@
 from .base_operator import BaseOperator
-from ...logging import get_logger
-import types
 
 
 class DecoratedOperator(BaseOperator):

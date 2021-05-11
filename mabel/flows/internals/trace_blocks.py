@@ -18,7 +18,6 @@ the user must update the audit log and this trace block.
 
 #nodoc - don't add to the documentation wiki
 """
-import os
 import json
 import hashlib
 import datetime

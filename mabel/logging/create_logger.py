@@ -1,6 +1,5 @@
 import os
 import logging
-from typing import Optional
 from functools import lru_cache
 from .add_level import add_logging_level
 from .log_formatter import LogFormatter

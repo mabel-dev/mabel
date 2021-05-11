@@ -1,3 +1,4 @@
+# file deepcode ignore ReplaceAPI: test file only
 """
 Test the parameter validation on the mabel.data.reader are working
 """
@@ -8,6 +9,7 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.data import Reader
 from rich import traceback
+from mabel.errors import InvalidReaderConfigError
 
 traceback.install()
 
@@ -23,7 +25,7 @@ def test_reader_all_good():
                 start_date=datetime.datetime.now(),
                 end_date=datetime.datetime.now(),
                 row_format='json')
-    except TypeError:
+    except InvalidReaderConfigError:
         failed = True
 
     assert not failed

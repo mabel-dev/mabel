@@ -1,5 +1,4 @@
 import shutil
-import datetime
 import os
 import sys
 import glob
@@ -122,6 +121,22 @@ def test_reader_writer_format_parquet():
     shutil.rmtree("_temp", ignore_errors=True)
     assert l == 200000, l
 
+def test_reader_writer_format_text():
+
+    do_writer_compressed('txt')
+
+    g = glob.glob('_temp/**/*.txt', recursive=True)
+    assert len(g) > 0, g
+
+    r = Reader(
+        inner_reader=DiskReader,
+        row_format='pass-thru',
+        dataset='_temp'
+    )
+    l = len(list(r))
+    shutil.rmtree("_temp", ignore_errors=True)
+    assert l == 200000, l
+
 def test_reader_writer_format_default():
 
     do_writer_default()
@@ -163,6 +178,7 @@ if __name__ == "__main__":  # pragma: no cover
     test_reader_writer_format_jsonl()
     test_reader_writer_format_parquet()
     test_reader_writer_format_default()
+    test_reader_writer_format_text()
     test_write_to_path_logged()
 
     print('okay')

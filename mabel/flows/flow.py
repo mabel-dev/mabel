@@ -4,7 +4,7 @@ with a bespoke graph implementation as the NetworkX implementation was being
 monkey-patches to make it easier to use. The decision was made to write a
 specialized, albeit simple, graph library that didn't require monkey-patching.
 """
-from typing import Union, List
+from typing import List
 from .bins import FileBin, GoogleCloudStorageBin, MinioBin
 from .flow_runner import FlowRunner
 from .internals.base_operator import BaseOperator
