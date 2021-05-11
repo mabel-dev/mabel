@@ -6,7 +6,6 @@ Problems
 """
 import multiprocessing
 import os
-import sys
 import time
 from ...formats import dictset
 from ....logging import get_logger

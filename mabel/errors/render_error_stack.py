@@ -11,7 +11,7 @@ MIT Licence
 import os.path
 import pathlib
 import sys
-from typing import Callable, Dict, List, Optional, Type, Any, Iterable, Tuple, TypeVar, Generator
+from typing import Dict, List, Optional, Any, Generator
 from dataclasses import dataclass, field
 from traceback import walk_tb
 

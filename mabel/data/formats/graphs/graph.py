@@ -18,7 +18,6 @@ limitations under the License.
 
 from pathlib import Path
 from ..json import serialize
-from ....logging import get_logger
 from ....errors import MissingDependencyError
 
 class Graph(object):

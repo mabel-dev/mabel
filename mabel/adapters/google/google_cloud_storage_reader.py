@@ -5,7 +5,6 @@ import io
 import os
 from ...data.readers.internals.base_inner_reader import BaseInnerReader
 from ...errors import MissingDependencyError
-from ...logging import get_logger
 from ...utils import paths
 try:
     from google.auth.credentials import AnonymousCredentials  # type:ignore

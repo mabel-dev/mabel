@@ -5,8 +5,6 @@ Impotent writer for testing, writes to the log to help with debugging.
 
 #nodoc - don't add to the documentation wiki
 """
-from ...logging import get_logger
-from ...utils import paths
 from ...data.writers.internals.base_inner_writer import BaseInnerWriter
 
 

@@ -10,7 +10,7 @@ This relies on dictionaries being ordered.
 
 #nodoc - don't add to the documentation wiki
 """
-from typing import Any, List, Optional
+from typing import Any, List
 
 class LruIndex(object):
 

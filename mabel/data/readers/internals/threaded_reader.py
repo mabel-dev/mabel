@@ -1,7 +1,5 @@
 import queue
 import threading
-import sys
-import time
 from ...formats import dictset
 
 def threaded_reader(

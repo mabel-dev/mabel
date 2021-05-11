@@ -2,12 +2,9 @@ import time
 import datetime
 import threading
 from typing import Any
-from dateutil import parser
 from .simple_writer import SimpleWriter
 from .internals.writer_pool import WriterPool
-from ..validator import Schema  # type:ignore
 from ...utils import paths
-from ...errors import ValidationError
 from ...logging import get_logger
 
 

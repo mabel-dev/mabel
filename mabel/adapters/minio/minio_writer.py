@@ -1,8 +1,6 @@
-import os
 import io
 from ...data.writers.internals.base_inner_writer import BaseInnerWriter
 from ...errors import MissingDependencyError
-from ...utils import paths
 try:
     from minio import Minio  # type:ignore
     minio_installed = True

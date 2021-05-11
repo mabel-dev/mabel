@@ -1,7 +1,7 @@
 import functools
 import inspect
 from ..logging import get_logger
-from ..errors import InvalidCombinationError
+from ..errors import InvalidCombinationError, InvalidReaderConfigError
 
 
 def get_levenshtein_distance(word1, word2):
@@ -51,6 +51,8 @@ class validate():
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
 
+            has_errors = False
+
             my_rules = self.rules.copy()
 
             # get the names for all of the parameters
@@ -68,7 +70,7 @@ class validate():
             for not_on_list in [item for item in entered_parameters if item not in valid_parameters]:
                 suggestion = []
                 for valid in valid_parameters:
-                    if get_levenshtein_distance(not_on_list, valid) == 1:
+                    if get_levenshtein_distance(not_on_list, valid) == 2:
                         suggestion.append(valid)
                 if len(suggestion):
                     get_logger().error({
@@ -83,6 +85,18 @@ class validate():
                             "function": func.__qualname__,
                             "parameter": not_on_list
                         })
+                has_errors = True
+
+            # check for missing required paramters
+            required_parameters = {item.get('name') for item in my_rules if item.get('required')}
+            missing_required_parameters = [param for param in required_parameters if param not in entered_parameters]
+            if len(missing_required_parameters):
+                get_logger().error({
+                        "error": "missing required parameters",
+                        "function": func.__qualname__,
+                        "missing_paramters": missing_required_parameters
+                    })
+                has_errors = True
 
             # warnings
             warninged_parameters = {item.get('name'):item.get('warning') for item in my_rules if item.get('warning')}
@@ -100,17 +114,9 @@ class validate():
                                 "parameter": param.get('name', ''),
                                 "imcompatible with": toxic
                         })
-                
 
-            # check for missing required paramters
-            required_parameters = {item.get('name') for item in my_rules if item.get('required')}
-            missing_required_parameters = [param for param in required_parameters if param not in entered_parameters]
-            if len(missing_required_parameters):
-                get_logger().error({
-                        "error": "missing required parameters",
-                        "function": func.__qualname__,
-                        "missing_paramters": missing_required_parameters
-                    })
+            if has_errors:
+                raise InvalidReaderConfigError("Reader has invalid parameters")
 
             return func(*args, **kwargs)
 

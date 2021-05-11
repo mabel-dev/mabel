@@ -21,7 +21,6 @@ from pathlib import Path
 from .graph import Graph
 from .traverse import Traverse
 from ..json import parse
-from ....logging import get_logger
 from ....errors import MissingDependencyError
 
 def walk(graph, nids=None):

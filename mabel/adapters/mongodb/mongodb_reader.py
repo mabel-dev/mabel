@@ -4,8 +4,7 @@ A MongoDB Reader
 This is a light-weight and prototype MongoDB reader.
 """
 import io
-from typing import Iterable, Tuple, Optional, List
-import datetime
+from typing import Iterable, Optional, List
 from ...data.readers.internals.base_inner_reader import BaseInnerReader
 from ...errors import MissingDependencyError
 try:
