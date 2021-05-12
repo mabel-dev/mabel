@@ -212,7 +212,7 @@ class Reader():
         This creates an list of tuples of (field,value) that we can feed to the
         index search.
         """
-        INDEXABLE_OPS = {'=', '==', 'is', 'in'}
+        INDEXABLE_OPS = {'=', '==', 'is', 'in', 'contains'}
         if predicate is None:
             return []
         if isinstance(predicate, tuple):
@@ -291,7 +291,6 @@ class Reader():
         else:
             for blob in readable_blobs:
                 yield from self._read_blob(blob, blob_list)
-
 
     def __iter__(self):
         return self
