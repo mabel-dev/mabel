@@ -66,6 +66,8 @@ def test_log_sanitizer():
     logger.audit('{"password": "top secret 2"}')
     logger.audit('password:topsecret3')
     logger.audit(['password', 'top secret 4'])
+    logger.debug({"alpha":"`1`","beta":"`2`","gamma":"'3'","delta":"'4'"})
+    logger.debug("{'action':'list','limit':'1000'")
 
 
 if __name__ == "__main__":  # pragma: no cover

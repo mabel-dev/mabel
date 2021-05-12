@@ -136,8 +136,8 @@ class LogFormatter(logging.Formatter):
                 if any([True for expression in KEYS_TO_SANITIZE if re.match(expression, key, re.IGNORECASE)]):
                     clean_record["{BLUE}" + key + "{OFF}"] = '{PURPLE}<redacted:' + self.hash_it(str(value)) + '>{OFF}'
                 else:
-                    value = re.sub("`(.*)`", r"`{YELLOW}\1{GREEN}`", F"{value}")
-                    value = re.sub("'(.*)'", r"'{YELLOW}\1{GREEN}'", F"{value}")
+                    value = re.sub("`([^`]*)`", r"`{YELLOW}\1{GREEN}`", F"{value}")
+                    value = re.sub("'([^']*)'", r"'{YELLOW}\1{GREEN}'", F"{value}")
                     clean_record["{BLUE}" + key + "{OFF}"] = "{GREEN}" + F"{value}" + "{OFF}" 
 
             parts.append(' ' + json.dumps(clean_record))

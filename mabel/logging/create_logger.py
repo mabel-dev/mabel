@@ -65,6 +65,7 @@ def get_logger() -> logging.Logger:
     mabel_logging_handler = logging.StreamHandler()    
     formatter = LogFormatter(logging.Formatter(LOG_FORMAT, datefmt="%Y-%m-%dT%H:%M:%S%z"))
     mabel_logging_handler.setFormatter(formatter)
+    logger.handlers.clear()
     logger.addHandler(mabel_logging_handler)
 
     return logger
