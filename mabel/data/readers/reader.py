@@ -24,23 +24,23 @@ PARSERS = {
 }
 
 RULES = [
-    {"name":"as_at", "required":False, "warning": "Time Travel (as_at) is Alpha - it's interface may change and some features may not be supported", "incompatible_with":['start_date', 'end_date']},
-    {"name":"dataset", "required":True, "warning":None, "incompatible_with":[]},
-    {"name":"end_date", "required":False, "warning":None, "incompatible_with":[]},
-    {"name":"extension", "required":False, "warning":None, "incompatible_with":[]},
-    {"name":"filters", "required":False, "warning":None, "incompatible_with":[]},
-    {"name":"fork_processes", "required":False, "warning":"Forked Reader is Alpha - it's interface may change and some features may not be supported", "incompatible_with":['thread_count']},
-    {"name":"from_path", "required":False, "warning":"DEPRECATION: Reader \'from_path\' parameter will be replaced with \'dataset\'", "incompatible_with":['dataset']},
-    {"name":"inner_reader", "required":False, "warning":None, "incompatible_with":[]},
-    {"name":"project", "required":False, "warning":None, "incompatible_with":[]},
-    {"name":"raw_path", "required":False, "warning":None, "incompatible_with":[]},
-    {"name":"row_format", "required":False, "warning":None, "incompatible_with":[]},
-    {"name":"select", "required":False, "warning":None, "incompatible_with":[]},
-    {"name":"self", "required":True, "warning":None, "incompatible_with":[]},
-    {"name":"start_date", "required":False, "warning":None, "incompatible_with":[]},
-    {"name":"step_back_days", "required":False, "warning":None, "incompatible_with":[]},
-    {"name":"thread_count", "required":False, "warning":"Threaded Reader is Beta - use in production systems is not recommended", "incompatible_with":[]},
-    {"name":"where", "required":False, "warning":"`where` will be deprecated, use `filters` or `dictset.select_from` instead", "incompatible_with":['filters']},
+    {"name": "as_at", "required": False, "warning": "Time Travel (as_at) is Alpha - it's interface may change and some features may not be supported", "incompatible_with": ['start_date', 'end_date']},
+    {"name": "dataset", "required": True, "warning": None, "incompatible_with": []},
+    {"name": "end_date", "required": False, "warning": None, "incompatible_with": []},
+    {"name": "extension", "required": False, "warning": None, "incompatible_with": []},
+    {"name": "filters", "required": False, "warning": None, "incompatible_with": []},
+    {"name": "fork_processes", "required": False, "warning": "Forked Reader is Alpha - it's interface may change and some features may not be supported", "incompatible_with": ['thread_count']},
+    {"name": "from_path", "required": False, "warning": "DEPRECATION: Reader \'from_path\' parameter will be replaced with \'dataset\'", "incompatible_with": ['dataset']},
+    {"name": "inner_reader", "required": False, "warning" :None, "incompatible_with": []},
+    {"name": "project", "required": False, "warning": None, "incompatible_with": []},
+    {"name": "raw_path", "required": False, "warning": None, "incompatible_with": []},
+    {"name": "row_format", "required": False, "warning": None, "incompatible_with": []},
+    {"name": "select", "required": False, "warning": None, "incompatible_with": []},
+    {"name": "self", "required": True, "warning": None, "incompatible_with": []},
+    {"name": "start_date", "required": False, "warning": None, "incompatible_with": []},
+    {"name": "step_back_days", "required": False, "warning": None, "incompatible_with": []},
+    {"name": "thread_count", "required": False, "warning": "Threaded Reader is Beta - use in production systems is not recommended", "incompatible_with": []},
+    {"name": "where", "required": False, "warning": "`where` will be deprecated, use `filters` or `dictset.select_from` instead", "incompatible_with": ['filters']},
 ]
 
 
@@ -54,30 +54,35 @@ class Reader():
         dataset: str = None,
         where: Optional[Callable] = None,
         filters: Optional[List[Tuple[str, str, object]]] = None,
-        inner_reader = None,   # type:ignore
+        inner_reader=None,   # type:ignore
         row_format: str = "json",
         **kwargs):
         """
-        Reads records from a data store, opinionated toward Google Cloud Storage
-        but a filesystem reader is available to assist with local development.
+        Reads records from a data store, opinionated toward Google Cloud
+        Storage but a filesystem reader is available to assist with local
+        development.
 
-        The Reader will iterate over a set of files and return them to the caller
-        as a single stream of records. The files can be read from a single folder
-        or can be matched over a set of date/time formatted folder names. This is
-        useful to read over a set of logs. The date range is provided as part of 
-        the call; this is essentially a way to partition the data by date/time.
+        The Reader will iterate over a set of files and return them to the
+        caller as a single stream of records. The files can be read from a
+        single folder or can be matched over a set of date/time formatted
+        folder names. This is useful to read over a set of logs. The date range
+        is provided as part of the call; this is essentially a way to partition
+        the data by date/time.
 
-        The reader can filter records to return a subset, for JSON formatted data
-        the records can be converted to dictionaries before filtering. JSON data
-        can also be used to select columns, so not all read data is returned.
+        The reader can filter records to return a subset, for JSON formatted
+        data the records can be converted to dictionaries before filtering.
+        JSON data can also be used to select columns, so not all read data is
+        returned.
 
-        The reader does not support aggregations, calculations or grouping of data,
-        it is a log reader and returns log entries. The reader can convert a set
-        into _Pandas_ dataframe, or the _dictset_ helper library can perform some 
-        activities on the set in a more memory efficient manner.
+        The reader does not support aggregations, calculations or grouping of
+        data, it is a log reader and returns log entries. The reader can
+        convert a set into _Pandas_ dataframe, or the _dictset_ helper library
+        can perform some activities on the set in a more memory efficient
+        manner.
 
         Note:
-            Different _inner_readers_ may take or require additional parameters.
+            Different _inner_readers_ may take or require additional
+            parameters.
 
         Parameters:
             select: list of strings (optional):
@@ -101,14 +106,14 @@ class Reader():
                 as a _list_, a _set_ or a _tuple_.
                 `like` performs similar to the SQL operator `%` is a
                 multicharacter wildcard and `_` is a single character wildcard.
-                If a field is indexed, it will be used only for '==' and 
+                If a field is indexed, it will be used only for '==' and
                 'contains' operations.
             inner_reader: BaseReader (optional):
                 The reader class to perform the data access Operators, the
                 default is GoogleCloudStorageReader
             row_format: string (optional):
                 Controls how the data is interpretted. 'json' will parse to a
-                dictionary before _select_ or _where_ is applied, 'text' will 
+                dictionary before _select_ or _where_ is applied, 'text' will
                 just return the line that has been read, 'block' will return
                 the content of a file as a record. the default is 'json'.
             start_date: datetime (optional):
@@ -127,6 +132,9 @@ class Reader():
             fork_processes: boolean (alpha):
                 **ALPHA**
                 Create parallel processes to read data files
+            as_at: datetime (alpha)
+                **ALPHA**
+                Time travel
 
         Yields:
             dictionary (string if data format is 'text')
