@@ -24,22 +24,23 @@ PARSERS = {
 }
 
 RULES = [
-    {"name":"self", "required":True, "warning":None, "incompatible_with":[]},
-    {"name":"select", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"as_at", "required":False, "warning": "Time Travel (as_at) is Alpha - it's interface may change and some features may not be supported", "incompatible_with":['start_date', 'end_date']},
     {"name":"dataset", "required":True, "warning":None, "incompatible_with":[]},
-    {"name":"from_path", "required":False, "warning":"DEPRECATION: Reader \'from_path\' parameter will be replaced with \'dataset\'", "incompatible_with":['dataset']},
-    {"name":"where", "required":False, "warning":"`where` will be deprecated, use `filters` or `dictset.select_from` instead", "incompatible_with":['filters']},
-    {"name":"filters", "required":False, "warning":None, "incompatible_with":[]},
-    {"name":"inner_reader", "required":False, "warning":None, "incompatible_with":[]},
-    {"name":"row_format", "required":False, "warning":None, "incompatible_with":[]},
-    {"name":"thread_count", "required":False, "warning":"Threaded Reader is Beta - use in production systems is not recommended", "incompatible_with":[]},
-    {"name":"raw_path", "required":False, "warning":None, "incompatible_with":[]},
-    {"name":"fork_processes", "required":False, "warning":"Forked Reader is Alpha - it's interface may change and some features may not be supported", "incompatible_with":['thread_count']},
-    {"name":"start_date", "required":False, "warning":None, "incompatible_with":[]},
     {"name":"end_date", "required":False, "warning":None, "incompatible_with":[]},
-    {"name":"step_back_days", "required":False, "warning":None, "incompatible_with":[]},
     {"name":"extension", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"filters", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"fork_processes", "required":False, "warning":"Forked Reader is Alpha - it's interface may change and some features may not be supported", "incompatible_with":['thread_count']},
+    {"name":"from_path", "required":False, "warning":"DEPRECATION: Reader \'from_path\' parameter will be replaced with \'dataset\'", "incompatible_with":['dataset']},
+    {"name":"inner_reader", "required":False, "warning":None, "incompatible_with":[]},
     {"name":"project", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"raw_path", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"row_format", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"select", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"self", "required":True, "warning":None, "incompatible_with":[]},
+    {"name":"start_date", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"step_back_days", "required":False, "warning":None, "incompatible_with":[]},
+    {"name":"thread_count", "required":False, "warning":"Threaded Reader is Beta - use in production systems is not recommended", "incompatible_with":[]},
+    {"name":"where", "required":False, "warning":"`where` will be deprecated, use `filters` or `dictset.select_from` instead", "incompatible_with":['filters']},
 ]
 
 
@@ -194,6 +195,9 @@ class Reader():
 
         # multiprocessed reader
         self.fork_processes = bool(kwargs.get('fork_processes', False))
+
+        # time travel
+        self.as_at = kwargs.get('as_at')
 
         
     """
