@@ -31,7 +31,7 @@ class BaseInnerWriter(abc.ABC):
         self.extension = kwargs.get('extension', '.jsonl')
         if kwargs.get('format', '') in ['lzma', 'zstd', 'parquet']:
             self.extension = self.extension + '.' + kwargs['format']
-        if kwargs.get('format') == 'txt':
+        if kwargs.get('format') == 'text':
             self.extension = '.txt'
 
         self.filename = self.bucket + '/' + path + STEM + self.extension

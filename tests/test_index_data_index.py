@@ -1,7 +1,5 @@
-import datetime
 import sys
 import os
-import pytest
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from mabel.index.index import Index, IndexBuilder
 from rich import traceback
@@ -187,7 +185,9 @@ def test_complex_indexes():
         ib.add(i, compound)
     idx = ib.build()
 
-    for row in idx.search("sodium"):
+    sodas = idx.search("sodium")
+    assert len(sodas) == 2, sodas
+    for row in sodas:
         assert "sodium" in COMPOUNDS[row]['elements']
 
 

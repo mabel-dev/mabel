@@ -123,7 +123,7 @@ def test_reader_writer_format_parquet():
 
 def test_reader_writer_format_text():
 
-    do_writer_compressed('txt')
+    do_writer_compressed('text')
 
     g = glob.glob('_temp/**/*.txt', recursive=True)
     assert len(g) > 0, g

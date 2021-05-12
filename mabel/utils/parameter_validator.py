@@ -70,7 +70,7 @@ class validate():
             for not_on_list in [item for item in entered_parameters if item not in valid_parameters]:
                 suggestion = []
                 for valid in valid_parameters:
-                    if get_levenshtein_distance(not_on_list, valid) == 2:
+                    if get_levenshtein_distance(not_on_list, valid) <= 2:
                         suggestion.append(valid)
                 if len(suggestion):
                     get_logger().error({

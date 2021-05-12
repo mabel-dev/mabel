@@ -98,6 +98,7 @@ class SimpleWriter():
     def finalize(self):
         self.finalized = True
         try:
-            self.blob_writer.commit()
+            return self.blob_writer.commit()
         except Exception as e:
             get_logger().error(F"{type(self).__name__} failed to close pool: {type(e).__name__} - {e}")
+        return None

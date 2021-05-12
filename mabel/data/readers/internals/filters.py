@@ -10,7 +10,7 @@ any indices at this point.
 """
 import re
 from functools import lru_cache
-from typing import Optional, Any, Iterable, List, Tuple, Union
+from typing import Optional, Iterable, List, Tuple, Union
 from ....errors import InvalidSyntaxError
 from ....logging import get_logger
 
@@ -40,6 +40,8 @@ def _gte(x,y):  return x >= y
 def _like(x,y): return _sql_like_fragment_to_regex(y.lower()).match(str(x).lower())
 def _in(x,y):   return x in y
 def _nin(x,y):  return x not in y
+def _con(x,y):  return y in x
+def _ncon(x,y): return y not in x
 def true(x):    return True
 
 # convert text representation of operators to functions
@@ -55,7 +57,9 @@ OPERATORS = {
     'like'  : _like,
     'in'    : _in,
     '!in'   : _nin,
-    'not in': _nin
+    'not in': _nin,
+    'contains': _con,
+    '!contains': _ncon,
 }
 
 def evaluate(
@@ -117,9 +121,10 @@ class Filters():
                 compare to the `value` using the operator `op`. Multiple
                 filters are treated as AND, lists of ANDs are treated as ORs.
                 The supported `op` values are: `=` or `==`, `!=`, `<`, `>`,
-                `<=`, `>=`, `in`, `!in` (not in) and `like`. If the `op` is
-                `in` or `!in`, the `value` must be a collection such as a
-                _list_, a _set_ or a _tuple_.
+                `<=`, `>=`, `in`, `!in` (not in), `contains`, `!contains`
+                (does not contain) and `like`. If the `op` is `in` or `!in`,
+                the `value` must be a collection such as a _list_, a _set_
+                or a _tuple_.
                 `like` performs similar to the SQL operator, `%` is a
                 multi-character wildcard and `_` is a single character
                 wildcard.

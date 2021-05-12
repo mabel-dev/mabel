@@ -11,16 +11,15 @@ from ....errors import MissingDependencyError
 
 BLOB_SIZE = 32*1024*1024  # about 32 files per gigabyte
 BUFFER_SIZE = BLOB_SIZE   # buffer in memory really
-SUPPORTED_FORMATS_ALGORITHMS = ('jsonl', 'lzma', 'zstd', 'parquet', 'txt')
+SUPPORTED_FORMATS_ALGORITHMS = ('jsonl', 'lzma', 'zstd', 'parquet', 'text')
 MAXIMUM_RECORDS = 64000   # needs to be less than 2^16-1
 
 
 def safe_field_name(field_name):
     """strip all the non-alphanums from a field name"""
     import re
-    pattern = re.compile('[\W_]+')
+    pattern = re.compile('[^a-zA-Z0-9]+')
     return pattern.sub('', field_name)
-
 
 class BlobWriter():
 
@@ -75,6 +74,8 @@ class BlobWriter():
 
     def commit(self):
 
+        committed_blob_name = ''
+
         if self.bytes_in_blob > 0:
             with threading.Lock():
                 try:
@@ -128,6 +129,8 @@ class BlobWriter():
 
                 self.bytes_in_blob = 0
                 self.file_name = None
+
+        return committed_blob_name
 
 
     def _open_blob(self):

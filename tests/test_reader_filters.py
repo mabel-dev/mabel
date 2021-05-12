@@ -11,9 +11,9 @@ from rich import traceback
 traceback.install()
 
 TEST_DATA = [
-    { "name": "Sirius Black", "age": 40, "dob": "1970-01-02", "gender": "male" },
-    { "name": "Harry Potter", "age": 11, "dob": "1999-07-30", "gender": "male" },
-    { "name": "Hermione Grainger", "age": 10, "dob": "1999-12-14", "gender": "female" },
+    { "name": "Sirius Black", "age": 40, "dob": "1970-01-02", "gender": "male", "affiliations": ['OotP'] },
+    { "name": "Harry Potter", "age": 11, "dob": "1999-07-30", "gender": "male", "affiliations": ['Dumbledores Army', 'Griffindor'] },
+    { "name": "Hermione Grainger", "age": 10, "dob": "1999-12-14", "gender": "female", "affiliations": ['Dumbledores Army', 'Griffindor', 'MoM'] },
     { "name": "Fleur Isabelle Delacour", "age": 11, "dob": "1999-02-08", "gender": "female" },
     { "name": "James Potter", "age": 40, "dob": "1971-12-30", "gender": "male" },
     { "name": "James Potter", "age": 0, "dob": "2010-12-30", "gender": "male" }
@@ -88,6 +88,8 @@ def test_combined_filters():
     filter05 = Filters()
     # IN conditions
     filter06 = Filters(('name', 'in', ["Fleur Isabelle Delacour", "Hermione Grainger"]))
+    # contains conditions
+    filter07 = Filters(('affiliations', 'contains', 'Griffindor'))
     
     assert len([a for a in filter01.filter_dictset(TEST_DATA)]) == 1
     assert len([a for a in filter02.filter_dictset(TEST_DATA)]) == 1
@@ -96,6 +98,7 @@ def test_combined_filters():
     assert len([a for a in filter04.filter_dictset(TEST_DATA)]) == 2
     assert len([a for a in filter05.filter_dictset(TEST_DATA)]) == 6
     assert len([a for a in filter06.filter_dictset(TEST_DATA)]) == 2
+    assert len([a for a in filter07.filter_dictset(TEST_DATA)]) == 2
 
 if __name__ == "__main__":  # pragma: no cover
     test_reader_filters_no_filter()
