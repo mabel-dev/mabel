@@ -54,21 +54,21 @@ class Flow():
             name: string
                 The name of the step to search from
         """
-        return [target for source,target in self.edges if source == name]
+        return [target for source, target in self.edges if source == name]
 
     def get_exit_points(self):
         """
         Get steps in the flow with no outgoing steps.
         """
-        sources = {source for source,target in self.edges}
-        return {target for source,target in self.edges if target not in sources}
+        sources = {source for source, target in self.edges}
+        return {target for source, target in self.edges if target not in sources}
 
     def get_entry_points(self):
         """
         Get steps in the flow with no incoming steps.
         """
-        taregts = {target for source,target in self.edges}
-        return {source for source,target in self.edges if source not in taregts}
+        targets = {target for source, target in self.edges}
+        return {source for source, target in self.edges if source not in targets}
 
     def is_acyclic(self):
         # cycle over the graph removing a layer of exits each cycle
