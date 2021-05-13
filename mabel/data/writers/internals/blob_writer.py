@@ -21,6 +21,7 @@ def safe_field_name(field_name):
     pattern = re.compile('[^a-zA-Z0-9]+')
     return pattern.sub('', field_name)
 
+
 class BlobWriter():
 
     def __init__(
@@ -46,10 +47,9 @@ class BlobWriter():
         self._open_blob()
 
 
-
     def append(self, record: dict = {}):
         # serialize the record
-        if self.format == 'txt':
+        if self.format == 'text':
             serialized = str(record).encode() + b'\n'
         else:
             serialized = serialize(record, as_bytes=True) + b'\n'  # type:ignore

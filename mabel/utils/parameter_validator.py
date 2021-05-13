@@ -1,7 +1,7 @@
 import functools
 import inspect
 from ..logging import get_logger
-from ..errors import InvalidCombinationError, InvalidReaderConfigError
+from ..errors import InvalidReaderConfigError
 
 
 def get_levenshtein_distance(word1, word2):
@@ -107,12 +107,14 @@ class validate():
             # toxic
             for param in [rule for rule in self.rules if rule.get('incompatible_with')]:
                 if param.get('name') in entered_parameters and entered_parameters[param.get('name')]:
-                    for toxic in [t for t in param['incompatible_with'] if t in entered_parameters.keys()]:
-                        InvalidCombinationError({
-                                "error": "invalid combination of paramters",
+                    toxic = [t for t in param['incompatible_with'] if t in entered_parameters.keys()]
+                    if toxic:
+                        has_errors = True
+                        get_logger().error({
+                                "error": "invalid combination of parameters",
                                 "function": func.__qualname__,
                                 "parameter": param.get('name', ''),
-                                "imcompatible with": toxic
+                                "incompatible with": toxic
                         })
 
             if has_errors:

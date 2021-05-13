@@ -151,18 +151,10 @@ class SqlReader():
 
         where_statement = _build_where_function(sql.get('where'))
         
-        # windows requires special handling for the multi-processor, we can't
-        # force this, so just avoid multi-processing and use threading,
-        # it's not as good but is still a significant performance improvement
-        thread_count = 0
-        fork_processes = True
-        if os.name == 'nt':    # pragma: no cover
-            thread_count = 4
-            fork_processes = False
-
+        thread_count = 4
+        
         self.reader = Reader(
                 thread_count=thread_count,
-                fork_processes=fork_processes,
                 select=fields,
                 where=where_statement,
                 dataset=table,
