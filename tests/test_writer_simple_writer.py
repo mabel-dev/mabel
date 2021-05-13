@@ -35,6 +35,7 @@ def do_writer_compressed(algo):
     w.finalize()
     del w
 
+
 def do_writer_default():
     w = SimpleWriter(
         inner_writer=DiskWriter,
@@ -47,10 +48,20 @@ def do_writer_default():
     del w
 
 
+def do_writer_csv():
+    w = SimpleWriter(
+        inner_writer=DiskWriter,
+        dataset='_temp',
+        format="text"
+    )
+    w.append("week,volume")
+    for i in range(int(100)):
+        w.append(F"{i},{i}")
+    w.finalize()
+
+
 def test_reader_writer():
-
     do_writer()
-
     r = Reader(
         inner_reader=DiskReader,
         dataset='_temp'
@@ -61,9 +72,7 @@ def test_reader_writer():
 
 
 def test_reader_writer_format_lzma():
-
     do_writer_compressed('lzma')
-
     g = glob.glob('_temp/**/*.lzma', recursive=True)
     assert len(g) > 0, g
 
@@ -76,12 +85,9 @@ def test_reader_writer_format_lzma():
     assert l == 200000, l
 
 def test_reader_writer_format_zstd():
-
     do_writer_compressed('zstd')
-
     g = glob.glob('_temp/**/*.zstd', recursive=True)
     assert len(g) > 0, g
-
     r = Reader(
         inner_reader=DiskReader,
         dataset='_temp'
@@ -90,10 +96,9 @@ def test_reader_writer_format_zstd():
     shutil.rmtree("_temp", ignore_errors=True)
     assert l == 200000, l
 
+
 def test_reader_writer_format_jsonl():
-
     do_writer_compressed('jsonl')
-
     g = glob.glob('_temp/**/*.jsonl', recursive=True)
     assert len(g) > 0, g
 
@@ -105,13 +110,11 @@ def test_reader_writer_format_jsonl():
     shutil.rmtree("_temp", ignore_errors=True)
     assert l == 200000, l
 
+
 def test_reader_writer_format_parquet():
-
     do_writer_compressed('parquet')
-
     g = glob.glob('_temp/**/*.parquet', recursive=True)
     assert len(g) > 0, g
-
     r = Reader(
         inner_reader=DiskReader,
         row_format='pass-thru',
@@ -121,10 +124,9 @@ def test_reader_writer_format_parquet():
     shutil.rmtree("_temp", ignore_errors=True)
     assert l == 200000, l
 
+
 def test_reader_writer_format_text():
-
     do_writer_compressed('text')
-
     g = glob.glob('_temp/**/*.txt', recursive=True)
     assert len(g) > 0, g
 
@@ -137,10 +139,9 @@ def test_reader_writer_format_text():
     shutil.rmtree("_temp", ignore_errors=True)
     assert l == 200000, l
 
+
 def test_reader_writer_format_default():
-
     do_writer_default()
-
     g = glob.glob('_temp/**/*.zstd', recursive=True)
     assert len(g) > 0, g
 
@@ -154,7 +155,6 @@ def test_reader_writer_format_default():
 
 
 def test_write_to_path_logged():
-
     # none of these should do anything
     nw = SimpleWriter(
             inner_writer=NullWriter,
