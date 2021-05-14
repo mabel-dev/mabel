@@ -27,7 +27,7 @@ class BlobWriter():
     def __init__(
             self,
             *,    # force params to be named
-            inner_writer = None,  # type:ignore
+            inner_writer=None,  # type:ignore
             blob_size: int = BLOB_SIZE,
             format: str = 'zstd',
             **kwargs):
@@ -45,7 +45,6 @@ class BlobWriter():
         kwargs['format'] = format
         self.inner_writer = inner_writer(**kwargs)  # type:ignore
         self._open_blob()
-
 
     def append(self, record: dict = {}):
         # serialize the record

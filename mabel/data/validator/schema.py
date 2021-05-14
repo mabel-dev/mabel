@@ -1,7 +1,7 @@
 import os
 import re
 import datetime
-from typing import Any, Union, List
+from typing import Any, Union, List, Dict
 from ..formats.json import parse
 from ...errors import ValidationError
 from ..formats.dictset.display import ascii_table
@@ -19,11 +19,13 @@ def is_boolean(**kwargs):
         return str(value).lower() in VALID_BOOLEAN_VALUES
     return _inner
 
+
 def is_cve(**kwargs):
     def _inner(value):
         """cve"""
         return CVE_REGEX.match(str(value))
     return _inner
+
 
 def is_date(**kwargs):
     DATE_SEPARATORS = {'-', '\\', '/', ':'}
@@ -56,11 +58,13 @@ def is_date(**kwargs):
             return False
     return _inner
 
+
 def is_list(**kwargs):
     def _inner(value: Any) -> bool:
         """list"""
         return isinstance(value, (list, set))
     return _inner
+
 
 def is_null(**kwargs):
     def _inner(value: Any) -> bool:
@@ -68,7 +72,9 @@ def is_null(**kwargs):
         return (value is None) or (value == '') or (value == [])
     return _inner
 
+
 def is_numeric(**kwargs):
+
     mn = kwargs.get('min') or DEFAULT_MIN
     mx = kwargs.get('max') or DEFAULT_MAX
     def _inner(value: Any) -> bool:
@@ -79,6 +85,7 @@ def is_numeric(**kwargs):
             return False
         return mn <= n <= mx
     return _inner
+
 
 def is_string(**kwargs):
     regex = None
@@ -93,12 +100,14 @@ def is_string(**kwargs):
             return regex.match(str(value))
     return _inner
 
+
 def is_valid_enum(**kwargs):
     symbols = kwargs.get('symbols', set())
     def _inner(value: Any) -> bool:
         """enum"""
         return value in symbols
     return _inner
+
 
 def other_validator(**kwargs):
     def _inner(value: Any) -> bool:
@@ -122,9 +131,10 @@ VALIDATORS = {
     "cve": is_cve
 }
 
+
 class Schema():
 
-    def __init__(self, definition: Union[dict, str]):
+    def __init__(self, definition: Union[str, List[Dict[str, Any]], dict]):
         """
         Tests a dictionary against a schema to test for conformity.
         Schema definition is similar to - but not the same as - avro schemas
@@ -134,23 +144,28 @@ class Schema():
                 A dictionary, a JSON string of a dictionary or the name of a 
                 JSON file containing a schema definition
         """
+        # typing system struggles to understand what is happening here
+
         # if we have a schema as a string, load it into a dictionary
-        if type(definition).__name__ == 'str':
+        if isinstance(definition, str):
             if os.path.exists(definition):  # type:ignore
                 definition = parse(open(definition, mode='r').read())  # type:ignore
             else:
-                definition = parse(definition)  # type:ignore
+                definition = parse(definition)            # type:ignore
+
+        if definition.get('fields'):                  #type:ignore
+            definition = definition['fields']          #type:ignore
 
         try:
             # read the schema and look up the validators
-            self._validators = {
-                item.get('name'): self._get_validators(
-                        item['type'], 
-                        symbols=item.get('symbols'), 
-                        min=item.get('min'),
-                        max=item.get('max'),
-                        format=item.get('format'))
-                for item in definition.get('fields', [])  #type:ignore
+            self._validators = {                          #type:ignore
+                item.get('name'): self._get_validators(   #type:ignore
+                        item['type'],                     #type:ignore
+                        symbols=item.get('symbols'),      #type:ignore
+                        min=item.get('min'),              #type:ignore
+                        max=item.get('max'),              #type:ignore
+                        format=item.get('format'))        #type:ignore
+                for item in definition                    #type:ignore
             }
 
         except KeyError:
@@ -210,7 +225,7 @@ class Schema():
             if not self._field_validator(subject.get(key), self._validators.get(key, [other_validator])):
                 result = False
                 for v in value:
-                    self.last_error += f"'{key}' ({subject.get(key)}) did not pass `{v.__doc__}` validator.\n"
+                    self.last_error += f"'{key}' (`{subject.get(key)}`) did not pass `{v.__doc__}` validator.\n"
         if raise_exception and not result:
             raise ValidationError(F"Record does not conform to schema - {self.last_error}. ")
         return result
