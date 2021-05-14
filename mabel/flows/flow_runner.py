@@ -9,6 +9,7 @@ class FlowRunner():
 
     def __init__(self, flow):
         self.flow = flow
+        self.cycles = 0
 
     def __call__(
             self,
@@ -46,7 +47,10 @@ class FlowRunner():
         try:
             # start the flow, walk from the nodes with no incoming links
             for operator_name in self.flow.get_entry_points():
+                self.cycles += 1
                 self._inner_runner(operator_name=operator_name, data=data, context=context)
+                if self.cycles % 1000 == 0:
+                    get_logger().debug(F"Executed {self.cycles} cycles of flows.")
         except (Exception, SystemExit) as err:
             # if we have a uncaught failure, make sure it's logged
             get_logger().alert(F'FLOW ABEND - {type(err).__name__} - {err}')  # type:ignore
