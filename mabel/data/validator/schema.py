@@ -1,7 +1,7 @@
 import os
 import re
 import datetime
-from typing import Any, Union, List
+from typing import Any, Union, List, Dict
 from ..formats.json import parse
 from ...errors import ValidationError
 from ..formats.dictset.display import ascii_table
@@ -19,11 +19,13 @@ def is_boolean(**kwargs):
         return str(value).lower() in VALID_BOOLEAN_VALUES
     return _inner
 
+
 def is_cve(**kwargs):
     def _inner(value):
         """cve"""
         return CVE_REGEX.match(str(value))
     return _inner
+
 
 def is_date(**kwargs):
     DATE_SEPARATORS = {'-', '\\', '/', ':'}
@@ -72,6 +74,7 @@ def is_null(**kwargs):
 
 
 def is_numeric(**kwargs):
+
     mn = kwargs.get('min') or DEFAULT_MIN
     mx = kwargs.get('max') or DEFAULT_MAX
     def _inner(value: Any) -> bool:
@@ -131,7 +134,7 @@ VALIDATORS = {
 
 class Schema():
 
-    def __init__(self, definition: Union[str, list]):
+    def __init__(self, definition: Union[str, List[Dict[str, Any]], dict]):
         """
         Tests a dictionary against a schema to test for conformity.
         Schema definition is similar to - but not the same as - avro schemas
@@ -141,23 +144,28 @@ class Schema():
                 A dictionary, a JSON string of a dictionary or the name of a 
                 JSON file containing a schema definition
         """
+        # typing system struggles to understand what is happening here
+
         # if we have a schema as a string, load it into a dictionary
         if isinstance(definition, str):
             if os.path.exists(definition):  # type:ignore
                 definition = parse(open(definition, mode='r').read())  # type:ignore
             else:
-                definition = parse(definition)  # type:ignore
+                definition = parse(definition)            # type:ignore
+
+        if definition.get('fields'):                  #type:ignore
+            definition = definition['fields']          #type:ignore
 
         try:
             # read the schema and look up the validators
-            self._validators = {
-                item.get('name'): self._get_validators(
-                        item['type'], 
-                        symbols=item.get('symbols'), 
-                        min=item.get('min'),
-                        max=item.get('max'),
-                        format=item.get('format'))
-                for item in definition  #type:ignore
+            self._validators = {                          #type:ignore
+                item.get('name'): self._get_validators(   #type:ignore
+                        item['type'],                     #type:ignore
+                        symbols=item.get('symbols'),      #type:ignore
+                        min=item.get('min'),              #type:ignore
+                        max=item.get('max'),              #type:ignore
+                        format=item.get('format'))        #type:ignore
+                for item in definition                    #type:ignore
             }
 
         except KeyError:
