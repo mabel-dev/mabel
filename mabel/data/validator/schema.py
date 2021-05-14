@@ -49,10 +49,8 @@ def is_date(**kwargs):
                         return False
                     if not value[13] in DATE_SEPARATORS:
                         return False
-                    if not value[16] in DATE_SEPARATORS:
-                        return False                    
-                    # YYYY-MM-DDTHH:MM:SS
-                    datetime.datetime(*map(int, [value[:4], value[5:7], value[8:10], value[11:13], value[14:16], value[17:19]]))   # type:ignore
+                    # YYYY-MM-DDTHH:MM
+                    datetime.datetime(*map(int, [value[:4], value[5:7], value[8:10], value[11:13], value[14:16]]))   # type:ignore
             return True
         except (ValueError, TypeError):
             return False
@@ -151,10 +149,11 @@ class Schema():
             if os.path.exists(definition):  # type:ignore
                 definition = parse(open(definition, mode='r').read())  # type:ignore
             else:
-                definition = parse(definition)            # type:ignore
+                definition = parse(definition)             # type:ignore
 
-        if definition.get('fields'):                  #type:ignore
-            definition = definition['fields']          #type:ignore
+        if isinstance(definition, dict):
+            if definition.get('fields'):                   #type:ignore
+                definition = definition['fields']          #type:ignore
 
         try:
             # read the schema and look up the validators

@@ -45,6 +45,9 @@ class BaseWriterOperator(BaseOperator):
 
         if not context:
             context = {}
+            
+        if self.writer.schema:
+            context['schema_object'] = self.writer.schema
 
         self.writer.finalize()
         return context
