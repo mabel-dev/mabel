@@ -1,5 +1,5 @@
 import datetime
-from typing import Any
+from typing import Any, Optional, Union, List
 from dateutil import parser
 from .internals.blob_writer import BlobWriter
 from ..validator import Schema  # type:ignore
@@ -20,11 +20,10 @@ class SimpleWriter():
             batch_date = parser.parse(date)
         return batch_date
 
-
     def __init__(
             self,
             *,
-            schema: Schema = None,
+            schema: Optional[Union[Schema,list]] = None,
             format: str = 'zstd',
             date: Any = None,
             **kwargs):
@@ -45,7 +44,11 @@ class SimpleWriter():
         if '%' in dataset:
             InvalidDataSetError('Dataset names cannot contain %')
 
-        self.schema = schema
+        self.schema = None
+        if isinstance(schema, list):
+            schema = Schema(schema)
+        if isinstance(schema, Schema):
+            self.schema = schema
         self.finalized = False
         self.batch_date = self._get_writer_date(date)
 
