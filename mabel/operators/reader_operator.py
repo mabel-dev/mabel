@@ -11,6 +11,6 @@ class ReaderOperator(BaseOperator):
         super().__init__(*args, **kwargs)
         self.reader = Reader(**kwargs)
 
-    def execute(self, data: dict, context: dict):
+    def execute(self, data, context):
         for row in self.reader:
             yield row, context
