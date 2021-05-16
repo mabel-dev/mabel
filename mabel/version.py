@@ -3,4 +3,4 @@
 # 2) we can import it in setup.py for the same reason
 __version__ = "0.4.25"
 
-#nodoc - don't add to the documentation wiki
+# nodoc - don't add to the documentation wiki

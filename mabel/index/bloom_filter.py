@@ -25,38 +25,38 @@ try:
 except ImportError:
     from .bitarray import bitarray
 
-class BloomFilter():
 
-    __slots__ = ('filter_size', 'hash_count', 'bits')
+class BloomFilter:
 
-    def __init__(
-            self,
-            number_of_elements: int = 50000,
-            fp_rate: float = 0.05):
+    __slots__ = ("filter_size", "hash_count", "bits")
+
+    def __init__(self, number_of_elements: int = 50000, fp_rate: float = 0.05):
         """
         Bloom Filters are a probabilistic approach to tracking items in a list.
         They use an array of booleans which are set according to hashes of the
         data items. Items are considered to be in the list if the booleans at
-        the hashes are set, this results in a degree of false positives. This 
+        the hashes are set, this results in a degree of false positives. This
         is factored into the calculation of the size of the boolean array and
         the number of hashes.
 
         This is used in the profiler to track unique string values without
-        having to store the values or hashes of the values (minor errors 
+        having to store the values or hashes of the values (minor errors
         with this count is not expected to be a problem)
 
         This is expected to be used to speed-up searches for data, with
         .bloom files created to quickly determine if a file probably has the
         value being looked for (not currently implemented)
-        """        
+        """
         self.filter_size = BloomFilter.get_size(number_of_elements, fp_rate)
-        self.hash_count = BloomFilter.get_hash_count(self.filter_size, number_of_elements)
-        self.bits = bitarray(self.filter_size, endian='big')
+        self.hash_count = BloomFilter.get_hash_count(
+            self.filter_size, number_of_elements
+        )
+        self.bits = bitarray(self.filter_size, endian="big")
         self.bits.setall(0)
 
     @staticmethod
     def _log(x):
-        return 99999999*(x**(1/99999999)-1)
+        return 99999999 * (x ** (1 / 99999999) - 1)
 
     @staticmethod
     def get_size(number_of_elements, fp_rate):
@@ -72,14 +72,18 @@ class BloomFilter():
         Returns:
             integer
         """
-        m = -(number_of_elements * BloomFilter._log(fp_rate))/(BloomFilter._log(2)**2) + 1
+        m = (
+            -(number_of_elements * BloomFilter._log(fp_rate))
+            / (BloomFilter._log(2) ** 2)
+            + 1
+        )
         return int(m)
 
     @staticmethod
     def get_hash_count(filter_size, number_of_elements):
         """
         Calculate the number of hashes to use to identify elements
- 
+
         Parameters:
             filter_size: integer
                 The size of the filter bit array
@@ -89,7 +93,7 @@ class BloomFilter():
         Returns:
             integer
         """
-        k = (filter_size/number_of_elements) * BloomFilter._log(2)
+        k = (filter_size / number_of_elements) * BloomFilter._log(2)
         return max(int(k), 2)
 
     def add(self, term):
@@ -97,12 +101,14 @@ class BloomFilter():
         Add a value to the index
         """
         import mmh3  # type:ignore
+
         for i in range(self.hash_count):
             h = mmh3.hash(term, seed=i) % self.filter_size
             self.bits[h] = 1
 
     def __contains__(self, term):
         import mmh3  # type:ignore
+
         for i in range(self.hash_count):
             h = mmh3.hash(term, seed=i) % self.filter_size
             if self.bits[h] == 0:
@@ -113,31 +119,30 @@ class BloomFilter():
         """
         Save the bloom filter to disk
         """
-        with open(filename, 'wb') as fh:
+        with open(filename, "wb") as fh:
             fh.write(b"MB01")
-            fh.write(self.filter_size.to_bytes(4, byteorder='big'))
-            fh.write(self.hash_count.to_bytes(4, byteorder='big'))
+            fh.write(self.filter_size.to_bytes(4, byteorder="big"))
+            fh.write(self.hash_count.to_bytes(4, byteorder="big"))
             self.bits.tofile(fh)
 
     @staticmethod
-    def read_bloom_filter(
-            filename: str):
+    def read_bloom_filter(filename: str):
         """
         Read a bloom filter from disk
         """
-        
+
         def bytes_to_int(xbytes: bytes) -> int:
-            return int.from_bytes(xbytes, 'big')
+            return int.from_bytes(xbytes, "big")
 
         bf = BloomFilter()
-        
-        bits = bitarray(endian='big')
-        with open(filename, 'rb') as fh:
+
+        bits = bitarray(endian="big")
+        with open(filename, "rb") as fh:
             magic_string = fh.read(4).decode()
-            if magic_string != 'MB01':  # pragma: no cover
-                raise IndexError(F'{filename} does appear to be a valid bloom file')
+            if magic_string != "MB01":  # pragma: no cover
+                raise IndexError(f"{filename} does appear to be a valid bloom file")
             filter_size = bytes_to_int(fh.read(4))
-            hash_count  = bytes_to_int(fh.read(4)) 
+            hash_count = bytes_to_int(fh.read(4))
             bits.fromfile(fh)
 
         bf.bits = bits

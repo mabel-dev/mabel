@@ -23,35 +23,33 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-class bitarray():
 
-    def __init__(
-            self,
-            size: int = 0,
-            endian: str = ''):
+class bitarray:
+    def __init__(self, size: int = 0, endian: str = ""):
         self.size = size
-        self.bits = [0 for i in range((size+7)>>3)]
+        self.bits = [0 for i in range((size + 7) >> 3)]
 
     def setall(self, value=0):
         for i in range(self.size):
             self.__setitem__(i, value)
 
     def __setitem__(self, bit, value):
-        b = self.bits[bit>>3]
+        b = self.bits[bit >> 3]
         if value:
-            self.bits[bit>>3] = b | 1 << (bit % 8)
+            self.bits[bit >> 3] = b | 1 << (bit % 8)
         else:
-            self.bits[bit>>3] = b & ~(1 << (bit % 8))
+            self.bits[bit >> 3] = b & ~(1 << (bit % 8))
 
     def __getitem__(self, bit):
-        b = self.bits[bit>>3]
+        b = self.bits[bit >> 3]
         return (b >> (bit % 8)) & 1
 
     def __repr__(self):
         def _inner():
             for i in range(self.size):
                 yield str(self[i])
-        return F"bitarray('{''.join(list(_inner()))}')"
+
+        return f"bitarray('{''.join(list(_inner()))}')"
 
     def tofile(self, filehandle):
         filehandle.write(bytes(self.bits))

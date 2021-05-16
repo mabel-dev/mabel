@@ -11,9 +11,10 @@ except ImportError:
     can_use_resource_lib = False
     import psutil  # type:ignore
 
-class ResourceMonitor():
 
-    slots = ('frequency')
+class ResourceMonitor:
+
+    slots = "frequency"
 
     def __init__(self, frequency=1):
         self.frequency = frequency
@@ -26,12 +27,12 @@ class ResourceMonitor():
                 memory_usage = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
             else:
                 memory_usage = self.process.memory_info()[0]
-            get_logger().info(json.dumps({"memory":memory_usage}))
+            get_logger().info(json.dumps({"memory": memory_usage}))
             sleep(self.frequency)
 
 
 monitor = ResourceMonitor()
 resource_thread = threading.Thread(target=monitor.resource_usage)
-resource_thread.name = 'mabel-resource-monitor'
+resource_thread.name = "mabel-resource-monitor"
 resource_thread.daemon = True
 resource_thread.start()
