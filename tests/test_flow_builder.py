@@ -55,6 +55,8 @@ def test_flow_builder_invalid_wrong_type():
 
 
 class TestOperator(NoOpOperator):
+    def __init__(self):
+        super().__init__()
     def execute(self, data={}, context={}):
         return data, context
 
