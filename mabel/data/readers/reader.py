@@ -58,77 +58,71 @@ class Reader():
         row_format: str = "json",
         **kwargs):
         """
-        Reads records from a data store, opinionated toward Google Cloud
-        Storage but a filesystem reader is available to assist with local
-        development.
+        Reads records from a data store, opinionated toward Google Cloud Storage but a
+        filesystem reader is available to assist with local development.
 
-        The Reader will iterate over a set of files and return them to the
-        caller as a single stream of records. The files can be read from a
-        single folder or can be matched over a set of date/time formatted
-        folder names. This is useful to read over a set of logs. The date range
-        is provided as part of the call; this is essentially a way to partition
-        the data by date/time.
+        The Reader will iterate over a set of files and return them to the caller as a
+        single stream of records. The files can be read from a single folder or can be
+        matched over a set of date/time formatted folder names. This is useful to read
+        over a set of logs. The date range is provided as part of the call; this is
+        essentially a way to partition the data by date/time.
 
-        The reader can filter records to return a subset, for JSON formatted
-        data the records can be converted to dictionaries before filtering.
-        JSON data can also be used to select columns, so not all read data is
-        returned.
+        The reader can filter records to return a subset, for JSON formatted data the
+        records can be converted to dictionaries before filtering. JSON data can also
+        be used to select columns, so not all read data is returned.
 
-        The reader does not support aggregations, calculations or grouping of
-        data, it is a log reader and returns log entries. The reader can
-        convert a set into _Pandas_ dataframe, or the _dictset_ helper library
-        can perform some activities on the set in a more memory efficient
-        manner.
+        The reader does not support aggregations, calculations or grouping of data, it
+        is a log reader and returns log entries. The reader can convert a set into 
+        _Pandas_ dataframe, or the _dictset_ helper library can perform some activities
+        on the set in a more memory efficient manner.
 
         Note:
-            Different _inner_readers_ may take or require additional
-            parameters.
+            Different _inner_readers_ may take or require additional parameters. This
+            class has a decorator which helps to ensure it is called correctly.
 
         Parameters:
             select: list of strings (optional):
-                A list of the names of the columns to return from the dataset,
-                the default is all columns
+                A list of the names of the columns to return from the dataset, the
+                default is all columns
             dataset: string:
                 The path to the data
             where: callable (optional):
                 **TO BE DEPRECATED**
                 A method (function or lambda expression) to filter the returned
-                records, where the function returns True the record is
-                returned, False the record is skipped. The default is all
-                records
+                records, where the function returns True the record is returned, False
+                the record is skipped. The default is all records
             filters: List of tuples (optional)
-                Rows which do not match the filter predicate will be removed
-                from scanned data. Default is no filtering.
-                Each tuple has format: (`key`, `op`, `value`) and compares the
-                key with the value. The supported op are: `=` or `==`, `!=`, 
-                `<`, `>`, `<=`, `>=`, `in`, `!in` (not in)  and `like`. If the
-                 `op` is `in` or `!in`, the `value` must be a collection such
-                as a _list_, a _set_ or a _tuple_.
-                `like` performs similar to the SQL operator `%` is a
+                Rows which do not match the filter predicate will be removed from
+                scanned data. Default is no filtering.
+                Each tuple has format: (`key`, `op`, `value`) and compares the key with
+                the value. The supported op are: `=` or `==`, `!=`,  `<`, `>`, `<=`,
+                `>=`, `in`, `!in` (not in), `contains` and `!contains` (doesn't 
+                contain) and `like`. If the `op` is `in` or `!in`, the `value` must be
+                a _list_. `like` performs similar to the SQL operator `%` is a
                 multicharacter wildcard and `_` is a single character wildcard.
-                If a field is indexed, it will be used only for '==' and
+                If a field is indexed, it will be used only for '==' and 'in' and
                 'contains' operations.
             inner_reader: BaseReader (optional):
-                The reader class to perform the data access Operators, the
-                default is GoogleCloudStorageReader
+                The reader class to perform the data access Operators, the default is
+                GoogleCloudStorageReader
             row_format: string (optional):
                 Controls how the data is interpretted. 'json' will parse to a
-                dictionary before _select_ or _where_ is applied, 'text' will
-                just return the line that has been read, 'block' will return
-                the content of a file as a record. the default is 'json'.
+                dictionary before _select_ or _where_ is applied, 'text' will just
+                return the line that has been read, 'block' will return the content of
+                a file as a record. the default is 'json'.
             start_date: datetime (optional):
                 The starting date of the range to read over - if used with
                 _date_range_, this value will be preferred, default is today
             end_date: datetime (optional):
-                The end date of the range to read over - if used with
-                _date_range_, this value will be preferred, default is today
+                The end date of the range to read over - if used with _date_range_,
+                this value will be preferred, default is today
             thread_count: integer (optional):
                 **BETA**
-                Use multiple threads to read data files, the default is to not
-                use additional threads, the maximum number of threads is 8
+                Use multiple threads to read data files, the default is to not use
+                additional threads, the maximum number of threads is 8
             step_back_days: integer (optional):
-                The number of days to look back if data for the current date is
-                not available.
+                The number of days to look back if data for the current date is not
+                available.
             fork_processes: boolean (alpha):
                 **ALPHA**
                 Create parallel processes to read data files
@@ -183,7 +177,7 @@ class Reader():
         get_logger().debug(json.serialize(arg_dict))
 
         # number of days to walk backwards to find records
-        self.step_back_days = int(kwargs.get('step_back_days', 0))
+        self.step_back_days = int(kwargs.get('step_back_days', -1))
         if self.step_back_days > 0 and self.reader_class.start_date != self.reader_class.end_date:  # pragma: no cover
             raise InvalidCombinationError("step_back_days can only be used when the start and end dates are the same")
 
@@ -207,7 +201,6 @@ class Reader():
         # time travel
         self.as_at = kwargs.get('as_at')
 
-        
     """
     Iterable
 
