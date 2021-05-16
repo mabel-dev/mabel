@@ -14,6 +14,7 @@ There is no server component, **mabel** just runs when you need it, where you wa
 [![mabel](https://snyk.io/advisor/python/mabel/badge.svg)](https://snyk.io/advisor/python/mabel)
 [![deepcode](https://www.deepcode.ai/api/gh/badge?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybTEiOiJnaCIsIm93bmVyMSI6Impvb2NlciIsInJlcG8xIjoibWFiZWwiLCJpbmNsdWRlTGludCI6ZmFsc2UsImF1dGhvcklkIjoyNTcxMiwiaWF0IjoxNjE5MjUyNzkxfQ.UtjaLJQjVxoQjesfMXuQ-tnbvJBUEzMUSJAC_neucek)](https://www.deepcode.ai/app/gh/joocer/mabel/_/dashboard?utm_content=gh%2Fjoocer%2Fmabel)
 [![Downloads](https://pepy.tech/badge/mabel)](https://pepy.tech/project/mabel)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 
 **Documentation** [GitHub Wiki](https://github.com/mabel-dev/mabel/wiki)  

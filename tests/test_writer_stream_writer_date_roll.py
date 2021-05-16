@@ -2,7 +2,8 @@ import time
 import os
 import sys
 import datetime
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
+
+sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.adapters.null import NullWriter
 from mabel.data import StreamWriter
 from rich import traceback
@@ -15,9 +16,10 @@ def test_stream_rollover():
 
     # none of these should do anything
     w = StreamWriter(
-            dataset='bucket/path/file.extension',
-            inner_writer=NullWriter,
-            idle_timeout_seconds=1)
+        dataset="bucket/path/file.extension",
+        inner_writer=NullWriter,
+        idle_timeout_seconds=1,
+    )
 
     with freeze_time("2012-01-14"):
         lines = w.append("It's 2012")
@@ -32,7 +34,8 @@ def test_stream_rollover():
 
     time.sleep(2)
 
+
 if __name__ == "__main__":  # pragma: no cover
     test_stream_rollover()
 
-    print('okay')
+    print("okay")

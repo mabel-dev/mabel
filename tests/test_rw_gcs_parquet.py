@@ -2,7 +2,8 @@ import string
 import shutil
 import os
 import sys
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
+
+sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.adapters.google import GoogleCloudStorageWriter, GoogleCloudStorageReader
 from mabel.data import BatchWriter
 from mabel.data import Reader
@@ -19,13 +20,14 @@ traceback.install()
 CHARACTERS = string.ascii_lowercase + string.digits
 BUCKET_NAME = entropy.random_string(length=8)
 
+
 def set_up():
 
-    shutil.rmtree('.cloudstorage', ignore_errors=True)
-    
+    shutil.rmtree(".cloudstorage", ignore_errors=True)
+
     server = create_server(host="localhost", port=9090, in_memory=False)
     server.start()
-    os.environ['STORAGE_EMULATOR_HOST'] = 'http://localhost:9090'
+    os.environ["STORAGE_EMULATOR_HOST"] = "http://localhost:9090"
 
     client = storage.Client(
         credentials=AnonymousCredentials(),
@@ -47,23 +49,24 @@ def test_gcs_parquet():
         server = set_up()
 
         w = BatchWriter(
-                inner_writer=GoogleCloudStorageWriter,
-                project='testing',
-                partition_size=1024,
-                dataset=F'{BUCKET_NAME}/test/gcs/dataset',
-                format='parquet')
+            inner_writer=GoogleCloudStorageWriter,
+            project="testing",
+            partition_size=1024,
+            dataset=f"{BUCKET_NAME}/test/gcs/dataset",
+            format="parquet",
+        )
         for i in range(100):
-            w.append({"$$":i*300})
+            w.append({"$$": i * 300})
         w.finalize()
 
         # read the files we've just written, we should be able to
         # read over both paritions.
         r = Reader(
             inner_reader=GoogleCloudStorageReader,
-            project='testing',
-            dataset=F'{BUCKET_NAME}/test/gcs/dataset',
-            row_format='pass-thru',
-            extension='.parquet'
+            project="testing",
+            dataset=f"{BUCKET_NAME}/test/gcs/dataset",
+            row_format="pass-thru",
+            extension=".parquet",
         )
         l = list(r)
 
@@ -77,4 +80,4 @@ def test_gcs_parquet():
 if __name__ == "__main__":  # pragma: no cover
     test_gcs_parquet()
 
-    print('okay')
+    print("okay")

@@ -1,10 +1,9 @@
-
-
-class Mock():
-
-    def __init__(self, 
-            response_dict: dict = {},
-            attributes: list = []):
+class Mock:
+    def __init__(
+        self,
+        response_dict: dict = {},
+        attributes: list = [],
+    ):
         """
         Generic Mock Class
 
@@ -23,7 +22,7 @@ class Mock():
         self.attributes = attributes
 
     def __getattr__(self, attr):
-        print(F"\nMocked Object Method Called: {attr}")
+        print(f"\nMocked Object Method Called: {attr}")
 
         if attr in self.attributes:
             return self.response_dict.get(attr, attr)
@@ -32,7 +31,10 @@ class Mock():
             if len(args) > 0:
                 print("arguments:", ", ".join([repr(a) for a in args]))
             if len(kwargs) > 0:
-                print("keyword arguments:", ", ".join([f"{k}={v!r}" for k, v in kwargs.items()]))
+                print(
+                    "keyword arguments:",
+                    ", ".join([f"{k}={v!r}" for k, v in kwargs.items()]),
+                )
 
             return self.response_dict.get(attr, attr)
 

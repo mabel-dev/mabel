@@ -6,7 +6,8 @@ mathematical Operator (>).
 import pytest
 import os
 import sys
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
+
+sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.logging import get_logger
 from mabel.operators import FilterOperator, EndOperator, NoOpOperator
 from mabel.flows import Flow
@@ -25,9 +26,9 @@ def test_flow_builder_valid():
     flow = f > n > e
 
     assert isinstance(flow, Flow)
-    assert F"EndOperator-{id(e)}" in flow.nodes.keys()
-    assert F"FilterOperator-{id(f)}" in flow.nodes.keys()
-    assert F"NoOpOperator-{id(n)}" in flow.nodes.keys()
+    assert f"EndOperator-{id(e)}" in flow.nodes.keys()
+    assert f"FilterOperator-{id(f)}" in flow.nodes.keys()
+    assert f"NoOpOperator-{id(n)}" in flow.nodes.keys()
     assert len(flow.edges) == 2
 
 
@@ -35,7 +36,7 @@ def test_flow_builder_invalid_uninstantiated():
     """
     Test the flow builder doesn't succeed with an invalid Operator
     """
-    e = EndOperator      # <- this should fail as it's not initialized
+    e = EndOperator  # <- this should fail as it's not initialized
     n = NoOpOperator()
 
     with pytest.raises(TypeError):
@@ -46,7 +47,7 @@ def test_flow_builder_invalid_wrong_type():
     """
     Test the flow builder doesn't succeed with an invalid Operator
     """
-    e = get_logger()      # <- this should fail as it's not an Operator
+    e = get_logger()  # <- this should fail as it's not an Operator
     n = NoOpOperator()
 
     with pytest.raises(TypeError):
@@ -57,10 +58,22 @@ class TestOperator(NoOpOperator):
     def execute(self, data={}, context={}):
         return data, context
 
-class OperatorA(TestOperator): pass
-class OperatorB(TestOperator): pass
-class OperatorC(TestOperator): pass
-class OperatorD(TestOperator): pass
+
+class OperatorA(TestOperator):
+    pass
+
+
+class OperatorB(TestOperator):
+    pass
+
+
+class OperatorC(TestOperator):
+    pass
+
+
+class OperatorD(TestOperator):
+    pass
+
 
 def test_branching():
     z = EndOperator()
@@ -70,19 +83,24 @@ def test_branching():
     d = OperatorD()
 
     flow = a > [b > z, c > d > z]
-    
+
     RESULTS = {
-        'OperatorA': ['OperatorB', 'OperatorC'],
-        'OperatorB': ['EndOperator'],
-        'OperatorC': ['OperatorD'],
-        'OperatorD': ['EndOperator']
+        "OperatorA": ["OperatorB", "OperatorC"],
+        "OperatorB": ["EndOperator"],
+        "OperatorC": ["OperatorD"],
+        "OperatorD": ["EndOperator"],
     }
 
     for source, target in RESULTS.items():
-        assert sorted([t.split('-')[0] for s, t in flow.edges if str(s).startswith(source)]) == target
+        assert (
+            sorted(
+                [t.split("-")[0] for s, t in flow.edges if str(s).startswith(source)]
+            )
+            == target
+        )
 
     with flow as runner:
-        runner('>', {})
+        runner(">", {})
 
 
 def test_context_manager():
@@ -93,18 +111,23 @@ def test_context_manager():
     d = OperatorD()
 
     flow = a > [b > z, c > d > z]
-    
+
     RESULTS = {
-        'OperatorA': ['OperatorB', 'OperatorC'],
-        'OperatorB': ['EndOperator'],
-        'OperatorC': ['OperatorD'],
-        'OperatorD': ['EndOperator']
+        "OperatorA": ["OperatorB", "OperatorC"],
+        "OperatorB": ["EndOperator"],
+        "OperatorC": ["OperatorD"],
+        "OperatorD": ["EndOperator"],
     }
 
     for source, target in RESULTS.items():
-        assert sorted([t.split('-')[0] for s, t in flow.edges if str(s).startswith(source)]) == target
+        assert (
+            sorted(
+                [t.split("-")[0] for s, t in flow.edges if str(s).startswith(source)]
+            )
+            == target
+        )
 
-    payloads = ['a','b','c','d','e']
+    payloads = ["a", "b", "c", "d", "e"]
     with flow as runner:
         for payload in payloads:
             runner(payload, {})
@@ -118,4 +141,4 @@ if __name__ == "__main__":  # pragma: no cover
     test_branching()
     test_context_manager()
 
-    print('okay')
+    print("okay")

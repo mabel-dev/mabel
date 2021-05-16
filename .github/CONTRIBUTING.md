@@ -14,14 +14,11 @@ submitted, these tests should pass.
 For consistent style, code should look like:
 
 - Imports on separate lines (`imports` then `froms`)
-- Four space tabs
 - Variables should be in `snake_case`
 - Classes should be in `PascalCase`
 - Constants should be in `UPPER_CASE`
 - Methods with docstrings
-- Style informed by PEP8 (with a relaxed view on line lengths)
-- defs or calls with many parameters have them on different lines
-- Type hints
+- Black formatted
 - Self-explanatory method, class and variable names
 
 

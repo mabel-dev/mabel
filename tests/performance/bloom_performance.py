@@ -1,20 +1,24 @@
 import time
 import os
 import sys
-sys.path.insert(1, os.path.join(sys.path[0], '../..'))
+
+sys.path.insert(1, os.path.join(sys.path[0], "../.."))
 from mabel.index.bloom_filter import BloomFilter
 from mabel.data.formats.dictset import drop_duplicates
 from mabel.utils import entropy
+
 try:
     from rich import traceback
+
     traceback.install()
 except ImportError:
     pass
 
 word_list = []
-with open('tests/data/word_list.txt') as words:
+with open("tests/data/word_list.txt") as words:
     for word in words:
         word_list.append(word.rstrip())
+
 
 def dedupe():
     values = []
@@ -22,7 +26,7 @@ def dedupe():
         values.append(entropy.random_choice(word_list))
     start = time.time_ns()
     for i in range(20):
-        [v for v in drop_duplicates(values,2000)]
+        [v for v in drop_duplicates(values, 2000)]
     print((time.time_ns() - start) / 1e9)
 
 
@@ -50,10 +54,4 @@ if __name__ == "__main__":
     dedupe()
     filt()
 
-    print('okay')
-
-
-
-
-
-
+    print("okay")

@@ -19,21 +19,22 @@ def time_it(dataset, username):
         inner_reader=DiskReader,
         dataset=dataset,
         raw_path=True,
-        filters=('user_name', '==', username)
+        filters=("user_name", "==", username),
     )
     res = [r for r in reader]
     print(res)
     return (time.perf_counter_ns() - start) / 1e9
 
 
-import os,sys
-sys.path.insert(1, os.path.join(sys.path[0], '../..'))
+import os, sys
+
+sys.path.insert(1, os.path.join(sys.path[0], "../.."))
 from mabel.data import Reader
 from mabel.adapters.disk import DiskReader
 
-os.environ['REDIS_HOST'] = ""
+os.environ["REDIS_HOST"] = ""
 
 user_name = "Verizon Support"
 
-print('indexed\t:', time_it("tests/data/index/is", user_name))
-print('not indexed\t:', time_it("tests/data/index/not", user_name))
+print("indexed\t:", time_it("tests/data/index/is", user_name))
+print("not indexed\t:", time_it("tests/data/index/not", user_name))

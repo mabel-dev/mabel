@@ -7,53 +7,73 @@ import datetime
 import sys
 import os
 import pathlib
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
+
+sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.utils import paths
 from rich import traceback
 
 traceback.install()
 
 
-
 def test_blob_paths_get_paths():
 
     # ignore the filename
-    bucket, path, name, ext = paths.get_parts("bucket/parent_folder/sub_folder/filename.ext")
-    assert bucket == 'bucket'
-    assert name == 'filename'
-    assert ext == '.ext'
-    assert path == str(pathlib.PurePosixPath('parent_folder') / 'sub_folder') + '/', path
+    bucket, path, name, ext = paths.get_parts(
+        "bucket/parent_folder/sub_folder/filename.ext"
+    )
+    assert bucket == "bucket"
+    assert name == "filename"
+    assert ext == ".ext"
+    assert (
+        path == str(pathlib.PurePosixPath("parent_folder") / "sub_folder") + "/"
+    ), path
 
     # with a / at the end
     bucket, path, name, ext = paths.get_parts("bucket/parent_folder/sub_folder/")
-    assert bucket == 'bucket'
+    assert bucket == "bucket"
     assert name is None
     assert ext is None
-    assert path == str(pathlib.PurePosixPath('parent_folder') / 'sub_folder') + '/', path
+    assert (
+        path == str(pathlib.PurePosixPath("parent_folder") / "sub_folder") + "/"
+    ), path
 
     # without a / at the end
     bucket, path, name, ext = paths.get_parts("bucket/parent_folder/sub_folder")
-    assert bucket == 'bucket'
+    assert bucket == "bucket"
     assert name is None
     assert ext is None
-    assert path == str(pathlib.PurePosixPath('parent_folder') / 'sub_folder') + '/', path
+    assert (
+        path == str(pathlib.PurePosixPath("parent_folder") / "sub_folder") + "/"
+    ), path
 
 
 def test_blob_paths_builder():
 
     # without trailing /, the / should be added
-    template = '%datefolders/%date'
+    template = "%datefolders/%date"
     path = paths.build_path(template, datetime.datetime(2000, 9, 19, 1, 36, 42, 365))
-    assert path == str(pathlib.PurePosixPath("year_2000") / "month_09" / "day_19" / "2000-09-19") + '/'
+    assert (
+        path
+        == str(
+            pathlib.PurePosixPath("year_2000") / "month_09" / "day_19" / "2000-09-19"
+        )
+        + "/"
+    )
 
     # with trailing /, the / should be retained
-    template = '{datefolders}/{date}/'
+    template = "{datefolders}/{date}/"
     path = paths.build_path(template, datetime.datetime(2000, 9, 19, 1, 36, 42, 365))
-    assert path == str(pathlib.PurePosixPath("year_2000") / "month_09" / "day_19" / "2000-09-19") + '/'
+    assert (
+        path
+        == str(
+            pathlib.PurePosixPath("year_2000") / "month_09" / "day_19" / "2000-09-19"
+        )
+        + "/"
+    )
 
 
 if __name__ == "__main__":  # pragma: no cover
     test_blob_paths_get_paths()
     test_blob_paths_builder()
 
-    print('okay')
+    print("okay")

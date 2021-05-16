@@ -14,25 +14,28 @@ from avro.io import DatumReader, DatumWriter
 import datetime
 import os
 import sys
-sys.path.insert(1, os.path.join(sys.path[0], '../..'))
+
+sys.path.insert(1, os.path.join(sys.path[0], "../.."))
 from mabel.data.readers import Reader, FileReader
 from mabel.data.formats import dictset
+
 try:
     from rich import traceback
+
     traceback.install()
-except ImportError:   # pragma: no cover
+except ImportError:  # pragma: no cover
     pass
 
-#schema = avro.schema.parse(open("twitter.avsc").read())
-#writer = DataFileWriter(open("twitter.avro", "wb"), DatumWriter(), schema)
+# schema = avro.schema.parse(open("twitter.avsc").read())
+# writer = DataFileWriter(open("twitter.avro", "wb"), DatumWriter(), schema)
 
-#for record in dictset.limit(reader, 100000):
+# for record in dictset.limit(reader, 100000):
 #    writer.append(record)
 
-#writer.close()
+# writer.close()
 
-#import json
-#with open('twitter2.jsonl', 'w', encoding='utf8') as j:
+# import json
+# with open('twitter2.jsonl', 'w', encoding='utf8') as j:
 #    reader = DataFileReader(open("twitter.avro", "rb"), DatumReader())
 #    for tweet in reader:
 #        j.write(json.dumps(tweet) + '\n')
@@ -43,12 +46,12 @@ except ImportError:   # pragma: no cover
 from timer import Timer
 
 reader = DataFileReader(open("twitter.avro", "rb"), DatumReader())
-with Timer('avro'):
-    print(len(list(dictset.select_from(reader, where=lambda t: 'trump' in t['text']))))
+with Timer("avro"):
+    print(len(list(dictset.select_from(reader, where=lambda t: "trump" in t["text"]))))
 reader.close
 
-reader = FileReader(dataset='./twitter.jsonl').read_from_source('twitter.jsonl')
-with Timer('jsonl'):
+reader = FileReader(dataset="./twitter.jsonl").read_from_source("twitter.jsonl")
+with Timer("jsonl"):
     reader = dictset.jsonify(reader)
-    print(len(list(dictset.select_from(reader, where=lambda t: 'trump' in t['text']))))
+    print(len(list(dictset.select_from(reader, where=lambda t: "trump" in t["text"]))))
 reader.close

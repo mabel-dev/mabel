@@ -1,6 +1,7 @@
 import os
 import sys
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
+
+sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.operators import ProfileDataOperator, EndOperator
 from mabel.operators.disk import DiskBatchWriterOperator
 from mabel.operators.minio import MinIoBatchWriterOperator
@@ -12,7 +13,7 @@ traceback.install()
 
 
 def test_saving_the_profile():
-
+    # fmt: off
     TEST_DATA = [
         { "name": "Sirius Black", "age": 40, "dob": "1970-01-02", "gender": "male" },
         { "name": "Harry Potter", "age": 11, "dob": "1999-07-30", "gender": "male" },
@@ -29,15 +30,16 @@ def test_saving_the_profile():
             { "name": "name",    "type": "string"  }
         ]
     }
+    # fmt: on
 
-    pdo = ProfileDataOperator(
-            schema=Schema(TEST_SCHEMA))
+    pdo = ProfileDataOperator(schema=Schema(TEST_SCHEMA))
     std = DiskBatchWriterOperator(
-            end_point=os.getenv('MINIO_END_POINT'),
-            access_key=os.getenv('MINIO_ACCESS_KEY'),
-            secret_key=os.getenv('MINIO_SECRET_KEY'),
-            secure=False,
-            dataset='_temp/profile')
+        end_point=os.getenv("MINIO_END_POINT"),
+        access_key=os.getenv("MINIO_ACCESS_KEY"),
+        secret_key=os.getenv("MINIO_SECRET_KEY"),
+        secure=False,
+        dataset="_temp/profile",
+    )
     end = EndOperator()
 
     flow = pdo > std > end
@@ -49,4 +51,4 @@ def test_saving_the_profile():
 
 if __name__ == "__main__":  # pragma: no cover
     test_saving_the_profile()
-    print('okay')
+    print("okay")

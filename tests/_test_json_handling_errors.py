@@ -10,15 +10,15 @@ automatically run.
 import os
 import sys
 
-import hashlib  
+import hashlib
 import typing
 import ujson
 import datetime
 
 base = sys.path[0]
 sys.path.clear()
-sys.path.insert(1, os.path.join(base, '..'))
-sys.path.insert(1, os.path.join(base, '../..'))
+sys.path.insert(1, os.path.join(base, ".."))
+sys.path.insert(1, os.path.join(base, "../.."))
 from mabel.data.formats.json import parse, serialize
 from rich import traceback
 
@@ -27,9 +27,9 @@ traceback.install()
 will_normally_fail = {
     "string": "string",
     "number": 100,
-    "date": datetime.date(2015,6,1),
-    "datetime": datetime.datetime(1979,9,10,23,13),
-    "list": ["item"]
+    "date": datetime.date(2015, 6, 1),
+    "datetime": datetime.datetime(1979, 9, 10, 23, 13),
+    "list": ["item"],
 }
 
 
@@ -49,4 +49,4 @@ def test_json_serializing():
 if __name__ == "__main__":  # pragma: no cover
     test_json_serializing()
 
-    print('okay')
+    print("okay")
