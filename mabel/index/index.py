@@ -11,8 +11,8 @@ STRUCT_DEF = "I H H"  # 4 byte unsigned int, 2 byte unsigned int, 2 byte unsigne
 RECORD_SIZE = struct.calcsize(STRUCT_DEF)  # this should be 8
 
 """
-There are overlapping terms because we're traversing a dataset so we can
-traverse a dataset. 
+There are overlapping terms because we're traversing a dataset so we can traverse a
+dataset. 
 
 Terminology:
     Entry     : a record in the Index
@@ -25,9 +25,8 @@ Terminology:
 def safe_field_name(field_name):
     """strip all the non-alphanums from a field name"""
     import re
-
-    pattern = re.compile("[\W_]+")
-    return pattern.sub("", field_name)
+    pattern = re.compile('[^a-zA-Z0-9]+')
+    return pattern.sub('', field_name)
 
 
 class IndexEntry:
@@ -147,8 +146,8 @@ class Index:
 
     def search(self, search_term) -> Iterable:
         """
-        Search the index for a value. Returns a list of row numbers, if the
-        value is not found, the list is empty.
+        Search the index for a value. Returns a list of row numbers, if the value is
+        not found, the list is empty.
         """
         if not isinstance(search_term, (list, set, tuple)):
             search_term = [search_term]
