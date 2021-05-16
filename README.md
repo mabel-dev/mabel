@@ -4,15 +4,15 @@
 
 There is no server component, **mabel** just runs when you need it, where you want it.
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/joocer/mabel/blob/master/LICENSE)
-[![Regression Suite](https://github.com/joocer/mabel/actions/workflows/regression_suite.yaml/badge.svg)](https://github.com/joocer/mabel/actions/workflows/regression_suite.yaml)
-[![codecov](https://codecov.io/gh/joocer/mabel/branch/main/graph/badge.svg?token=CYD6E4PPKR)](https://codecov.io/gh/joocer/mabel)
-[![Static Analysis](https://github.com/joocer/mabel/actions/workflows/static_analysis.yml/badge.svg)](https://github.com/joocer/mabel/actions/workflows/static_analysis.yml)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/mabel-dev/mabel/blob/master/LICENSE)
+[![Regression Suite](https://github.com/mabel-dev/mabel/actions/workflows/regression_suite.yaml/badge.svg)](https://github.com/mabel-dev/mabel/actions/workflows/regression_suite.yaml)
+[![codecov](https://codecov.io/gh/mabel-dev/mabel/branch/main/graph/badge.svg?token=CYD6E4PPKR)](https://codecov.io/gh/mabl-dev/mabel)
+[![Static Analysis](https://github.com/mabel-dev/mabel/actions/workflows/static_analysis.yml/badge.svg)](https://github.com/mabel-dev/mabel/actions/workflows/static_analysis.yml)
 [![PyPI Latest Release](https://img.shields.io/pypi/v/mabel.svg)](https://pypi.org/project/mabel/)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=joocer_mabel&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=joocer_mabel)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=joocer_mabel&metric=security_rating)](https://sonarcloud.io/dashboard?id=joocer_mabel)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=mabel-dev_mabel&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=mabel-dev_mabel)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=mabel-dev_mabel&metric=security_rating)](https://sonarcloud.io/dashboard?id=mabel-dev_mabel)
 [![mabel](https://snyk.io/advisor/python/mabel/badge.svg)](https://snyk.io/advisor/python/mabel)
-[![deepcode](https://www.deepcode.ai/api/gh/badge?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybTEiOiJnaCIsIm93bmVyMSI6Impvb2NlciIsInJlcG8xIjoibWFiZWwiLCJpbmNsdWRlTGludCI6ZmFsc2UsImF1dGhvcklkIjoyNTcxMiwiaWF0IjoxNjE5MjUyNzkxfQ.UtjaLJQjVxoQjesfMXuQ-tnbvJBUEzMUSJAC_neucek)](https://www.deepcode.ai/app/gh/joocer/mabel/_/dashboard?utm_content=gh%2Fjoocer%2Fmabel)
+[![deepcode](https://www.deepcode.ai/api/gh/badge?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybTEiOiJnaCIsIm93bmVyMSI6Impvb2NlciIsInJlcG8xIjoibWFiZWwiLCJpbmNsdWRlTGludCI6ZmFsc2UsImF1dGhvcklkIjoyNTcxMiwiaWF0IjoxNjE5MjUyNzkxfQ.UtjaLJQjVxoQjesfMXuQ-tnbvJBUEzMUSJAC_neucek)](https://www.deepcode.ai/app/gh/mabel-dev/mabel/_/dashboard?utm_content=gh%2Fmabel-dev%2Fmabel)
 [![Downloads](https://pepy.tech/badge/mabel)](https://pepy.tech/project/mabel)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
