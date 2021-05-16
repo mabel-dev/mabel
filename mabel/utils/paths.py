@@ -19,8 +19,8 @@ def get_parts(path_string: str):
         suffix = None
     elif path.suffix == "":
         parts = (
-            pathlib.PurePosixPath("/".join(path.parts[1:-1])) / path.stem
-        )  # type:ignore
+            pathlib.PurePosixPath("/".join(path.parts[1:-1])) / path.stem  # type:ignore
+        )
         stem = None
         suffix = None
     else:
