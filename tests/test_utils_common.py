@@ -3,7 +3,8 @@
 """
 import os
 import sys
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
+
+sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.utils.common import date_range
 import datetime
 from rich import traceback
@@ -23,4 +24,4 @@ def test_date_range():
 if __name__ == "__main__":  # pragma: no cover
     test_date_range()
 
-    print('okay')
+    print("okay")

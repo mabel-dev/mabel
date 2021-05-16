@@ -1,11 +1,13 @@
 import sys
 import os
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
+
+sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.index.index import Index, IndexBuilder
 from rich import traceback
 
 traceback.install()
 
+# fmt: off
 THE_LIST = [
         {"number": "1", "description": "Stole ten dollars from a guy at the Camden Market"},
         {"number": "2", "description": "Took money from car coin holder"},
@@ -168,14 +170,16 @@ COMPOUNDS = [
         {"name":"methane", "elements":["carbon","hyrogen"]},
         {"name":"ethanol", "elements":["carbon","hydrogen","oxygen"]}
 ]
+# fmt: on
+
 
 def test_data_index():
 
     idx = Index.build_index(THE_LIST, "description")
 
     for loc, entry in enumerate(THE_LIST):
-        rows = idx.search(entry['description'])
-        assert loc in rows, entry['description']
+        rows = idx.search(entry["description"])
+        assert loc in rows, entry["description"]
 
 
 def test_complex_indexes():
@@ -188,11 +192,11 @@ def test_complex_indexes():
     sodas = idx.search("sodium")
     assert len(sodas) == 2, sodas
     for row in sodas:
-        assert "sodium" in COMPOUNDS[row]['elements']
+        assert "sodium" in COMPOUNDS[row]["elements"]
 
 
 if __name__ == "__main__":  # pragma: no cover
     test_data_index()
     test_complex_indexes()
 
-    print('okay')
+    print("okay")

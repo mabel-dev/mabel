@@ -4,7 +4,8 @@ We test that the trace method and decorators raise no errors.
 """
 import os
 import sys
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
+
+sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.logging import LEVELS, get_logger, set_log_name
 from rich import traceback
 
@@ -16,30 +17,30 @@ set_log_name(LOG_NAME)
 
 def test_new_log_levels(caplog):
     """
-    caplog is a feature of pytest that allows logs to be captured and 
+    caplog is a feature of pytest that allows logs to be captured and
     inspected.
 
     It is passed to a test function and has an attribute .record_tuples which
-    is a stack of logging messages. To read the last item, pop it off the 
+    is a stack of logging messages. To read the last item, pop it off the
     stack. It is in the form of:
 
     log name, log level, log message
     """
     if caplog is None:  # pragma: no cover
-        print('unable to test logging interactively - use pytest')
+        print("unable to test logging interactively - use pytest")
         return
 
     logger = get_logger()
 
     logger.audit("this is a sample audit")
     res = caplog.record_tuples.pop()
-    assert res  == (LOG_NAME, LEVELS.AUDIT, "this is a sample audit"), res
+    assert res == (LOG_NAME, LEVELS.AUDIT, "this is a sample audit"), res
 
     logger.alert("this is a sample alert")
     res = caplog.record_tuples.pop()
     assert res == (LOG_NAME, LEVELS.ALERT, "this is a sample alert"), res
 
-  
+
 def test_smoke_test():
     """
     This is just a smoke test, it exercises most of the logging functionality
@@ -53,6 +54,7 @@ def test_smoke_test():
     logger.alert("alert")
     logger.audit("audit")
 
+
 def test_log_sanitizer():
     """
     caplog records the message before the formatter so can't be used to
@@ -64,9 +66,9 @@ def test_log_sanitizer():
     logger = get_logger()
     logger.audit({"password": "top secret 1"})
     logger.audit('{"password": "top secret 2"}')
-    logger.audit('password:topsecret3')
-    logger.audit(['password', 'top secret 4'])
-    logger.debug({"alpha":"`1`","beta":"`2`","gamma":"'3'","delta":"'4'"})
+    logger.audit("password:topsecret3")
+    logger.audit(["password", "top secret 4"])
+    logger.debug({"alpha": "`1`", "beta": "`2`", "gamma": "'3'", "delta": "'4'"})
     logger.debug("{'action':'list','limit':'1000'")
 
 

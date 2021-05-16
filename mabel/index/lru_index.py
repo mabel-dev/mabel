@@ -12,9 +12,10 @@ This relies on dictionaries being ordered.
 """
 from typing import Any, List
 
+
 class LruIndex(object):
 
-    __slots__ = ('hash_list', 'size')
+    __slots__ = ("hash_list", "size")
 
     def __init__(self, size: int = 1000):
         self.hash_list: dict = {}
@@ -33,7 +34,7 @@ class LruIndex(object):
         if len(hash_list) == self.size:
             # we want to remove the first item in the dict
             # we could convert to a list, but then we need
-            # to create a list, this is much faster and 
+            # to create a list, this is much faster and
             # uses less memory
             # deepcode ignore unguarded~next~call: will not error
             hash_list.pop(next(iter(hash_list)))

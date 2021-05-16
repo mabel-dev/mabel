@@ -25,6 +25,7 @@ def zstd_reader(stream, rows, all_rows):
             if all_rows or index in rows:
                 yield row
 
+
 def lzma_reader(stream, rows, all_rows):
     """
     Read LZMA compressed files
@@ -35,6 +36,7 @@ def lzma_reader(stream, rows, all_rows):
         for index, row in enumerate(file):
             if all_rows or index in rows:
                 yield row
+
 
 def parquet_reader(stream, rows, all_rows):
     """
@@ -50,6 +52,7 @@ def parquet_reader(stream, rows, all_rows):
         for index in range(len(batch)):
             if all_rows or index in rows:
                 yield json.serialize({k:v[index] for k,v in dict_batch.items()})  # type:ignore
+
 
 def text_reader(stream, rows, all_rows):
     """

@@ -7,6 +7,7 @@ from: https://stackoverflow.com/a/35804945
 import logging
 import json
 
+
 def add_logging_level(level_name, level_num, method_name=None):
     """
     Comprehensively adds a new logging level to the `logging` module and the
@@ -20,7 +21,7 @@ def add_logging_level(level_name, level_num, method_name=None):
 
     To avoid accidental clobberings of existing attributes, this method will
     raise an `AttributeError` if the level name is already an attribute of the
-    `logging` module or if the method name is already present 
+    `logging` module or if the method name is already present
 
     Example:
         addLoggingLevel('TRACE', logging.DEBUG - 5)
@@ -42,6 +43,7 @@ def add_logging_level(level_name, level_num, method_name=None):
             message = json.dumps(message)
         if self.isEnabledFor(level_num):
             self._log(level_num, message, args, **kwargs)
+
     def log_to_root(message, *args, **kwargs):
         logging.log(level_num, message, *args, **kwargs)
 

@@ -23,8 +23,8 @@ from typing import Any, Union
 
 
 def random_string(
-        length: int = 64,
-        characters: str = string.ascii_letters + string.digits) -> str:
+    length: int = 64, characters: str = string.ascii_letters + string.digits
+) -> str:
     result_str = "".join(random_choice(characters) for _ in range(length))
     return result_str
 
@@ -44,7 +44,7 @@ def random_range(min: int, max: int) -> int:
 
 
 def bytes_to_int(xbytes: bytes) -> int:
-    return int.from_bytes(xbytes, 'big')
+    return int.from_bytes(xbytes, "big")
 
 
 def random_choice(options: Union[list, str]) -> Any:

@@ -1,19 +1,23 @@
 import time
 import os
 import sys
-sys.path.insert(1, os.path.join(sys.path[0], '../..'))
+
+sys.path.insert(1, os.path.join(sys.path[0], "../.."))
 from mabel.index.lru_index import LruIndex
 from mabel.utils import entropy
+
 try:
     from rich import traceback
+
     traceback.install()
 except ImportError:
     pass
 
 word_list = []
-with open('tests/data/word_list.txt') as words:
+with open("tests/data/word_list.txt") as words:
     for word in words:
         word_list.append(word.rstrip())
+
 
 def lru_performance():
 
@@ -35,10 +39,4 @@ def lru_performance():
 if __name__ == "__main__":
     lru_performance()
 
-    print('okay')
-
-
-
-
-
-
+    print("okay")

@@ -17,10 +17,12 @@ import lzma
 import zstandard
 import statistics
 import sys
-sys.path.insert(1, os.path.join(sys.path[0], '../..'))
+
+sys.path.insert(1, os.path.join(sys.path[0], "../.."))
 from mabel.data.formats import dictset
 
-def read_file_clear(filename='', chunk_size=32*1024*1024, delimiter="\n"):
+
+def read_file_clear(filename="", chunk_size=32 * 1024 * 1024, delimiter="\n"):
     with open(filename, "r", encoding="utf8") as f:
         carry_forward = ""
         chunk = "INITIALIZED"
@@ -33,35 +35,41 @@ def read_file_clear(filename='', chunk_size=32*1024*1024, delimiter="\n"):
         if carry_forward:
             yield carry_forward
 
-def read_file_lzma(filename=''):
-    with lzma.open(filename, 'r') as f:  # type: ignore
+
+def read_file_lzma(filename=""):
+    with lzma.open(filename, "r") as f:  # type: ignore
         yield from f
 
-def read_file_zstandard(filename=''):
-    with zstandard.open(filename, 'r') as f:  # type: ignore
+
+def read_file_zstandard(filename=""):
+    with zstandard.open(filename, "r") as f:  # type: ignore
         yield from f
 
-def write_file_clear(filename='', content=[]):
-    with open(filename, 'w') as f:
-        for row in content:
-            f.write(row + '/n')
-    return []
 
-def write_file_lzma(filename='', content=[]):
-    with lzma.open(filename, 'w') as f:
+def write_file_clear(filename="", content=[]):
+    with open(filename, "w") as f:
         for row in content:
-            f.write(row.encode() + b'/n')
-    return []
-
-def write_file_zstandard(filename='', content=[]):
-    with zstandard.open(filename, 'w') as f:
-        for row in content:
-            f.write(row + '/n')
+            f.write(row + "/n")
     return []
 
 
-lines = list(read_file_clear('tests/data/formats/jsonl/tweets.jsonl'))
-os.makedirs('_temp', exist_ok=True)
+def write_file_lzma(filename="", content=[]):
+    with lzma.open(filename, "w") as f:
+        for row in content:
+            f.write(row.encode() + b"/n")
+    return []
+
+
+def write_file_zstandard(filename="", content=[]):
+    with zstandard.open(filename, "w") as f:
+        for row in content:
+            f.write(row + "/n")
+    return []
+
+
+lines = list(read_file_clear("tests/data/formats/jsonl/tweets.jsonl"))
+os.makedirs("_temp", exist_ok=True)
+
 
 def execute_test(func, **kwargs):
     runs = []
@@ -70,40 +78,42 @@ def execute_test(func, **kwargs):
         start = time.perf_counter_ns()
         [r for r in func(**kwargs)]
         runs.append((time.perf_counter_ns() - start) / 1e9)
-    
+
     return statistics.mean(runs)
 
 
 results = []
 
 result = {
-    'function': "write_file_clear",
-    'time': execute_test(write_file_clear, filename='_temp/wfc.txt', content=lines)
+    "function": "write_file_clear",
+    "time": execute_test(write_file_clear, filename="_temp/wfc.txt", content=lines),
 }
 results.append(result)
 result = {
-    'function': "write_file_lzma",
-    'time': execute_test(write_file_lzma, filename='_temp/wfl.lzma', content=lines)
+    "function": "write_file_lzma",
+    "time": execute_test(write_file_lzma, filename="_temp/wfl.lzma", content=lines),
 }
 results.append(result)
 result = {
-    'function': "write_file_zstandard",
-    'time': execute_test(write_file_zstandard, filename='_temp/wfz.zstd', content=lines)
+    "function": "write_file_zstandard",
+    "time": execute_test(
+        write_file_zstandard, filename="_temp/wfz.zstd", content=lines
+    ),
 }
 results.append(result)
 result = {
-    'function': "read_file_clear",
-    'time': execute_test(read_file_clear, filename='_temp/wfc.txt')
+    "function": "read_file_clear",
+    "time": execute_test(read_file_clear, filename="_temp/wfc.txt"),
 }
 results.append(result)
 result = {
-    'function': "read_file_lzma",
-    'time': execute_test(read_file_lzma, filename='_temp/wfl.lzma')
+    "function": "read_file_lzma",
+    "time": execute_test(read_file_lzma, filename="_temp/wfl.lzma"),
 }
 results.append(result)
 result = {
-    'function': "read_file_zstandard",
-    'time': execute_test(read_file_zstandard, filename='_temp/wfz.zstd')
+    "function": "read_file_zstandard",
+    "time": execute_test(read_file_zstandard, filename="_temp/wfz.zstd"),
 }
 results.append(result)
 

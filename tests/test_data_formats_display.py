@@ -1,18 +1,20 @@
 import datetime
 import sys
 import os
-sys.path.insert(1, os.path.join(sys.path[0], '..'))
+
+sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.data.formats.dictset import display
 from rich import traceback
 
 traceback.install()
 
+
 def test_to_html():
     ds = [
-        {'key': 1, 'value': 'one', 'plus1': 2},
-        {'key': 2, 'value': 'two', 'plus1': 3},
-        {'key': 3, 'value': 'three', 'plus1': 4},
-        {'key': 4, 'value': 'four', 'plus1': 5}
+        {"key": 1, "value": "one", "plus1": 2},
+        {"key": 2, "value": "two", "plus1": 3},
+        {"key": 3, "value": "three", "plus1": 4},
+        {"key": 4, "value": "four", "plus1": 5},
     ]
     html = display.html_table(ds)
 
@@ -29,10 +31,10 @@ def test_to_html():
 
 def test_to_ascii():
     ds = [
-        {'key': 1, 'value': 'one', 'plus1': 2},
-        {'key': 2, 'value': 'two', 'plus1': 3},
-        {'key': 3, 'value': 'three', 'plus1': 4},
-        {'key': 4, 'value': 'four', 'plus1': 5}
+        {"key": 1, "value": "one", "plus1": 2},
+        {"key": 2, "value": "two", "plus1": 3},
+        {"key": 3, "value": "three", "plus1": 4},
+        {"key": 4, "value": "four", "plus1": 5},
     ]
     axki = display.ascii_table(ds)
 
@@ -50,19 +52,20 @@ def test_to_ascii():
 
 
 def test_histograms():
-    
+    # fmt: off
     data = [1,2,2,3,3,3,4,4,4,4,5,5,5,5,5,6,6,6,6,6,6,7,7,7,7,7,7,7]
+    # fmt: on
 
     hist = display.histogram(data, 3)
     assert hist == r"▃█▃"
 
     hist = display.histogram(data, 7)
-    assert hist == r"▁▂▃▄▅▆█"  
+    assert hist == r"▁▂▃▄▅▆█"
 
 
 if __name__ == "__main__":  # pragma: no cover
     test_to_html()
     test_to_ascii()
     test_histograms()
-    
-    print('okay')
+
+    print("okay")

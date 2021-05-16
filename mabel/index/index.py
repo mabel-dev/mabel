@@ -11,8 +11,8 @@ STRUCT_DEF = "I H H"  # 4 byte unsigned int, 2 byte unsigned int, 2 byte unsigne
 RECORD_SIZE = struct.calcsize(STRUCT_DEF)  # this should be 8
 
 """
-There are overlapping terms because we're traversing a dataset so we can
-traverse a dataset. 
+There are overlapping terms because we're traversing a dataset so we can traverse a
+dataset. 
 
 Terminology:
     Entry     : a record in the Index
@@ -21,28 +21,26 @@ Terminology:
     Row       : a record in the target file
 """
 
+
 def safe_field_name(field_name):
     """strip all the non-alphanums from a field name"""
     import re
-    pattern = re.compile('[\W_]+')
+    pattern = re.compile('[^a-zA-Z0-9]+')
     return pattern.sub('', field_name)
 
 
-class IndexEntry():
+class IndexEntry:
     """
     Python friendly representation of index entries.
 
     Includes binary translations for reading and writing to the index.
     """
+
     def to_bin(self) -> bytes:
         """
         Convert a model to _bytes_
         """
-        return struct.pack(
-                STRUCT_DEF,
-                self.value,
-                self.location,
-                self.count)
+        return struct.pack(STRUCT_DEF, self.value, self.location, self.count)
 
     @staticmethod
     def from_bin(buffer):
@@ -50,11 +48,7 @@ class IndexEntry():
         Convert _bytes_ to a model
         """
         value, location, count = struct.unpack(STRUCT_DEF, buffer)
-        return IndexEntry(
-                value=value,
-                location=location,
-                count=count)
-
+        return IndexEntry(value=value, location=location, count=count)
 
     def __init__(self, value, location, count):
         self.value = value
@@ -62,11 +56,8 @@ class IndexEntry():
         self.count = count
 
 
-class Index():
-
-    def __init__(
-            self,
-            index: io.BytesIO):
+class Index:
+    def __init__(self, index: io.BytesIO):
         """
         A data index which speeds up reading data files.
 
@@ -76,15 +67,13 @@ class Index():
         if isinstance(index, io.BytesIO):
             self._index = index
             # go to the end of the stream
-            index.seek(0,2)
+            index.seek(0, 2)
             # divide the size of the stream by the record size to get the
             # number of entries in the index
             self.size = index.tell() // RECORD_SIZE
 
     @staticmethod
-    def build_index(
-            dictset: Iterable[dict],
-            column_name: str):
+    def build_index(dictset: Iterable[dict], column_name: str):
         """
         Build an index from a dictset.
 
@@ -110,11 +99,7 @@ class Index():
         get a specific entry from the index
         """
         if location >= self.size:
-            return IndexEntry(
-                value=-1,
-                location=-1,
-                count=-1
-            )
+            return IndexEntry(value=-1, location=-1, count=-1)
         self._index.seek(RECORD_SIZE * location)
         return IndexEntry.from_bin(self._index.read(RECORD_SIZE))
 
@@ -134,11 +119,9 @@ class Index():
                 left = middle + 1
         return -1, None
 
-    def _inner_search(
-            self,
-            search_term) -> Iterable:
+    def _inner_search(self, search_term) -> Iterable:
         # hash the value and make fit in a four byte unsinged int
-        value = mmh3.hash(F"{search_term}") % MAX_INDEX
+        value = mmh3.hash(f"{search_term}") % MAX_INDEX
 
         # search for an instance of the value in the index
         location, found_entry = self._locate_record(value)
@@ -146,7 +129,7 @@ class Index():
         # we didn't find the entry
         if not found_entry:
             return []
-        
+
         # the found_entry is the fastest record to be found, this could
         # be the first, last or middle of the set. The count field tells
         # us how many rows to go back, but not how many forward
@@ -156,32 +139,30 @@ class Index():
             end_location += 1
 
         # extract the row numbers in the target dataset
-        return [self._get_entry(loc).location for loc in range(start_location, end_location, 1)]
+        return [
+            self._get_entry(loc).location
+            for loc in range(start_location, end_location, 1)
+        ]
 
-
-    def search(
-            self,
-            search_term) -> Iterable:
+    def search(self, search_term) -> Iterable:
         """
-        Search the index for a value. Returns a list of row numbers, if the
-        value is not found, the list is empty.
+        Search the index for a value. Returns a list of row numbers, if the value is
+        not found, the list is empty.
         """
         if not isinstance(search_term, (list, set, tuple)):
             search_term = [search_term]
-        result:list = []
+        result: list = []
         for term in search_term:
             result += self._inner_search(term)
         return set(result)
 
 
-class IndexBuilder():
+class IndexBuilder:
 
-    slots = ('column_name', 'temporary_index')
+    slots = ("column_name", "temporary_index")
 
-    def __init__(
-            self,
-            column_name:str):
-        self.column_name:str = column_name
+    def __init__(self, column_name: str):
+        self.column_name: str = column_name
         self.temporary_index: Iterable[dict] = []
 
     def add(self, position, record):
@@ -192,24 +173,23 @@ class IndexBuilder():
                 values = [values]
             for value in values:
                 entry = {
-                        "value": mmh3.hash(F"{value}") % MAX_INDEX,
-                        "position": position
+                    "value": mmh3.hash(f"{value}") % MAX_INDEX,
+                    "position": position,
                 }
                 self.temporary_index.append(entry)
 
     def build(self) -> Index:
         previous_value = None
         index = bytes()
-        count:int = 0
+        count: int = 0
         self.temporary_index = sorted(self.temporary_index, key=itemgetter("value"))
         for row in self.temporary_index:
-            if row['value'] == previous_value:
+            if row["value"] == previous_value:
                 count += 1
             else:
                 count = 1
             index += IndexEntry(
-                    value=row['value'],
-                    location=row['position'],
-                    count=count).to_bin()
-            previous_value = row['value']
+                value=row["value"], location=row["position"], count=count
+            ).to_bin()
+            previous_value = row["value"]
         return Index(io.BytesIO(index))

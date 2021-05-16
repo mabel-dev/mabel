@@ -1,8 +1,8 @@
 import orjson as json
 
 
-def read_jsonl(filename, limit=-1, chunk_size=32*1024*1024, delimiter="\n"):
-    """"""
+def read_jsonl(filename, limit=-1, chunk_size=32 * 1024 * 1024, delimiter="\n"):
+    """ """
     file_reader = read_file(filename, chunk_size=chunk_size, delimiter=delimiter)
     line = next(file_reader, None)
     while line:
@@ -16,7 +16,7 @@ def read_jsonl(filename, limit=-1, chunk_size=32*1024*1024, delimiter="\n"):
             return
 
 
-def read_file(filename, chunk_size=32*1024*1024, delimiter="\n"):
+def read_file(filename, chunk_size=32 * 1024 * 1024, delimiter="\n"):
     """
     Reads an arbitrarily long file, line by line
     """
@@ -32,23 +32,23 @@ def read_file(filename, chunk_size=32*1024*1024, delimiter="\n"):
         if carry_forward:
             yield carry_forward
 
-idx = [0,500,9000]
+
+idx = [0, 500, 9000]
 
 import time
+
 t = time.time_ns()
 
 
-fn = 'tweets.jsonl'
+fn = "tweets.jsonl"
 table = read_file(fn)
 
 rs = []
 for i, r in enumerate(table):
     if i in idx:
         rw = json.loads(r)
-        rs.append(rw['username'])
+        rs.append(rw["username"])
 
 print(rs)
 
-print ((time.time_ns() - t) / 1e9, i)
-
-
+print((time.time_ns() - t) / 1e9, i)

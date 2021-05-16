@@ -15,7 +15,7 @@ setup(
    long_description_content_type="text/markdown",
    maintainer='Joocer',
    packages=find_packages(include=['mabel', 'mabel.*']),
-   url="https://github.com/joocer/mabel/",
+   url="https://github.com/mabel-dev/mabel/",
    install_requires=[
         'ujson',
         'python-dateutil',
