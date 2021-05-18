@@ -29,6 +29,28 @@ def test_to_html():
     assert "<td>5<td>" in html
 
 
+def test_sparse_to_html():
+    ds = [
+        {"key": 1, "value": "one"},
+        {"key": 2, "value": "two", "plus1": 3},
+        {"key": 3, "plus1": 4},
+        {"key": 4, "value": "four", "plus1": 5},
+    ]
+    html = display.html_table(ds)
+
+    print(html)
+
+    # are the headers there
+    assert "<th>key<th>" in html
+    assert "<th>value<th>" in html
+    assert "<th>plus1<th>" in html
+
+    # test for some of the values
+    assert "<td>one<td>" in html
+    assert "<td>1<td>" in html
+    assert "<td>5<td>" in html
+
+
 def test_to_ascii():
     ds = [
         {"key": 1, "value": "one", "plus1": 2},
@@ -65,6 +87,7 @@ def test_histograms():
 
 if __name__ == "__main__":  # pragma: no cover
     test_to_html()
+    test_sparse_to_html()
     test_to_ascii()
     test_histograms()
 

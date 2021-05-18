@@ -19,37 +19,44 @@ def html_table(
     Returns:
         string (HTML table)
     """
-    def _to_html_table(data, limit):
+    def _to_html_table(data, columns):
 
         yield '<table class="table table-sm">'
         for counter, record in enumerate(data):
             if counter == 0:
                 yield '<thead class="thead-light"><tr>'
-                for key, value in record.items():
-                    yield '<th>' + key + '<th>\n'
+                for column in columns:
+                    yield '<th>' + column + '<th>\n'
                 yield '</tr></thead><tbody>'
-
-            if counter >= limit:
-                break
 
             if (counter % 2) == 0:
                 yield '<tr style="background-color:#F4F4F4">'
             else:
                 yield '<tr>'
-            for key, value in record.items():
-                yield '<td>' + str(value) + '<td>\n'
+            for column in columns:
+                yield '<td>' + str(record.get(column)) + '<td>\n'
             yield '</tr>'
 
         yield '</tbody></table>'
 
-        import types
-        if isinstance(data, types.GeneratorType):
-            yield f'<p>top {limit} rows x {len(record.items())} columns</p>'
-            yield 'NOTE: the displayed records have been spent'
-        if isinstance(data, list):
-            yield f'<p>{len(data)} rows x {len(record.items())} columns</p>'
+    rows = []
+    columns = []
+    for i, row in enumerate(dictset):
+        rows.append(row)
+        columns = columns + list(row.keys())
+        if i == limit:
+            break
+    columns = set(columns)
 
-    return ''.join(_to_html_table(dictset, limit))
+    import types
+    footer = ''
+    if isinstance(dictset, types.GeneratorType):
+        footer = f'\n<p>top {limit} rows x {len(columns)} columns</p>'
+        footer += '\nNOTE: the displayed records have been spent'
+    if isinstance(dictset, list):
+        footer = f'\n<p>{len(dictset)} rows x {len(columns)} columns</p>'
+
+    return ''.join(_to_html_table(rows, columns)) + footer
 
 
 def ascii_table(
