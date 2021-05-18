@@ -25,7 +25,8 @@ There is no server component, **mabel** just runs when you need it, where you wa
 
 ## Focus on What Matters
 
-We've built **mabel** to enable Data Analysts to write complex data engineering tasks quickly and easily, so they could get on with doing what they do best.
+We've built **mabel** to enable Data Analysts to write complex data engineering tasks
+quickly and easily, so they could get on with doing what they do best.
 
 ~~~python
 from mabel import operator
@@ -75,7 +76,11 @@ pip install --upgrade git+https://github.com/mabel-dev/mabel
 -  **[UltraJSON](https://github.com/ultrajson/ultrajson)** (AKA `ujson`) is used where `orjson` is not available. (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />1)
 -  **[zstandard](https://github.com/indygreg/python-zstandard)** is used for real-time compression
 
-There are a number of optional dependencies which are usually only required for specific features and functionality. These are listed in the [requirements-test.txt](https://github.com/mabel-dev/mabel/blob/main/requirements-test.txt) file which is used for testing. The key exception is `orjson` which is the preferred JSON library but not available on all platforms.
+There are a number of optional dependencies which are usually only required for
+specific features and functionality. These are listed in the
+[requirements.txt](https://github.com/mabel-dev/mabel/blob/main/tests/requirements.txt)
+file in the _tests_ folder which is used for testing. The key exception is `orjson`
+which is the preferred JSON library but not available on all platforms.
 
 ## Integrations
 
