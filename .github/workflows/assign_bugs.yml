@@ -17,5 +17,5 @@ jobs:
         contains(github.event.issue.labels.*.name, 'bug') ||
         github.event.action == 'opened'
       with:
-        project: 'https://github.com/joocer/mabel/projects/2'
+        project: 'https://github.com/mabel-dev/mabel/projects/2'
         column_name: 'Needs triage'
