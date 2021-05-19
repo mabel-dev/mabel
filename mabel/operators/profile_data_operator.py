@@ -70,6 +70,8 @@ class ProfileDataOperator(BaseOperator):
                 field_summary['nulls'] += 1
 
             elif field_type == 'numeric':
+                if isinstance(field_value, str):
+                    field_value = float(field_value)
                 field_summary = ProfileDataOperator.profile_numeric_data(field_summary, field_value)
                     
             elif field_type == 'date':
@@ -117,17 +119,19 @@ class ProfileDataOperator(BaseOperator):
         # convert date fields back to dates
         date_fields = [k for k in self.summary if self.summary[k]['type'] == 'date']
         for date_field in date_fields:
-            self.summary[date_field]['min'] = ProfileDataOperator.date_from_epoch(self.summary[date_field]['min'])
-            self.summary[date_field]['max'] = ProfileDataOperator.date_from_epoch(self.summary[date_field]['max'])
+            self.summary[date_field]['min'] = ProfileDataOperator.date_from_epoch(self.summary[date_field].get('min', 0))
+            self.summary[date_field]['max'] = ProfileDataOperator.date_from_epoch(self.summary[date_field].get('max', 0))
             new_bins = {}  # type:ignore
-            for bound in self.summary[date_field]['bins']:
+            for bound in self.summary[date_field].get('bins', []):
                 bottom, top = bound
                 bottom = ProfileDataOperator.date_from_epoch(bottom)
                 top = ProfileDataOperator.date_from_epoch(top)
                 new_bins[(bottom, top)] = self.summary[date_field]['bins'][bound]  # type:ignore
             self.summary[date_field]['bins'] = new_bins
-            del self.summary[date_field]['mean']
-            del self.summary[date_field]['cumsum']
+            if self.summary[date_field].get('mean'):
+                del self.summary[date_field]['mean']
+            if self.summary[date_field].get('cumsum'):
+                del self.summary[date_field]['cumsum']
 
         # change the bin names to strings from tuples
         for k in [k for k in self.summary if 'bins' in self.summary[k]]:
@@ -150,9 +154,9 @@ class ProfileDataOperator(BaseOperator):
                 if field_summary['nulls'] == field_summary['items']:
                     yield F"[---] {field:20} [count] {field_summary['items']} EMPTY"
                 elif field_summary['type'] == 'numeric':
-                    yield F"[num] {field:20} [count] {field_summary['items']} [empty] {(field_summary['nulls'] / field_summary['items']):.1%} [range] {ProfileDataOperator.short_form(field_summary['min'])} to {ProfileDataOperator.short_form(field_summary['max'])} [mean] {ProfileDataOperator.short_form(field_summary['mean'])} >{draw_histogram_bins([v for k,v in field_summary['bins'].items()])}<"
+                    yield F"[num] {field:20} [count] {field_summary['items']} [empty] {(field_summary['nulls'] / field_summary['items']):.1%} [range] {ProfileDataOperator.short_form(field_summary.get('min'))} to {ProfileDataOperator.short_form(field_summary.get('max'))} [mean] {ProfileDataOperator.short_form(field_summary['mean'])} >{draw_histogram_bins([v for k,v in field_summary['bins'].items()])}<"
                 elif field_summary['type'] == 'date':
-                    yield F"[dte] {field:20} [count] {field_summary['items']} [empty] {(field_summary['nulls'] / field_summary['items']):.1%} [range] {field_summary['min']} to {field_summary['max']} >{draw_histogram_bins([v for k,v in field_summary['bins'].items()])}<"
+                    yield F"[dte] {field:20} [count] {field_summary['items']} [empty] {(field_summary['nulls'] / field_summary['items']):.1%} [range] {field_summary.get('min')} to {field_summary.get('max')} >{draw_histogram_bins([v for k,v in field_summary['bins'].items()])}<"
                 elif field_summary['type'] == 'other':
                     yield F"[oth] {field:20} [count] {field_summary['items']} [empty] {(field_summary['nulls'] / field_summary['items']):.1%}"
                 elif field_summary['type'] == 'string':

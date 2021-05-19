@@ -60,7 +60,7 @@ class BaseOperator(abc.ABC):
                 limited between 1 (single failure aborts) and 100
         """
         self.flow = None
-        self.records_processed = 0      # number of times this Operator has been run
+        self.executions = 0      # number of times this Operator has been run
         self.execution_time_ns = 0      # nano seconds of cpu execution time
         self.errors = 0                 # number of errors
         self.commencement_time = None   # the time processing started
@@ -138,7 +138,7 @@ class BaseOperator(abc.ABC):
 
         if self.commencement_time is None:
             self.commencement_time = datetime.datetime.now()
-        self.records_processed += 1
+        self.executions += 1
         attempts_to_go = self.retry_count
         while attempts_to_go > 0:
             try:
@@ -208,12 +208,12 @@ class BaseOperator(abc.ABC):
         response = {
             "operator": self.name,
             "version": self.version(),
-            "records_processed": self.records_processed,
+            "execution_count": self.executions,
             "error_count": self.errors,
             "execution_sec": self.execution_time_ns / 1e9
         }
-        if self.records_processed == 0:
-            self.logger.warning(F"{self.name} processed 0 records")
+        if self.executions == 0:
+            self.logger.warning(F"{self.name} was never executed")
         if self.commencement_time:
             response['commencement_time'] = self.commencement_time.isoformat()
         return response
