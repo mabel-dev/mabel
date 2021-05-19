@@ -40,13 +40,13 @@ def html_table(
         yield '</tbody></table>'
 
     rows = []
-    columns = []
+    columns = []  # type:ignore
     for i, row in enumerate(dictset):
         rows.append(row)
         columns = columns + list(row.keys())
         if i == limit:
             break
-    columns = set(columns)
+    columns = set(columns)  # type:ignore
 
     import types
     footer = ''
