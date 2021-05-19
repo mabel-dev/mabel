@@ -123,7 +123,7 @@ class Flow():
                         path=writer.get('path'))                # type: ignore
                 self._attach_writer(writer)
 
-            if class_name == 'file':
+            if class_name == 'file' or class_name == 'disk':
                 writer = FileBin(                               # type: ignore
                         bin_name=name,                          # type: ignore
                         path=writer.get('path'))                # type: ignore

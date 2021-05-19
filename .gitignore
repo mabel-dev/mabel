@@ -143,3 +143,4 @@ _batch/**
 temp
 publish.bat
 SNAPSHOTS/
+.mutmut-cache

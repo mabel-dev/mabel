@@ -21,6 +21,7 @@ class FileBin(BaseBin):
             record: str,
             id_: str = ''):
 
+        os.makedirs(F"{self.path}/{self._date_part()}", exist_ok=True)
         filename = F"{self.path}/{self._date_part()}/{id_}{time.time_ns()}.txt"
         with open(filename, 'w') as file:
             file.write(record)
