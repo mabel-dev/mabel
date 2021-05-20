@@ -4,7 +4,7 @@ import threading
 from typing import Callable, Optional, Tuple, List
 from .internals.threaded_reader import threaded_reader
 from .internals.alpha_processed_reader import processed_reader
-from .internals.parsers import pass_thru_parser, block_parser, json_parser
+from .internals.parsers import pass_thru_parser, block_parser, json_parser, xml_parser
 from .internals.filters import Filters
 from ..formats.dictset import select_record_fields, select_from
 from ..formats.dictset.display import html_table, ascii_table
@@ -20,7 +20,8 @@ PARSERS = {
     "json": json_parser,
     "text": pass_thru_parser,
     "block": block_parser,
-    "pass-thru": pass_thru_parser
+    "pass-thru": pass_thru_parser,
+    "xml": xml_parser
 }
 
 RULES = [

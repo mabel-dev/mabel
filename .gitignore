@@ -144,3 +144,4 @@ temp
 publish.bat
 SNAPSHOTS/
 .mutmut-cache
+setup.cfg
