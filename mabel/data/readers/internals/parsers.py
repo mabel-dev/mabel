@@ -1,7 +1,7 @@
 from ...formats.json import parse
 from ....errors import MissingDependencyError
 try:
-    import xmltodict
+    import xmltodict  # type:ignore
 except ImportError:
     xmltodict = None
 
@@ -24,6 +24,6 @@ def block_parser(ds):
 
 
 def xml_parser(ds):
-    if not xmltodict:
+    if not xmltodict:    # pragma: no cover
         raise MissingDependencyError("`xmltodict` is missing, please install or include in requirements.txt")
     yield from map(xmltodict.parse, ds)
