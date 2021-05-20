@@ -2,6 +2,7 @@
 Test the file reader
 """
 import datetime
+from mabel.logging.create_logger import get_logger
 import pytest
 import os
 import sys
@@ -9,19 +10,44 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.adapters.disk import DiskReader
 from mabel.data import Reader
+from mabel.data.formats.dictset import limit
 from rich import traceback
 
 traceback.install()
 
-
-def test_cursor():
+def get_records():
     r = Reader(
             inner_reader=DiskReader,
             dataset="tests/data/tweets/",
+            raw_path=True)
+    return len(list(r))
+
+
+def test_cursor():
+
+    test_counter = 0
+    number_of_records = get_records()
+    lim = number_of_records // 4 * 3
+
+    reader = Reader(
+            inner_reader=DiskReader,
+            dataset="tests/data/tweets/",
+            raw_path=True)
+
+    for row in limit(reader, lim):
+        test_counter += 1
+    cursor = reader.cursor
+
+    reader = Reader(
+            inner_reader=DiskReader,
+            dataset="tests/data/tweets/",
             raw_path=True,
-            cursor={'blob': 'tests/data/tweets/tweets-0001.jsonl', 'offset': 20})
+            cursor=cursor)
     
-    assert len(list(r)) == 5
+    for i, row in enumerate(reader):
+        test_counter += 1
+
+    assert number_of_records == test_counter
 
 
 if __name__ == "__main__":  # pragma: no cover

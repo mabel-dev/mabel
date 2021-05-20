@@ -1,34 +1,13 @@
 import os
 import logging
-from enum import Enum
 from functools import lru_cache
 from .add_level import add_logging_level
 from .log_formatter import LogFormatter
+from .levels import LEVELS_TO_STRING, LEVELS
+from .google_cloud_logger import GoogleLogger
 
 LOG_NAME: str = "MABEL"
 LOG_FORMAT: str = "{BOLD_CYAN}%(name)s{OFF} | %(levelname)-8s | %(asctime)s | {GREEN}%(funcName)s(){OFF} | {YELLOW}%(filename)s{OFF}:{PURPLE}%(lineno)s{OFF} | %(message)s"
-
-
-class LEVELS(int, Enum):
-    """
-    Proxy the Logging levels so we can just reference these without
-    having to import Logging everywhere.
-
-    LEVEL       | PURPOSE                                                        | Format
-    ----------- | -------------------------------------------------------------- | ----------------------------------
-    DEBUG       | Information for engineers to observe inner state and flow      | Format as desired
-    INFO        | Information recording user and system events                   | Messages should be JSON formatted
-    WARNING     | Undesirable but workable event has happened                    | Messages should be informative
-    ERROR       | A problem has happened that stopped a minor part of the system | Messages should be instructive
-    AUDIT       | Information relating to proving activities happened            | Messages should be JSON formatted
-    ALERT       | Intervention is required                                       | Messages should be instructive
-    """
-    DEBUG = int(logging.DEBUG)  # 10
-    INFO = int(logging.INFO)  # 20
-    WARNING = int(logging.WARNING)  # 30
-    ERROR = int(logging.ERROR)  # 40
-    AUDIT = 80
-    ALERT = 90
 
 
 def set_log_name(log_name: str):
@@ -44,6 +23,10 @@ def get_logger() -> logging.Logger:
     only the logs related to our jobs are included (other modules also use the
     Python's logging module).
     """
+
+    if GoogleLogger.supported():
+        return GoogleLogger()
+
     logger = logging.getLogger(LOG_NAME)
 
     # default is to log WARNING and above

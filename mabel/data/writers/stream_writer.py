@@ -103,6 +103,14 @@ class StreamWriter(SimpleWriter):
             blob_writer = self.writer_pool.get_writer(identity)
             return blob_writer.append(record)
 
+
+    def finalize(self):
+        for blob_writer_identity in self.writer_pool.writers:
+            get_logger().debug(F'Removing {blob_writer_identity} from the writer pool during finalization')
+            self.writer_pool.remove_writer(blob_writer_identity)
+        return super().finalize()
+
+
     def pool_attendant(self):
         """
         Writer Pool Management

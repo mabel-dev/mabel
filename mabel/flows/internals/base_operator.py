@@ -30,7 +30,7 @@ class BaseOperator(abc.ABC):
         full_hash = hashlib.sha256(datetime.datetime.now().isoformat().encode())
         return "SIGTERM-" + full_hash.hexdigest()
 
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
         """
         All Operators should inherit from this class, it will help ensure a
         common structure to Operator classes and provide some common
