@@ -51,6 +51,7 @@ with flow as runner:
 -  Automatic retry of failed operations
 -  Low-memory requirements, even with terabytes of data
 -  Indexing and partitioning of data for fast reads 
+-  Cursors for tracking reading position
 
 ## Installation
 

@@ -131,7 +131,7 @@ class Reader():
             as_at: datetime (alpha)
                 **ALPHA**
                 Time travel
-            cursor: string (alpha)
+            cursor: dictionary (alpha)
                 **ALPHA**
                 Resume read
 
@@ -319,7 +319,7 @@ class Reader():
                 self.cursor['offset'] = -1
                 local_reader = self._read_blob(blob, blob_list)
                 for burn in range(base_offset):
-                    next(local_reader)
+                    next(local_reader, None)
                 for offset, record in enumerate(local_reader):
                     self.cursor['offset'] = offset + base_offset
                     yield record
