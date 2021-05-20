@@ -26,6 +26,7 @@ PARSERS = {
 
 RULES = [
     {"name": "as_at", "required": False, "warning": "Time Travel (as_at) is Alpha - it's interface may change and some features may not be supported", "incompatible_with": ['start_date', 'end_date']},
+    {"name": "cursor", "required": False, "warning": "`cursor` is Alpha - it's interface may change and some features may not be supported", "incompatible_with": ['thread_count', 'fork_processes']},
     {"name": "dataset", "required": True, "warning": None, "incompatible_with": []},
     {"name": "end_date", "required": False, "warning": None, "incompatible_with": []},
     {"name": "extension", "required": False, "warning": None, "incompatible_with": []},
@@ -130,6 +131,9 @@ class Reader():
             as_at: datetime (alpha)
                 **ALPHA**
                 Time travel
+            cursor: string (alpha)
+                **ALPHA**
+                Resume read
 
         Yields:
             dictionary (string if data format is 'text')
@@ -163,6 +167,8 @@ class Reader():
             inner_reader = GoogleCloudStorageReader
         # instantiate the injected reader class
         self.reader_class = inner_reader(dataset=dataset, **kwargs)  # type:ignore
+
+        self.cursor = kwargs.get('cursor', {})
 
         self.select = select.copy()
         self.where: Optional[Callable] = where
@@ -286,7 +292,19 @@ class Reader():
                 get_logger().warning(F"Stepped back {self.reader_class.days_stepped_back} days to {self.reader_class.start_date} to find last data, my limit is {self.step_back_days} days.")
 
         readable_blobs = [b for b in blob_list if not self._is_system_file(b)]
-        get_logger().debug(F"Reader found {len(readable_blobs)} sources to read data from.")
+
+        # skip to the blob in the cursor
+        if self.cursor.get('blob'):
+            skipped = 0
+            while len(readable_blobs) > 0:
+                if readable_blobs[0] != self.cursor.get('blob'):
+                    readable_blobs.pop(0)
+                    skipped += 1
+                else:
+                    get_logger().debug(F"Reader found {len(readable_blobs)} sources to read data from after {skipped} jumped to get to cursor.")
+                    break
+        else:
+            get_logger().debug(F"Reader found {len(readable_blobs)} sources to read data from.")
         
         if self.thread_count > 0:
             yield from threaded_reader(readable_blobs, blob_list, self)
@@ -295,8 +313,17 @@ class Reader():
             yield from processed_reader(readable_blobs, self.reader_class, self._parse, self.where)
 
         else:
+            base_offset = self.cursor.get('offset', 0)
             for blob in readable_blobs:
-                yield from self._read_blob(blob, blob_list)
+                self.cursor['blob'] = blob
+                self.cursor['offset'] = -1
+                local_reader = self._read_blob(blob, blob_list)
+                for burn in range(base_offset):
+                    next(local_reader)
+                for offset, record in enumerate(local_reader):
+                    self.cursor['offset'] = offset + base_offset
+                    yield record
+                base_offset = 0
 
     def __iter__(self):
         return self

@@ -193,4 +193,4 @@ class BaseInnerReader(abc.ABC):
             get_logger().debug(F"Reading from DataSet frame `{as_at}`")
             blobs = [blob for blob in blobs if as_at in blob]
 
-        return blobs
+        return sorted(blobs)
