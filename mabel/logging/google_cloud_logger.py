@@ -82,7 +82,7 @@ class GoogleLogger():
             return do_nothing
 
     def setLevel(self, level):
-        self.level == level
+        self.level = level
         self.debug = self.create_logger(LEVELS.INFO)
         self.info = self.create_logger(LEVELS.INFO)
         self.warning = self.create_logger(LEVELS.WARNING)
