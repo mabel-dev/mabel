@@ -7,10 +7,10 @@ import datetime
 from typing import Union, Optional
 from ..utils import is_running_from_ipython
 try:
-    from google.cloud import logging as stackdriver
-    from google.cloud.logging import DESCENDING
+    from google.cloud import logging as stackdriver  # type:ignore
+    from google.cloud.logging import DESCENDING  # type:ignore
 except ImportError:
-    stackdriver = None
+    stackdriver = None  # type:ignore
 
 
 class GoogleLogger():
@@ -32,7 +32,7 @@ class GoogleLogger():
         from .create_logger import LOG_NAME
         from .levels import LEVELS_TO_STRING
 
-        print(f"{LOG_NAME}| {LEVELS_TO_STRING.get(severity)} | {datetime.datetime.now().isoformat()} | {message}")
+        print(f"{LOG_NAME}| {LEVELS_TO_STRING.get(severity, 'UNKNOWN')} | {datetime.datetime.now().isoformat()} | {message}")  # type:ignore
 
         client = stackdriver.Client()
         logger = client.logger(LOG_NAME)
@@ -44,12 +44,12 @@ class GoogleLogger():
         if isinstance(message, dict):
             logger.log_struct(
                     info=message,
-                    severity=LEVELS_TO_STRING.get(severity),
+                    severity=LEVELS_TO_STRING.get(severity),  # type:ignore
                     labels=labels)
         else:
             logger.log_text(
                     text=F"{message}",
-                    severity=LEVELS_TO_STRING.get(severity),
+                    severity=LEVELS_TO_STRING.get(severity),  # type:ignore
                     labels=labels)
 
     def __init__(self):

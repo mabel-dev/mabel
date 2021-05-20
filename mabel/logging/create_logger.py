@@ -25,7 +25,7 @@ def get_logger() -> logging.Logger:
     """
 
     if GoogleLogger.supported():
-        return GoogleLogger()
+        return GoogleLogger()  # type:ignore
 
     logger = logging.getLogger(LOG_NAME)
 
