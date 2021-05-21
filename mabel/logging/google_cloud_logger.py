@@ -16,6 +16,13 @@ except ImportError:
 class GoogleLogger():
 
     @staticmethod
+    def safe_field_name(field_name):
+        """strip all the non-alphanums from a field name"""
+        import re
+        pattern = re.compile('[^a-zA-Z0-9]+')
+        return pattern.sub('', field_name)
+
+    @staticmethod
     def supported():
         use_logger = []
         use_logger.append(stackdriver is not None)
@@ -32,13 +39,13 @@ class GoogleLogger():
         from .create_logger import LOG_NAME
         from .levels import LEVELS_TO_STRING, LEVELS
 
-        print(f"{LOG_NAME}| {LEVELS_TO_STRING.get(severity, 'UNKNOWN')} | {datetime.datetime.now().isoformat()} | {message}")  # type:ignore
+        print(f"{LOG_NAME} | {LEVELS_TO_STRING.get(severity, 'UNKNOWN')} | {datetime.datetime.now().isoformat()} | {message}")  # type:ignore
 
         # rewrite one of the levels
         LEVELS_TO_STRING[LEVELS.AUDIT] = "NOTICE"
 
         client = stackdriver.Client()
-        logger = client.logger(LOG_NAME)
+        logger = client.logger(GoogleLogger.safe_field_name(LOG_NAME))
         
         labels = {}
         if system:
