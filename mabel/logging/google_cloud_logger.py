@@ -30,9 +30,12 @@ class GoogleLogger():
             severity: Optional[int] = logging.DEBUG):
 
         from .create_logger import LOG_NAME
-        from .levels import LEVELS_TO_STRING
+        from .levels import LEVELS_TO_STRING, LEVELS
 
         print(f"{LOG_NAME}| {LEVELS_TO_STRING.get(severity, 'UNKNOWN')} | {datetime.datetime.now().isoformat()} | {message}")  # type:ignore
+
+        # rewrite one of the levels
+        LEVELS_TO_STRING[LEVELS.AUDIT] = "NOTICE"
 
         client = stackdriver.Client()
         logger = client.logger(LOG_NAME)
