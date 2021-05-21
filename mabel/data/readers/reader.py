@@ -133,7 +133,8 @@ class Reader():
                 Time travel
             cursor: dictionary (alpha)
                 **ALPHA**
-                Resume read
+                Resume read from a given point (assumes other parameters are the same).
+                If a JSON string is provided, it will converted to a dictionary.
 
         Yields:
             dictionary (string if data format is 'text')
@@ -168,7 +169,11 @@ class Reader():
         # instantiate the injected reader class
         self.reader_class = inner_reader(dataset=dataset, **kwargs)  # type:ignore
 
-        self.cursor = kwargs.get('cursor', {})
+        self.cursor = kwargs.get('cursor', None)
+        if isinstance(self.cursor, str):
+            self.cursor = json.parse(self.cursor)
+        if not isinstance(self.cursor, dict):
+            self.cursor = {}
 
         self.select = select.copy()
         self.where: Optional[Callable] = where
