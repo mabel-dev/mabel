@@ -1,9 +1,6 @@
 """
 Test the file reader
 """
-import datetime
-from mabel.logging.create_logger import get_logger
-import pytest
 import os
 import sys
 

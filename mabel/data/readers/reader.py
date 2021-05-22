@@ -5,7 +5,7 @@ from typing import Callable, Optional, Tuple, List
 from .internals.threaded_reader import threaded_reader
 from .internals.alpha_processed_reader import processed_reader
 from .internals.parsers import pass_thru_parser, block_parser, json_parser, xml_parser
-from .internals.filters import Filters
+from .internals.filters import Filters, get_indexable_filter_columns
 from ..formats.dictset import select_record_fields, select_from
 from ..formats.dictset.display import html_table, ascii_table
 from ..formats import json
@@ -13,6 +13,8 @@ from ...logging import get_logger
 from ...errors import InvalidCombinationError, MissingDependencyError
 from ...index.index import Index, safe_field_name
 from ...utils.parameter_validator import validate
+from ...utils.ipython import is_running_from_ipython
+from ...utils.paths import get_parts
 
 
 # available parsers
@@ -200,7 +202,7 @@ class Reader():
         self.indexable_fields = []
         if filters:
             self.filters = Filters(filters)   
-            self.indexable_fields = self._get_indexable_filter_columns(self.filters.predicates)
+            self.indexable_fields = get_indexable_filter_columns(self.filters.predicates)
 
         """ FEATURES IN DEVELOPMENT """
 
@@ -221,30 +223,7 @@ class Reader():
         for line in Reader("file"):
             print(line)
     """
-    def _get_indexable_filter_columns(self, predicate):
-        """
-        Returns all of the columns in a filter which the operation benefits
-        from an index
 
-        This creates an list of tuples of (field,value) that we can feed to the
-        index search.
-        """
-        INDEXABLE_OPS = {'=', '==', 'is', 'in', 'contains'}
-        if predicate is None:
-            return []
-        if isinstance(predicate, tuple):
-            key, op, value = predicate
-            if op in INDEXABLE_OPS:
-                return [(key, value,)]
-        if isinstance(predicate, list):
-            if all([isinstance(p, tuple) for p in predicate]):
-                return [(k,v,) for k,o,v in predicate if o in INDEXABLE_OPS]
-            if all([isinstance(p, list) for p in predicate]):
-                columns = []
-                for p in predicate:
-                    columns += self._get_indexable_filter_columns(p)
-                return columns
-        return []    # pragma: no cover
 
     def _is_system_file(self, filename):
         if '_SYS.' in filename:
@@ -261,9 +240,9 @@ class Reader():
         rows = None
         for field, filter_value in self.indexable_fields:
             # does an index file for this file and record exist
-            path, file = os.path.split(blob)
-            stem, ext = os.path.splitext(file)
-            index_file = path + '/_SYS.' + stem + '.' + safe_field_name(field) + '.index'
+
+            bucket, path, stem, ext = get_parts(blob)
+            index_file = f"{bucket}/{path}_SYS.{stem}.{safe_field_name(field)}.index"
 
             if index_file in blob_list:
                 get_logger().debug(F"Reading index from blob `{index_file}`")
@@ -386,20 +365,10 @@ class Reader():
         try:
             import pandas as pd  # type:ignore
         except ImportError:  # pragma: no cover
-            raise MissingDependencyError("`pands` is missing, pleaseinstall or include in requirements.txt")
+            raise MissingDependencyError("`pands` is missing, please install or include in requirements.txt")
         return pd.DataFrame(self)
 
     def __repr__(self):  # pragma: no cover
-
-        def is_running_from_ipython():
-            """
-            True when running in Jupyter
-            """
-            try:
-                from IPython import get_ipython  # type:ignore
-                return get_ipython() is not None
-            except Exception:
-                return False
 
         if is_running_from_ipython():
             from IPython.display import HTML, display  # type:ignore

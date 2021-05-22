@@ -4,15 +4,9 @@ from ...adapters.google import GoogleCloudStorageWriter
 
 
 class GoogleStorageBatchWriterOperator(BaseWriterOperator):
+    def __init__(self, *, project: str = None, **kwargs):
 
-    def __init__(
-            self,
-            *,
-            project:str = None,
-            **kwargs):
-
-        kwargs['project'] = project
+        kwargs["project"] = project
         super().__init__(
-                writer=BatchWriter,
-                inner_writer=GoogleCloudStorageWriter,
-                **kwargs)
+            writer=BatchWriter, inner_writer=GoogleCloudStorageWriter, **kwargs
+        )

@@ -111,7 +111,7 @@ class StreamWriter(SimpleWriter):
                     get_logger().debug(F'Removing {blob_writer_identity} from the writer pool during finalization')
                     self.writer_pool.remove_writer(blob_writer_identity)
                 except Exception as err: 
-                    get_logger().debug(f"Error finalizing `{blob_writer_identity}`, {type(err).__nam__} - {err}")
+                    get_logger().debug(f"Error finalizing `{blob_writer_identity}`, {type(err).__name__} - {err}")
         return super().finalize()
 
 

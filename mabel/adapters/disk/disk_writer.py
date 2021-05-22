@@ -5,14 +5,10 @@ from ...utils import paths
 
 
 class DiskWriter(BaseInnerWriter):
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def commit(
-            self,
-            byte_data,
-            override_blob_name=None):
+    def commit(self, byte_data, override_blob_name=None):
 
         try:
             # if we've been given the filename, use that, otherwise get the
@@ -24,11 +20,11 @@ class DiskWriter(BaseInnerWriter):
 
             bucket, path, stem, ext = paths.get_parts(blob_name)
 
-            os.makedirs(bucket + '/' + path, exist_ok=True)
-            with open(blob_name, mode='wb') as file:
+            os.makedirs(bucket + "/" + path, exist_ok=True)
+            with open(blob_name, mode="wb") as file:
                 file.write(byte_data)
 
             return blob_name
         except Exception as err:
-            get_logger().error(F'Problem saving blob to disk {type(err).__name__}')
+            get_logger().error(f"Problem saving blob to disk {type(err).__name__}")
             raise err

@@ -10,7 +10,6 @@ from ..flows.internals.base_operator import BaseOperator
 
 
 class NoOpOperator(BaseOperator):
-
     def __init__(self, print_message=False):
         self.print_message = print_message
         super().__init__()

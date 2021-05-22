@@ -8,7 +8,6 @@ import abc
 
 
 class BaseBin(abc.ABC):
-
     def __init__(self, bin_name: str):
         self.name = bin_name
 
@@ -20,4 +19,4 @@ class BaseBin(abc.ABC):
         raise NotImplementedError()
 
     def _date_part(self):
-        return datetime.date.today().strftime('%Y-%m-%d')
+        return datetime.date.today().strftime("%Y-%m-%d")

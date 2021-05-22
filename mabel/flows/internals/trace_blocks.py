@@ -28,14 +28,14 @@ serialize = json.dumps  # prevent circular imports
 
 EMPTY_HASH = "0" * 64
 
-class TraceBlocks():
 
-    __slots__ = ('blocks','proof')
+class TraceBlocks:
+
+    __slots__ = ("blocks", "proof")
 
     def __init__(
-            self,
-            uuid="00000000-0000-0000-0000-000000000000",
-            proof:Optional[str] = None):
+        self, uuid="00000000-0000-0000-0000-000000000000", proof: Optional[str] = None
+    ):
         """
         Create block chain and seed with the UUID.
 
@@ -49,15 +49,11 @@ class TraceBlocks():
         """
         self.proof = proof
         self.blocks = []
-        self.blocks.append({
-            "block": 1,
-            "timestamp": datetime.datetime.now().isoformat(),
-            "uuid": uuid
-        })
+        self.blocks.append(
+            {"block": 1, "timestamp": datetime.datetime.now().isoformat(), "uuid": uuid}
+        )
 
-    def add_block(
-            self,
-            **kwargs):
+    def add_block(self, **kwargs):
         """
         Add a new block to the chain.
         """
@@ -69,27 +65,29 @@ class TraceBlocks():
         # if you wanted to make this harder, set a different rule to exit
         # while loop. Setting this proof to be harder will impact performance
         # as finding a value to satify the proof will block processing.
-        
+
         if self.proof:
             proof = str(entropy.random_int())
-            while self.hash(''.join([proof, previous_block_hash]))[-1] not in self.proof:
+            while (
+                self.hash("".join([proof, previous_block_hash]))[-1] not in self.proof
+            ):
                 proof = str(entropy.random_int())
 
         block = {
             "block": len(self.blocks) + 1,
             "timestamp": datetime.datetime.now().isoformat(),
             "previous_block_hash": previous_block_hash,
-            **kwargs
+            **kwargs,
         }
         if self.proof:
-            block['proof'] = proof
+            block["proof"] = proof
         self.blocks.append(block)
 
     def __str__(self):
         return serialize(self.blocks, indent=True)
 
     def __repr__(self):
-        return F"<TraceBlocks with {len(self.blocks)} blocks>"
+        return f"<TraceBlocks with {len(self.blocks)} blocks>"
 
     def hash(self, block):
         try:
