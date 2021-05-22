@@ -11,8 +11,7 @@ from .internals.base_operator import BaseOperator
 from ..errors import FlowError
 
 
-class Flow():
-
+class Flow:
     def __init__(self):
         """
         Flow represents Directed Acyclic Graphs which are used to describe data
@@ -84,7 +83,9 @@ class Flow():
                 return False
 
             # remove the exits
-            new_edges = [(source, target) for source, target in my_edges if target not in exits]
+            new_edges = [
+                (source, target) for source, target in my_edges if target not in exits
+            ]
             my_edges = new_edges
         return True
 
@@ -112,32 +113,34 @@ class Flow():
     def attach_writers(self, writers: List[dict]):
 
         for writer in writers:
-            name = writer.get('name')
-            class_name = writer.get('class')
+            name = writer.get("name")
+            class_name = writer.get("class")
 
-            if class_name == 'gcs':
-                writer = GoogleCloudStorageBin(                 # type: ignore
-                        bin_name=name,                          # type: ignore
-                        project=writer.get('project'),          # type: ignore
-                        bucket=writer.get('bucket'),            # type: ignore
-                        path=writer.get('path'))                # type: ignore
+            if class_name == "gcs":
+                writer = GoogleCloudStorageBin(  # type: ignore
+                    bin_name=name,  # type: ignore
+                    project=writer.get("project"),  # type: ignore
+                    bucket=writer.get("bucket"),  # type: ignore
+                    path=writer.get("path"),
+                )  # type: ignore
                 self._attach_writer(writer)
 
-            if class_name == 'file' or class_name == 'disk':
-                writer = FileBin(                               # type: ignore
-                        bin_name=name,                          # type: ignore
-                        path=writer.get('path'))                # type: ignore
+            if class_name == "file" or class_name == "disk":
+                writer = FileBin(  # type: ignore
+                    bin_name=name, path=writer.get("path")  # type: ignore
+                )  # type: ignore
                 self._attach_writer(writer)
 
-            if class_name == 'minio':
-                writer = MinioBin(                              # type: ignore
-                        bin_name=name,                          # type: ignore
-                        end_point=writer.get('end_point'),      # type: ignore
-                        bucket=writer.get('bucket'),            # type: ignore
-                        path=writer.get('path'),                # type: ignore
-                        access_key=writer.get('access_key'),    # type: ignore
-                        secret_key=writer.get('secret_key'),    # type: ignore
-                        secure=writer.get('secure', True))      # type: ignore
+            if class_name == "minio":
+                writer = MinioBin(  # type: ignore
+                    bin_name=name,  # type: ignore
+                    end_point=writer.get("end_point"),  # type: ignore
+                    bucket=writer.get("bucket"),  # type: ignore
+                    path=writer.get("path"),  # type: ignore
+                    access_key=writer.get("access_key"),  # type: ignore
+                    secret_key=writer.get("secret_key"),  # type: ignore
+                    secure=writer.get("secure", True),
+                )  # type: ignore
                 self._attach_writer(writer)
 
     def _attach_writer(self, writer):
@@ -152,7 +155,9 @@ class Flow():
                 setattr(operator, str(writer.name), writer)
             return True
         except Exception as err:
-            get_logger().error(F"Failed to add writer to flow - {type(err).__name__} - {err}")
+            get_logger().error(
+                f"Failed to add writer to flow - {type(err).__name__} - {err}"
+            )
             return False
 
     def _validate_flow(self):
@@ -160,11 +165,20 @@ class Flow():
 
         # flow must be more than one item long
         if len(self.nodes) <= 1:
-            raise FlowError("Flow failed validation - Flows must have more than one Operator")
+            raise FlowError(
+                "Flow failed validation - Flows must have more than one Operator"
+            )
 
         # flow paths must end with end operators
-        if not all([isinstance(self.get_operator(node), EndOperator) for node in self.get_exit_points()]):
-            raise FlowError("Flow failed validation - Flows must end with an EndOperator")
+        if not all(
+            [
+                isinstance(self.get_operator(node), EndOperator)
+                for node in self.get_exit_points()
+            ]
+        ):
+            raise FlowError(
+                "Flow failed validation - Flows must end with an EndOperator"
+            )
 
         # flows must be acyclic
         if not self.is_acyclic():
@@ -172,11 +186,15 @@ class Flow():
 
         # flows must have a single entry-point
         if len(self.get_entry_points()) != 1:
-            raise FlowError("Flow failed validation - Flows must have a single entry point")
+            raise FlowError(
+                "Flow failed validation - Flows must have a single entry point"
+            )
 
     def __enter__(self):
         if self.has_run:
-            raise FlowError("Flows can only have a single runner, either loop after creating the runner or build the flow again.")
+            raise FlowError(
+                "Flows can only have a single runner, either loop after creating the runner or build the flow again."
+            )
         self._validate_flow()
         return FlowRunner(self)
 
@@ -196,13 +214,13 @@ class Flow():
     def __repr__(self):
         if not self.is_acyclic():
             return "Flow: cannot represent cyclic flows"
-        return '\n'.join(list(self._draw()))
+        return "\n".join(list(self._draw()))
 
     def _draw(self):
         for entry in self.get_entry_points():
-            yield(F"{entry}")
+            yield (f"{entry}")
             t = self._tree(entry, "")
-            yield("\n".join(t))
+            yield ("\n".join(t))
 
     def _tree(self, node, prefix=""):
 
@@ -216,7 +234,7 @@ class Flow():
         pointers = [tee] * (len(contents) - 1) + [last]
         for pointer, child_node in zip(pointers, contents):
             yield prefix + pointer + child_node
-            if len(self.get_outgoing_links(node)) > 0:  
+            if len(self.get_outgoing_links(node)) > 0:
                 # extend the prefix and recurse:
                 extension = branch if pointer == tee else space
                 # i.e. space because last, └── , above so no more |

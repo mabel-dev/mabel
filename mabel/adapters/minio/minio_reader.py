@@ -5,8 +5,10 @@ import io
 from ...data.readers.internals.base_inner_reader import BaseInnerReader
 from ...utils import paths, common
 from ...errors import MissingDependencyError
+
 try:
     from minio import Minio  # type:ignore
+
     minio_installed = True
 except ImportError:  # pragma: no cover
     minio_installed = False
@@ -15,24 +17,21 @@ except ImportError:  # pragma: no cover
 class MinIoReader(BaseInnerReader):
 
     RULES = [
-        {"name":"end_point", "required":True},
-        {"name":"access_key", "required":True},
-        {"name":"secret_key", "required":True},
-        {"name":"secure", "required":True}
+        {"name": "end_point", "required": True},
+        {"name": "access_key", "required": True},
+        {"name": "secret_key", "required": True},
+        {"name": "secure", "required": True},
     ]
 
-    def __init__(
-            self,
-            end_point: str,
-            access_key: str,
-            secret_key: str,
-            **kwargs):
+    def __init__(self, end_point: str, access_key: str, secret_key: str, **kwargs):
 
         if not minio_installed:  # pragma: no cover
-            raise MissingDependencyError("`minio` is missing, please install or include in requirements.txt")
+            raise MissingDependencyError(
+                "`minio` is missing, please install or include in requirements.txt"
+            )
 
         super().__init__(**kwargs)
-        secure = kwargs.get('secure', True)
+        secure = kwargs.get("secure", True)
         self.minio = Minio(end_point, access_key, secret_key, secure=secure)
 
     def get_blobs_at_path(self, path):
@@ -40,13 +39,14 @@ class MinIoReader(BaseInnerReader):
         for cycle_date in common.date_range(self.start_date, self.end_date):
             cycle_path = paths.build_path(path=object_path, date=cycle_date)
             blobs = self.minio.list_objects(
-                    bucket_name=bucket,
-                    prefix=cycle_path,
-                    recursive=True)
+                bucket_name=bucket, prefix=cycle_path, recursive=True
+            )
 
-            yield from [bucket + '/' + blob.object_name
-                    for blob in blobs
-                    if not blob.object_name.endswith('/')]
+            yield from [
+                bucket + "/" + blob.object_name
+                for blob in blobs
+                if not blob.object_name.endswith("/")
+            ]
 
     def get_blob_stream(self, blob_name: str) -> io.IOBase:
         bucket, object_path, name, extension = paths.get_parts(blob_name)

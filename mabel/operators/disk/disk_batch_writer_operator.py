@@ -4,12 +4,6 @@ from ...adapters.disk import DiskWriter
 
 
 class DiskBatchWriterOperator(BaseWriterOperator):
+    def __init__(self, **kwargs):
 
-    def __init__(
-            self,
-            **kwargs):
-
-        super().__init__(
-                writer=BatchWriter,
-                inner_writer=DiskWriter,
-                **kwargs)
+        super().__init__(writer=BatchWriter, inner_writer=DiskWriter, **kwargs)

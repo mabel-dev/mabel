@@ -16,6 +16,7 @@ class LEVELS(int, Enum):
     AUDIT       | Information relating to proving activities happened            | Messages should be JSON formatted
     ALERT       | Intervention is required                                       | Messages should be instructive
     """
+
     DEBUG = int(logging.DEBUG)  # 10
     INFO = int(logging.INFO)  # 20
     WARNING = int(logging.WARNING)  # 30
@@ -23,11 +24,12 @@ class LEVELS(int, Enum):
     AUDIT = 80
     ALERT = 90
 
+
 LEVELS_TO_STRING = {
     LEVELS.DEBUG: "DEBUG",
     LEVELS.INFO: "INFO",
     LEVELS.WARNING: "WARNING",
     LEVELS.ERROR: "ERROR",
     LEVELS.AUDIT: "AUDIT",
-    LEVELS.ALERT: "ALERT"
+    LEVELS.ALERT: "ALERT",
 }

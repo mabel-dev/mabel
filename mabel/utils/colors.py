@@ -1,5 +1,3 @@
-
-
 COLORS = {
     "{OFF}": "\033[0m",  # Text Reset
     # Regular Colors

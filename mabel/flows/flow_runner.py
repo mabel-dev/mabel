@@ -5,17 +5,14 @@ from ..errors import FlowError
 from ..logging import get_logger
 
 
-class FlowRunner():
-
+class FlowRunner:
     def __init__(self, flow):
         self.flow = flow
         self.cycles = 0
 
     def __call__(
-            self,
-            data: dict = {},
-            context: dict = None,
-            trace_sample_rate: float = 1/1000):
+        self, data: dict = {}, context: dict = None, trace_sample_rate: float = 1 / 1000
+    ):
         """
         Create a `run` of a flow and execute with a specific data object.
 
@@ -26,46 +23,51 @@ class FlowRunner():
             context: dictionary (optional)
                 Additional information to support the processing of the data
             trace_sample_rate: float (optional)
-                The sample for for to emit trace messages for, default is 
+                The sample for for to emit trace messages for, default is
                 1/1000.
         """
         if not context:
-            context = {} 
+            context = {}
 
         # create a run_id for the message if it doesn't already have one
-        if not context.get('run_id'):
-            context['run_id'] = str(uuid.uuid4())
+        if not context.get("run_id"):
+            context["run_id"] = str(uuid.uuid4())
 
         # create a tracer for the message
-        if not context.get('execution_trace'):
-            context['execution_trace'] = TraceBlocks(uuid=context['run_id'])
+        if not context.get("execution_trace"):
+            context["execution_trace"] = TraceBlocks(uuid=context["run_id"])
 
         # if trace hasn't been explicitly set - randomly select based on a sample rate
-        if not context.get('trace') and trace_sample_rate:
-            context['trace'] = entropy.random_range(1, round(1 / trace_sample_rate)) == 1  # nosec
+        if not context.get("trace") and trace_sample_rate:
+            context["trace"] = (
+                entropy.random_range(1, round(1 / trace_sample_rate)) == 1
+            )  # nosec
 
         try:
             # start the flow, walk from the nodes with no incoming links
             for operator_name in self.flow.get_entry_points():
                 self.cycles += 1
-                self._inner_runner(operator_name=operator_name, data=data, context=context)
+                self._inner_runner(
+                    operator_name=operator_name, data=data, context=context
+                )
                 if self.cycles % 1000 == 0:
-                    get_logger().debug(F"Executed {self.cycles} cycles of flows.")
+                    get_logger().debug(f"Executed {self.cycles} cycles of flows.")
         except (Exception, SystemExit) as err:
             # if we have a uncaught failure, make sure it's logged
-            get_logger().alert(F'FLOW ABEND - {type(err).__name__} - {err}')  # type:ignore
+            get_logger().alert(
+                f"FLOW ABEND - {type(err).__name__} - {err}"
+            )  # type:ignore
             raise err
 
         # if being traced, send the trace to the trace writer
-        if context.get('trace', False) and hasattr(self, 'trace_writer'):
-            self.trace_writer(context['execution_trace'], id_=str(context.get('run_id')))  #type:ignore
-
+        if context.get("trace", False) and hasattr(self, "trace_writer"):
+            self.trace_writer(
+                context["execution_trace"], id_=str(context.get("run_id"))
+            )  # type:ignore
 
     def _inner_runner(
-            self,
-            operator_name: str = None,
-            data: dict = {},
-            context: dict = None):
+        self, operator_name: str = None, data: dict = {}, context: dict = None
+    ):
         """
         Walk the dag/flow by:
         - Getting the function of the current node
@@ -78,7 +80,7 @@ class FlowRunner():
 
         operator = self.flow.get_operator(operator_name)
         if operator is None:
-            raise FlowError(F"Invalid Flow - Operator {operator_name} is invalid")
+            raise FlowError(f"Invalid Flow - Operator {operator_name} is invalid")
         if not hasattr(operator, "error_writer") and hasattr(self, "error_writer"):
             operator.error_writer = self.error_writer  # type:ignore
         out_going_links = self.flow.get_outgoing_links(operator_name)
@@ -91,4 +93,8 @@ class FlowRunner():
                 outcome = [(outcome_data, outcome_context)]
             for outcome_data, outcome_context in outcome:
                 for operator_name in out_going_links:
-                    self._inner_runner(operator_name=operator_name, data=outcome_data, context=outcome_context.copy())
+                    self._inner_runner(
+                        operator_name=operator_name,
+                        data=outcome_data,
+                        context=outcome_context.copy(),
+                    )

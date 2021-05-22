@@ -1,5 +1,6 @@
 from functools import lru_cache
 
+
 @lru_cache(1)
 def is_running_from_ipython():
     """

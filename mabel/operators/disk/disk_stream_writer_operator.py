@@ -4,12 +4,6 @@ from ...adapters.disk import DiskWriter
 
 
 class DiskStreamWriterOperator(BaseWriterOperator):
+    def __init__(self, **kwargs):
 
-    def __init__(
-            self,
-            **kwargs):
-
-        super().__init__(
-                writer=StreamWriter,
-                inner_writer=DiskWriter,
-                **kwargs)
+        super().__init__(writer=StreamWriter, inner_writer=DiskWriter, **kwargs)

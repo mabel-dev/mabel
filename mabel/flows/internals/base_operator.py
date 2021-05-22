@@ -15,7 +15,6 @@ from ...data.formats.json import parse, serialize
 # inheriting ABC is part of ensuring that this class only ever
 # interited from
 class BaseOperator(abc.ABC):
-
     @staticmethod
     @functools.lru_cache(1)
     def sigterm():
@@ -54,35 +53,39 @@ class BaseOperator(abc.ABC):
                 The number of seconds to wait between retries, this defaults
                 to 5 and is limited between 1 and 300
             rolling_failure_window: integer (optional)
-                The number of previous Operators to remember the 
+                The number of previous Operators to remember the
                 success/failure of, when >50% of the Operators in this
                 window are failures, the job aborts. This defaults to 10 and is
                 limited between 1 (single failure aborts) and 100
         """
         self.flow = None
-        self.executions = 0      # number of times this Operator has been run
-        self.execution_time_ns = 0      # nano seconds of cpu execution time
-        self.errors = 0                 # number of errors
-        self.commencement_time = None   # the time processing started
-        self.logger = get_logger()      # get the mabel logger
+        self.executions = 0  # number of times this Operator has been run
+        self.execution_time_ns = 0  # nano seconds of cpu execution time
+        self.errors = 0  # number of errors
+        self.commencement_time = None  # the time processing started
+        self.logger = get_logger()  # get the mabel logger
 
         self.name = self.__class__.__name__
 
         # read retry settings, clamp values to practical ranges
-        self.retry_count = self._clamp(kwargs.get('retry_count', 2), 1, 5)
-        self.retry_wait = self._clamp(kwargs.get('retry_wait', 5), 1, 300)
-        rolling_failure_window = self._clamp(kwargs.get('rolling_failure_window', 10), 1, 100)
+        self.retry_count = self._clamp(kwargs.get("retry_count", 2), 1, 5)
+        self.retry_wait = self._clamp(kwargs.get("retry_wait", 5), 1, 300)
+        rolling_failure_window = self._clamp(
+            kwargs.get("rolling_failure_window", 10), 1, 100
+        )
         self.last_few_results = [1] * rolling_failure_window  # track the last n results
 
         # Log the hashes of the __call__ and version methods
-        call_hash = self._hash(inspect.getsource(self.__call__))[-12:]    
+        call_hash = self._hash(inspect.getsource(self.__call__))[-12:]
         version_hash = self._hash(inspect.getsource(self.version))[-12:]
-        self.logger.audit({
+        self.logger.audit(
+            {
                 "operator": self.name,
                 "call_hash": call_hash,
                 "version_hash": self.version(),
-                "version_method": version_hash })
-
+                "version_method": version_hash,
+            }
+        )
 
     @abc.abstractmethod
     def execute(self, data: dict = {}, context: dict = {}):
@@ -90,7 +93,7 @@ class BaseOperator(abc.ABC):
         YOU MUST OVERRIDE THIS METHOD
 
         This is where the main logic for the Operator is implemented.
-        
+
         Parameters:
             data: Dictionary (or Any)
                 The data to be processed, the Base Operator is opinionated
@@ -130,7 +133,9 @@ class BaseOperator(abc.ABC):
             try:
                 outcome = self.finalize(context)
             except Exception as err:
-                self.logger.error(F"Problem finalizing {self.name} - {type(err).__name__} - {err} - {context.get('run_id')}")
+                self.logger.error(
+                    f"Problem finalizing {self.name} - {type(err).__name__} - {err} - {context.get('run_id')}"
+                )
             finally:
                 if not outcome:
                     outcome = context
@@ -154,48 +159,61 @@ class BaseOperator(abc.ABC):
                 self.errors += 1
                 attempts_to_go -= 1
                 if attempts_to_go:
-                    self.logger.error(F"{self.name} - {type(err).__name__} - {err} - retry in {self.retry_wait} seconds ({context.get('run_id')})")
+                    self.logger.error(
+                        f"{self.name} - {type(err).__name__} - {err} - retry in {self.retry_wait} seconds ({context.get('run_id')})"
+                    )
                     time.sleep(self.retry_wait)
                 else:
-                    error_log_reference = ''
+                    error_log_reference = ""
                     error_reference = err
                     try:
                         error_payload = (
-                                F"timestamp  : {datetime.datetime.today().isoformat()}\n"
-                                F"operator   : {self.name}\n"
-                                F"error type : {type(err).__name__}\n"
-                                F"details    : {err}\n"
-                                "------------------------------------------------------------------------------------------------------------------------\n"
-                                F"{self._wrap_text(render_error_stack(), 120)}\n"
-                                "-------------------------------------------------------  context  ------------------------------------------------------\n"
-                                F"{self._wrap_text(str(context), 120)}\n"
-                                "--------------------------------------------------------  data  --------------------------------------------------------\n"
-                                F"{self._wrap_text(str(data), 120)}\n"
-                                "------------------------------------------------------------------------------------------------------------------------\n")
-                        error_log_reference = self.error_writer(error_payload)  # type:ignore
+                            f"timestamp  : {datetime.datetime.today().isoformat()}\n"
+                            f"operator   : {self.name}\n"
+                            f"error type : {type(err).__name__}\n"
+                            f"details    : {err}\n"
+                            "------------------------------------------------------------------------------------------------------------------------\n"
+                            f"{self._wrap_text(render_error_stack(), 120)}\n"
+                            "-------------------------------------------------------  context  ------------------------------------------------------\n"
+                            f"{self._wrap_text(str(context), 120)}\n"
+                            "--------------------------------------------------------  data  --------------------------------------------------------\n"
+                            f"{self._wrap_text(str(data), 120)}\n"
+                            "------------------------------------------------------------------------------------------------------------------------\n"
+                        )
+                        error_log_reference = self.error_writer(
+                            error_payload
+                        )  # type:ignore
                     except Exception as err:
-                        self.logger.error(F"Problem writing to the error bin, a record has been lost. {self.name}, {type(err).__name__} - {err} - {context.get('run_id')}")
+                        self.logger.error(
+                            f"Problem writing to the error bin, a record has been lost. {self.name}, {type(err).__name__} - {err} - {context.get('run_id')}"
+                        )
                     finally:
                         # finally blocks are called following a try/except block regardless of the outcome
-                        self.logger.alert(F"{self.name} - {type(error_reference).__name__} - {error_reference} - tried {self.retry_count} times before aborting ({context.get('run_id')}) {error_log_reference}")
+                        self.logger.alert(
+                            f"{self.name} - {type(error_reference).__name__} - {error_reference} - tried {self.retry_count} times before aborting ({context.get('run_id')}) {error_log_reference}"
+                        )
                     outcome = None
                     # add a failure to the last_few_results list
                     self.last_few_results.append(0)
                     self.last_few_results.pop(0)
 
         # message tracing
-        if context.get('trace', False):
+        if context.get("trace", False):
             data_hash = self._hash(data)
-            context['execution_trace'].add_block(data_hash=data_hash,
-                                                 operator=self.name,
-                                                 operator_version=self.version(),
-                                                 execution_ns=my_execution_time,
-                                                 data_block=serialize(data))
-            self.logger.audit(F"{context.get('run_id')} {self.name} {data_hash}")
+            context["execution_trace"].add_block(
+                data_hash=data_hash,
+                operator=self.name,
+                operator_version=self.version(),
+                execution_ns=my_execution_time,
+                data_block=serialize(data),
+            )
+            self.logger.audit(f"{context.get('run_id')} {self.name} {data_hash}")
 
         # if there is a high failure rate, abort
         if sum(self.last_few_results) < (len(self.last_few_results) / 2):
-            self.logger.alert(F"Failure Rate for {self.name} over last {len(self.last_few_results)} executions is over 50%, aborting.")
+            self.logger.alert(
+                f"Failure Rate for {self.name} over last {len(self.last_few_results)} executions is over 50%, aborting."
+            )
             sys.exit(1)
 
         return outcome
@@ -210,12 +228,12 @@ class BaseOperator(abc.ABC):
             "version": self.version(),
             "execution_count": self.executions,
             "error_count": self.errors,
-            "execution_sec": self.execution_time_ns / 1e9
+            "execution_sec": self.execution_time_ns / 1e9,
         }
         if self.executions == 0:
-            self.logger.warning(F"{self.name} was never executed")
+            self.logger.warning(f"{self.name} was never executed")
         if self.commencement_time:
-            response['commencement_time'] = self.commencement_time.isoformat()
+            response["commencement_time"] = self.commencement_time.isoformat()
         return response
 
     @functools.lru_cache(1)
@@ -244,10 +262,11 @@ class BaseOperator(abc.ABC):
 
     def error_writer(self, record):
         # this is a stub to be overridden
-        raise ValueError('no error_writer attached')
+        raise ValueError("no error_writer attached")
 
     def __gt__(self, next_operators):
         from ...flows.flow import Flow
+
         if not isinstance(next_operators, (list, set)):
             next_operators = [next_operators]
         if self.flow:
@@ -256,7 +275,7 @@ class BaseOperator(abc.ABC):
         else:
             # if I don't have a graph, create one
             flow = Flow()
-            flow.add_operator(F"{self.name}-{id(self)}", self)
+            flow.add_operator(f"{self.name}-{id(self)}", self)
 
         for operator in next_operators:
             if isinstance(operator, Flow):
@@ -265,21 +284,28 @@ class BaseOperator(abc.ABC):
                 # the entry-point
                 flow.merge(operator)
                 flow.link_operators(
-                    F"{self.name}-{id(self)}",
+                    f"{self.name}-{id(self)}",
                     operator.get_entry_points().pop(),
                 )
             elif issubclass(type(operator), BaseOperator):
                 # otherwise add the node and edge and set the graph further
                 # down the line
-                flow.add_operator(F"{operator.__class__.__name__}-{id(operator)}", operator)
-                flow.link_operators(F"{self.name}-{id(self)}", F"{operator.__class__.__name__}-{id(operator)}")
+                flow.add_operator(
+                    f"{operator.__class__.__name__}-{id(operator)}", operator
+                )
+                flow.link_operators(
+                    f"{self.name}-{id(self)}",
+                    f"{operator.__class__.__name__}-{id(operator)}",
+                )
                 operator.flow = flow
             else:
                 label = type(operator).__name__
-                if hasattr(operator, '__name__'):
+                if hasattr(operator, "__name__"):
                     label = operator.__name__
                 #  deepcode ignore return~not~implemented: appears to be false positive
-                raise TypeError(F"Operator {label} must inherit BaseOperator, this error also occurs when the Operator has not been correctly instantiated.")
+                raise TypeError(
+                    f"Operator {label} must inherit BaseOperator, this error also occurs when the Operator has not been correctly instantiated."
+                )
         # this variable only exists to build the graph, we don't need it
         # anymore so destroy it
         self.flow = None
@@ -308,10 +334,12 @@ class BaseOperator(abc.ABC):
 
     def _wrap_text(self, text, line_len):
         from textwrap import fill
+
         def _inner(text):
             for line in text.splitlines():
                 yield fill(line, line_len)
-        return '\n'.join(list(_inner(text)))
+
+        return "\n".join(list(_inner(text)))
 
     def __repr__(self):
-        return F"<{self.name}, version: {self.version()}>"
+        return f"<{self.name}, version: {self.version()}>"

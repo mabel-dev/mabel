@@ -3,11 +3,7 @@ from ..data import Reader
 
 
 class ReaderOperator(BaseOperator):
-
-    def __init__(
-            self,
-            *args,
-            **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.reader = Reader(**kwargs)
 

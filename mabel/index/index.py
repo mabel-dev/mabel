@@ -25,8 +25,9 @@ Terminology:
 def safe_field_name(field_name):
     """strip all the non-alphanums from a field name"""
     import re
-    pattern = re.compile('[^a-zA-Z0-9]+')
-    return pattern.sub('', field_name)
+
+    pattern = re.compile("[^a-zA-Z0-9]+")
+    return pattern.sub("", field_name)
 
 
 class IndexEntry:
