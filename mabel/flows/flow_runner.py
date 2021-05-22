@@ -54,16 +54,16 @@ class FlowRunner:
                     get_logger().debug(f"Executed {self.cycles} cycles of flows.")
         except (Exception, SystemExit) as err:
             # if we have a uncaught failure, make sure it's logged
-            get_logger().alert(
+            get_logger().alert(  # type:ignore
                 f"FLOW ABEND - {type(err).__name__} - {err}"
-            )  # type:ignore
+            )
             raise err
 
         # if being traced, send the trace to the trace writer
         if context.get("trace", False) and hasattr(self, "trace_writer"):
-            self.trace_writer(
+            self.trace_writer(  # type:ignore
                 context["execution_trace"], id_=str(context.get("run_id"))
-            )  # type:ignore
+            )
 
     def _inner_runner(
         self, operator_name: str = None, data: dict = {}, context: dict = None

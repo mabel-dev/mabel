@@ -121,8 +121,8 @@ class Flow:
                     bin_name=name,  # type: ignore
                     project=writer.get("project"),  # type: ignore
                     bucket=writer.get("bucket"),  # type: ignore
-                    path=writer.get("path"),
-                )  # type: ignore
+                    path=writer.get("path"),  # type: ignore
+                )
                 self._attach_writer(writer)
 
             if class_name == "file" or class_name == "disk":
