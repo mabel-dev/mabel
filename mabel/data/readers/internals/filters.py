@@ -104,6 +104,32 @@ def evaluate(
     raise InvalidSyntaxError('Unable to evaluate Filter')    # pragma: no cover
 
 
+def get_indexable_filter_columns(predicate):
+    """
+    Returns all of the columns in a filter which the operation benefits
+    from an index
+
+    This creates an list of tuples of (field,value) that we can feed to the
+    index search.
+    """
+    INDEXABLE_OPS = {'=', '==', 'is', 'in', 'contains'}
+    if predicate is None:
+        return []
+    if isinstance(predicate, tuple):
+        key, op, value = predicate
+        if op in INDEXABLE_OPS:
+            return [(key, value,)]
+    if isinstance(predicate, list):
+        if all([isinstance(p, tuple) for p in predicate]):
+            return [(k,v,) for k,o,v in predicate if o in INDEXABLE_OPS]
+        if all([isinstance(p, list) for p in predicate]):
+            columns = []
+            for p in predicate:
+                columns += _get_indexable_filter_columns(p)
+            return columns
+    return []    # pragma: no cover
+
+
 class Filters():
 
     __slots__ = ('empty_filter', 'predicates')
