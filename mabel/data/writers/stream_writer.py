@@ -105,9 +105,13 @@ class StreamWriter(SimpleWriter):
 
 
     def finalize(self):
-        for blob_writer_identity in self.writer_pool.writers:
-            get_logger().debug(F'Removing {blob_writer_identity} from the writer pool during finalization')
-            self.writer_pool.remove_writer(blob_writer_identity)
+        with threading.Lock():
+            for blob_writer_identity in self.writer_pool.writers:
+                try:
+                    get_logger().debug(F'Removing {blob_writer_identity} from the writer pool during finalization')
+                    self.writer_pool.remove_writer(blob_writer_identity)
+                except Exception as err: 
+                    get_logger().debug(f"Error finalizing `{blob_writer_identity}`, {type(err).__nam__} - {err}")
         return super().finalize()
 
 

@@ -5,12 +5,14 @@ import os
 import logging
 import datetime
 from typing import Union, Optional
+from .levels import LEVELS, LEVELS_TO_STRING
 from ..utils import is_running_from_ipython
 try:
     from google.cloud import logging as stackdriver  # type:ignore
     from google.cloud.logging import DESCENDING  # type:ignore
 except ImportError:
     stackdriver = None  # type:ignore
+
 
 
 class GoogleLogger():
@@ -37,12 +39,9 @@ class GoogleLogger():
             severity: Optional[int] = logging.DEBUG):
 
         from .create_logger import LOG_NAME
-        from .levels import LEVELS_TO_STRING, LEVELS
 
-        print(f"{LOG_NAME} | {LEVELS_TO_STRING.get(severity, 'UNKNOWN')} | {datetime.datetime.now().isoformat()} | {message}")  # type:ignore
-
-        # rewrite one of the levels
-        LEVELS_TO_STRING[LEVELS.AUDIT] = "NOTICE"
+        if os.environ.get('DUAL_LOG', False):
+            print(f"{LOG_NAME} | {LEVELS_TO_STRING.get(severity, 'UNKNOWN')} | {datetime.datetime.now().isoformat()} | {message}")  # type:ignore
 
         client = stackdriver.Client()
         logger = client.logger(GoogleLogger.safe_field_name(LOG_NAME))
@@ -63,7 +62,8 @@ class GoogleLogger():
                     labels=labels)
 
     def __init__(self):
-        from .levels import LEVELS
+        # rewrite one of the levels
+        LEVELS_TO_STRING[LEVELS.AUDIT] = "NOTICE"
 
         self.level = int(os.environ.get("LOGGING_LEVEL", 25))
         self.debug = self.create_logger(LEVELS.DEBUG)
@@ -93,7 +93,7 @@ class GoogleLogger():
 
     def setLevel(self, level):
         self.level = level
-        self.debug = self.create_logger(LEVELS.INFO)
+        self.debug = self.create_logger(LEVELS.DEBUG)
         self.info = self.create_logger(LEVELS.INFO)
         self.warning = self.create_logger(LEVELS.WARNING)
         self.error = self.create_logger(LEVELS.ERROR)
