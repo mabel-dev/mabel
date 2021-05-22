@@ -40,7 +40,7 @@ class GoogleLogger():
 
         from .create_logger import LOG_NAME
 
-        if os.environ['DUAL_LOG', False]:
+        if os.environ.get('DUAL_LOG', False):
             print(f"{LOG_NAME} | {LEVELS_TO_STRING.get(severity, 'UNKNOWN')} | {datetime.datetime.now().isoformat()} | {message}")  # type:ignore
 
         client = stackdriver.Client()
