@@ -54,6 +54,7 @@ class ProfileDataOperator(BaseOperator):
                 "items": 0,
                 "type": ProfileDataOperator.get_type(schema._validators[field]),
             }
+        self.logger.warning("`ProfileDataOperator` is an alpha feature and may change in the future.")
 
     def execute(self, data, context):
 
