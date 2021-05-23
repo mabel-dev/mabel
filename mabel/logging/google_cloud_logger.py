@@ -14,7 +14,18 @@ except ImportError:
     stackdriver = None  # type:ignore
 
 
+def extract_caller():
+    import traceback
+    import os.path
+    frames = traceback.extract_stack()
+    if len(frames) < 3:
+        return "", ""
+    frame = frames[len(frames) - 3]
+    head, tail = os.path.split(frame.filename)
+    return frame.name, f"{tail}():{frame.lineno}"
+
 class GoogleLogger:
+
     @staticmethod
     def safe_field_name(field_name):
         """strip all the non-alphanums from a field name"""
@@ -40,17 +51,20 @@ class GoogleLogger:
 
         from .create_logger import LOG_NAME
 
-        if os.environ.get("DUAL_LOG", False):
-            print(
-                f"{LOG_NAME} | {LEVELS_TO_STRING.get(severity, 'UNKNOWN')} | {datetime.datetime.now().isoformat()} | {message}"    # type:ignore
-            )
-
         client = stackdriver.Client()
         logger = client.logger(GoogleLogger.safe_field_name(LOG_NAME))
 
         labels = {}
         if system:
             labels["system"] = system
+        method, location = extract_caller()
+        labels["method"] = method
+        labels["location"] = location
+
+        if os.environ.get("DUAL_LOG", False):
+            print(
+                f"{LOG_NAME} | {LEVELS_TO_STRING.get(severity, 'UNKNOWN')} | {datetime.datetime.now().isoformat()} | {method} | {location} | {message}"    # type:ignore
+            )
 
         if isinstance(message, dict):
             logger.log_struct(

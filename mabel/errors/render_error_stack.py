@@ -49,7 +49,7 @@ def wrap_text(text, line_len):
 def bar_label(label):
     if len(label) > 0:
         center = ("**" + label + "**").center(LINE_LENGTH)
-        return center.replace(" ", "-").replace("*", " ")
+        return center.replace(" ", "═").replace("*", " ")
     else:
         return "-" * LINE_LENGTH
 
@@ -124,7 +124,7 @@ def _read_from_code(filename: str, line: int, extend_by: int) -> Generator:
 
         lines = code.splitlines()
         start_line = max(line - extend_by, 0)
-        end_line = min(line + extend_by, len(lines) + 1)
+        end_line = min(line + extend_by + 1, len(lines) + 1)
 
         path = pathlib.Path(filename)
 
