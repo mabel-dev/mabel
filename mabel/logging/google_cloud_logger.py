@@ -18,10 +18,12 @@ def extract_caller():
     import traceback
     import os.path
     frames = traceback.extract_stack()
-    if len(frames) < 3:
-        return "", ""
-    frame = frames[len(frames) - 3]
-    head, tail = os.path.split(frame.filename)
+    #if len(frames) < 3:
+    #    return "", ""
+    #frame = frames[len(frames) - 3]
+    for i, frame in enumerate(frames):
+        head, tail = os.path.split(frame.filename)
+        print(i, tail, frame.name, frame.lineno)
     return frame.name, f"{tail}():{frame.lineno}"
 
 class GoogleLogger:
