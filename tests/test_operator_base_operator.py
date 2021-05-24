@@ -1,7 +1,7 @@
 import os
 import sys
 import time
-
+import pytest
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.operators import EndOperator
 from mabel.errors import IntegrityError
@@ -25,11 +25,13 @@ class failing_operator(BaseOperator):
 
 def test_retry():
     """test the retry runs the specified amount of time"""
-    flow = failing_operator(retry_count=3, retry_wait=1) > EndOperator()
-    with flow as runner:
-        runner(data="", context={})
-    global fail_counter
-    assert fail_counter == 3, fail_counter
+
+    with pytest.raises(SystemExit):
+        flow = failing_operator(retry_count=3, retry_wait=1) > EndOperator()
+        with flow as runner:
+            runner(data="", context={})
+        global fail_counter
+        assert fail_counter == 3, fail_counter
 
 
 def test_sigterm():
