@@ -75,10 +75,6 @@ class LogFormatter(logging.Formatter):
 
         try:
             dirty_record = json.loads(json_part)
-        except ValueError:
-            dirty_record = {"message": json_part.strip()}
-
-        if isinstance(dirty_record, dict):
             clean_record = {}
             for key, value in dirty_record.items():
                 if any(
@@ -99,6 +95,9 @@ class LogFormatter(logging.Formatter):
                     )
 
             parts.append(" " + json.dumps(clean_record))
+
+        except ValueError:
+            parts.append(" " + json_part.strip())
 
         record = "|".join(parts)
         return colorize(record, self._can_colorize())

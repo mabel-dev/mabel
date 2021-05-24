@@ -192,6 +192,7 @@ class BaseOperator(abc.ABC):
                         self.logger.alert(
                             f"{self.name} - {type(error_reference).__name__} - {error_reference} - tried {self.retry_count} times before aborting ({context.get('run_id')}) {error_log_reference}"
                         )
+                        sys.exit(1)
                     outcome = None
                     # add a failure to the last_few_results list
                     self.last_few_results.append(0)
