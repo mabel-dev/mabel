@@ -22,7 +22,7 @@ def test_sanitizing_log_formatter_pass_thru():
     assert "log level" in sanitized
     assert "date" in sanitized
     assert "location" in sanitized
-    assert "message" in sanitized
+    assert "message" in sanitized, sanitized
 
 
 def test_sanitizing_log_formatter_redact_simple_case():

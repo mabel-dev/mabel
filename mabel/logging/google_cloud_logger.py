@@ -23,7 +23,7 @@ def extract_caller():
     #frame = frames[len(frames) - 3]
     for i, frame in enumerate(frames):
         head, tail = os.path.split(frame.filename)
-        print(i, tail, frame.name, frame.lineno)
+        print("GCP LOG STACK", i, tail, frame.name, frame.lineno)
     return frame.name, f"{tail}():{frame.lineno}"
 
 class GoogleLogger:
