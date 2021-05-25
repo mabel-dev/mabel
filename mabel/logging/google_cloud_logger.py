@@ -24,9 +24,9 @@ def extract_caller():
     import traceback
     import os.path
     frames = traceback.extract_stack()
-    if len(frames) < 3:
+    if len(frames) < 4:
         return "", ""
-    frame = frames[len(frames) - 3]
+    frame = frames[len(frames) - 4]
     head, tail = os.path.split(frame.filename)
     return frame.name, f"{tail}():{frame.lineno}"
 
