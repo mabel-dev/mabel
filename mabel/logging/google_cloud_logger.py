@@ -13,17 +13,14 @@ try:
 except ImportError:
     stackdriver = None  # type:ignore
 
-
 def extract_caller():
     import traceback
     import os.path
     frames = traceback.extract_stack()
-    #if len(frames) < 3:
-    #    return "", ""
-    #frame = frames[len(frames) - 3]
-    for i, frame in enumerate(frames):
-        head, tail = os.path.split(frame.filename)
-        print("GCP LOG STACK", i, tail, frame.name, frame.lineno)
+    if len(frames) < 4:
+        return "", ""
+    frame = frames[len(frames) - 4]
+    head, tail = os.path.split(frame.filename)
     return frame.name, f"{tail}():{frame.lineno}"
 
 class GoogleLogger:

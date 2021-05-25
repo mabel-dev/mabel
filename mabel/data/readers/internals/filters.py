@@ -66,11 +66,11 @@ def evaluate(
         predicate: Union[tuple, list],
         record: dict) -> bool:
     """
-    This evaluation routine for the Filter class.
+    This is the evaluation routine for the Filter class.
 
     Implements a DNF (Disjunctive Normal Form) interpretter. Predicates in the
-    same list are joined with an AND (_all()_) and predicates in adjacent lists
-    are joined with an OR (_any()_). This allows for non-trivial filters to be
+    same list are joined with an AND (*all()*) and predicates in adjacent lists
+    are joined with an OR (*any()*). This allows for non-trivial filters to be
     written with just _tuples_ and _lists_.
 
     The predicates are in _tuples_ in the form (`key`, `op`, `value`) where the
@@ -125,7 +125,7 @@ def get_indexable_filter_columns(predicate):
         if all([isinstance(p, list) for p in predicate]):
             columns = []
             for p in predicate:
-                columns += _get_indexable_filter_columns(p)
+                columns += get_indexable_filter_columns(p)
             return columns
     return []    # pragma: no cover
 

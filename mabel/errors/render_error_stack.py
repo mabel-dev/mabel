@@ -49,7 +49,7 @@ def wrap_text(text, line_len):
 def bar_label(label):
     if len(label) > 0:
         center = ("**" + label + "**").center(LINE_LENGTH)
-        return center.replace(" ", "═").replace("*", " ")
+        return center.replace(" ", "=").replace("*", " ")
     else:
         return "-" * LINE_LENGTH
 
