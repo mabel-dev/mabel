@@ -80,8 +80,8 @@ pip install --upgrade git+https://github.com/mabel-dev/mabel
 There are a number of optional dependencies which are usually only required for
 specific features and functionality. These are listed in the
 [requirements.txt](https://github.com/mabel-dev/mabel/blob/main/tests/requirements.txt)
-file in the _tests_ folder which is used for testing. The key exception is `orjson`
-which is the preferred JSON library but not available on all platforms.
+file in the _tests_ folder which is used for testing. The exception is `orjson` which
+is the preferred JSON library but not available on all platforms.
 
 ## Integrations
 
