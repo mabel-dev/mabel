@@ -59,6 +59,9 @@ def test_reader_writer_format_lzma():
     g = glob.glob("_temp/**/*.lzma", recursive=True)
     assert len(g) > 0, g
 
+    c = glob.glob("_temp/**/*.complete", recursive=True)
+    len(c) == 0, c
+
     r = Reader(inner_reader=DiskReader, dataset="_temp")
     l = len(list(r))
     shutil.rmtree("_temp", ignore_errors=True)
@@ -71,6 +74,9 @@ def test_reader_writer_format_zstd():
 
     g = glob.glob("_temp/**/*.zstd", recursive=True)
     assert len(g) > 0, g
+
+    c = glob.glob("_temp/**/*.complete", recursive=True)
+    len(c) == 0, c
 
     r = Reader(inner_reader=DiskReader, dataset="_temp")
     l = len(list(r))
@@ -85,6 +91,9 @@ def test_reader_writer_format_jsonl():
     g = glob.glob("_temp/**/*.jsonl", recursive=True)
     assert len(g) > 0, g
 
+    c = glob.glob("_temp/**/*.complete", recursive=True)
+    len(c) == 0, c
+
     r = Reader(inner_reader=DiskReader, dataset="_temp")
     l = len(list(r))
     shutil.rmtree("_temp", ignore_errors=True)
@@ -98,6 +107,9 @@ def test_reader_writer_format_parquet():
     g = glob.glob("_temp/**/*.parquet", recursive=True)
     assert len(g) > 0, g
 
+    c = glob.glob("_temp/**/*.complete", recursive=True)
+    len(c) == 0, c
+
     r = Reader(inner_reader=DiskReader, row_format="pass-thru", dataset="_temp")
     l = len(list(r))
     shutil.rmtree("_temp", ignore_errors=True)
@@ -110,6 +122,9 @@ def test_reader_writer_format_default():
 
     g = glob.glob("_temp/**/*.zstd", recursive=True)
     assert len(g) > 0, g
+
+    c = glob.glob("_temp/**/*.complete", recursive=True)
+    len(c) == 0, c
 
     r = Reader(inner_reader=DiskReader, dataset="_temp")
     l = len(list(r))

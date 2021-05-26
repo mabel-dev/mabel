@@ -1,8 +1,11 @@
+import os
 import datetime
 from typing import Any
 from .simple_writer import SimpleWriter
 from .internals.blob_writer import BlobWriter
 from ...utils import paths
+from ...data.formats import json
+from ...logging import get_logger
 
 
 class BatchWriter(SimpleWriter):
@@ -26,6 +29,7 @@ class BatchWriter(SimpleWriter):
                 Schema used to test records for conformity, default is no 
                 schema and therefore no validation
             format: string (optional)
+                - text: raw text lines
                 - jsonl: raw json lines
                 - lzma: lzma compressed json lines
                 - zstd: zstandard compressed json lines (default)
@@ -71,6 +75,19 @@ class BatchWriter(SimpleWriter):
 
         # create the writer
         self.blob_writer = BlobWriter(**kwargs)
+
+
+    def finalize(self):
+        completion_path = self.blob_writer.inner_writer.filename
+        completion_path = os.path.split(completion_path)[0] + "/frame.complete"
+        status = {
+            "records": self.records
+        }
+        flag = self.blob_writer.inner_writer.commit(
+                byte_data=json.serialize(status, as_bytes=True),
+                override_blob_name=completion_path)
+        get_logger().debug(f"Frame completion file `{flag}` written")
+        return super().finalize()
 
     @staticmethod
     def create_frame_id():
