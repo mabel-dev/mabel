@@ -3,7 +3,7 @@ import sys
 import time
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
-from mabel.operators import EndOperator
+from mabel.operators import EndOperator, NoOpOperator
 from mabel import BaseOperator, operator
 from rich import traceback
 
@@ -33,8 +33,18 @@ def test_operatify():
 
     assert error == False
 
+def test_in_flow():
+
+    f = NoOpOperator() > do_something > EndOperator()
+
+    print(f)
+
+    with f as runner:
+        runner({}, None)
+
 
 if __name__ == "__main__":  # pragma: no cover
     test_operatify()
+    test_in_flow()
 
     print("okay")
