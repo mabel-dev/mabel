@@ -73,7 +73,20 @@ READERS = {
 
 class BaseInnerReader(abc.ABC):
 
-    VALID_EXTENSIONS = ('.txt', '.json', '.zstd', '.lzma', '.jsonl', '.csv', '.lxml', '.parquet', '.ignore', '.profile', '.index', '.bloom')
+    VALID_EXTENSIONS = (
+            '.txt',
+            '.json',
+            '.zstd',
+            '.lzma',
+            '.jsonl',
+            '.csv',
+            '.lxml',
+            '.parquet',
+            '.ignore',
+            '.profile',
+            '.index',
+            '.bloom',
+            '.complete')
 
     def _extract_date_part(self, value):
         if isinstance(value, str):
@@ -183,14 +196,20 @@ class BaseInnerReader(abc.ABC):
         if as_ats:
             as_ats = sorted(as_ats)
             as_at = as_ats.pop()
-            # the .ignore file means the frame shouldn't be used 
-            while any([blob for blob in blobs if as_at + '/.ignore' in blob]):
-                get_logger().debug(F".ignore file found in frame `{as_at}``, ignoring")
+
+            is_complete = lambda blobs: any([blob for blob in blobs if as_at + '/frame.complete' in blob])
+            is_invalid  = lambda blobs: any([blob for blob in blobs if (as_at + '/frame.ignore' in blob)])
+
+            while not is_complete(blobs) or is_invalid(blobs):
+                if not is_complete(blobs):
+                    get_logger().warning(F"Frame `{as_at}` is not complete - `frame.complete` file is not present - skipping this frame.")
+                if is_invalid(blobs):
+                    get_logger().debug(F"Frame `{as_at}` is invalid - `frame.ignore` file is present - skipping this frame.")
                 if len(as_ats) > 0:
                     as_at = as_ats.pop()
                 else:
                     return []
             get_logger().debug(F"Reading from DataSet frame `{as_at}`")
-            blobs = [blob for blob in blobs if as_at in blob]
+            blobs = [blob for blob in blobs if (as_at in blob) and ('/frame.complete' not in blob)]
 
         return sorted(blobs)

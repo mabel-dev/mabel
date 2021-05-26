@@ -19,44 +19,43 @@ class BaseOperator(abc.ABC):
     @functools.lru_cache(1)
     def sigterm():
         """
-        Create a termination signal - SIGTERM, when the data record is
-        this, we do any closure activities.
+        Create a termination signal - SIGTERM, when the data record is this, we do any
+        closure activities.
 
-        Change this each cycle to reduce the chances of it being sent
-        accidently (it shouldn't but what could happen is the payload
-        is saved from one job and fed to another)
+        Change this each cycle to reduce the chances of it being sent accidently (it
+        shouldn't but what could happen is the payload is saved from one job and fed to
+        another)
         """
         full_hash = hashlib.sha256(datetime.datetime.now().isoformat().encode())
         return "SIGTERM-" + full_hash.hexdigest()
 
     def __init__(self, *args, **kwargs):
         """
-        All Operators should inherit from this class, it will help ensure a
-        common structure to Operator classes and provide some common
-        functionality and interfaces.
+        All Operators should inherit from this class, it will help ensure a common
+        structure to Operator classes and provide some common functionality and
+        interfaces.
 
         This Base Operator is relatively complex but serves to simplify the
-        implementation of functional Operators so engineers can focus on
-        handling data, not getting a pipeline to work.
+        implementation of functional Operators so engineers can focus on handling data,
+        not getting a pipeline to work.
 
-        You are expected to override the execute method with the logic of the
-        Operator, this should return None, if the pipeline should terminate
-        at this Operator (for example, if the Operator filters records),
-        return a tuple of (data, context), or a generator/list of (data,
-        context).
+        You are expected to override the execute method with the logic of the Operator,
+        this should return None, if the pipeline should terminate at this Operator (for
+        example, if the Operator filters records), return a tuple of (data, context),
+        or a generator/list of (data, context).
 
         Parameters:
             retry_count: integer (optional)
-                The number of times to attempt a Operator before aborting,
-                this defaults to 2 and is limited between 1 and 5
+                The number of times to attempt a Operator before aborting, this
+                defaults to 2 and is limited between 1 and 5
             retry_wait: integer (optional)
-                The number of seconds to wait between retries, this defaults
-                to 5 and is limited between 1 and 300
+                The number of seconds to wait between retries, this defaults to 5 and
+                is limited between 1 and 300
             rolling_failure_window: integer (optional)
-                The number of previous Operators to remember the
-                success/failure of, when >50% of the Operators in this
-                window are failures, the job aborts. This defaults to 10 and is
-                limited between 1 (single failure aborts) and 100
+                The number of previous Operators to remember the success/failure of,
+                when >50% of the Operators in this window are failures, the job aborts.
+                This defaults to 10 and is limited between 1 (single failure aborts)
+                and 100
         """
         self.flow = None
         self.executions = 0  # number of times this Operator has been run
@@ -96,8 +95,8 @@ class BaseOperator(abc.ABC):
 
         Parameters:
             data: Dictionary (or Any)
-                The data to be processed, the Base Operator is opinionated
-                for the data to be a dictionary, but any data type will work
+                The data to be processed, the Base Operator is opinionated for the data
+                to be a dictionary, but any data type will work
             context: Dictionary
                 Information to support the exeuction of the Operator
 
@@ -125,8 +124,8 @@ class BaseOperator(abc.ABC):
         """
         DO NOT OVERRIDE THIS METHOD
 
-        This method wraps the `execute` method, which must be overridden, to
-        to add management of the execution such as sensors and retries.
+        This method wraps the `execute` method, which must be overridden, to add
+        management of the execution such as sensors and retries.
         """
         if data == self.sigterm():
             outcome = None
@@ -221,8 +220,8 @@ class BaseOperator(abc.ABC):
 
     def read_sensors(self):
         """
-        Format data about the transformation, this can be overridden but it
-        should include this information
+        Format data about the transformation, this can be overridden but it should
+        include this information
         """
         response = {
             "operator": self.name,
@@ -243,13 +242,12 @@ class BaseOperator(abc.ABC):
         DO NOT OVERRIDE THIS METHOD.
 
         The version of the Operator code, this is intended to facilitate
-        reproducability and auditability of the pipeline. The version is the
-        last 12 characters of the hash of the source code of the 'execute'
-        method. This removes the need for the developer to remember to
-        increment a version variable.
+        reproducability and auditability of the pipeline. The version is the last 12
+        characters of the hash of the source code of the 'execute' method. This
+        removes the need for the developer to remember to increment a version variable.
 
-        Hashing isn't security sensitive here, it's to identify changes
-        rather than protect information.
+        Hashing isn't security sensitive here, it's to identify changes rather than
+        protect information.
         """
         source = inspect.getsource(self.execute)
         source = self._only_alpha_nums(source)
@@ -289,14 +287,14 @@ class BaseOperator(abc.ABC):
                     operator.get_entry_points().pop(),
                 )
             elif issubclass(type(operator), BaseOperator):
-                # otherwise add the node and edge and set the graph further
-                # down the line
+                # otherwise add the node and edge and set the graph further down the
+                # line
                 flow.add_operator(
-                    f"{operator.__class__.__name__}-{id(operator)}", operator
+                    f"{operator.name}-{id(operator)}", operator
                 )
                 flow.link_operators(
                     f"{self.name}-{id(self)}",
-                    f"{operator.__class__.__name__}-{id(operator)}",
+                    f"{operator.name}-{id(operator)}",
                 )
                 operator.flow = flow
             else:
@@ -307,8 +305,7 @@ class BaseOperator(abc.ABC):
                 raise TypeError(
                     f"Operator {label} must inherit BaseOperator, this error also occurs when the Operator has not been correctly instantiated."
                 )
-        # this variable only exists to build the graph, we don't need it
-        # anymore so destroy it
+        # this variable only exists to build the graph
         self.flow = None
         return flow
 

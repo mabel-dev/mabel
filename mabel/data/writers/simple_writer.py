@@ -75,6 +75,8 @@ class SimpleWriter():
         # create the writer
         self.blob_writer = BlobWriter(**kwargs)
 
+        self.records = 0
+
 
     def append(self, record: dict = {}):
         """
@@ -93,6 +95,8 @@ class SimpleWriter():
             raise ValidationError(F'Schema Validation Failed ({self.schema.last_error})')
 
         self.blob_writer.append(record)
+        self.records += 1
+
 
     def __del__(self):
         if hasattr(self, 'finalized') and not self.finalized:

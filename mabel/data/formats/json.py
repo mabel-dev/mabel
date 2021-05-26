@@ -1,9 +1,9 @@
 """
 Create .serialize and .parse methods to handle json operations
 
-Where orjson is installed, the performance impact is nil, without orjson,
-parsing is about as fast as ujson, however serialization is slower, although
-still faster than the native json library. 
+Where orjson is installed, the performance impact is nil, without orjson, parsing is
+about as fast as ujson, however serialization is slower, although still faster than the
+native json library. 
 """
 from typing import Any, Union
 import datetime
