@@ -75,8 +75,8 @@ class BaseOperator(abc.ABC):
         self.last_few_results = [1] * rolling_failure_window  # track the last n results
 
         # Log the hashes of the __call__ and version methods
-        call_hash = self._hash(inspect.getsource(self.__call__))[-12:]
-        version_hash = self._hash(inspect.getsource(self.version))[-12:]
+        call_hash = self._hash(inspect.getsource(self.__call__))[-8:]
+        version_hash = self._hash(inspect.getsource(self.version))[-8:]
         self.logger.audit(
             {
                 "operator": self.name,
@@ -159,7 +159,7 @@ class BaseOperator(abc.ABC):
                 attempts_to_go -= 1
                 if attempts_to_go:
                     self.logger.error(
-                        f"{self.name} - {type(err).__name__} - {err} - retry in {self.retry_wait} seconds ({context.get('run_id')})"
+                        f"`{self.name}` - {type(err).__name__} - {err} - retry in {self.retry_wait} seconds ({context.get('run_id')})"
                     )
                     time.sleep(self.retry_wait)
                 else:
@@ -184,18 +184,19 @@ class BaseOperator(abc.ABC):
                         )  # type:ignore
                     except Exception as err:
                         self.logger.error(
-                            f"Problem writing to the error bin, a record has been lost. {self.name}, {type(err).__name__} - {err} - {context.get('run_id')}"
+                            f"Problem writing to the error bin, a record has been lost. `{self.name}`, {type(err).__name__} - {err} - {context.get('run_id')}"
                         )
                     finally:
                         # finally blocks are called following a try/except block regardless of the outcome
                         self.logger.alert(
-                            f"{self.name} - {type(error_reference).__name__} - {error_reference} - tried {self.retry_count} times before aborting ({context.get('run_id')}) {error_log_reference}"
+                            f"`{self.name}` - {type(error_reference).__name__} - {error_reference} - tried {self.retry_count} times before aborting ({context.get('run_id')}) {error_log_reference}"
                         )
                         sys.exit(1)
-                    outcome = None
-                    # add a failure to the last_few_results list
-                    self.last_few_results.append(0)
-                    self.last_few_results.pop(0)
+                    
+                outcome = None
+                # add a failure to the last_few_results list
+                self.last_few_results.append(0)
+                self.last_few_results.pop(0)
 
         # message tracing
         if context.get("trace", False):
@@ -212,7 +213,7 @@ class BaseOperator(abc.ABC):
         # if there is a high failure rate, abort
         if sum(self.last_few_results) < (len(self.last_few_results) / 2):
             self.logger.alert(
-                f"Failure Rate for {self.name} over last {len(self.last_few_results)} executions is over 50%, aborting."
+                f"Failure Rate for `{self.name}` over last {len(self.last_few_results)} executions is over 50%, aborting."
             )
             sys.exit(1)
 
@@ -225,13 +226,13 @@ class BaseOperator(abc.ABC):
         """
         response = {
             "operator": self.name,
-            "version": self.version(),
+            "version_hash": self.version(),
             "execution_count": self.executions,
             "error_count": self.errors,
-            "execution_sec": self.execution_time_ns / 1e9,
+            "execution_seconds": self.execution_time_ns / 1e9,
         }
         if self.executions == 0:
-            self.logger.warning(f"{self.name} was never executed")
+            self.logger.warning(f"`{self.name}` was never executed")
         if self.commencement_time:
             response["commencement_time"] = self.commencement_time.isoformat()
         return response
@@ -242,7 +243,7 @@ class BaseOperator(abc.ABC):
         DO NOT OVERRIDE THIS METHOD.
 
         The version of the Operator code, this is intended to facilitate
-        reproducability and auditability of the pipeline. The version is the last 12
+        reproducability and auditability of the pipeline. The version is the last 8
         characters of the hash of the source code of the 'execute' method. This
         removes the need for the developer to remember to increment a version variable.
 
@@ -252,7 +253,7 @@ class BaseOperator(abc.ABC):
         source = inspect.getsource(self.execute)
         source = self._only_alpha_nums(source)
         full_hash = hashlib.sha256(source.encode())
-        return full_hash.hexdigest()[-12:]
+        return full_hash.hexdigest()[-8:]
 
     def __del__(self):
         # do nothing - prevents errors if someone thinks they're being a good
