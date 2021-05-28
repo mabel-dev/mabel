@@ -1,7 +1,6 @@
 import time
 import os
 import sys
-import datetime
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.adapters.null import NullWriter
