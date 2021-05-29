@@ -64,7 +64,7 @@ class GoogleLogger:
         method, module, line = extract_caller()
         labels["method"] = method
         labels["module"] = module
-        labels["line"] = line
+        labels["line"] = str(line)
 
         if os.environ.get("DUAL_LOG", False):
             print(
