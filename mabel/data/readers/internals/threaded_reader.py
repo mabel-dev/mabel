@@ -17,9 +17,9 @@ def threaded_reader(
         This compromises record ordering to achieve speed increases
 
     Parameters:
-        items_to_read: list of strings:
+        items_to_read: list of strings
             The name of the blobs to read
-        reader: Reader:
+        reader: Reader
             The Reader object to perform the reading operations
 
     Yields:
