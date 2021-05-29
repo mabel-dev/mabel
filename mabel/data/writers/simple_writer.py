@@ -70,7 +70,7 @@ class SimpleWriter():
         get_logger().debug(json.serialize(arg_dict))
 
         # default index
-        kwargs['indexes'] = kwargs.get('indexes', [])
+        kwargs['index_on'] = kwargs.get('index_on', [])
 
         # create the writer
         self.blob_writer = BlobWriter(**kwargs)
