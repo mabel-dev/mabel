@@ -85,7 +85,9 @@ def evaluate(
     # and do the evaluation
     if isinstance(predicate, tuple):
         key, op, value = predicate
-        return OPERATORS[op](record.get(key, ''), value)
+        if key in record:
+            return OPERATORS[op](record[key], value)
+        return False
 
     if isinstance(predicate, list):
         # Are all of the entries tuples?
@@ -197,6 +199,9 @@ class Filters():
         Yields:
             dictionary
         """
-        for record in dictset:
-            if self.empty_filter or evaluate(self.predicates, record):
-                yield record
+        if self.empty_filter:
+            yield from dictset
+        else:
+            for record in dictset:
+                if evaluate(self.predicates, record):
+                    yield record

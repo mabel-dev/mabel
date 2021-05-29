@@ -16,7 +16,6 @@ except ImportError:
 
 LOG_SINK = "MABEL"
 
-
 def extract_caller():
     import traceback
     import os.path
@@ -43,7 +42,8 @@ class GoogleLogger:
         use_logger.append(stackdriver is not None)
         use_logger.append(not is_running_from_ipython())
         use_logger.append(not os.environ.get("IGNORE_STACKDRIVER", False))
-        LOG_SINK = os.environ("LOG_SINK", LOG_SINK)
+        global LOG_SINK
+        LOG_SINK = os.environ.get("LOG_SINK", LOG_SINK)
         return all(use_logger)
 
     @staticmethod

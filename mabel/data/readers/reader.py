@@ -301,17 +301,21 @@ class Reader():
             yield from processed_reader(readable_blobs, self.reader_class, self._parse, self.where)
 
         else:
-            base_offset = self.cursor.get('offset', 0)
+            offset = self.cursor.get('offset', 0)
             for blob in readable_blobs:
                 self.cursor['blob'] = blob
                 self.cursor['offset'] = -1
                 local_reader = self._read_blob(blob, blob_list)
-                for burn in range(base_offset):
-                    next(local_reader, None)
-                for offset, record in enumerate(local_reader):
-                    self.cursor['offset'] = offset + base_offset
-                    yield record
-                base_offset = 0
+                if offset > 0:
+                    for burn in range(offset):
+                        next(local_reader, None)
+                    for record_offset, record in enumerate(local_reader):
+                        self.cursor['offset'] = offset + record_offset
+                        yield record
+                else:
+                    for self.cursor['offset'], record in enumerate(local_reader):
+                        yield record
+                offset = 0
 
     def __iter__(self):
         return self
