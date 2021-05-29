@@ -17,6 +17,7 @@ limitations under the License.
 """
 
 from pathlib import Path
+from typing import Iterable, Tuple
 from ..json import serialize
 from ....errors import MissingDependencyError
 
@@ -195,7 +196,7 @@ class Graph(object):
 
     def outgoing_edges(
             self,
-            source):
+            source) -> Iterable[Tuple]:
         """
         Get the list of edges traversable from a given node.
 
@@ -209,6 +210,20 @@ class Graph(object):
         targets = self._edges.get(source) or {}
         return {(source, t, r) for t, r in targets}
 
+    def ingoing_edges(
+            self,
+            target) -> Iterable[Tuple]:
+        """
+        Get the list of edges which can traverse to a given node.
+
+        Parameters:
+            target: string
+                The node to get the incoming edges for
+
+        Returns:
+            Set of Tuples (Source, Target, Relationship)
+        """
+        return [(s,t,r) for s, t, r in self.edges() if t == target]
 
     def copy(self):
         g = Graph()

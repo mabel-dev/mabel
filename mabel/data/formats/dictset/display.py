@@ -44,7 +44,7 @@ def html_table(
     for i, row in enumerate(dictset):
         rows.append(row)
         columns = columns + list(row.keys())
-        if i == limit:
+        if (i+1) == limit:
             break
     columns = set(columns)  # type:ignore
 

@@ -10,7 +10,7 @@ from ..formats.dictset import select_record_fields, select_from
 from ..formats.dictset.display import html_table, ascii_table
 from ..formats import json
 from ...logging import get_logger
-from ...errors import InvalidCombinationError, MissingDependencyError
+from ...errors import InvalidCombinationError, MissingDependencyError, DataNotFoundError
 from ...index.index import Index, safe_field_name
 from ...utils.parameter_validator import validate
 from ...utils.ipython import is_running_from_ipython
@@ -287,8 +287,12 @@ class Reader():
                 else:
                     get_logger().debug(F"Reader found {len(readable_blobs)} sources to read data from after {skipped} jumped to get to cursor.")
                     break
+        elif len(readable_blobs) == 0:
+            message = F"Reader found {len(readable_blobs)} sources to read data from in `{self.reader_class.dataset}`."
+            get_logger().error(message)
+            raise DataNotFoundError(message)
         else:
-            get_logger().debug(F"Reader found {len(readable_blobs)} sources to read data from.")
+            get_logger().debug(F"Reader found {len(readable_blobs)} sources to read data from in `{self.reader_class.dataset}`.")
         
         if self.thread_count > 0:
             yield from threaded_reader(readable_blobs, blob_list, self)
@@ -297,17 +301,21 @@ class Reader():
             yield from processed_reader(readable_blobs, self.reader_class, self._parse, self.where)
 
         else:
-            base_offset = self.cursor.get('offset', 0)
+            offset = self.cursor.get('offset', 0)
             for blob in readable_blobs:
                 self.cursor['blob'] = blob
                 self.cursor['offset'] = -1
                 local_reader = self._read_blob(blob, blob_list)
-                for burn in range(base_offset):
-                    next(local_reader, None)
-                for offset, record in enumerate(local_reader):
-                    self.cursor['offset'] = offset + base_offset
-                    yield record
-                base_offset = 0
+                if offset > 0:
+                    for burn in range(offset):
+                        next(local_reader, None)
+                    for record_offset, record in enumerate(local_reader):
+                        self.cursor['offset'] = offset + record_offset
+                        yield record
+                else:
+                    for self.cursor['offset'], record in enumerate(local_reader):
+                        yield record
+                offset = 0
 
     def __iter__(self):
         return self

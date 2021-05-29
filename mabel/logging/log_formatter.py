@@ -97,6 +97,9 @@ class LogFormatter(logging.Formatter):
             parts.append(" " + json.dumps(clean_record))
 
         except ValueError:
+            json_part = re.sub("`([^`]*)`", r"`{YELLOW}\1{OFF}`", f"{json_part}")
+            json_part = re.sub("'([^']*)'", r"'{YELLOW}\1{OFF}'", f"{json_part}")
+            json_part = re.sub("\"([^\"]*)\"", r"'{YELLOW}\1{OFF}'", f"{json_part}")
             parts.append(" " + json_part.strip())
 
         record = "|".join(parts)
