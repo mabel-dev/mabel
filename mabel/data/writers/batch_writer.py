@@ -46,7 +46,7 @@ class BatchWriter(SimpleWriter):
 
             raw_path: boolean (optional)
                 Don't automatically add any date parts to dataset names
-            indexes: collection (optional)
+            index_on: collection (optional)
                 Index on these columns, the default is to not index
 
         Note:

@@ -35,6 +35,10 @@ def test_cursor():
         test_counter += 1
     cursor = reader.cursor
 
+    assert isinstance(cursor, dict)
+    assert cursor['offset'] == (lim % 25)
+    assert cursor['blob'] == 'tests/data/tweets/tweets-0001.jsonl'
+
     reader = Reader(
             inner_reader=DiskReader,
             dataset="tests/data/tweets/",
@@ -46,8 +50,22 @@ def test_cursor():
 
     assert number_of_records == test_counter
 
+def test_cursor_as_text():
+
+    offsets = [1,6,8,13,22]
+
+    for offset in offsets:
+        reader = Reader(
+                inner_reader=DiskReader,
+                dataset="tests/data/tweets/",
+                raw_path=True,
+                cursor='{"blob": "tests/data/tweets/tweets-0001.jsonl", "offset": ' + str(offset) + ' }')
+        reader = list(reader)
+        assert len(reader) == 25 - offset
+
 
 if __name__ == "__main__":  # pragma: no cover
     test_cursor()
+    test_cursor_as_text()
 
     print("okay")

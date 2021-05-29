@@ -32,9 +32,9 @@ class BlobWriter():
             format: str = 'zstd',
             **kwargs):
 
-        self.indexes = kwargs.get('indexes', [])
+        self.indexes = kwargs.get('index_on', [])
         if self.indexes != []:
-            get_logger().warning("Index functionality is Alpha - interface and features subject to change.")
+            get_logger().warning("Index functionality is Beta - it is not recommemded for production systems.")
 
         self.format = format
         self.maximum_blob_size = blob_size

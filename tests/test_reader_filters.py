@@ -111,8 +111,10 @@ def test_combined_filters():
     filter05 = Filters()
     # IN conditions
     filter06 = Filters(("name", "in", ["Fleur Isabelle Delacour", "Hermione Grainger"]))
-    # contains conditions
+    # contains conditions - on lists
     filter07 = Filters(("affiliations", "contains", "Griffindor"))
+    # contains conditions
+    filter08 = Filters(("name", "contains", "Isabelle"))
 
     assert len([a for a in filter01.filter_dictset(TEST_DATA)]) == 1
     assert len([a for a in filter02.filter_dictset(TEST_DATA)]) == 1
@@ -122,6 +124,7 @@ def test_combined_filters():
     assert len([a for a in filter05.filter_dictset(TEST_DATA)]) == 6
     assert len([a for a in filter06.filter_dictset(TEST_DATA)]) == 2
     assert len([a for a in filter07.filter_dictset(TEST_DATA)]) == 2
+    assert len([a for a in filter08.filter_dictset(TEST_DATA)]) == 1
 
 
 if __name__ == "__main__":  # pragma: no cover
