@@ -13,15 +13,19 @@ try:
 except ImportError:
     stackdriver = None  # type:ignore
 
+
+LOG_SINK = "MABEL"
+
+
 def extract_caller():
     import traceback
     import os.path
     frames = traceback.extract_stack()
     if len(frames) < 4:
-        return "", ""
+        return "<unknown>", "<unknown>", -1
     frame = frames[len(frames) - 4]
     head, tail = os.path.split(frame.filename)
-    return frame.name, f"{tail}():{frame.lineno}"
+    return frame.name, tail, frame.lineno
 
 class GoogleLogger:
 
@@ -39,6 +43,7 @@ class GoogleLogger:
         use_logger.append(stackdriver is not None)
         use_logger.append(not is_running_from_ipython())
         use_logger.append(not os.environ.get("IGNORE_STACKDRIVER", False))
+        LOG_SINK = os.environ("LOG_SINK", LOG_SINK)
         return all(use_logger)
 
     @staticmethod
@@ -51,18 +56,19 @@ class GoogleLogger:
         from .create_logger import LOG_NAME
 
         client = stackdriver.Client()
-        logger = client.logger(GoogleLogger.safe_field_name(LOG_NAME))
+        logger = client.logger(GoogleLogger.safe_field_name(LOG_SINK))
 
         labels = {}
         if system:
             labels["system"] = system
-        method, location = extract_caller()
+        method, module, line = extract_caller()
         labels["method"] = method
-        labels["location"] = location
+        labels["module"] = module
+        labels["line"] = line
 
         if os.environ.get("DUAL_LOG", False):
             print(
-                f"{LOG_NAME} | {LEVELS_TO_STRING.get(severity, 'UNKNOWN')} | {datetime.datetime.now().isoformat()} | {method} | {location} | {message}"    # type:ignore
+                f"{LOG_NAME} | {LEVELS_TO_STRING.get(severity, 'UNKNOWN')} | {datetime.datetime.now().isoformat()} | {method}() | {module}:{line} | {message}"    # type:ignore
             )
 
         if isinstance(message, dict):
