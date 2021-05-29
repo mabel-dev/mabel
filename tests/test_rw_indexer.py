@@ -29,8 +29,11 @@ def test_index():
     index = glob.glob("_temp/data/tweets/**/*username.index", recursive=True)
     assert len(index) == 1, index
 
+    with open(index[0], 'rb') as f:
+        idx = f.read()
+
     # test the recently created index outside the reader
-    i = Index(io.BytesIO(open(index[0], 'rb').read()))
+    i = Index(io.BytesIO(idx))
     assert i.size == 50
     assert i.search("SwiftOnSecurity") == set()
     assert i.search("BBCNews") == {1, 2, 4, 44, 24, 25}
