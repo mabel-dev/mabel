@@ -33,8 +33,6 @@ class BlobWriter():
             **kwargs):
 
         self.indexes = kwargs.get('index_on', [])
-        if self.indexes != []:
-            get_logger().warning("Index functionality is Beta - it is not recommemded for production systems.")
 
         self.format = format
         self.maximum_blob_size = blob_size
