@@ -53,7 +53,7 @@ def is_date(**kwargs):
                         return False
                     # YYYY-MM-DDTHH:MM
                     datetime.datetime(
-                        *map(
+                        *map(  # type:ignore
                             int,
                             [
                                 value[:4],
@@ -63,7 +63,7 @@ def is_date(**kwargs):
                                 value[14:16],
                             ],
                         )
-                    )  # type:ignore
+                    )
             return True
         except (ValueError, TypeError):
             return False
@@ -186,7 +186,7 @@ class Schema:
                     symbols=item.get("symbols"),  # type:ignore
                     min=item.get("min"),  # type:ignore
                     max=item.get("max"),  # type:ignore
-                    format=item.get("format"),
+                    format=item.get("format"),  # type:ignore
                 )  # type:ignore
                 for item in definition  # type:ignore
             }
