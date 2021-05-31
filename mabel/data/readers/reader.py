@@ -23,44 +23,84 @@ PARSERS = {
     "text": pass_thru_parser,
     "block": block_parser,
     "pass-thru": pass_thru_parser,
-    "xml": xml_parser
+    "xml": xml_parser,
 }
 
 RULES = [
-    {"name": "as_at", "required": False, "warning": "Time Travel (as_at) is Alpha - it's interface may change and some features may not be supported", "incompatible_with": ['start_date', 'end_date']},
-    {"name": "cursor", "required": False, "warning": None, "incompatible_with": ['thread_count', 'fork_processes']},
+    {
+        "name": "as_at",
+        "required": False,
+        "warning": "Time Travel (as_at) is Alpha - it's interface may change and some features may not be supported",
+        "incompatible_with": ["start_date", "end_date"],
+    },
+    {
+        "name": "cursor",
+        "required": False,
+        "warning": None,
+        "incompatible_with": ["thread_count", "fork_processes"],
+    },
     {"name": "dataset", "required": True, "warning": None, "incompatible_with": []},
     {"name": "end_date", "required": False, "warning": None, "incompatible_with": []},
     {"name": "extension", "required": False, "warning": None, "incompatible_with": []},
     {"name": "filters", "required": False, "warning": None, "incompatible_with": []},
-    {"name": "fork_processes", "required": False, "warning": "Forked Reader is Alpha - it's interface may change and some features may not be supported", "incompatible_with": ['thread_count']},
-    {"name": "from_path", "required": False, "warning": "DEPRECATION: Reader \'from_path\' parameter will be replaced with \'dataset\'", "incompatible_with": ['dataset']},
-    {"name": "inner_reader", "required": False, "warning" :None, "incompatible_with": []},
+    {
+        "name": "fork_processes",
+        "required": False,
+        "warning": "Forked Reader is Alpha - it's interface may change and some features may not be supported",
+        "incompatible_with": ["thread_count"],
+    },
+    {
+        "name": "from_path",
+        "required": False,
+        "warning": "DEPRECATION: Reader 'from_path' parameter will be replaced with 'dataset'",
+        "incompatible_with": ["dataset"],
+    },
+    {
+        "name": "inner_reader",
+        "required": False,
+        "warning": None,
+        "incompatible_with": [],
+    },
     {"name": "project", "required": False, "warning": None, "incompatible_with": []},
     {"name": "raw_path", "required": False, "warning": None, "incompatible_with": []},
     {"name": "row_format", "required": False, "warning": None, "incompatible_with": []},
     {"name": "select", "required": False, "warning": None, "incompatible_with": []},
     {"name": "self", "required": True, "warning": None, "incompatible_with": []},
     {"name": "start_date", "required": False, "warning": None, "incompatible_with": []},
-    {"name": "step_back_days", "required": False, "warning": None, "incompatible_with": []},
-    {"name": "thread_count", "required": False, "warning": "Threaded Reader is Beta - use in production systems is not recommended", "incompatible_with": []},
-    {"name": "where", "required": False, "warning": "`where` will be deprecated, use `filters` or `dictset.select_from` instead", "incompatible_with": ['filters']},
+    {
+        "name": "step_back_days",
+        "required": False,
+        "warning": None,
+        "incompatible_with": [],
+    },
+    {
+        "name": "thread_count",
+        "required": False,
+        "warning": "Threaded Reader is Beta - use in production systems is not recommended",
+        "incompatible_with": [],
+    },
+    {
+        "name": "where",
+        "required": False,
+        "warning": "`where` will be deprecated, use `filters` or `dictset.select_from` instead",
+        "incompatible_with": ["filters"],
+    },
 ]
 
 
-class Reader():
-
+class Reader:
     @validate(RULES)
     def __init__(
         self,
         *,  # force all paramters to be keyworded
-        select: list = ['*'],
+        select: list = ["*"],
         dataset: str = None,
         where: Optional[Callable] = None,
         filters: Optional[List[Tuple[str, str, object]]] = None,
-        inner_reader=None,   # type:ignore
+        inner_reader=None,  # type:ignore
         row_format: str = "json",
-        **kwargs):
+        **kwargs,
+    ):
         """
         Reads records from a data store, opinionated toward Google Cloud Storage but a
         filesystem reader is available to assist with local development.
@@ -76,7 +116,7 @@ class Reader():
         be used to select columns, so not all read data is returned.
 
         The reader does not support aggregations, calculations or grouping of data, it
-        is a log reader and returns log entries. The reader can convert a set into 
+        is a log reader and returns log entries. The reader can convert a set into
         _Pandas_ dataframe, or the _dictset_ helper library can perform some activities
         on the set in a more memory efficient manner.
 
@@ -100,7 +140,7 @@ class Reader():
                 scanned data. Default is no filtering.
                 Each tuple has format: (`key`, `op`, `value`) and compares the key with
                 the value. The supported op are: `=` or `==`, `!=`,  `<`, `>`, `<=`,
-                `>=`, `in`, `!in` (not in), `contains` and `!contains` (doesn't 
+                `>=`, `in`, `!in` (not in), `contains` and `!contains` (doesn't
                 contain) and `like`. If the `op` is `in` or `!in`, the `value` must be
                 a _list_. `like` performs similar to the SQL operator `%` is a
                 multicharacter wildcard and `_` is a single character wildcard.
@@ -152,25 +192,28 @@ class Reader():
         """
         if not isinstance(select, list):  # pragma: no cover
             raise TypeError("Reader 'select' parameter must be a list")
-        if where is not None and not hasattr(where, '__call__'):
+        if where is not None and not hasattr(where, "__call__"):
             raise TypeError("Reader 'where' parameter must be Callable or None")
 
         # load the line converter
         self._parse = PARSERS.get(row_format.lower())
         if self._parse is None:  # pragma: no cover
-            raise TypeError(F"Row format unsupported: {row_format} - valid options are {list(PARSERS.keys())}.")
+            raise TypeError(
+                f"Row format unsupported: {row_format} - valid options are {list(PARSERS.keys())}."
+            )
 
-        if dataset is None and kwargs.get('from_path'):  # pragma: no cover
-            dataset = kwargs['from_path']
+        if dataset is None and kwargs.get("from_path"):  # pragma: no cover
+            dataset = kwargs["from_path"]
 
         # lazy loading of dependency
         if inner_reader is None:
             from ...adapters.google import GoogleCloudStorageReader
+
             inner_reader = GoogleCloudStorageReader
         # instantiate the injected reader class
         self.reader_class = inner_reader(dataset=dataset, **kwargs)  # type:ignore
 
-        self.cursor = kwargs.get('cursor', None)
+        self.cursor = kwargs.get("cursor", None)
         if isinstance(self.cursor, str):
             self.cursor = json.parse(self.cursor)
         if not isinstance(self.cursor, dict):
@@ -183,36 +226,47 @@ class Reader():
         self._inner_line_reader = None
 
         arg_dict = kwargs.copy()
-        arg_dict['select'] = F'{select}'
-        arg_dict['dataset'] = F'{dataset}'
-        arg_dict['inner_reader'] = F'{inner_reader.__name__}'  # type:ignore
-        arg_dict['row_format'] = F'{row_format}'
+        arg_dict["select"] = f"{select}"
+        arg_dict["dataset"] = f"{dataset}"
+        arg_dict["inner_reader"] = f"{inner_reader.__name__}"  # type:ignore
+        arg_dict["row_format"] = f"{row_format}"
         get_logger().debug(json.serialize(arg_dict))
 
         # number of days to walk backwards to find records
-        self.step_back_days = int(kwargs.get('step_back_days', -1))
-        if self.step_back_days > 0 and self.reader_class.start_date != self.reader_class.end_date:  # pragma: no cover
-            raise InvalidCombinationError("step_back_days can only be used when the start and end dates are the same")
+        self.step_back_days = int(kwargs.get("step_back_days", -1))
+        if (
+            self.step_back_days > 0
+            and self.reader_class.start_date != self.reader_class.end_date
+        ):  # pragma: no cover
+            raise InvalidCombinationError(
+                "step_back_days can only be used when the start and end dates are the same"
+            )
 
-        if row_format != 'pass-thru' and kwargs.get('extension') == '.parquet':  # pragma: no cover
-            raise InvalidCombinationError("`parquet` extension much be used with the `pass-thru` row_format")
+        if (
+            row_format != "pass-thru" and kwargs.get("extension") == ".parquet"
+        ):  # pragma: no cover
+            raise InvalidCombinationError(
+                "`parquet` extension much be used with the `pass-thru` row_format"
+            )
 
         self.filters = None
         self.indexable_fields = []
         if filters:
-            self.filters = Filters(filters)   
-            self.indexable_fields = get_indexable_filter_columns(self.filters.predicates)
+            self.filters = Filters(filters)
+            self.indexable_fields = get_indexable_filter_columns(
+                self.filters.predicates
+            )
 
         """ FEATURES IN DEVELOPMENT """
 
         # threaded reader
-        self.thread_count = int(kwargs.get('thread_count', 0))
+        self.thread_count = int(kwargs.get("thread_count", 0))
 
         # multiprocessed reader
-        self.fork_processes = bool(kwargs.get('fork_processes', False))
+        self.fork_processes = bool(kwargs.get("fork_processes", False))
 
         # time travel
-        self.as_at = kwargs.get('as_at')
+        self.as_at = kwargs.get("as_at")
 
     """
     Iterable
@@ -223,18 +277,17 @@ class Reader():
             print(line)
     """
 
-
     def _is_system_file(self, filename):
-        if '_SYS.' in filename:
+        if "_SYS." in filename:
             base = os.path.basename(filename)
-            return base.startswith('_SYS.')
+            return base.startswith("_SYS.")
         return False
 
     def _read_blob(self, blob, blob_list):
         """
         This wraps the blob reader, including the filters and indexers
         """
-        get_logger().debug(F"Reading from `{blob}`, thread: {threading.get_ident()}")
+        get_logger().debug(f"Reading from `{blob}`, thread: {threading.get_ident()}")
         # If an index exists, get the rows we're interested in from the index
         rows = None
         for field, filter_value in self.indexable_fields:
@@ -244,7 +297,7 @@ class Reader():
             index_file = f"{bucket}/{path}_SYS.{stem}.{safe_field_name(field)}.index"
 
             if index_file in blob_list:
-                get_logger().debug(F"Reading index from blob `{index_file}`")
+                get_logger().debug(f"Reading index from blob `{index_file}`")
                 index_stream = self.reader_class.get_blob_stream(index_file)
                 index = Index(index_stream)
                 rows = rows or []
@@ -265,54 +318,67 @@ class Reader():
 
         # handle stepping back if the option is set
         if self.step_back_days > 0:
-            while not bool(blob_list) and self.step_back_days >= self.reader_class.days_stepped_back:
+            while (
+                not bool(blob_list)
+                and self.step_back_days >= self.reader_class.days_stepped_back
+            ):
                 self.reader_class.step_back_a_day()
                 blob_list = self.reader_class.get_list_of_blobs()
             if self.step_back_days < self.reader_class.days_stepped_back:
-                get_logger().alert(F"No data found in last {self.step_back_days} days - aborting")
-                sys.exit(-1) 
+                get_logger().alert(
+                    f"No data found in last {self.step_back_days} days - aborting"
+                )
+                sys.exit(-1)
             if self.reader_class.days_stepped_back > 0:
-                get_logger().warning(F"Stepped back {self.reader_class.days_stepped_back} days to {self.reader_class.start_date} to find last data, my limit is {self.step_back_days} days.")
+                get_logger().warning(
+                    f"Stepped back {self.reader_class.days_stepped_back} days to {self.reader_class.start_date} to find last data, my limit is {self.step_back_days} days."
+                )
 
         readable_blobs = [b for b in blob_list if not self._is_system_file(b)]
 
         # skip to the blob in the cursor
-        if self.cursor.get('blob'):
+        if self.cursor.get("blob"):
             skipped = 0
             while len(readable_blobs) > 0:
-                if readable_blobs[0] != self.cursor.get('blob'):
+                if readable_blobs[0] != self.cursor.get("blob"):
                     readable_blobs.pop(0)
                     skipped += 1
                 else:
-                    get_logger().debug(F"Reader found {len(readable_blobs)} sources to read data from after {skipped} jumped to get to cursor.")
+                    get_logger().debug(
+                        f"Reader found {len(readable_blobs)} sources to read data from after {skipped} jumped to get to cursor."
+                    )
                     break
         elif len(readable_blobs) == 0:
-            message = F"Reader found {len(readable_blobs)} sources to read data from in `{self.reader_class.dataset}`."
+            message = f"Reader found {len(readable_blobs)} sources to read data from in `{self.reader_class.dataset}`."
             get_logger().error(message)
             raise DataNotFoundError(message)
         else:
-            get_logger().debug(F"Reader found {len(readable_blobs)} sources to read data from in `{self.reader_class.dataset}`.")
-        
+            get_logger().debug(
+                f"Reader found {len(readable_blobs)} sources to read data from in `{self.reader_class.dataset}`."
+            )
+
         if self.thread_count > 0:
             yield from threaded_reader(readable_blobs, blob_list, self)
 
         elif self.fork_processes:
-            yield from processed_reader(readable_blobs, self.reader_class, self._parse, self.where)
+            yield from processed_reader(
+                readable_blobs, self.reader_class, self._parse, self.where
+            )
 
         else:
-            offset = self.cursor.get('offset', 0)
+            offset = self.cursor.get("offset", 0)
             for blob in readable_blobs:
-                self.cursor['blob'] = blob
-                self.cursor['offset'] = -1
+                self.cursor["blob"] = blob
+                self.cursor["offset"] = -1
                 local_reader = self._read_blob(blob, blob_list)
                 if offset > 0:
                     for burn in range(offset):
                         next(local_reader, None)
                     for record_offset, record in enumerate(local_reader):
-                        self.cursor['offset'] = offset + record_offset
+                        self.cursor["offset"] = offset + record_offset
                         yield record
                 else:
-                    for self.cursor['offset'], record in enumerate(local_reader):
+                    for self.cursor["offset"], record in enumerate(local_reader):
                         yield record
                 offset = 0
 
@@ -325,10 +391,9 @@ class Reader():
 
         # get the the next line from the reader
         record = self._inner_line_reader.__next__()
-        if self.select != ['*']:
+        if self.select != ["*"]:
             record = select_record_fields(record, self.select)
         return record
-
 
     """
     Context Manager
@@ -362,6 +427,7 @@ class Reader():
     """
     Exports
     """
+
     def to_pandas(self):
         """
         Load the contents of the _Reader_ to a _Pandas_ DataFrame.
@@ -372,15 +438,18 @@ class Reader():
         try:
             import pandas as pd  # type:ignore
         except ImportError:  # pragma: no cover
-            raise MissingDependencyError("`pands` is missing, please install or include in requirements.txt")
+            raise MissingDependencyError(
+                "`pands` is missing, please install or include in requirements.txt"
+            )
         return pd.DataFrame(self)
 
     def __repr__(self):  # pragma: no cover
 
         if is_running_from_ipython():
             from IPython.display import HTML, display  # type:ignore
+
             html = html_table(self, 5)
             display(HTML(html))
-            return ''  # __repr__ must return something
+            return ""  # __repr__ must return something
         else:
             return ascii_table(self, 5)

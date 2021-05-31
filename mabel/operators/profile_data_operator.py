@@ -1,4 +1,4 @@
-#no-maintain-checks
+# no-maintain-checks
 """
 This module is dervied from:
 
@@ -54,7 +54,9 @@ class ProfileDataOperator(BaseOperator):
                 "items": 0,
                 "type": ProfileDataOperator.get_type(schema._validators[field]),
             }
-        self.logger.warning("`ProfileDataOperator` is an alpha feature and may change in the future.")
+        self.logger.warning(
+            "`ProfileDataOperator` is an alpha feature and may change in the future."
+        )
 
     def execute(self, data, context):
 
@@ -139,7 +141,9 @@ class ProfileDataOperator(BaseOperator):
                 bottom, top = bound
                 bottom = ProfileDataOperator.date_from_epoch(bottom)
                 top = ProfileDataOperator.date_from_epoch(top)
-                new_bins[(bottom, top)] = self.summary[date_field]["bins"][  # type:ignore
+                new_bins[(bottom, top)] = self.summary[date_field][
+                    "bins"
+                ][  # type:ignore
                     bound
                 ]
             self.summary[date_field]["bins"] = new_bins

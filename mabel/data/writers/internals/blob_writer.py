@@ -9,47 +9,50 @@ from ....index.index import IndexBuilder
 from ....errors import MissingDependencyError
 
 
-BLOB_SIZE = 32*1024*1024  # about 32 files per gigabyte
-BUFFER_SIZE = BLOB_SIZE   # buffer in memory really
-SUPPORTED_FORMATS_ALGORITHMS = ('jsonl', 'lzma', 'zstd', 'parquet', 'text')
-MAXIMUM_RECORDS = 64000   # needs to be less than 2^16-1
+BLOB_SIZE = 32 * 1024 * 1024  # about 32 files per gigabyte
+BUFFER_SIZE = BLOB_SIZE  # buffer in memory really
+SUPPORTED_FORMATS_ALGORITHMS = ("jsonl", "lzma", "zstd", "parquet", "text")
+MAXIMUM_RECORDS = 64000  # needs to be less than 2^16-1
 
 
 def safe_field_name(field_name):
     """strip all the non-alphanums from a field name"""
     import re
-    pattern = re.compile('[^a-zA-Z0-9]+')
-    return pattern.sub('', field_name)
+
+    pattern = re.compile("[^a-zA-Z0-9]+")
+    return pattern.sub("", field_name)
 
 
-class BlobWriter():
-
+class BlobWriter:
     def __init__(
-            self,
-            *,    # force params to be named
-            inner_writer=None,  # type:ignore
-            blob_size: int = BLOB_SIZE,
-            format: str = 'zstd',
-            **kwargs):
+        self,
+        *,  # force params to be named
+        inner_writer=None,  # type:ignore
+        blob_size: int = BLOB_SIZE,
+        format: str = "zstd",
+        **kwargs,
+    ):
 
-        self.indexes = kwargs.get('index_on', [])
+        self.indexes = kwargs.get("index_on", [])
 
         self.format = format
         self.maximum_blob_size = blob_size
 
         if format not in SUPPORTED_FORMATS_ALGORITHMS:
-            raise ValueError(F'Invalid format `{format}`, valid options are {SUPPORTED_FORMATS_ALGORITHMS}')
+            raise ValueError(
+                f"Invalid format `{format}`, valid options are {SUPPORTED_FORMATS_ALGORITHMS}"
+            )
 
-        kwargs['format'] = format
+        kwargs["format"] = format
         self.inner_writer = inner_writer(**kwargs)  # type:ignore
         self._open_blob()
 
     def append(self, record: dict = {}):
         # serialize the record
-        if self.format == 'text':
-            serialized = str(record).encode() + b'\n'
+        if self.format == "text":
+            serialized = str(record).encode() + b"\n"
         else:
-            serialized = serialize(record, as_bytes=True) + b'\n'  # type:ignore
+            serialized = serialize(record, as_bytes=True) + b"\n"  # type:ignore
 
         # add the columns to the index
         for column in self.indexes:
@@ -59,7 +62,10 @@ class BlobWriter():
         # if this write would exceed the blob size, close it so another
         # blob will be created
         self.bytes_in_blob += len(serialized) + 1
-        if self.bytes_in_blob > self.maximum_blob_size or self.records_in_blob == MAXIMUM_RECORDS:
+        if (
+            self.bytes_in_blob > self.maximum_blob_size
+            or self.records_in_blob == MAXIMUM_RECORDS
+        ):
             self.commit()
             self._open_blob()
 
@@ -71,7 +77,7 @@ class BlobWriter():
 
     def commit(self):
 
-        committed_blob_name = ''
+        committed_blob_name = ""
 
         if self.bytes_in_blob > 0:
             with threading.Lock():
@@ -84,41 +90,58 @@ class BlobWriter():
                 if self.format == "parquet":
                     try:
                         from pyarrow import json as js  # type:ignore
-                        import pyarrow.parquet as pq    # type:ignore
+                        import pyarrow.parquet as pq  # type:ignore
                     except ImportError as err:  # pragma: no cover
-                        raise MissingDependencyError("`pyarrow` is missing, please install or includein requirements.txt")
-                    
-                    table = js.read_json(self.file_name)
-                    pq.write_table(table, self.file_name + '.parquet', compression='ZSTD')
-                    self.file_name += '.parquet'
+                        raise MissingDependencyError(
+                            "`pyarrow` is missing, please install or includein requirements.txt"
+                        )
 
-                with open(self.file_name, 'rb') as f:
+                    table = js.read_json(self.file_name)
+                    pq.write_table(
+                        table, self.file_name + ".parquet", compression="ZSTD"
+                    )
+                    self.file_name += ".parquet"
+
+                with open(self.file_name, "rb") as f:
                     byte_data = f.read()
-                    
+
                 committed_blob_name = self.inner_writer.commit(
-                        byte_data=byte_data,
-                        override_blob_name=None)
+                    byte_data=byte_data, override_blob_name=None
+                )
 
                 for column in self.indexes:
                     index = self.index_builders[column].build()
-                    
+
                     bucket, path, stem, suffix = get_parts(committed_blob_name)
-                    index_name = bucket + '/' + path + '_SYS.' + stem + '.' + safe_field_name(column) + '.index'
-                    
+                    index_name = (
+                        bucket
+                        + "/"
+                        + path
+                        + "_SYS."
+                        + stem
+                        + "."
+                        + safe_field_name(column)
+                        + ".index"
+                    )
+
                     index_stream = index._index
                     index_stream.seek(0)
                     committed_index_name = self.inner_writer.commit(
-                        byte_data=index_stream.read(),
-                        override_blob_name=index_name)
+                        byte_data=index_stream.read(), override_blob_name=index_name
+                    )
 
-                if 'BACKOUT' in committed_blob_name:
-                    get_logger().warning(F"{self.records_in_blob:n} failed records written to BACKOUT partition `{committed_blob_name}`")
-                get_logger().debug({
-                        "committed_blob": committed_blob_name, 
-                        "records": self.records_in_blob, 
+                if "BACKOUT" in committed_blob_name:
+                    get_logger().warning(
+                        f"{self.records_in_blob:n} failed records written to BACKOUT partition `{committed_blob_name}`"
+                    )
+                get_logger().debug(
+                    {
+                        "committed_blob": committed_blob_name,
+                        "records": self.records_in_blob,
                         "raw_bytes": self.bytes_in_blob,
-                        "committed_bytes": len(byte_data)
-                     })
+                        "committed_bytes": len(byte_data),
+                    }
+                )
                 try:
                     os.remove(self.file_name)
                 except ValueError:
@@ -129,16 +152,17 @@ class BlobWriter():
 
         return committed_blob_name
 
-
     def _open_blob(self):
         self.file_name = self._create_temp_file_name()
-        self.file: Any = open(self.file_name, mode='wb', buffering=BUFFER_SIZE)
-        if self.format == 'lzma':
+        self.file: Any = open(self.file_name, mode="wb", buffering=BUFFER_SIZE)
+        if self.format == "lzma":
             import lzma
-            self.file = lzma.open(self.file, mode='wb')
-        if self.format == 'zstd':
+
+            self.file = lzma.open(self.file, mode="wb")
+        if self.format == "zstd":
             import zstandard  # type:ignore
-            self.file = zstandard.open(self.file_name, mode='wb')
+
+            self.file = zstandard.open(self.file_name, mode="wb")
 
         # create index builders
         self.index_builders = {}
@@ -159,7 +183,7 @@ class BlobWriter():
         The behaviour of tempfiles is inconsistent between operating systems,
         this helps to ensure consistent behaviour.
         """
-        file = tempfile.NamedTemporaryFile(prefix='mabel-', delete=True)
+        file = tempfile.NamedTemporaryFile(prefix="mabel-", delete=True)
         file_name = file.name
         file.close()
         try:

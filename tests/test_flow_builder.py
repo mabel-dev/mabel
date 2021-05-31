@@ -53,21 +53,27 @@ def test_flow_builder_invalid_wrong_type():
     with pytest.raises(TypeError):
         flow = n > e
 
+
 class TestOperator(NoOpOperator):
     def execute(self, data={}, context={}):
         return data, context
 
+
 class OperatorA(TestOperator):
     pass
+
 
 class OperatorB(TestOperator):
     pass
 
+
 class OperatorC(TestOperator):
     pass
 
+
 class OperatorD(TestOperator):
     pass
+
 
 def test_branching():
     z = EndOperator()

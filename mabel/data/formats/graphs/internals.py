@@ -23,6 +23,7 @@ from .traverse import Traverse
 from ..json import parse
 from ....errors import MissingDependencyError
 
+
 def walk(graph, nids=None):
     """
     Begin a traversal by selecting the matching nodes.
@@ -37,9 +38,7 @@ def walk(graph, nids=None):
     if nids:
         nids = _make_a_list(nids)
         if len(nids) > 0:
-            return Traverse(
-                graph=graph,
-                active_nodes=nids)
+            return Traverse(graph=graph, active_nodes=nids)
     else:
         return Traverse(graph, set())
 
@@ -51,73 +50,93 @@ def read_graphml(graphml_file: str):
     Parameters:
         graphml_file: string
             The GraphML file to load
-    
+
     Returns:
         Graph
     """
     try:
         import xmltodict  # type:ignore
     except ImportError:  # pragma: no cover
-        raise MissingDependencyError('`xmltodict` is missing, please install or include in requirements.txt')
+        raise MissingDependencyError(
+            "`xmltodict` is missing, please install or include in requirements.txt"
+        )
 
-    with open(graphml_file, 'r') as fd:
+    with open(graphml_file, "r") as fd:
         xml_dom = xmltodict.parse(fd.read())
 
     g = Graph()
 
     # load the keys
     keys = {}
-    for key in xml_dom['graphml'].get('key', {}):
-        keys[key['@id']] = key['@attr.name']
+    for key in xml_dom["graphml"].get("key", {}):
+        keys[key["@id"]] = key["@attr.name"]
 
     g._nodes = {}
     # load the nodes
-    for node in xml_dom['graphml']['graph'].get('node', {}):
+    for node in xml_dom["graphml"]["graph"].get("node", {}):
         data = {}
         skip = False
-        for key in g._make_a_list(node.get('data', {})):
+        for key in g._make_a_list(node.get("data", {})):
             try:
-                data[keys[key['@key']]] = key.get('#text', '')
+                data[keys[key["@key"]]] = key.get("#text", "")
             except KeyError:
                 skip = True
         if not skip:
-            g.add_node(node['@id'], data)
+            g.add_node(node["@id"], data)
 
     g._edges = {}
-    for edge in xml_dom['graphml']['graph'].get('edge', {}):
+    for edge in xml_dom["graphml"]["graph"].get("edge", {}):
         data = {}
-        source = edge['@source']
-        target = edge['@target']
-        for key in g._make_a_list(edge.get('data', {})):
-            data[keys[key['@key']]] = key['#text']
+        source = edge["@source"]
+        target = edge["@target"]
+        for key in g._make_a_list(edge.get("data", {})):
+            data[keys[key["@key"]]] = key["#text"]
         if source not in g._edges:
             g._edges[source] = []
-        g.add_edge(source, target, data.get('relationship'))  # type:ignore
+        g.add_edge(source, target, data.get("relationship"))  # type:ignore
 
     return g
 
 
 def _load_node_file(path: Path):
-    """ load the node information from a file """
+    """load the node information from a file"""
     nodes = []
-    with open(path, 'r', encoding='utf8') as node_file:
+    with open(path, "r", encoding="utf8") as node_file:
         for line in node_file:
             node = parse(line)
-            nodes.append((node['nid'], node['attributes'],))
-    results = {n:a for n, a in nodes}
+            nodes.append(
+                (
+                    node["nid"],
+                    node["attributes"],
+                )
+            )
+    results = {n: a for n, a in nodes}
     return results
 
+
 def _load_edge_file(path: Path):
-    """ load the edge information from a file """
+    """load the edge information from a file"""
     edges = []
-    with open(path, 'r', encoding='utf8') as edge_file:
+    with open(path, "r", encoding="utf8") as edge_file:
         for line in edge_file:
             node = parse(line)
-            edges.append((node['source'], node['target'], node['relationship'],))
-    results:dict = {s:[] for s, t, r in edges}
+            edges.append(
+                (
+                    node["source"],
+                    node["target"],
+                    node["relationship"],
+                )
+            )
+    results: dict = {s: [] for s, t, r in edges}
     for s, t, r in edges:
-        results[s].append((t,r,))
+        results[s].append(
+            (
+                t,
+                r,
+            )
+        )
     return results
+
 
 def load(path: str):
     """
@@ -132,12 +151,13 @@ def load(path: str):
     """
     g = Graph()
     graph_path = Path(path)
-    g._nodes = _load_node_file(graph_path / 'nodes.jsonl')
-    g._edges = _load_edge_file(graph_path / 'edges.jsonl')
+    g._nodes = _load_node_file(graph_path / "nodes.jsonl")
+    g._edges = _load_edge_file(graph_path / "edges.jsonl")
     return g
 
+
 def _make_a_list(obj):
-    """ internal helper method """
+    """internal helper method"""
     if isinstance(obj, (set, list, types.GeneratorType)):
         return obj
     return [obj]

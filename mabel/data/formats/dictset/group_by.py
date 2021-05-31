@@ -1,15 +1,16 @@
 from typing import Callable
 
-class Groups():
+
+class Groups:
     """
     Group By functionality for Iterables of Dictionaries
-    
+
     Parameters:
         dictset: Iterable of dictionaries:
             The dataset to perform the Group By on
         column: string:
             The name of the field to group by
-    
+
     Returns:
         Groups
 
@@ -17,7 +18,8 @@ class Groups():
         The 'Groups' object holds the entire dataset in memory so is unsuitable
         for large datasets.
     """
-    __slots__ = ('_groups')
+
+    __slots__ = "_groups"
 
     def __init__(self, dictset, column):
         groups = {}
@@ -33,7 +35,7 @@ class Groups():
     def count(self, group=None):
         """
         Count the number of items in groups
-        
+
         Parameters:
             group: string (optional)
                 If provided, return the count of just this group
@@ -43,23 +45,23 @@ class Groups():
             if no group is provided, return a dictionary
         """
         if group is None:
-            return {x:len(y) for x,y in self._groups.items()}
+            return {x: len(y) for x, y in self._groups.items()}
         else:
             try:
-                return [len(y) for x,y in self._groups.items() if x == group].pop()
+                return [len(y) for x, y in self._groups.items() if x == group].pop()
             except IndexError:
                 return 0
 
     def aggregate(self, column, method):
         """
         Applies an aggregation function by group.
-        
+
         Parameters:
             column: string
                 The name of the field to aggregate on
             method: callable
                 The function to aggregate with
-        
+
         Returns:
             dictionary
 
@@ -69,7 +71,9 @@ class Groups():
         """
         response = {}
         for key, items in self._groups.items():
-            values = [item.get(column) for item in items if item.get(column) is not None]
+            values = [
+                item.get(column) for item in items if item.get(column) is not None
+            ]
             response[key] = method(values)
         return response
 
@@ -84,8 +88,8 @@ class Groups():
         Returns:
             dictionary
         """
-        return {key:method(items) for key, items in self._groups.items()}
-            
+        return {key: method(items) for key, items in self._groups.items()}
+
     def __len__(self):
         """
         Returns the number of groups in the set.

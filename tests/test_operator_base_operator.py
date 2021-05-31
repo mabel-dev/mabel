@@ -2,6 +2,7 @@ import os
 import sys
 import time
 import pytest
+
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.operators import EndOperator
 from mabel.errors import IntegrityError

@@ -17,7 +17,7 @@ traceback.install()
 
 def test_index():
     # step back through time
-    shutil.rmtree('_temp/data/tweets', ignore_errors=True)
+    shutil.rmtree("_temp/data/tweets", ignore_errors=True)
 
     r = Reader(inner_reader=DiskReader, dataset="tests/data/tweets", raw_path=True)
     w = BatchWriter(
@@ -29,7 +29,7 @@ def test_index():
     index = glob.glob("_temp/data/tweets/**/*username.index", recursive=True)
     assert len(index) == 1, index
 
-    with open(index[0], 'rb') as f:
+    with open(index[0], "rb") as f:
         idx = f.read()
 
     # test the recently created index outside the reader
@@ -39,11 +39,14 @@ def test_index():
     assert i.search("BBCNews") == {1, 2, 4, 44, 24, 25}
 
     # test the filter with an index
-    ri = Reader(inner_reader=DiskReader, dataset="_temp/data/tweets", filters=('username','==','BBCNews'))
+    ri = Reader(
+        inner_reader=DiskReader,
+        dataset="_temp/data/tweets",
+        filters=("username", "==", "BBCNews"),
+    )
     ri = list(ri)
 
     assert len(ri) == 6
-
 
 
 if __name__ == "__main__":  # pragma: no cover

@@ -192,7 +192,7 @@ class BaseOperator(abc.ABC):
                             f"`{self.name}` - {type(error_reference).__name__} - {error_reference} - tried {self.retry_count} times before aborting ({context.get('run_id')}) {error_log_reference}"
                         )
                         sys.exit(1)
-                    
+
                 outcome = None
                 # add a failure to the last_few_results list
                 self.last_few_results.append(0)
@@ -290,9 +290,7 @@ class BaseOperator(abc.ABC):
             elif issubclass(type(operator), BaseOperator):
                 # otherwise add the node and edge and set the graph further down the
                 # line
-                flow.add_operator(
-                    f"{operator.name}-{id(operator)}", operator
-                )
+                flow.add_operator(f"{operator.name}-{id(operator)}", operator)
                 flow.link_operators(
                     f"{self.name}-{id(self)}",
                     f"{operator.name}-{id(operator)}",

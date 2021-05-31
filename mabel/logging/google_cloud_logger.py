@@ -16,9 +16,11 @@ except ImportError:
 
 LOG_SINK = "MABEL"
 
+
 def extract_caller():
     import traceback
     import os.path
+
     frames = traceback.extract_stack()
     if len(frames) < 4:
         return "<unknown>", "<unknown>", -1
@@ -26,8 +28,8 @@ def extract_caller():
     head, tail = os.path.split(frame.filename)
     return frame.name, tail, frame.lineno
 
-class GoogleLogger:
 
+class GoogleLogger:
     @staticmethod
     def safe_field_name(field_name):
         """strip all the non-alphanums from a field name"""
@@ -68,7 +70,7 @@ class GoogleLogger:
 
         if os.environ.get("DUAL_LOG", False):
             print(
-                f"{LOG_NAME} | {LEVELS_TO_STRING.get(severity, 'UNKNOWN')} | {datetime.datetime.now().isoformat()} | {method}() | {module}:{line} | {message}"    # type:ignore
+                f"{LOG_NAME} | {LEVELS_TO_STRING.get(severity, 'UNKNOWN')} | {datetime.datetime.now().isoformat()} | {method}() | {module}:{line} | {message}"  # type:ignore
             )
 
         if isinstance(message, dict):

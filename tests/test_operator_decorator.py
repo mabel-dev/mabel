@@ -33,6 +33,7 @@ def test_operatify():
 
     assert error == False
 
+
 def test_in_flow():
 
     f = NoOpOperator() > do_something > EndOperator()

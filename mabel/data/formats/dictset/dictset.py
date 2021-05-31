@@ -11,17 +11,15 @@ from .records import select_record_fields, set_value, order
 from ..json import serialize, parse
 
 
-INNER_JOIN = 'INNER'
-LEFT_JOIN = 'LEFT'
+INNER_JOIN = "INNER"
+LEFT_JOIN = "LEFT"
 
 
 def join(
-        left: Iterator[dict],
-        right: Iterator[dict],
-        column: str,
-        join_type=INNER_JOIN) -> Iterator[dict]:
+    left: Iterator[dict], right: Iterator[dict], column: str, join_type=INNER_JOIN
+) -> Iterator[dict]:
     """
-    Iterates over the left dictset, matching records fron the right dictset. 
+    Iterates over the left dictset, matching records fron the right dictset.
     Dictsets provided to this method are expected to be bounded.
 
     INNER_JOIN, the default, will discard records unless they appear in both
@@ -69,9 +67,7 @@ def union(*args) -> Iterator[dict]:
         yield from dictset
 
 
-def create_index(
-        dictset: Iterator[dict],
-        index_column: str) -> dict:
+def create_index(dictset: Iterator[dict], index_column: str) -> dict:
     """
     Create an index of a file to speed up look-ups, it is expected that the
     value in the index_column is unique but this is not enforced.
@@ -93,9 +89,8 @@ def create_index(
 
 
 def select_from(
-        dictset: Iterator[dict],
-        columns: List[str] = ['*'],
-        where: Callable = None) -> Iterator[dict]:
+    dictset: Iterator[dict], columns: List[str] = ["*"], where: Callable = None
+) -> Iterator[dict]:
     """
     Scan a dictset, filtering rows and selecting columns.
 
@@ -105,12 +100,13 @@ def select_from(
         columns: list of strings
             The list of column names to return
         where: callable (optional)
-            The function to apply to filter records, we return the rows that 
+            The function to apply to filter records, we return the rows that
             evaluate to True, default returns all records
 
     Yields:
         dictionary
     """
+
     def _select_columns(dictset, columns):
         for record in dictset:
             record = select_record_fields(record, columns)
@@ -118,15 +114,14 @@ def select_from(
 
     if where is not None:
         dictset = filter(where, dictset)
-    if columns != ['*']:
+    if columns != ["*"]:
         dictset = _select_columns(dictset, columns)
     yield from dictset
 
 
 def set_column(
-        dictset: Iterator[dict],
-        column_name: str,
-        setter: Callable) -> Iterator[dict]:
+    dictset: Iterator[dict], column_name: str, setter: Callable
+) -> Iterator[dict]:
     """
     Performs set_value on each row in a set.
 
@@ -145,9 +140,7 @@ def set_column(
         yield set_value(record, column_name, setter)
 
 
-def drop_duplicates(
-        dictset: Iterator[dict],
-        cache_size: int = 10000):
+def drop_duplicates(dictset: Iterator[dict], cache_size: int = 10000):
     """
     NOTE:
         THIS MAY NOT DO WHAT YOU EXPECT IT TO.
@@ -167,6 +160,7 @@ def drop_duplicates(
         dictionary
     """
     from ....index.lru_index import LruIndex
+
     lru = LruIndex(size=cache_size)
 
     for record in dictset:
@@ -176,9 +170,7 @@ def drop_duplicates(
         yield record
 
 
-def limit(
-        dictset: Iterator[dict],
-        limit: int):
+def limit(dictset: Iterator[dict], limit: int):
     """
     Returns up to 'limit' number of records.
 
@@ -197,13 +189,11 @@ def limit(
         yield record
 
 
-def dictsets_match(
-        dictset_1: Iterator[dict],
-        dictset_2: Iterator[dict]):
+def dictsets_match(dictset_1: Iterator[dict], dictset_2: Iterator[dict]):
     """
     Tests if two dictsets match regardless of the order of the order of the
     records in the dictset. Return is True if the sets match.
-    
+
     Note that this will exhaust a generator.
 
     Parameters:
@@ -215,6 +205,7 @@ def dictsets_match(
     Returns:
         boolean
     """
+
     def _hash_set(dictset: Iterator[dict]):
         xor = 0
         for record in dictset:
@@ -226,9 +217,7 @@ def dictsets_match(
     return _hash_set(dictset_1) == _hash_set(dictset_2)
 
 
-def page_dictset(
-        dictset: Iterator[dict],
-        page_size: int) -> Iterator:
+def page_dictset(dictset: Iterator[dict], page_size: int) -> Iterator:
     """
     Enables paging through a dictset by returning a page of records at a time.
 
@@ -253,10 +242,8 @@ def page_dictset(
 
 
 def sort(
-        dictset: Iterator[dict],
-        column: str,
-        cache_size: int,
-        descending: bool = True):
+    dictset: Iterator[dict], column: str, cache_size: int, descending: bool = True
+):
     """
     NOTE:
         THIS DOES NOT SORT THE ENTIRE DICTSET.
@@ -280,7 +267,7 @@ def sort(
         cache_size: integer:
             The number of records to cache
         descending: boolean (optional):
-            Order greatest first, default True 
+            Order greatest first, default True
 
     Yields:
         dictionary
@@ -297,30 +284,29 @@ def sort(
 
         return _inner_sort_key
 
-    # cache_size is the high water mark, 3/4 is the low water mark. 
-    # We fill the cache to the high water mark, sort it and yield 
+    # cache_size is the high water mark, 3/4 is the low water mark.
+    # We fill the cache to the high water mark, sort it and yield
     # the top 1/4 before filling again.
     # This reduces the number of times we execute the sorted function
     # which is the slowest part of this method.
-    # A cache_size of 1000 has a neglible impact on performance, a 
+    # A cache_size of 1000 has a neglible impact on performance, a
     # cache_size of 50000 introduces a performance hit of about 15%.
     quarter_cache = max(cache_size // 4, 1)
     cache = []
     for record in dictset:
         cache.append(record)
         if len(cache) > cache_size:
-            cache = sorted(cache, key=_sort_key(column), reverse=descending) 
+            cache = sorted(cache, key=_sort_key(column), reverse=descending)
             if descending:
                 yield from reversed(cache[:quarter_cache])
             else:
                 yield from cache[:quarter_cache]
             del cache[:quarter_cache]
-    cache = sorted(cache, key=_sort_key(column), reverse=descending) 
+    cache = sorted(cache, key=_sort_key(column), reverse=descending)
     yield from cache
 
 
-def to_pandas(
-        dictset: Iterator[dict]):
+def to_pandas(dictset: Iterator[dict]):
     """
     Load an iterable of dictionaries into a pandas dataframe.
 
@@ -332,14 +318,13 @@ def to_pandas(
         pandas dataframe
     """
     import pandas  # type:ignore
+
     return pandas.DataFrame(dictset)
 
 
-def extract_column(
-        dictset: Iterator[dict],
-        column: str) -> list:
+def extract_column(dictset: Iterator[dict], column: str) -> list:
     """
-    Extract the values from column into a list 
+    Extract the values from column into a list
 
     Parameters:
         dictset: iterable of dictionaries:
@@ -349,15 +334,13 @@ def extract_column(
 
     Returns:
         list
-    """  
+    """
     return [record.get(column) for record in dictset]
 
 
-def group_by(
-        dictset: Iterator[dict],
-        column: str) -> Groups:
+def group_by(dictset: Iterator[dict], column: str) -> Groups:
     """
-    Create a Groups object 
+    Create a Groups object
 
     Parameters:
         dictset: iterable of dictionaries:
@@ -367,12 +350,11 @@ def group_by(
 
     Returns:
         mabel.formats.Groups
-    """  
+    """
     return Groups(dictset, column)
 
 
-def jsonify(
-        list_of_json_strings: Iterator[dict]):
+def jsonify(list_of_json_strings: Iterator[dict]):
     """
     Convert a list of strings to a list of dictionaries
 
@@ -382,12 +364,11 @@ def jsonify(
 
     Yields:
         dictionary
-    """  
+    """
     return map(parse, list_of_json_strings)  # type:ignore
 
 
-def pass_thru_counter(
-        dictset: Iterator[dict]):
+def pass_thru_counter(dictset: Iterator[dict]):
     """
     Count the number of records in a dictset that passes through this function.
 
