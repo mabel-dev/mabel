@@ -9,15 +9,15 @@ from ...logging import get_logger
 
 
 class BatchWriter(SimpleWriter):
-
     def __init__(
-            self,
-            *,
-            dataset: str,
-            format: str = 'zstd',
-            date: Any = None,
-            frame_id: str = None, 
-            **kwargs):
+        self,
+        *,
+        dataset: str,
+        format: str = "zstd",
+        date: Any = None,
+        frame_id: str = None,
+        **kwargs,
+    ):
         """
         The batch data writer to writes data records into blobs. Batches
         are written into timestamped folders called Partitions.
@@ -26,7 +26,7 @@ class BatchWriter(SimpleWriter):
             dataset: string (optional)
                 The name of the dataset - this is used to map to a path
             schema: mabel.validator.Schema (optional)
-                Schema used to test records for conformity, default is no 
+                Schema used to test records for conformity, default is no
                 schema and therefore no validation
             format: string (optional)
                 - text: raw text lines
@@ -59,15 +59,16 @@ class BatchWriter(SimpleWriter):
             frame_id = BatchWriter.create_frame_id()
 
         self.dataset = dataset
-        if "{date" not in self.dataset and not kwargs.get('raw_path', False):
-            self.dataset += '/{datefolders}'
+        if "{date" not in self.dataset and not kwargs.get("raw_path", False):
+            self.dataset += "/{datefolders}"
         self.dataset = paths.build_path(
-                self.dataset + '/' + frame_id,   # type:ignore
-                self.batch_date)
+            self.dataset + "/" + frame_id,  # type:ignore
+            self.batch_date,
+        )
 
-        kwargs['raw_path'] = True  # we've just added the dates
-        kwargs['format'] = format
-        kwargs['dataset'] = self.dataset
+        kwargs["raw_path"] = True  # we've just added the dates
+        kwargs["format"] = format
+        kwargs["dataset"] = self.dataset
 
         super().__init__(**kwargs)
 
@@ -76,19 +77,17 @@ class BatchWriter(SimpleWriter):
         # create the writer
         self.blob_writer = BlobWriter(**kwargs)
 
-
     def finalize(self):
         completion_path = self.blob_writer.inner_writer.filename
         completion_path = os.path.split(completion_path)[0] + "/frame.complete"
-        status = {
-            "records": self.records
-        }
+        status = {"records": self.records}
         flag = self.blob_writer.inner_writer.commit(
-                byte_data=json.serialize(status, as_bytes=True),
-                override_blob_name=completion_path)
+            byte_data=json.serialize(status, as_bytes=True),
+            override_blob_name=completion_path,
+        )
         get_logger().debug(f"Frame completion file `{flag}` written")
         return super().finalize()
 
     @staticmethod
     def create_frame_id():
-        return datetime.datetime.now().strftime('as_at_%Y%m%d-%H%M%S')
+        return datetime.datetime.now().strftime("as_at_%Y%m%d-%H%M%S")

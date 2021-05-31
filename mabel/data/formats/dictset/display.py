@@ -1,9 +1,7 @@
 from typing import Iterator, Iterable, List
 
 
-def html_table(
-        dictset: Iterator[dict],
-        limit: int = 5):
+def html_table(dictset: Iterator[dict], limit: int = 5):
     """
     Render the dictset as a HTML table.
 
@@ -19,6 +17,7 @@ def html_table(
     Returns:
         string (HTML table)
     """
+
     def _to_html_table(data, columns):
 
         yield '<table class="table table-sm">'
@@ -26,42 +25,41 @@ def html_table(
             if counter == 0:
                 yield '<thead class="thead-light"><tr>'
                 for column in columns:
-                    yield '<th>' + column + '<th>\n'
-                yield '</tr></thead><tbody>'
+                    yield "<th>" + column + "<th>\n"
+                yield "</tr></thead><tbody>"
 
             if (counter % 2) == 0:
                 yield '<tr style="background-color:#F4F4F4">'
             else:
-                yield '<tr>'
+                yield "<tr>"
             for column in columns:
-                yield '<td>' + str(record.get(column)) + '<td>\n'
-            yield '</tr>'
+                yield "<td>" + str(record.get(column)) + "<td>\n"
+            yield "</tr>"
 
-        yield '</tbody></table>'
+        yield "</tbody></table>"
 
     rows = []
     columns = []  # type:ignore
     for i, row in enumerate(dictset):
         rows.append(row)
         columns = columns + list(row.keys())
-        if (i+1) == limit:
+        if (i + 1) == limit:
             break
     columns = set(columns)  # type:ignore
 
     import types
-    footer = ''
+
+    footer = ""
     if isinstance(dictset, types.GeneratorType):
-        footer = f'\n<p>top {limit} rows x {len(columns)} columns</p>'
-        footer += '\nNOTE: the displayed records have been spent'
+        footer = f"\n<p>top {limit} rows x {len(columns)} columns</p>"
+        footer += "\nNOTE: the displayed records have been spent"
     if isinstance(dictset, list):
-        footer = f'\n<p>{len(dictset)} rows x {len(columns)} columns</p>'
+        footer = f"\n<p>{len(dictset)} rows x {len(columns)} columns</p>"
 
-    return ''.join(_to_html_table(rows, columns)) + footer
+    return "".join(_to_html_table(rows, columns)) + footer
 
 
-def ascii_table(
-        dictset: Iterator[dict],
-        limit: int = 5):
+def ascii_table(dictset: Iterator[dict], limit: int = 5):
     """
     Render the dictset as a ASCII table.
 
@@ -95,47 +93,52 @@ def ascii_table(
     # draw table
     bars = []
     for header, width in columns.items():
-        bars.append('─' * (width + 2))
+        bars.append("─" * (width + 2))
 
     # display headers
-    result.append('┌' + '┬'.join(bars) + '┐')
-    result.append('│' + '│'.join([k.center(v + 2) for k, v in columns.items()]) + '│')
-    result.append('├' + '┼'.join(bars) + '┤')
+    result.append("┌" + "┬".join(bars) + "┐")
+    result.append("│" + "│".join([k.center(v + 2) for k, v in columns.items()]) + "│")
+    result.append("├" + "┼".join(bars) + "┤")
 
     # display values
     for row in cache:
-        result.append('│' + '│'.join([str(v).center(columns[k] + 2) for k, v in row.items()]) + '│')
+        result.append(
+            "│"
+            + "│".join([str(v).center(columns[k] + 2) for k, v in row.items()])
+            + "│"
+        )
 
     # display footer
-    result.append('└' + '┴'.join(bars) + '┘')
+    result.append("└" + "┴".join(bars) + "┘")
 
-    return '\n'.join(result)
+    return "\n".join(result)
 
 
 BAR_CHARS = [r" ", r"▁", r"▂", r"▃", r"▄", r"▅", r"▆", r"▇", r"█"]
+
 
 def draw_histogram_bins(bins: List[int]):
     """
     Draws a pre-binned set off histogram data
     """
     mx = max(bins)
-    bar_height = (mx / 8)
+    bar_height = mx / 8
     if bar_height == 0:
-        return ' ' * len(bins)
-    
-    histogram = ''
+        return " " * len(bins)
+
+    histogram = ""
     for value in bins:
         if value == 0:
             histogram += BAR_CHARS[0]
         else:
             height = int(value / bar_height)
             histogram += BAR_CHARS[height]
-        
+
     return histogram
 
+
 def histogram(values: Iterable[int], number_of_bins: int = 10):
-    """
-    """
+    """ """
     bins = [0] * number_of_bins
     mn = min(values)
     mx = max(values)

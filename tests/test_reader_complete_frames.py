@@ -26,8 +26,6 @@ def test_ignore_non_complete_frames():
     assert next(records).get("test") == 1
 
 
-
-
 if __name__ == "__main__":  # pragma: no cover
     test_ignore_non_complete_frames()
 

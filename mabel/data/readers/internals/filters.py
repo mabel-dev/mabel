@@ -16,10 +16,8 @@ from ....logging import get_logger
 
 
 # https://codereview.stackexchange.com/a/248421
-_special_regex_chars = {
-    ch : '\\'+ch
-    for ch in '.^$*+?{}[]|()\\'
-}
+_special_regex_chars = {ch: "\\" + ch for ch in ".^$*+?{}[]|()\\"}
+
 
 @lru_cache(4)
 def _sql_like_fragment_to_regex(fragment):
@@ -27,44 +25,79 @@ def _sql_like_fragment_to_regex(fragment):
     Allows us to accepts LIKE statements to search data
     """
     # https://codereview.stackexchange.com/a/36864/229677
-    safe_fragment = ''.join([_special_regex_chars.get(ch, ch) for ch in fragment])
-    return re.compile('^' + safe_fragment.replace('%', '.*?').replace('_', '.') + '$')
+    safe_fragment = "".join([_special_regex_chars.get(ch, ch) for ch in fragment])
+    return re.compile("^" + safe_fragment.replace("%", ".*?").replace("_", ".") + "$")
 
-# set of operators we can interpret 
-def _eq(x,y):   return x == y
-def _neq(x,y):  return x != y
-def _lt(x,y):   return x < y
-def _gt(x,y):   return x > y
-def _lte(x,y):  return x <= y
-def _gte(x,y):  return x >= y
-def _like(x,y): return _sql_like_fragment_to_regex(y.lower()).match(str(x).lower())
-def _in(x,y):   return x in y
-def _nin(x,y):  return x not in y
-def _con(x,y):  return y in x
-def _ncon(x,y): return y not in x
-def true(x):    return True
+
+# set of operators we can interpret
+def _eq(x, y):
+    return x == y
+
+
+def _neq(x, y):
+    return x != y
+
+
+def _lt(x, y):
+    return x < y
+
+
+def _gt(x, y):
+    return x > y
+
+
+def _lte(x, y):
+    return x <= y
+
+
+def _gte(x, y):
+    return x >= y
+
+
+def _like(x, y):
+    return _sql_like_fragment_to_regex(y.lower()).match(str(x).lower())
+
+
+def _in(x, y):
+    return x in y
+
+
+def _nin(x, y):
+    return x not in y
+
+
+def _con(x, y):
+    return y in x
+
+
+def _ncon(x, y):
+    return y not in x
+
+
+def true(x):
+    return True
+
 
 # convert text representation of operators to functions
 OPERATORS = {
-    '='     : _eq,
-    '=='    : _eq,
-    'is'    : _eq,
-    '!='    : _neq,
-    '<'     : _lt,
-    '>'     : _gt,
-    '<='    : _lte,
-    '>='    : _gte,
-    'like'  : _like,
-    'in'    : _in,
-    '!in'   : _nin,
-    'not in': _nin,
-    'contains': _con,
-    '!contains': _ncon,
+    "=": _eq,
+    "==": _eq,
+    "is": _eq,
+    "!=": _neq,
+    "<": _lt,
+    ">": _gt,
+    "<=": _lte,
+    ">=": _gte,
+    "like": _like,
+    "in": _in,
+    "!in": _nin,
+    "not in": _nin,
+    "contains": _con,
+    "!contains": _ncon,
 }
 
-def evaluate(
-        predicate: Union[tuple, list],
-        record: dict) -> bool:
+
+def evaluate(predicate: Union[tuple, list], record: dict) -> bool:
     """
     This is the evaluation routine for the Filter class.
 
@@ -78,7 +111,7 @@ def evaluate(
     the `value` is a literal.
     """
     # No filter doesn't filter
-    if predicate is None:    # pragma: no cover
+    if predicate is None:  # pragma: no cover
         return True
 
     # If we have a tuple extract out the key, operator and value
@@ -101,9 +134,9 @@ def evaluate(
             return any([evaluate(p, record) for p in predicate])
 
         # if we're here the structure of the filter is wrong
-        raise InvalidSyntaxError('Unable to evaluate Filter')    # pragma: no cover
+        raise InvalidSyntaxError("Unable to evaluate Filter")  # pragma: no cover
 
-    raise InvalidSyntaxError('Unable to evaluate Filter')    # pragma: no cover
+    raise InvalidSyntaxError("Unable to evaluate Filter")  # pragma: no cover
 
 
 def get_indexable_filter_columns(predicate):
@@ -114,31 +147,41 @@ def get_indexable_filter_columns(predicate):
     This creates an list of tuples of (field,value) that we can feed to the
     index search.
     """
-    INDEXABLE_OPS = {'=', '==', 'is', 'in', 'contains'}
+    INDEXABLE_OPS = {"=", "==", "is", "in", "contains"}
     if predicate is None:
         return []
     if isinstance(predicate, tuple):
         key, op, value = predicate
         if op in INDEXABLE_OPS:
-            return [(key, value,)]
+            return [
+                (
+                    key,
+                    value,
+                )
+            ]
     if isinstance(predicate, list):
         if all([isinstance(p, tuple) for p in predicate]):
-            return [(k,v,) for k,o,v in predicate if o in INDEXABLE_OPS]
+            return [
+                (
+                    k,
+                    v,
+                )
+                for k, o, v in predicate
+                if o in INDEXABLE_OPS
+            ]
         if all([isinstance(p, list) for p in predicate]):
             columns = []
             for p in predicate:
                 columns += get_indexable_filter_columns(p)
             return columns
-    return []    # pragma: no cover
+    return []  # pragma: no cover
 
 
-class Filters():
+class Filters:
 
-    __slots__ = ('empty_filter', 'predicates')
+    __slots__ = ("empty_filter", "predicates")
 
-    def __init__(
-            self,
-            filters: Optional[List[Tuple[str, str, object]]] = None):
+    def __init__(self, filters: Optional[List[Tuple[str, str, object]]] = None):
         """
         A class to supporting filtering data.
 
@@ -178,7 +221,7 @@ class Filters():
             return [key]
         if isinstance(predicate, list):
             if all([isinstance(p, tuple) for p in predicate]):
-                return [k for k,o,v in predicate]
+                return [k for k, o, v in predicate]
             if all([isinstance(p, list) for p in predicate]):
                 columns = []
                 for p in predicate:
@@ -186,9 +229,7 @@ class Filters():
                 return columns
         return []  # pragma: no cover
 
-    def filter_dictset(
-            self,
-            dictset: Iterable[dict]) -> Iterable:
+    def filter_dictset(self, dictset: Iterable[dict]) -> Iterable:
         """
         Tests each entry in a Iterable against the filters
 

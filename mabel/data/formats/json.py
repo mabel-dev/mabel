@@ -8,23 +8,30 @@ native json library.
 from typing import Any, Union
 import datetime
 from ...logging import get_logger
+
 try:
     # if orjson is available, use it
     import orjson
 
     parse = orjson.loads
 
-    def serialize(obj: Any, indent: bool = False, as_bytes: bool = False) -> Union[str, bytes]:
+    def serialize(
+        obj: Any, indent: bool = False, as_bytes: bool = False
+    ) -> Union[str, bytes]:
 
         if as_bytes:
             if indent and isinstance(obj, dict):
-                return orjson.dumps(obj, option=orjson.OPT_INDENT_2 + orjson.OPT_SORT_KEYS)
+                return orjson.dumps(
+                    obj, option=orjson.OPT_INDENT_2 + orjson.OPT_SORT_KEYS
+                )
             else:
                 return orjson.dumps(obj, option=orjson.OPT_SORT_KEYS)
 
         # return a string
         if indent and isinstance(obj, dict):
-            return orjson.dumps(obj, option=orjson.OPT_INDENT_2 + orjson.OPT_SORT_KEYS).decode()
+            return orjson.dumps(
+                obj, option=orjson.OPT_INDENT_2 + orjson.OPT_SORT_KEYS
+            ).decode()
         else:
             return orjson.dumps(obj, option=orjson.OPT_SORT_KEYS).decode()
 
@@ -36,21 +43,22 @@ except ImportError:  # pragma: no cover
     import ujson
 
     logger = get_logger()
-    logger.warning('orjson not installed using ujson')
+    logger.warning("orjson not installed using ujson")
 
-    def serialize(obj: Any, indent: bool = False, as_bytes: bool = False) -> Union[str, bytes]:   # type:ignore
-
+    def serialize(
+        obj: Any, indent: bool = False, as_bytes: bool = False
+    ) -> Union[str, bytes]:  # type:ignore
         def fix_fields(dt: Any) -> str:
             """
             orjson and ujson handles some fields differently,
-            if one of those fields is detected, fix it. 
+            if one of those fields is detected, fix it.
             """
             if isinstance(dt, (datetime.date, datetime.datetime)):
                 return dt.isoformat()
             return dt
 
         if isinstance(obj, dict):
-            obj_copy = {k:fix_fields(v) for k,v in obj.items()}
+            obj_copy = {k: fix_fields(v) for k, v in obj.items()}
         else:
             obj_copy = obj
 

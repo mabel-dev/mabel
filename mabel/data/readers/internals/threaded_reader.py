@@ -2,10 +2,8 @@ import queue
 import threading
 from ...formats import dictset
 
-def threaded_reader(
-        items_to_read: list, 
-        blob_list,
-        reader):
+
+def threaded_reader(items_to_read: list, blob_list, reader):
     """
     Speed up reading sets of files - such as multiple days worth of log-per-day
     files.
@@ -64,10 +62,10 @@ def threaded_reader(
 
     # when the threads are all complete and all the records have been read from
     # the reply queue, we're done
-    while any([t.is_alive() for t in thread_pool]) or not(reply_queue.empty()):
+    while any([t.is_alive() for t in thread_pool]) or not (reply_queue.empty()):
         try:
             # don't wait forever
-            records = reply_queue.get(timeout=10)  
+            records = reply_queue.get(timeout=10)
             yield from records
-        except queue.Empty:    # pragma: no cover
+        except queue.Empty:  # pragma: no cover
             pass  #  most likely reason get being here is a race condition

@@ -12,11 +12,9 @@ from rich import traceback
 
 traceback.install()
 
+
 def get_records():
-    r = Reader(
-            inner_reader=DiskReader,
-            dataset="tests/data/tweets/",
-            raw_path=True)
+    r = Reader(inner_reader=DiskReader, dataset="tests/data/tweets/", raw_path=True)
     return len(list(r))
 
 
@@ -27,39 +25,43 @@ def test_cursor():
     lim = number_of_records // 4 * 3
 
     reader = Reader(
-            inner_reader=DiskReader,
-            dataset="tests/data/tweets/",
-            raw_path=True)
+        inner_reader=DiskReader, dataset="tests/data/tweets/", raw_path=True
+    )
 
     for row in limit(reader, lim):
         test_counter += 1
     cursor = reader.cursor
 
     assert isinstance(cursor, dict)
-    assert cursor['offset'] == (lim % 25)
-    assert cursor['blob'] == 'tests/data/tweets/tweets-0001.jsonl'
+    assert cursor["offset"] == (lim % 25)
+    assert cursor["blob"] == "tests/data/tweets/tweets-0001.jsonl"
 
     reader = Reader(
-            inner_reader=DiskReader,
-            dataset="tests/data/tweets/",
-            raw_path=True,
-            cursor=cursor)
-    
+        inner_reader=DiskReader,
+        dataset="tests/data/tweets/",
+        raw_path=True,
+        cursor=cursor,
+    )
+
     for i, row in enumerate(reader):
         test_counter += 1
 
     assert number_of_records == test_counter
 
+
 def test_cursor_as_text():
 
-    offsets = [1,6,8,13,22]
+    offsets = [1, 6, 8, 13, 22]
 
     for offset in offsets:
         reader = Reader(
-                inner_reader=DiskReader,
-                dataset="tests/data/tweets/",
-                raw_path=True,
-                cursor='{"blob": "tests/data/tweets/tweets-0001.jsonl", "offset": ' + str(offset) + ' }')
+            inner_reader=DiskReader,
+            dataset="tests/data/tweets/",
+            raw_path=True,
+            cursor='{"blob": "tests/data/tweets/tweets-0001.jsonl", "offset": '
+            + str(offset)
+            + " }",
+        )
         reader = list(reader)
         assert len(reader) == 25 - offset
 

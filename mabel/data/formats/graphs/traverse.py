@@ -17,14 +17,12 @@ limitations under the License.
 """
 from typing import Callable
 
-class Traverse():
 
-    __slots__ = ('graph', '_active_nodes', '_active_nodes_cache')
+class Traverse:
 
-    def __init__(
-            self,
-            graph,
-            active_nodes: set = None):
+    __slots__ = ("graph", "_active_nodes", "_active_nodes_cache")
+
+    def __init__(self, graph, active_nodes: set = None):
         """
         Graph Traversal
 
@@ -37,33 +35,33 @@ class Traverse():
 
         # ensure it is a set
         # - the collection active nodes is immutable
-        # - sets are faster for look ups 
+        # - sets are faster for look ups
         if not active_nodes:
             self._active_nodes = set()
-        elif type(active_nodes).__name__ == 'set':
+        elif type(active_nodes).__name__ == "set":
             self._active_nodes = active_nodes
         else:
             self._active_nodes = set(active_nodes)
 
     def follow(self, *relationships):
         """
-        Traverses a graph by following edges from the active nodes with 
+        Traverses a graph by following edges from the active nodes with
         a relationship on the list of relationships.
 
         Parameters:
             relationsips: strings
                 traverses node following edges with the stated relationship
-        
+
         Returns:
             Diablo
         """
         active_nodes = []
 
         for node in self._active_nodes:
-            active_nodes += [t for (s, t, r) in self.graph.outgoing_edges(node) if r in relationships]
-        return Traverse(
-            graph=self.graph,
-            active_nodes=active_nodes)
+            active_nodes += [
+                t for (s, t, r) in self.graph.outgoing_edges(node) if r in relationships
+            ]
+        return Traverse(graph=self.graph, active_nodes=active_nodes)
 
     def select(self, filter: Callable):
         """
@@ -73,41 +71,51 @@ class Traverse():
             filter: Callable
                 node attribute name to filter on
 
-        Returns: 
+        Returns:
             Diablo
         """
-        active_nodes = {nid for nid, attrib in self.active_nodes(data=True) if filter(attrib)}
-        return Traverse(
-            graph=self.graph,
-            active_nodes=active_nodes)
+        active_nodes = {
+            nid for nid, attrib in self.active_nodes(data=True) if filter(attrib)
+        }
+        return Traverse(graph=self.graph, active_nodes=active_nodes)
 
     def has(self, key, value):
         """
         Filters the active nodes by a key/value match
         """
-        active_nodes = [nid for nid, attrib in self.active_nodes(data=True) if attrib.get(key) == value]
-        return Traverse(
-            graph=self.graph,
-            active_nodes=active_nodes)
+        active_nodes = [
+            nid
+            for nid, attrib in self.active_nodes(data=True)
+            if attrib.get(key) == value
+        ]
+        return Traverse(graph=self.graph, active_nodes=active_nodes)
 
     def values(self, key):
-        return list({attrib[key] for nid, attrib in self.active_nodes(data=True) if key in attrib})
+        return list(
+            {
+                attrib[key]
+                for nid, attrib in self.active_nodes(data=True)
+                if key in attrib
+            }
+        )
 
     def active_nodes(self, data=False):
         if not data:
             return self._active_nodes
         if not self._active_nodes_cache:
-            self._active_nodes_cache = [(nid, self.graph[nid]) for nid in self._active_nodes]
-        return  self._active_nodes_cache
+            self._active_nodes_cache = [
+                (nid, self.graph[nid]) for nid in self._active_nodes
+            ]
+        return self._active_nodes_cache
 
     def list_relationships(self):
         relationships = []
         for node in self._active_nodes:
             relationships += {r for (s, t, r) in self.graph.outgoing_edges(node)}
         return set(relationships)
-        
+
     def __repr__(self):
-        return F"Graph - {len(list(self.graph.nodes()))} nodes ({len(self._active_nodes)} selected), {len(list(self.graph.edges()))} edges"
+        return f"Graph - {len(list(self.graph.nodes()))} nodes ({len(self._active_nodes)} selected), {len(list(self.graph.edges()))} edges"
 
     def __len__(self):
         return len(self._active_nodes)
