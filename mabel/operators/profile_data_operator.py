@@ -143,9 +143,7 @@ class ProfileDataOperator(BaseOperator):
                 top = ProfileDataOperator.date_from_epoch(top)
                 new_bins[(bottom, top)] = self.summary[date_field][  # type:ignore
                     "bins"
-                ][
-                    bound
-                ]
+                ][bound]
             self.summary[date_field]["bins"] = new_bins
             if self.summary[date_field].get("mean"):
                 del self.summary[date_field]["mean"]
