@@ -78,6 +78,7 @@ class BatchWriter(SimpleWriter):
         self.blob_writer = BlobWriter(**kwargs)
 
     def finalize(self):
+        final = super().finalize()
         completion_path = self.blob_writer.inner_writer.filename
         completion_path = os.path.split(completion_path)[0] + "/frame.complete"
         status = {"records": self.records}
@@ -86,7 +87,7 @@ class BatchWriter(SimpleWriter):
             override_blob_name=completion_path,
         )
         get_logger().debug(f"Frame completion file `{flag}` written")
-        return super().finalize()
+        return final
 
     @staticmethod
     def create_frame_id():
