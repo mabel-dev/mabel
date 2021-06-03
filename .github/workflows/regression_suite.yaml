@@ -21,7 +21,7 @@ jobs:
           pip install -r $GITHUB_WORKSPACE/requirements.txt
           pip install -r $GITHUB_WORKSPACE/tests/requirements.txt
 
-      - name: Setup MinIo
+      - name: Start MinIo Server
         run: |
           docker run -d -p 9000:9000 --name minio \
                      -e "MINIO_ACCESS_KEY=minioadmin" \
@@ -29,6 +29,12 @@ jobs:
                      -v /tmp/data:/data \
                      -v /tmp/config:/root/.minio \
                      minio/minio server /data
+
+      - name: Start GCS Emulator
+        run: |
+          docker run -d --name fake-gcs-server \
+                     -p 9090:4443 \
+                     fsouza/fake-gcs-server -scheme http
 
       - name: Run Regression Tests
         run: coverage run -m pytest 
