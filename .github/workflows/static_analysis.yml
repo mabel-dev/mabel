@@ -25,7 +25,6 @@ jobs:
   semgrep:
     name: Semgrep Analysis
     runs-on: ubuntu-latest
-    name: Check
     steps:
       - name: Semgrep
         uses: actions/checkout@v1
