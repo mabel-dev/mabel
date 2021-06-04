@@ -13,6 +13,7 @@ traceback.install()
 
 BUCKET_NAME = "PYTEST"
 
+
 def set_up():
 
     os.environ["STORAGE_EMULATOR_HOST"] = "http://localhost:9090"
@@ -60,7 +61,6 @@ def test_gcs_parquet():
         assert len(l) == 100, len(l)
     except Exception as e:  # pragma: no cover
         raise e
-
 
 
 if __name__ == "__main__":  # pragma: no cover
