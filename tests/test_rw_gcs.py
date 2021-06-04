@@ -27,10 +27,10 @@ def set_up():
     )
     bucket = client.bucket(BUCKET_NAME)
     try:
-        bucket.delete()
+        bucket.delete(force=True)
     except:  # pragma: no cover
         pass
-    bucket = client.create_bucket(bucket)
+    bucket = client.create_bucket(BUCKET_NAME)
 
 
 def test_gcs():

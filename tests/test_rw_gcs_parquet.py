@@ -1,4 +1,3 @@
-import shutil
 import os
 import sys
 
@@ -16,8 +15,6 @@ BUCKET_NAME = "PYTEST"
 
 def set_up():
 
-    shutil.rmtree(".cloudstorage", ignore_errors=True)
-
     os.environ["STORAGE_EMULATOR_HOST"] = "http://localhost:9090"
 
     client = storage.Client(
@@ -26,10 +23,10 @@ def set_up():
     )
     bucket = client.bucket(BUCKET_NAME)
     try:
-        bucket.delete()
+        bucket.delete(force=True)
     except:  # pragma: no cover
         pass
-    bucket = client.create_bucket(bucket)
+    bucket = client.create_bucket(BUCKET_NAME)
 
 
 def test_gcs_parquet():
