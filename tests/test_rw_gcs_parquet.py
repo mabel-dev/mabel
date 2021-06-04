@@ -27,9 +27,9 @@ def set_up():
     bucket = client.bucket(BUCKET_NAME)
     try:
         bucket.delete()
-        bucket = client.create_bucket(bucket)
     except:  # pragma: no cover
         pass
+    bucket = client.create_bucket(bucket)
 
 
 def test_gcs_parquet():
