@@ -23,7 +23,12 @@ def safe_field_name(field_name):
     return pattern.sub("", field_name)
 
 
-class BlobWriter:
+class BlobWriter(object):
+
+    # in som failure scenarios commit is called before __init__, so we need to define
+    # this variable outside the __init__.
+    bytes_in_blob = 0
+
     def __init__(
         self,
         *,  # force params to be named
@@ -45,6 +50,7 @@ class BlobWriter:
 
         kwargs["format"] = format
         self.inner_writer = inner_writer(**kwargs)  # type:ignore
+
         self._open_blob()
 
     def append(self, record: dict = {}):

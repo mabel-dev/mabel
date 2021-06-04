@@ -1,5 +1,3 @@
-import string
-import shutil
 import os
 import sys
 
@@ -7,26 +5,17 @@ sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.adapters.google import GoogleCloudStorageWriter, GoogleCloudStorageReader
 from mabel.data import BatchWriter
 from mabel.data import Reader
-from mabel.utils import entropy
 from google.auth.credentials import AnonymousCredentials
 from google.cloud import storage
-from gcp_storage_emulator.server import create_server
 from rich import traceback
 
 traceback.install()
 
-
-# randomize the bucket name to avoid collisions on reruns
-CHARACTERS = string.ascii_lowercase + string.digits
-BUCKET_NAME = entropy.random_string(length=8)
+BUCKET_NAME = "PYTEST"
 
 
 def set_up():
 
-    shutil.rmtree(".cloudstorage", ignore_errors=True)
-
-    server = create_server(host="localhost", port=9090, in_memory=False)
-    server.start()
     os.environ["STORAGE_EMULATOR_HOST"] = "http://localhost:9090"
 
     client = storage.Client(
@@ -35,18 +24,17 @@ def set_up():
     )
     bucket = client.bucket(BUCKET_NAME)
     try:
-        bucket = client.create_bucket(bucket)
+        bucket.delete(force=True)
     except:  # pragma: no cover
         pass
-
-    return server
+    bucket = client.create_bucket(BUCKET_NAME)
 
 
 def test_gcs_parquet():
 
     try:
         # set up the stub
-        server = set_up()
+        set_up()
 
         w = BatchWriter(
             inner_writer=GoogleCloudStorageWriter,
@@ -73,8 +61,6 @@ def test_gcs_parquet():
         assert len(l) == 100, len(l)
     except Exception as e:  # pragma: no cover
         raise e
-    finally:
-        server.stop()
 
 
 if __name__ == "__main__":  # pragma: no cover

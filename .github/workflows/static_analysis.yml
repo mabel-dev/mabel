@@ -3,7 +3,7 @@ on: [push]
 
 jobs:
   test:
-    name: Static Analysis
+    name: Bandit Analysis
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -21,3 +21,14 @@ jobs:
 
       - name: Execute Test
         run: bandit -r mabel
+
+  semgrep:
+    runs-on: ubuntu-latest
+    name: Check
+    steps:
+      - uses: actions/checkout@v1
+      - name: Semgrep
+        id: semgrep
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: p/r2c
