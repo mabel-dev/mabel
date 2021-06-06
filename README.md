@@ -5,6 +5,7 @@
 There is no server component, **mabel** just runs when you need it, where you want it.
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/mabel-dev/mabel/blob/master/LICENSE)
+[![Status](https://img.shields.io/badge/status-beta-yellowgreen)](https://github.com/mabel-dev/mabel)
 [![Regression Suite](https://github.com/mabel-dev/mabel/actions/workflows/regression_suite.yaml/badge.svg)](https://github.com/mabel-dev/mabel/actions/workflows/regression_suite.yaml)
 [![codecov](https://codecov.io/gh/mabel-dev/mabel/branch/main/graph/badge.svg?token=CYD6E4PPKR)](https://codecov.io/gh/mabl-dev/mabel)
 [![Static Analysis](https://github.com/mabel-dev/mabel/actions/workflows/static_analysis.yml/badge.svg)](https://github.com/mabel-dev/mabel/actions/workflows/static_analysis.yml)
