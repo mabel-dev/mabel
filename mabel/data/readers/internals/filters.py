@@ -9,6 +9,7 @@ This current implementation is a step toward that, it does not use
 any indices at this point.
 """
 import re
+import operator
 from functools import lru_cache
 from typing import Optional, Iterable, List, Tuple, Union
 from ....errors import InvalidSyntaxError
@@ -29,31 +30,7 @@ def _sql_like_fragment_to_regex(fragment):
     return re.compile("^" + safe_fragment.replace("%", ".*?").replace("_", ".") + "$")
 
 
-# set of operators we can interpret
-def _eq(x, y):
-    return x == y
-
-
-def _neq(x, y):
-    return x != y
-
-
-def _lt(x, y):
-    return x < y
-
-
-def _gt(x, y):
-    return x > y
-
-
-def _lte(x, y):
-    return x <= y
-
-
-def _gte(x, y):
-    return x >= y
-
-
+# set of operators we can interpret not in the `operator` module
 def _like(x, y):
     return _sql_like_fragment_to_regex(y.lower()).match(str(x).lower())
 
@@ -80,14 +57,14 @@ def true(x):
 
 # convert text representation of operators to functions
 OPERATORS = {
-    "=": _eq,
-    "==": _eq,
-    "is": _eq,
-    "!=": _neq,
-    "<": _lt,
-    ">": _gt,
-    "<=": _lte,
-    ">=": _gte,
+    "=": operator.eq,
+    "==": operator.eq,
+    "is": operator.eq,
+    "!=": operator.ne,
+    "<": operator.lt,
+    ">": operator.gt,
+    "<=": operator.le,
+    ">=": operator.ge,
     "like": _like,
     "in": _in,
     "!in": _nin,

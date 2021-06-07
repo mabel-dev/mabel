@@ -46,12 +46,9 @@ class FlowRunner:
         try:
             # start the flow, walk from the nodes with no incoming links
             for operator_name in self.flow.get_entry_points():
-                self.cycles += 1
                 self._inner_runner(
                     operator_name=operator_name, data=data, context=context
                 )
-                if self.cycles % 1000 == 0:
-                    get_logger().debug(f"Executed {self.cycles} cycles of flows.")
         except (Exception, SystemExit) as err:
             # if we have a uncaught failure, make sure it's logged
             get_logger().alert(  # type:ignore
@@ -75,6 +72,10 @@ class FlowRunner:
         - Find the next step by finding outgoing edges
         - Call this method for the next step
         """
+        self.cycles += 1
+        if self.cycles % 1000 == 0:
+            get_logger().debug(f"This is cycle {self.cycles} of this flow.")
+
         if not context:
             context = {}
 
