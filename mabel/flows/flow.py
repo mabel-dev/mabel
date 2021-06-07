@@ -185,10 +185,10 @@ class Flow:
             raise FlowError("Flow failed validation - Flows must be acyclic")
 
         # flows must have a single entry-point
-        if len(self.get_entry_points()) != 1:
-            raise FlowError(
-                "Flow failed validation - Flows must have a single entry point"
-            )
+        #if len(self.get_entry_points()) != 1:
+        #    raise FlowError(
+        #        "Flow failed validation - Flows must have a single entry point"
+        #    )
 
     def __enter__(self):
         if self.has_run:

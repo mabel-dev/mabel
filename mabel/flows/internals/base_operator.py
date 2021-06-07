@@ -265,6 +265,13 @@ class BaseOperator(abc.ABC):
         raise ValueError("no error_writer attached")
 
     def __gt__(self, next_operators):
+        """
+        Alias for __rshift__, `>`
+        """
+        self.logger.warning("Use of `>` to build flows will be replaced with `>>`")
+        return self.__rshift__(next_operators)
+
+    def __rshift__(self, next_operators):
         from ...flows.flow import Flow
 
         if not isinstance(next_operators, (list, set)):
@@ -307,6 +314,52 @@ class BaseOperator(abc.ABC):
         # this variable only exists to build the graph
         self.flow = None
         return flow
+
+    def __rrshift__(self, previous_operators):
+        from ...flows.flow import Flow
+
+        if not isinstance(previous_operators, (list, set)):
+            previous_operators = [previous_operators]
+        if self.flow:
+            # if I have a graph already, build on it
+            flow = self.flow
+        else:
+            # if I don't have a graph, create one
+            flow = Flow()
+            flow.add_operator(f"{self.name}-{id(self)}", self)
+
+        for operator in previous_operators:
+            if isinstance(operator, Flow):
+                # if we're pointing to a graph, merge with the current graph,
+                # we need to find the node with no incoming nodes we identify
+                # the entry-point
+                flow.merge(operator)
+                for exit in operator.get_exit_points():
+                    flow.link_operators(
+                        exit,
+                        f"{self.name}-{id(self)}",
+                    )
+            elif issubclass(type(operator), BaseOperator):
+                # otherwise add the node and edge and set the graph further down the
+                # line
+                flow.add_operator(f"{operator.name}-{id(operator)}", operator)
+                flow.link_operators(
+                    f"{operator.name}-{id(operator)}",
+                    f"{self.name}-{id(self)}",
+                )
+                operator.flow = flow
+            else:
+                label = type(operator).__name__
+                if hasattr(operator, "__name__"):
+                    label = operator.__name__
+                #  deepcode ignore return~not~implemented: appears to be false positive
+                raise TypeError(
+                    f"Operator {label} must inherit BaseOperator, this error also occurs when the Operator has not been correctly instantiated."
+                )
+        # this variable only exists to build the graph
+        self.flow = None
+        return flow
+
 
     def _clamp(self, value, low_bound, high_bound):
         """
