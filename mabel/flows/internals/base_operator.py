@@ -360,7 +360,6 @@ class BaseOperator(abc.ABC):
         self.flow = None
         return flow
 
-
     def _clamp(self, value, low_bound, high_bound):
         """
         'clamping' is fixing a value within a range
