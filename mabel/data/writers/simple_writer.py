@@ -2,7 +2,6 @@ import datetime
 from pydantic import BaseModel  # type:ignore
 from typing import Any, Optional, Union, List
 from dateutil import parser
-from pydantic.main import BaseModel
 from .internals.blob_writer import BlobWriter
 from ..validator import Schema  # type:ignore
 from ...utils import paths

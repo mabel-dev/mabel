@@ -23,13 +23,14 @@ class FilterOperator(BaseOperator):
             The condition does not need to be lambda, it can be any _Callable_
             including methods.
         """
+        super().__init__()
         if not condition:
             self.logger.warning(
                 "FilterOperator missing expected named parameter `condition`."
             )
             condition = match_all
         self.condition = condition
-        super().__init__()
+
 
     def execute(self, data={}, context={}):
         if self.condition(data):
