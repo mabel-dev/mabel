@@ -22,7 +22,18 @@ from .graph import Graph
 from .traverse import Traverse
 from ..json import parse
 from ....errors import MissingDependencyError
+from pydantic import BaseModel  # type:ignore
 
+
+class EdgeModel(BaseModel):
+    source:str
+    target:str
+    relationship:str
+
+class NodeModel(BaseModel):
+    nid:str
+    attributes: dict = {}
+    
 
 def walk(graph, nids=None):
     """

@@ -1,6 +1,8 @@
 import datetime
+from pydantic import BaseModel  # type:ignore
 from typing import Any, Optional, Union, List
 from dateutil import parser
+from pydantic.main import BaseModel
 from .internals.blob_writer import BlobWriter
 from ..validator import Schema  # type:ignore
 from ...utils import paths
@@ -83,20 +85,21 @@ class SimpleWriter:
 
         self.records = 0
 
-    def append(self, record: dict = {}):
+    def append(self, record: Union[dict, BaseModel]):
         """
         Append a new record to the Writer
 
         Parameters:
-            record: dictionary
+            record: dictionary or pydantic.BaseModel 
                 The record to append to the Writer
 
         Returns:
             integer
                 The number of records in the current blob
         """
-        # Check the new record conforms to the schema before continuing
-        if self.schema and not self.schema.validate(
+        if isinstance(record, BaseModel):
+            record = record.dict()
+        elif self.schema and not self.schema.validate(
             subject=record, raise_exception=False
         ):
             raise ValidationError(

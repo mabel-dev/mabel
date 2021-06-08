@@ -18,7 +18,6 @@ limitations under the License.
 
 from pathlib import Path
 from typing import Iterable, Tuple
-from ..json import serialize
 from ....errors import MissingDependencyError
 
 
@@ -66,18 +65,20 @@ class Graph(object):
         path = Path(graph_path)
         path.mkdir(exist_ok=True)
 
+        from .internals import EdgeModel, NodeModel
+
         with open(path / "edges.jsonl", "w", encoding="utf8") as edge_file:
             for source, target, relationship in self.edges():
-                edge_record = {
-                    "source": source,
-                    "target": target,
-                    "relationship": relationship,
-                }
-                edge_file.write(serialize(edge_record) + "\n")
+                edge_record = EdgeModel(
+                    source=source,
+                    target=target,
+                    relationship=relationship,
+                )
+                edge_file.write(edge_record.json() + "\n")
         with open(path / "nodes.jsonl", "w", encoding="utf8") as node_file:
             for nid, attributes in self.nodes(data=True):
-                node_record = {"nid": nid, "attributes": attributes}
-                node_file.write(serialize(node_record) + "\n")
+                node_record = NodeModel(nid=nid, attributes=attributes)
+                node_file.write(node_record.json() + "\n")
 
     def add_edge(self, source: str, target: str, relationship: str):
         """
