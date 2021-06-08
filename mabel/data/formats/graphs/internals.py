@@ -26,14 +26,15 @@ from pydantic import BaseModel  # type:ignore
 
 
 class EdgeModel(BaseModel):
-    source:str
-    target:str
-    relationship:str
+    source: str
+    target: str
+    relationship: str
+
 
 class NodeModel(BaseModel):
-    nid:str
+    nid: str
     attributes: dict = {}
-    
+
 
 def walk(graph, nids=None):
     """

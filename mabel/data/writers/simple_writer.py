@@ -90,7 +90,7 @@ class SimpleWriter:
         Append a new record to the Writer
 
         Parameters:
-            record: dictionary or pydantic.BaseModel 
+            record: dictionary or pydantic.BaseModel
                 The record to append to the Writer
 
         Returns:
