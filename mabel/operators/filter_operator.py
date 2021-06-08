@@ -6,7 +6,7 @@ def match_all(data):
 
 
 class FilterOperator(BaseOperator):
-    def __init__(self, condition=match_all):
+    def __init__(self, condition=None):
         """
         Filters records, returns the record for matching records and returns 'None'
         for non-matching records.
@@ -23,8 +23,13 @@ class FilterOperator(BaseOperator):
             The condition does not need to be lambda, it can be any _Callable_
             including methods.
         """
-        self.condition = condition
         super().__init__()
+        if not condition:
+            self.logger.warning(
+                "FilterOperator missing expected named parameter `condition`."
+            )
+            condition = match_all
+        self.condition = condition
 
     def execute(self, data={}, context={}):
         if self.condition(data):

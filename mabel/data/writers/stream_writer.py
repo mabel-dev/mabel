@@ -1,7 +1,8 @@
 import time
 import datetime
 import threading
-from typing import Any
+from pydantic import BaseModel  # type:ignore
+from typing import Any, Union
 from .simple_writer import SimpleWriter
 from .internals.writer_pool import WriterPool
 from ...utils import paths
@@ -69,7 +70,7 @@ class StreamWriter(SimpleWriter):
         self.thread.daemon = True
         self.thread.start()
 
-    def append(self, record: dict = {}):
+    def append(self, record: Union[dict, BaseModel]):
         """
         Append a new record to the Writer
 
@@ -92,7 +93,9 @@ class StreamWriter(SimpleWriter):
 
         identity = paths.date_format(self.dataset_template, datetime.date.today())
 
-        if self.schema and not self.schema.validate(
+        if isinstance(record, BaseModel):
+            record = record.dict()
+        elif self.schema and not self.schema.validate(
             subject=record, raise_exception=False
         ):
             identity += "/BACKOUT/"
