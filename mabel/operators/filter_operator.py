@@ -24,7 +24,9 @@ class FilterOperator(BaseOperator):
             including methods.
         """
         if not condition:
-            self.logger.warning("FilterOperator missing expected named parameter `condition`.")
+            self.logger.warning(
+                "FilterOperator missing expected named parameter `condition`."
+            )
             condition = match_all
         self.condition = condition
         super().__init__()
