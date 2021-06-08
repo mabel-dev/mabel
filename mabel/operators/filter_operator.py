@@ -31,7 +31,6 @@ class FilterOperator(BaseOperator):
             condition = match_all
         self.condition = condition
 
-
     def execute(self, data={}, context={}):
         if self.condition(data):
             return data, context
