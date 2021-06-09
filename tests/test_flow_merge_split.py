@@ -49,6 +49,8 @@ def test_merge_flows():
 
     flow = [player_one, player_two] >> p >> EndOperator()
 
+    print(repr(flow))
+
     with flow as runner:
         runner()
 

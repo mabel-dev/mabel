@@ -93,8 +93,8 @@ mabel comes with adapters for the following services:
 | <img align="centre" alt="GCP Storage" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/gcs-logo.png" /> | Google Cloud Storage |  Read/Write
 | <img align="centre" alt="MinIo" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/minio-logo.png" /> | MinIO | Read/Write
 | <img align="centre" alt="AWS S3" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/s3-logo.png" /> | S3 | Read/Write
-| <img align="centre" alt="MongoDB" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/mongodb-logo.png" /> | MongoDB | Read Only
-| <img align="centre" alt="MQTT" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/mqtt-logo.png" /> | MQTT | Read Only
+
+MongoDB and MQTT Readers are included in the base library but are not supported.
 
 ## Deployment and Execution
 

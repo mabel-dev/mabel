@@ -29,7 +29,7 @@ def test_flow_operations():
     assert f.get_entry_points() == {"p"}
     assert f.get_exit_points() == {"m"}
     assert f.is_acyclic()
-    assert f.get_outgoing_links("p") == ["m"]
+    assert f.get_outgoing_links("p") == {"m"}
 
     g = Flow()
     g.add_operator("o", open)
@@ -43,7 +43,7 @@ def test_flow_operations():
     assert g.get_entry_points() == {"o"}
     assert g.get_exit_points() == {"n"}
     assert g.is_acyclic()
-    assert g.get_outgoing_links("n") == []
+    assert g.get_outgoing_links("n") == set()
 
     f.merge(g)
 
@@ -60,7 +60,7 @@ def test_flow_operations():
     assert f.get_entry_points() == {"o"}
     assert f.get_exit_points() == {"m"}
     assert f.is_acyclic()
-    assert f.get_outgoing_links("n") == ["p"]
+    assert f.get_outgoing_links("n") == {"p"}
 
     # make it cyclic
     f.link_operators("p", "o")
