@@ -16,5 +16,11 @@ setup(
     maintainer="Joocer",
     packages=find_packages(include=["mabel", "mabel.*"]),
     url="https://github.com/mabel-dev/mabel/",
-    install_requires=["ujson", "python-dateutil", "zstandard", "mmh3", "pydantic"],
+    install_requires=[
+        "ujson",
+        "python-dateutil",
+        "zstandard",
+        "mmh3",
+        "pydantic"
+    ],
 )

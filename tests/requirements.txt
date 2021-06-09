@@ -13,15 +13,13 @@ matplotlib
 python-dotenv
 networkx
 moz-sql-parser
-gcp_storage_emulator
 xmltodict
 psutil
 pyarrow
 rsa>=4.7 # not directly required, pinned by Snyk to avoid a vulnerability
 minio
 bitarray
-python-dotenv
-redis
+
 
 types-orjson
 types-ujson

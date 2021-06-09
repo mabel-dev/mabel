@@ -5,6 +5,7 @@ and push a payload through it.
 import os
 import sys
 import pytest
+
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 
 from mabel import operator
@@ -15,23 +16,28 @@ from rich import traceback
 
 traceback.install()
 
+
 @operator
 def p(data):
     print(data)
     return data
 
+
 class ReplayOperator(NoOpOperator):
     def __init__(self, *args):
         super().__init__()
         self.values = list(*args)
+
     def execute(self, data={}, context={}):
         for value in self.values:
             yield value, context
+
 
 class AdderOperator(NoOpOperator):
     def __init__(self, add):
         super().__init__()
         self.add = add
+
     def execute(self, data={}, context={}):
         return data + self.add, context
 
@@ -63,6 +69,7 @@ def test_split_merge_flows():
         runner()
 
     assert runner.cycles == 61, runner.cycles
+
 
 if __name__ == "__main__":
     test_merge_flows()

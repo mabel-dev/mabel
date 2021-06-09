@@ -88,9 +88,9 @@ def test_flow_validator():
     f.add_operator("i", min)
     f.link_operators("i", "m")
 
-#    with pytest.raises(FlowError) as e:
-#        f._validate_flow()
-#    assert "Flows must have a single entry point" in str(e.value), str(e.value)
+    #    with pytest.raises(FlowError) as e:
+    #        f._validate_flow()
+    #    assert "Flows must have a single entry point" in str(e.value), str(e.value)
 
     flow = NoOpOperator() > EndOperator()
     with flow as runner:

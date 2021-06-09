@@ -43,7 +43,9 @@ except ImportError:  # pragma: no cover
     import ujson
 
     logger = get_logger()
-    logger.warning("`orjson` not installed using `ujson` - this will work but is not optimal")
+    logger.warning(
+        "`orjson` not installed using `ujson` - this will work but is not optimal"
+    )
 
     def serialize(
         obj: Any, indent: bool = False, as_bytes: bool = False
