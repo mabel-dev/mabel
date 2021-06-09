@@ -22,3 +22,7 @@ minio
 bitarray
 python-dotenv
 redis
+
+types-orjson
+types-ujson
+types-python-dateutil
