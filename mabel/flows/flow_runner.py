@@ -73,9 +73,6 @@ class FlowRunner:
         - Call this method for the next step
         """
         self.cycles += 1
-        if self.cycles % 1000 == 0:
-            get_logger().debug(f"This is cycle {self.cycles} of this flow.")
-
         if not context:
             context = {}
 

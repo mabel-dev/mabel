@@ -43,7 +43,9 @@ class Flow:
             target_operator: string
                 The name of the target step
         """
-        self.edges.append((source_operator, target_operator))
+        edge = (source_operator, target_operator)
+        if edge not in self.edges:
+            self.edges.append((source_operator, target_operator))
 
     def get_outgoing_links(self, name):
         """
@@ -53,7 +55,7 @@ class Flow:
             name: string
                 The name of the step to search from
         """
-        return [target for source, target in self.edges if source == name]
+        return {target for source, target in self.edges if source == name}
 
     def get_exit_points(self):
         """
@@ -109,6 +111,7 @@ class Flow:
         """
         self.nodes = {**self.nodes, **assimilatee.nodes}
         self.edges += assimilatee.edges
+        self.edges = list(set(self.edges))
 
     def attach_writers(self, writers: List[dict]):
 
@@ -216,9 +219,12 @@ class Flow:
             return "Flow: cannot represent cyclic flows"
         return "\n".join(list(self._draw()))
 
+    def __str__(self) -> str:
+        return self.get_entry_points().pop()
+
     def _draw(self):
         for entry in self.get_entry_points():
-            yield (f"{entry}")
+            yield (f"{str(entry)}, {len(entry)}")
             t = self._tree(entry, "")
             yield ("\n".join(t))
 
@@ -233,9 +239,9 @@ class Flow:
         # contents each get pointers that are ├── with a final └── :
         pointers = [tee] * (len(contents) - 1) + [last]
         for pointer, child_node in zip(pointers, contents):
-            yield prefix + pointer + child_node
+            yield prefix + pointer + str(child_node)
             if len(self.get_outgoing_links(node)) > 0:
                 # extend the prefix and recurse:
                 extension = branch if pointer == tee else space
                 # i.e. space because last, └── , above so no more |
-                yield from self._tree(child_node, prefix=prefix + extension)
+                yield from self._tree(str(child_node), prefix=prefix + extension)

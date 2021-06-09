@@ -23,7 +23,7 @@ def test_flow_builder_valid():
     e = EndOperator()
     f = FilterOperator()
     n = NoOpOperator()
-    flow = f >> n >> e
+    flow = f > n > e
 
     assert isinstance(flow, Flow)
     assert f"EndOperator-{id(e)}" in flow.nodes.keys()
@@ -40,7 +40,7 @@ def test_flow_builder_invalid_uninstantiated():
     n = NoOpOperator()
 
     with pytest.raises(TypeError):
-        flow = n >> e
+        flow = n > e
 
 
 def test_flow_builder_invalid_wrong_type():
@@ -51,7 +51,7 @@ def test_flow_builder_invalid_wrong_type():
     n = NoOpOperator()
 
     with pytest.raises(TypeError):
-        flow = n >> e
+        flow = n > e
 
 
 class TestOperator(NoOpOperator):
@@ -82,10 +82,7 @@ def test_branching():
     c = OperatorC()
     d = OperatorD()
 
-    flow = a >> [b >> z, c >> d >> z]
-
-    print(repr(flow))
-    print(flow.edges)
+    flow = a > [b > z, c > d > z]
 
     RESULTS = {
         "OperatorA": ["OperatorB", "OperatorC"],
@@ -100,7 +97,7 @@ def test_branching():
                 [t.split("-")[0] for s, t in flow.edges if str(s).startswith(source)]
             )
             == target
-        ), f"{source} - {target} - {sorted([t.split('-')[0] for s, t in flow.edges if str(s).startswith(source)])}"
+        )
 
     with flow as runner:
         runner(">", {})
@@ -113,7 +110,7 @@ def test_context_manager():
     c = OperatorC()
     d = OperatorD()
 
-    flow = a >> [b >> z, c >> d >> z]
+    flow = a > [b > z, c > d > z]
 
     RESULTS = {
         "OperatorA": ["OperatorB", "OperatorC"],

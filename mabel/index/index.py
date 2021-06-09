@@ -158,6 +158,7 @@ class Index:
         return set(result)
 
 
+
 class IndexBuilder:
 
     slots = ("column_name", "temporary_index")

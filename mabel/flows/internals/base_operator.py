@@ -290,10 +290,11 @@ class BaseOperator(abc.ABC):
                 # we need to find the node with no incoming nodes we identify
                 # the entry-point
                 flow.merge(operator)
-                flow.link_operators(
-                    f"{self.name}-{id(self)}",
-                    operator.get_entry_points().pop(),
-                )
+                for entry_point in operator.get_entry_points():
+                    flow.link_operators(
+                        f"{self.name}-{id(self)}",
+                        entry_point,
+                    )
             elif issubclass(type(operator), BaseOperator):
                 # otherwise add the node and edge and set the graph further down the
                 # line
