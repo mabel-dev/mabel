@@ -41,7 +41,7 @@ class GoogleLogger:
         global LOG_SINK
         LOG_SINK = os.environ.get("LOG_SINK", LOG_SINK)
         return True
-        
+
     @staticmethod
     def write_event(
         message: Union[str, dict],

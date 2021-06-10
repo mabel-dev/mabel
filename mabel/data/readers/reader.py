@@ -250,7 +250,9 @@ class Reader:
         """
         This wraps the blob reader, including the filters and indexers
         """
-        get_logger().debug(f"Reading data from `{blob}`, thread: {threading.get_ident()}")
+        get_logger().debug(
+            f"Reading data from `{blob}`, thread: {threading.get_ident()}"
+        )
         # If an index exists, get the rows we're interested in from the index
         rows = None
         for field, filter_value in self.indexable_fields:
@@ -346,7 +348,6 @@ class Reader:
                     for self.cursor["offset"], record in enumerate(local_reader):
                         yield record
                 offset = 0
-
 
     def __iter__(self):
         return self
