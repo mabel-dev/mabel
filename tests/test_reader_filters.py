@@ -39,7 +39,7 @@ def test_reader_filters_single_filter():
         raw_path=True,
         filters=[("username", "==", "NBCNews")],
     )
-
+    index = -1
     for index, item in enumerate(r):
         pass
     assert index == 43, index

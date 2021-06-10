@@ -224,7 +224,7 @@ class Flow:
 
     def _draw(self):
         for entry in self.get_entry_points():
-            yield (f"{str(entry)}, {len(entry)}")
+            yield (f"{str(entry)}")
             t = self._tree(entry, "")
             yield ("\n".join(t))
 

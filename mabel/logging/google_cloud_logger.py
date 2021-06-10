@@ -5,7 +5,7 @@ import logging
 import datetime
 from typing import Union, Optional
 from .levels import LEVELS, LEVELS_TO_STRING
-from ..utils import is_running_from_ipython
+from ..utils import is_running_from_ipython, safe_field_name
 
 try:
     from google.cloud import logging as stackdriver  # type:ignore
@@ -31,22 +31,16 @@ def extract_caller():
 
 class GoogleLogger:
     @staticmethod
-    def safe_field_name(field_name):
-        """strip all the non-alphanums from a field name"""
-        import re
-
-        pattern = re.compile("[^a-zA-Z0-9]+")
-        return pattern.sub("", field_name)
-
-    @staticmethod
     def supported():
-        use_logger = []
-        use_logger.append(stackdriver is not None)
-        use_logger.append(not is_running_from_ipython())
-        use_logger.append(not os.environ.get("IGNORE_STACKDRIVER", False))
+        if not stackdriver:
+            return False
+        if os.environ.get("IGNORE_STACKDRIVER", False):
+            return False
+        if is_running_from_ipython():
+            return False
         global LOG_SINK
         LOG_SINK = os.environ.get("LOG_SINK", LOG_SINK)
-        return all(use_logger)
+        return True
 
     @staticmethod
     def write_event(
@@ -58,7 +52,7 @@ class GoogleLogger:
         from .create_logger import LOG_NAME
 
         client = stackdriver.Client()
-        logger = client.logger(GoogleLogger.safe_field_name(LOG_SINK))
+        logger = client.logger(safe_field_name(LOG_SINK))
 
         labels = {}
         if system:

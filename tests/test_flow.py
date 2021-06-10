@@ -102,7 +102,7 @@ def test_flow_validator():
 
 
 def test_flow_render():
-    flow = NoOpOperator() > [NoOpOperator() > EndOperator(), EndOperator()]
+    flow = NoOpOperator() >> [NoOpOperator() >> EndOperator(), EndOperator()]
     render = repr(flow)
 
     print(render)

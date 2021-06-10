@@ -33,7 +33,7 @@ def test_cursor():
     cursor = reader.cursor
 
     assert isinstance(cursor, dict)
-    assert cursor["offset"] == (lim % 25)
+    assert cursor["offset"] == (lim % 25), cursor["offset"]
     assert cursor["blob"] == "tests/data/tweets/tweets-0001.jsonl"
 
     reader = Reader(
