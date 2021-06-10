@@ -19,3 +19,4 @@ if os.environ.get("RESOURCE_MONITORING", False):  # pragma: no cover
 from .flows.flow import Flow
 from .flows.internals.base_operator import BaseOperator
 from .flows.internals.decorators import operator
+from .data.readers.reader import Reader

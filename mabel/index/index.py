@@ -5,10 +5,9 @@ from operator import itemgetter
 from typing import Iterable
 
 
-UNSET = 65535  # 2^16 - 1
 MAX_INDEX = 4294967295  # 2^32 - 1
-STRUCT_DEF = "I H H"  # 4 byte unsigned int, 2 byte unsigned int, 2 byte unsigned int
-RECORD_SIZE = struct.calcsize(STRUCT_DEF)  # this should be 8
+STRUCT_DEF = "I I H"  # 4 byte unsigned int, 4 byte unsigned int, 2 byte unsigned int
+RECORD_SIZE = struct.calcsize(STRUCT_DEF)  # this should be 10
 
 """
 There are overlapping terms because we're traversing a dataset so we can traverse a
@@ -20,14 +19,6 @@ Terminology:
     Position  : the position of the row in the target file
     Row       : a record in the target file
 """
-
-
-def safe_field_name(field_name):
-    """strip all the non-alphanums from a field name"""
-    import re
-
-    pattern = re.compile("[^a-zA-Z0-9]+")
-    return pattern.sub("", field_name)
 
 
 class IndexEntry:

@@ -5,22 +5,14 @@ from typing import Any
 from ...formats.json import serialize
 from ....logging import get_logger
 from ....utils.paths import get_parts
+from ....utils import safe_field_name
 from ....index.index import IndexBuilder
 from ....errors import MissingDependencyError
 
 
-BLOB_SIZE = 32 * 1024 * 1024  # about 32 files per gigabyte
+BLOB_SIZE = 64 * 1024 * 1024  # 64Mb, 16 files per gigabyte
 BUFFER_SIZE = BLOB_SIZE  # buffer in memory really
 SUPPORTED_FORMATS_ALGORITHMS = ("jsonl", "lzma", "zstd", "parquet", "text")
-MAXIMUM_RECORDS = 64000  # needs to be less than 2^16-1
-
-
-def safe_field_name(field_name):
-    """strip all the non-alphanums from a field name"""
-    import re
-
-    pattern = re.compile("[^a-zA-Z0-9]+")
-    return pattern.sub("", field_name)
 
 
 class BlobWriter(object):
@@ -68,10 +60,7 @@ class BlobWriter(object):
         # if this write would exceed the blob size, close it so another
         # blob will be created
         self.bytes_in_blob += len(serialized) + 1
-        if (
-            self.bytes_in_blob > self.maximum_blob_size
-            or self.records_in_blob == MAXIMUM_RECORDS
-        ):
+        if self.bytes_in_blob > self.maximum_blob_size:
             self.commit()
             self._open_blob()
 
