@@ -14,8 +14,8 @@ class ReaderOperator(BaseOperator):
 
         Parameters:
             time_out: integer (optional)
-                The number of seconds to run before bailing, default is -1, no
-                timeout (run forever)
+                The number of seconds to run before bailing, default is -1, which is
+                treated as 1 year (non-leap)
             signal_format: string (optional)
                 The format of the detail in the exception. The default is '{cursor}'
                 which is replaced with the reader cursor value.
