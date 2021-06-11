@@ -14,8 +14,8 @@ class ReaderOperator(BaseOperator):
 
         Parameters:
             time_out: integer (optional)
-                The number of seconds to run before bailing, default is -1 which is no
-                timeout (run forever)
+                The number of seconds to run before bailing, default is -1, which is
+                treated as 1 year (non-leap)
             signal_format: string (optional)
                 The format of the detail in the exception. The default is '{cursor}'
                 which is replaced with the reader cursor value.
@@ -27,13 +27,14 @@ class ReaderOperator(BaseOperator):
         """
         super().__init__(*args, **kwargs)
         self.reader = Reader(**kwargs)
-        self.time_out = time_out
-        self.start_time = time.time()
+        if time_out < 0:
+            time_out = 315569652  # one year (365 days)
+        self.time_out = time_out + time.time()
         self.signal_format = signal_format
 
     def execute(self, data, context):
         for row in self.reader:
-            if self.start_time + self.time_out > time.time():
+            if time.time() > self.time_out:
                 signal = self.signal_format.replace(
                     "{cursor}", json.serialize(self.reader.cursor)
                 )
