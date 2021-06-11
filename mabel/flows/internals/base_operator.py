@@ -8,7 +8,7 @@ import datetime
 import functools
 from typing import List
 from ...logging import get_logger  # type:ignore
-from ...errors import render_error_stack
+from ...errors import render_error_stack, TimeExceeded
 from ...data.formats.json import parse, serialize
 
 
@@ -154,6 +154,8 @@ class BaseOperator(abc.ABC):
                 self.last_few_results.append(1)
                 self.last_few_results.pop(0)
                 break
+            except TimeExceeded as te:
+                raise te
             except Exception as err:
                 self.errors += 1
                 attempts_to_go -= 1
