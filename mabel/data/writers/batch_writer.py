@@ -1,5 +1,6 @@
 import os
 import datetime
+import traceback
 from typing import Any
 from .simple_writer import SimpleWriter
 from .internals.blob_writer import BlobWriter
@@ -79,6 +80,14 @@ class BatchWriter(SimpleWriter):
 
     def finalize(self):
         final = super().finalize()
+
+        ex = traceback.format_exc()
+        if ex != "NoneType: None\n":
+            get_logger().debug(
+                f"Error found in the stack, not marking frame as complete."
+            )
+            return -1
+
         completion_path = self.blob_writer.inner_writer.filename
         completion_path = os.path.split(completion_path)[0] + "/frame.complete"
         status = {"records": self.records}
