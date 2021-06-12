@@ -136,7 +136,7 @@ class BloomFilter:
 
         bf = BloomFilter()
 
-        bits = bitarray(endian="big")
+        bits = bitarray()
         with open(filename, "rb") as fh:
             magic_string = fh.read(4).decode()
             if magic_string != "MB01":  # pragma: no cover
