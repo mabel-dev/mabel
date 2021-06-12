@@ -14,6 +14,32 @@ import hashlib
 import typing
 import ujson
 import datetime
+import pathlib
+import dataclasses
+import traceback
+import uuid
+import json
+import string
+import logging
+import pydantic
+import dateutil
+import __future__
+import calendar
+import six
+import bisect
+import tempfile
+import mmh3
+import queue
+import multiprocessing
+import rich
+import platform
+import pygments
+import subprocess
+import getpass
+import configparser
+import fractions
+import colorama
+import textwrap
 
 base = sys.path[0]
 sys.path.clear()
@@ -30,6 +56,7 @@ will_normally_fail = {
     "date": datetime.date(2015, 6, 1),
     "datetime": datetime.datetime(1979, 9, 10, 23, 13),
     "list": ["item"],
+    "nothing": None
 }
 
 
@@ -38,12 +65,13 @@ def test_json_serializing():
     failed = False
 
     try:
-        b = serialize(will_normally_fail)
+        b = serialize(will_normally_fail, as_bytes=True)
     except:
         failed = True
 
     assert not failed, "didn't process all types"
-    assert isinstance(b, bytes), "didn't return bytes"
+    assert isinstance(b, bytes), f"didn't return bytes - {type(b)}"
+    print(b)
 
 
 if __name__ == "__main__":  # pragma: no cover
