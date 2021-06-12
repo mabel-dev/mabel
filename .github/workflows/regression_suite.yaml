@@ -44,7 +44,7 @@ jobs:
           MINIO_SECRET_KEY: minioadmin
 
       - name: Check Coverage
-        run: coverage report --include=mabel* --fail-under=85
+        run: coverage report --include=mabel* --fail-under=85 -m
 
       - name: "Upload coverage to Codecov"
         uses: codecov/codecov-action@v1
