@@ -3,7 +3,7 @@ from .internals.trace_blocks import TraceBlocks
 from ..utils import entropy
 from ..errors import FlowError
 from ..logging import get_logger
-
+from mabel.errors.time_exceeded import TimeExceeded
 
 class FlowRunner:
     def __init__(self, flow):
@@ -49,6 +49,8 @@ class FlowRunner:
                 self._inner_runner(
                     operator_name=operator_name, data=data, context=context
                 )
+        except TimeExceeded as te:
+            raise te
         except (Exception, SystemExit) as err:
             # if we have a uncaught failure, make sure it's logged
             get_logger().alert(  # type:ignore
