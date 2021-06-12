@@ -4,8 +4,6 @@ from ...adapters.null import NullWriter
 
 
 class NullBatchWriterOperator(BaseWriterOperator):
-    def __init__(
-        self, **kwargs
-    ):
+    def __init__(self, **kwargs):
         """ """
         super().__init__(writer=BatchWriter, inner_writer=NullWriter, **kwargs)

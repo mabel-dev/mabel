@@ -83,7 +83,9 @@ class BatchWriter(SimpleWriter):
 
         ex = traceback.format_exc()
         if ex != "NoneType: None\n":
-            get_logger().debug(f"Error found in the stack, not marking frame as complete.")
+            get_logger().debug(
+                f"Error found in the stack, not marking frame as complete."
+            )
             return -1
 
         completion_path = self.blob_writer.inner_writer.filename
