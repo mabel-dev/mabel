@@ -23,7 +23,7 @@ limitations under the License.
 try:
     from bitarray import bitarray  # type:ignore
 except ImportError:
-    from .bitarray import bitarray
+    from .bitarray import bitarray  # type:ignore
 
 
 class BloomFilter:
@@ -51,7 +51,7 @@ class BloomFilter:
         self.hash_count = BloomFilter.get_hash_count(
             self.filter_size, number_of_elements
         )
-        self.bits = bitarray(self.filter_size, endian="big")
+        self.bits = bitarray(self.filter_size)
         self.bits.setall(0)
 
     @staticmethod
