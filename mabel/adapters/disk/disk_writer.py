@@ -25,6 +25,6 @@ class DiskWriter(BaseInnerWriter):
                 file.write(byte_data)
 
             return blob_name
-        except Exception as err:
+        except Exception as err:  # pragma: no cover
             get_logger().error(f"Problem saving blob to disk {type(err).__name__}")
             raise err

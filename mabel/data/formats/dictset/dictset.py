@@ -301,7 +301,7 @@ def sort(
             if descending:
                 yield from reversed(cache[:quarter_cache])
             else:
-                yield from cache[:quarter_cache]
+                yield from cache[:quarter_cache]   # pragma: no cover
             del cache[:quarter_cache]
     cache = sorted(cache, key=_sort_key(column), reverse=descending)
     yield from cache
