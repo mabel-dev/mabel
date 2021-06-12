@@ -26,10 +26,10 @@ def test_flow_operations():
     assert "p" in f.nodes.keys()
     assert f.get_operator("p") == print
     assert len(f.edges) == 1
-    assert f.get_entry_points() == {"p"}
-    assert f.get_exit_points() == {"m"}
+    assert f.get_entry_points() == ["p"], f.get_entry_points()
+    assert f.get_exit_points() == ["m"]
     assert f.is_acyclic()
-    assert f.get_outgoing_links("p") == {"m"}
+    assert f.get_outgoing_links("p") == ["m"]
 
     g = Flow()
     g.add_operator("o", open)
@@ -40,15 +40,15 @@ def test_flow_operations():
     assert "n" in g.nodes.keys()
     assert g.get_operator("o") == open
     assert len(g.edges) == 1
-    assert g.get_entry_points() == {"o"}
-    assert g.get_exit_points() == {"n"}
+    assert g.get_entry_points() == ["o"]
+    assert g.get_exit_points() == ["n"]
     assert g.is_acyclic()
-    assert g.get_outgoing_links("n") == set()
+    assert g.get_outgoing_links("n") == []
 
     f.merge(g)
 
-    assert f.get_entry_points() == {"p", "o"}
-    assert f.get_exit_points() == {"m", "n"}
+    assert f.get_entry_points() == ["o", "p"]
+    assert f.get_exit_points() == ["m", "n"]
     assert f.is_acyclic()
 
     f.link_operators("n", "p")
@@ -57,10 +57,10 @@ def test_flow_operations():
     assert "n" in f.nodes.keys()
     assert f.get_operator("o") == open
     assert len(f.edges) == 3
-    assert f.get_entry_points() == {"o"}
-    assert f.get_exit_points() == {"m"}
+    assert f.get_entry_points() == ["o"]
+    assert f.get_exit_points() == ["m"]
     assert f.is_acyclic()
-    assert f.get_outgoing_links("n") == {"p"}
+    assert f.get_outgoing_links("n") == ["p"]
 
     # make it cyclic
     f.link_operators("p", "o")
@@ -108,9 +108,9 @@ def test_flow_render():
     print(render)
 
     assert render.startswith("NoOpOperator")
-    assert "\n ├─ NoOpOperator" in render
-    assert "\n │   └─ EndOperator" in render
-    assert "\n └─ EndOperator" in render
+    assert "\n ├─ EndOperator" in render
+    assert "\n └─ NoOpOperator" in render
+    assert "\n     └─ EndOperator" in render
 
 
 if __name__ == "__main__":  # pragma: no cover

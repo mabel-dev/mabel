@@ -55,21 +55,24 @@ class Flow:
             name: string
                 The name of the step to search from
         """
-        return {target for source, target in self.edges if source == name}
+        retval = {target for source, target in self.edges if source == name}
+        return sorted(retval)
 
     def get_exit_points(self):
         """
         Get steps in the flow with no outgoing steps.
         """
         sources = {source for source, target in self.edges}
-        return {target for source, target in self.edges if target not in sources}
+        retval = {target for source, target in self.edges if target not in sources}
+        return sorted(retval)
 
     def get_entry_points(self):
         """
         Get steps in the flow with no incoming steps.
         """
         targets = {target for source, target in self.edges}
-        return {source for source, target in self.edges if source not in targets}
+        retval = {source for source, target in self.edges if source not in targets}
+        return sorted(retval)
 
     def is_acyclic(self):
         # cycle over the graph removing a layer of exits each cycle
@@ -187,11 +190,6 @@ class Flow:
         if not self.is_acyclic():
             raise FlowError("Flow failed validation - Flows must be acyclic")
 
-        # flows must have a single entry-point
-        # if len(self.get_entry_points()) != 1:
-        #    raise FlowError(
-        #        "Flow failed validation - Flows must have a single entry point"
-        #    )
 
     def __enter__(self):
         if self.has_run:
@@ -205,6 +203,9 @@ class Flow:
         """
         Finalize concludes the flow and returns the sensor information
         """
+
+        print("IF THE TRACEBACK CONTAINS ERRORS, DON'T FINALIZE")
+
         from ..logging import get_logger
 
         FlowRunner(self)(BaseOperator.sigterm(), {})
