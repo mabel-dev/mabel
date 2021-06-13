@@ -111,7 +111,7 @@ class Groups:
         return SubGroup(self._groups.get(item))
 
 
-class SubGroup():
+class SubGroup:
     def __init__(self, values):
         self.values = values
 
