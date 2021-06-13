@@ -202,9 +202,6 @@ class Flow:
         """
         Finalize concludes the flow and returns the sensor information
         """
-
-        print("IF THE TRACEBACK CONTAINS ERRORS, DON'T FINALIZE")
-
         from ..logging import get_logger
 
         FlowRunner(self)(BaseOperator.sigterm(), {})

@@ -1,27 +1,29 @@
 from typing import Callable
 
+from mabel.data.formats import dictset
+
 
 class Groups:
-    """
-    Group By functionality for Iterables of Dictionaries
-
-    Parameters:
-        dictset: Iterable of dictionaries:
-            The dataset to perform the Group By on
-        column: string:
-            The name of the field to group by
-
-    Returns:
-        Groups
-
-    Warning:
-        The 'Groups' object holds the entire dataset in memory so is unsuitable
-        for large datasets.
-    """
 
     __slots__ = "_groups"
 
     def __init__(self, dictset, column):
+        """
+        Group By functionality for Iterables of Dictionaries
+
+        Parameters:
+            dictset: Iterable of dictionaries:
+                The dataset to perform the Group By on
+            column: string:
+                The name of the field to group by
+
+        Returns:
+            Groups
+
+        Warning:
+            The 'Groups' object holds the entire dataset in memory so is unsuitable
+            for large datasets.
+        """
         groups = {}
         for item in dictset:
             my_item = item.copy()
@@ -101,3 +103,20 @@ class Groups:
         Returns the group names
         """
         return str(list(self._groups.keys()))
+
+    def __getitem__(self, item):
+        """
+        Selector access to groups, e.g. Groups["Group Name"]
+        """
+        return SubGroup(self._groups.get(item))
+
+
+class SubGroup:
+    def __init__(self, values):
+        self.values = values
+
+    def __getitem__(self, item):
+        """
+        Selector access to a value in a group
+        """
+        return dictset.extract_column(self.values, item)

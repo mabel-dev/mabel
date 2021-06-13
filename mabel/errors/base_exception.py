@@ -6,5 +6,5 @@ Base for new exception types.
 
 
 class BaseException(Exception):
-    def __call__(self, *args):
+    def __call__(self, *args):  # pragma: no cover
         return self.__class__(*(self.args + args))
