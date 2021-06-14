@@ -16,12 +16,10 @@ from mabel.logging import get_logger
 
 get_logger().setLevel(5)
 
+
 def test_reader_timeout():
     reader = ReaderOperator(
-        inner_reader=DiskReader,
-        dataset="tests/data/tweets",
-        raw_path=True,
-        time_out=1
+        inner_reader=DiskReader, dataset="tests/data/tweets", raw_path=True, time_out=1
     )
     dataset = reader.execute(None, None)
     failed = False
@@ -30,9 +28,10 @@ def test_reader_timeout():
             time.sleep(0.1)
     except TimeExceeded as te:
         cursor = json.parse(str(te))
-        assert (i + 1) == cursor['offset']
+        assert (i + 1) == cursor["offset"]
         failed = True
     assert failed
+
 
 if __name__ == "__main__":  # pragma: no cover
     test_reader_timeout()

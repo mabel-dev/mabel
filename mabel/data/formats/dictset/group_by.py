@@ -115,7 +115,7 @@ class Groups:
 class SubGroup():
     
     __slots__ = ('values')
-    
+
     def __init__(self, values):
         self.values = values
 

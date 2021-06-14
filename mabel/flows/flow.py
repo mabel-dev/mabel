@@ -190,7 +190,6 @@ class Flow:
         if not self.is_acyclic():
             raise FlowError("Flow failed validation - Flows must be acyclic")
 
-
     def __enter__(self):
         if self.has_run:
             raise FlowError(

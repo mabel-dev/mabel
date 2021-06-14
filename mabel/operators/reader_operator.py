@@ -7,7 +7,11 @@ from ..errors.time_exceeded import TimeExceeded
 
 class ReaderOperator(BaseOperator):
     def __init__(
-        self, *args, time_out: float = 315569652.0, signal_format: str = "{cursor}", **kwargs
+        self,
+        *args,
+        time_out: float = 315569652.0,
+        signal_format: str = "{cursor}",
+        **kwargs
     ):
         """
         Read through a dataset and emit each row as a new record. Includes optional

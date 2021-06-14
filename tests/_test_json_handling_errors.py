@@ -56,7 +56,7 @@ will_normally_fail = {
     "date": datetime.date(2015, 6, 1),
     "datetime": datetime.datetime(1979, 9, 10, 23, 13),
     "list": ["item"],
-    "nothing": None
+    "nothing": None,
 }
 
 

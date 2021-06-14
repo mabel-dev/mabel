@@ -386,7 +386,6 @@ class Reader:
                         yield record
                 offset = 0
 
-
     def __iter__(self):
         return self
 

@@ -22,7 +22,7 @@ def time_it(dataset, username):
         filters=("user_name", "==", username),
     )
     res = [r for r in reader]
-    #print(res)
+    # print(res)
     return (time.perf_counter_ns() - start) / 1e9
 
 
