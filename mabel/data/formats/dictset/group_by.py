@@ -1,6 +1,5 @@
 
 from typing import Callable, Iterable
-
 from mabel.data.formats import dictset as ds
 
 
