@@ -1,10 +1,11 @@
 """
 LRU Index
 
-Implements an arbitrary length LRU Index, this is not a LRU cache,
-this is the 'brains' of a deduplication engine - where the most
-recently seen 'size' items are remembered and older items are
-ejected.
+Implements an arbitrary length LRU Index, this is not a LRU cache, this is the 'brains'
+of a deduplication engine - where the most recently seen 'size' items are remembered
+and older items are ejected.
+
+Some implementation decisions are to optimize for speed and memory.
 
 This relies on dictionaries being ordered.
 

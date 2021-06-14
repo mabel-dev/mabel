@@ -1,4 +1,5 @@
 
+from mabel.data.formats.dictset.dictset import drop_duplicates
 from typing import Callable, Iterable
 from mabel.data.formats import dictset as ds
 
@@ -24,7 +25,11 @@ class Groups:
             for large datasets.
         """
         groups = {}
-        for item in ds.drop_duplicates(dictset):
+        if dedupe:
+            # dropping dupes here can save a lot of memory
+            # drop_duplicates is quick but inaccurate so we need to dedupe later
+            dictset = ds.drop_duplicates(dictset)
+        for item in dictset:
             my_item = item.copy()
             key = my_item.get(column)
             if groups.get(key) is None:
