@@ -1,47 +1,48 @@
-from typing import Callable
 
-from mabel.data.formats import dictset
+from typing import Callable, Iterable
+
+from mabel.data.formats import dictset as ds
 
 
 class Groups:
 
     __slots__ = "_groups"
 
-    def __init__(self, dictset, column):
+    def __init__(self, dictset:Iterable, column:str, dedupe:bool=False):
         """
         Group By functionality for Iterables of Dictionaries
-
         Parameters:
-            dictset: Iterable of dictionaries:
+            dictset: Iterable of dictionaries
                 The dataset to perform the Group By on
-            column: string:
+            column: string
                 The name of the field to group by
-
+            dedupe: bool
+                Remove duplicate values from the groups
         Returns:
             Groups
-
         Warning:
             The 'Groups' object holds the entire dataset in memory so is unsuitable
             for large datasets.
         """
         groups = {}
-        for item in dictset:
+        for item in ds.drop_duplicates(dictset):
             my_item = item.copy()
             key = my_item.get(column)
             if groups.get(key) is None:
                 groups[my_item.get(column)] = []
             del my_item[column]
             groups[key].append(my_item)
+        if dedupe:           
+            for group in groups:
+                groups[group] = {frozenset(item.items()):item for item in groups[group]}.values()
         self._groups = groups
 
     def count(self, group=None):
         """
         Count the number of items in groups
-
         Parameters:
             group: string (optional)
                 If provided, return the count of just this group
-
         Returns:
             if a group is provided, return an integer
             if no group is provided, return a dictionary
@@ -57,16 +58,13 @@ class Groups:
     def aggregate(self, column, method):
         """
         Applies an aggregation function by group.
-
         Parameters:
             column: string
                 The name of the field to aggregate on
             method: callable
                 The function to aggregate with
-
         Returns:
             dictionary
-
         Examples:
             maxes = grouped.aggregate('age', max)
             means = grouped.aggregate('age', maths.mean)
@@ -82,11 +80,9 @@ class Groups:
     def apply(self, method: Callable):
         """
         Apply a function to all groups
-
         Parameters:
             method: callable
                 The function to apply to the groups
-
         Returns:
             dictionary
         """
@@ -119,10 +115,10 @@ class SubGroup():
         """
         Selector access to a value in a group, support arrays
         """
-        if isinstance(item, list):
-            return dictset.select_from(self.values, item)
+        if isinstance(item, tuple):
+            return list(ds.select_from(self.values, columns=item))
         else:
-            return dictset.extract_column(self.values, item)
+            return ds.extract_column(self.values, item)
 
-    def __repr__(self):
-        return self.values
+    def __len__(self):
+        return len(self.values)
