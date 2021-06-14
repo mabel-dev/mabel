@@ -1,8 +1,5 @@
-
-from mabel.data.formats.dictset.dictset import drop_duplicates
 from typing import Callable, Iterable
 from mabel.data.formats import dictset as ds
-
 
 class Groups:
 
@@ -25,16 +22,11 @@ class Groups:
             for large datasets.
         """
         groups = {}
-        if dedupe:
-            # dropping dupes here can save a lot of memory
-            # drop_duplicates is quick but inaccurate so we need to dedupe later
-            dictset = ds.drop_duplicates(dictset)
-        for item in dictset:
+        for item in ds.drop_duplicates(dictset):
             my_item = item.copy()
-            key = my_item.get(column)
-            if groups.get(key) is None:
-                groups[my_item.get(column)] = []
-            del my_item[column]
+            key = my_item.pop(column, None)
+            if not key in groups:
+                groups[key] = []
             groups[key].append(my_item)
         if dedupe:           
             for group in groups:
@@ -102,18 +94,28 @@ class Groups:
         """
         Returns the group names
         """
-        return str(list(self._groups.keys()))
+        return f"Group of {len(self)} items"
 
     def __getitem__(self, item):
         """
         Selector access to groups, e.g. Groups["Group Name"]
+        Note that Groups["Group 1", "Group 2"] creates a group with just those items
         """
-        return SubGroup(self._groups.get(item))
+        if isinstance(item, (tuple, list)):
+            newg = Groups([], None)
+            for entry in item:
+                if entry in self._groups[entry]:
+                    newg._groups.append(self._groups[entry])
+        else:
+            return SubGroup(self._groups.get(item))
 
 
 class SubGroup():
+    
+    __slots__ = ('values')
+    
     def __init__(self, values):
-        self.values = values or []
+        self.values = values
 
     def __getitem__(self, item):
         """
@@ -126,3 +128,6 @@ class SubGroup():
 
     def __len__(self):
         return len(self.values)
+    
+    def __repr__(self):
+        return f"SubGroup of {len(self)} items"
