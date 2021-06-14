@@ -1,11 +1,12 @@
 from typing import Callable, Iterator
 from mabel.data.formats import dictset as ds
 
+
 class Groups:
 
     __slots__ = "_groups"
 
-    def __init__(self, dictset:Iterator, column:str, dedupe:bool=False):
+    def __init__(self, dictset: Iterator, column: str, dedupe: bool = False):
         """
         Group By functionality for Iterables of Dictionaries
         Parameters:
@@ -21,7 +22,7 @@ class Groups:
             The 'Groups' object holds the entire dataset in memory so is unsuitable
             for large datasets.
         """
-        groups:dict = {}
+        groups: dict = {}
         if dedupe:
             dictset = ds.drop_duplicates(dictset)
         for item in dictset:
@@ -30,9 +31,11 @@ class Groups:
             if not key in groups:
                 groups[key] = []
             groups[key].append(my_item)
-        if dedupe:           
+        if dedupe:
             for group in groups:
-                groups[group] = {frozenset(item.items()):item for item in groups[group]}.values()
+                groups[group] = {
+                    frozenset(item.items()): item for item in groups[group]
+                }.values()
         self._groups = groups
 
     def count(self, group=None):
@@ -112,9 +115,9 @@ class Groups:
             return SubGroup(self._groups.get(item))
 
 
-class SubGroup():
-    
-    __slots__ = ('values')
+class SubGroup:
+
+    __slots__ = "values"
 
     def __init__(self, values):
         self.values = values
@@ -130,6 +133,6 @@ class SubGroup():
 
     def __len__(self):
         return len(self.values)
-    
+
     def __repr__(self):
         return f"SubGroup of {len(self)} items"

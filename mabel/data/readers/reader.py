@@ -245,7 +245,10 @@ class Reader:
             self.cache_folder = os.environ.get("CACHE_FOLDER")
             if not self.cache_folder:
                 import tempfile
-                self.cache_folder = tempfile.TemporaryDirectory(prefix="mabel_cache-").name + os.sep
+
+                self.cache_folder = (
+                    tempfile.TemporaryDirectory(prefix="mabel_cache-").name + os.sep
+                )
                 os.environ["CACHE_FOLDER"] = self.cache_folder
                 os.makedirs(self.cache_folder, exist_ok=True)
                 # delete the cache when the application closes
@@ -289,17 +292,21 @@ class Reader:
                 if self.cache_folder:
                     # if the cache file exists, read it
                     if os.path.exists(cache_file):
-                        with open(cache_file, 'rb') as cache:
+                        with open(cache_file, "rb") as cache:
                             index_stream = io.BytesIO(cache.read())
                             cache_hit = True
-                            get_logger().debug(f"Reading index from `{index_file}` (cache hit)")
+                            get_logger().debug(
+                                f"Reading index from `{index_file}` (cache hit)"
+                            )
                 # if we didn't hit the cache, read the file
                 if not cache_hit:
                     index_stream = self.reader_class.get_blob_stream(index_file)
-                    get_logger().debug(f"Reading index from `{index_file}` (cache miss)")
+                    get_logger().debug(
+                        f"Reading index from `{index_file}` (cache miss)"
+                    )
                     # if we missed and he have a cache folder, cache the file
                     if self.cache_folder:
-                        with open(cache_file, 'wb') as cache:
+                        with open(cache_file, "wb") as cache:
                             cache.write(index_stream.read())
                         index_stream.seek(0, 2)
 

@@ -339,7 +339,7 @@ def extract_column(dictset: Iterator[dict], column: str) -> list:
     return [record.get(column) for record in dictset]
 
 
-def group_by(dictset: Iterator[dict], column: str, dedupe:bool=False) -> Groups:
+def group_by(dictset: Iterator[dict], column: str, dedupe: bool = False) -> Groups:
     """
     Create a Groups object
 
