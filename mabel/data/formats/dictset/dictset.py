@@ -339,7 +339,7 @@ def extract_column(dictset: Iterator[dict], column: str) -> list:
     return [record.get(column) for record in dictset]
 
 
-def group_by(dictset: Iterator[dict], column: str) -> Groups:
+def group_by(dictset: Iterator[dict], column: str, dedupe:bool=False) -> Groups:
     """
     Create a Groups object
 
@@ -352,7 +352,7 @@ def group_by(dictset: Iterator[dict], column: str) -> Groups:
     Returns:
         mabel.formats.Groups
     """
-    return Groups(dictset, column)
+    return Groups(dictset, column, dedupe)
 
 
 def jsonify(list_of_json_strings: Iterator[dict]):

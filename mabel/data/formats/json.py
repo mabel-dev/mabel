@@ -7,7 +7,6 @@ native json library.
 """
 from typing import Any, Union
 import datetime
-from ...logging import get_logger
 
 try:
     # if orjson is available, use it
@@ -41,11 +40,6 @@ except ImportError:  # pragma: no cover
     # however, orjson and ujson have functional differences so we can't
     # just swap the references.
     import ujson
-
-    logger = get_logger()
-    logger.warning(
-        "`orjson` not installed using `ujson` - this will work but is not optimal"
-    )
 
     def serialize(
         obj: Any, indent: bool = False, as_bytes: bool = False

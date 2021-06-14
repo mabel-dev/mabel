@@ -5,7 +5,6 @@ from: https://stackoverflow.com/a/35804945
 """
 
 import logging
-import json
 
 
 def add_logging_level(level_name, level_num, method_name=None):
@@ -40,7 +39,8 @@ def add_logging_level(level_name, level_num, method_name=None):
     def log_for_level(self, message, *args, **kwargs):
         # if we've added the level,it doesn't format the message as JSON
         if isinstance(message, dict):
-            message = json.dumps(message)
+            from ..data.formats import json
+            message = json.serialize(message)
         if self.isEnabledFor(level_num):
             self._log(level_num, message, args, **kwargs)
 
