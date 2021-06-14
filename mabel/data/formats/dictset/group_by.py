@@ -117,6 +117,12 @@ class SubGroup():
 
     def __getitem__(self, item):
         """
-        Selector access to a value in a group
+        Selector access to a value in a group, support arrays
         """
-        return dictset.extract_column(self.values, item)
+        if isinstance(item, list):
+            return dictset.select_from(self.values, item)
+        else:
+            return dictset.extract_column(self.values, item)
+
+    def __repr__(self):
+        return self.values
