@@ -1,4 +1,7 @@
+import io
 import sys
+import shutil
+import atexit
 import os.path
 import threading
 from typing import Callable, Optional, Tuple, List
@@ -29,7 +32,8 @@ PARSERS = {
 
 # fmt:off
 RULES = [
-    {"name": "as_at","required": False,"warning": "Time Travel (as_at) is Alpha - it's interface may change and some features may not be supported","incompatible_with": ["start_date", "end_date"]},
+    {"name": "as_at", "required": False,"warning": "Time Travel (as_at) is Alpha - it's interface may change and some features may not be supported","incompatible_with": ["start_date", "end_date"]},
+    {"name": "cache_indexes", "required":False, "warning":None, "incompatible_with": []},
     {"name": "cursor", "required": False, "warning": None, "incompatible_with": ["thread_count", "fork_processes"]},
     {"name": "dataset", "required": True, "warning": None, "incompatible_with": []},
     {"name": "end_date", "required": False, "warning": None, "incompatible_with": []},
@@ -39,7 +43,7 @@ RULES = [
     {"name": "from_path", "required": False, "warning": "DEPRECATION: Reader 'from_path' parameter will be replaced with 'dataset'","incompatible_with": ["dataset"]},
     {"name": "inner_reader", "required": False, "warning": None, "incompatible_with": []},
     {"name": "project", "required": False, "warning": None, "incompatible_with": []},
-    {"name": "raw_path", "required": False, "warning": None, "incompatible_with": []},
+    {"name": "raw_path", "required": False, "warning": None, "incompatible_with": ["step_back_days"]},
     {"name": "row_format", "required": False, "warning": None, "incompatible_with": []},
     {"name": "select", "required": False, "warning": None, "incompatible_with": []},
     {"name": "self", "required": True, "warning": None, "incompatible_with": []},
@@ -139,6 +143,8 @@ class Reader:
             cursor: dictionary (or string)
                 Resume read from a given point (assumes other parameters are the same).
                 If a JSON string is provided, it will converted to a dictionary.
+            cache_indexes: boolean
+                Cache indexes to speed up secondary access, default is True (use cache)
 
         Yields:
             dictionary (string if data format is 'text')
@@ -231,6 +237,17 @@ class Reader:
         # time travel
         self.as_at = kwargs.get("as_at")
 
+        # index caching
+        self.cache_folder = None
+        if kwargs.get("cache_indexes", True):
+            self.cache_folder = os.environ.get("CACHE_FOLDER")
+            if not self.cache_folder:
+                import tempfile
+                self.cache_folder = tempfile.TemporaryDirectory(prefix="MABEL").name + os.sep
+                os.environ["CACHE_FOLDER"] = self.cache_folder
+                os.makedirs(self.cache_folder, exist_ok=True)
+                atexit.register(shutil.rmtree, self.cache_folder, ignore_errors=True)
+
     """
     Iterable
 
@@ -262,8 +279,24 @@ class Reader:
             # TODO: index should only be used on all AND filters, no ORs
 
             if index_file in blob_list:
-                get_logger().debug(f"Reading index from `{index_file}`")
-                index_stream = self.reader_class.get_blob_stream(index_file)
+
+                hashed_index_file = hash(index_file)
+                cache_hit = False
+                cache_file = None
+                if self.cache_folder:
+                    cache_file = f"{self.cache_folder}{hashed_index_file}.index"
+                    if os.path.exists(cache_file):
+                        with open(cache_file, 'rb') as cache:
+                            index_stream = io.BytesIO(cache.read())
+                            cache_hit = True
+                            get_logger().debug(f"Reading index from `{index_file}` (cache hit)")
+                if not cache_hit:
+                    get_logger().debug(f"Reading index from `{index_file}` (cache miss)")
+                    index_stream = self.reader_class.get_blob_stream(index_file)
+                    if cache_file:
+                        with open(cache_file, 'wb') as cache:
+                            cache.write(index_stream.read())
+
                 index = Index(index_stream)
                 rows = rows or []
                 rows += index.search(filter_value)
