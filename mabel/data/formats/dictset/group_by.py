@@ -108,7 +108,7 @@ class Groups:
 
 class SubGroup():
     def __init__(self, values):
-        self.values = values
+        self.values = values or []
 
     def __getitem__(self, item):
         """
