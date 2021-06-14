@@ -109,8 +109,9 @@ class Groups:
         if isinstance(item, (tuple, list)):
             newg = Groups([], None)
             for entry in item:
-                if entry in self._groups[entry]:
-                    newg._groups.append(self._groups[entry])
+                if entry in self._groups:
+                    newg._groups[entry].append(self._groups[entry])
+            return newg
         else:
             return SubGroup(self._groups.get(item))
 
@@ -120,7 +121,7 @@ class SubGroup:
     __slots__ = "values"
 
     def __init__(self, values):
-        self.values = values
+        self.values = values or []
 
     def __getitem__(self, item):
         """
