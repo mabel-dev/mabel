@@ -3,7 +3,6 @@ import sys
 import shutil
 import atexit
 import os.path
-import threading
 from typing import Callable, Optional, Tuple, List
 from .internals.threaded_reader import threaded_reader
 from .internals.alpha_processed_reader import processed_reader
@@ -144,7 +143,8 @@ class Reader:
                 Resume read from a given point (assumes other parameters are the same).
                 If a JSON string is provided, it will converted to a dictionary.
             cache_indexes: boolean
-                Cache indexes to speed up secondary access, default is True (use cache)
+                Cache indexes to speed up secondary access, default is False
+                (do not use cache)
 
         Yields:
             dictionary (string if data format is 'text')
@@ -199,7 +199,7 @@ class Reader:
         arg_dict["dataset"] = f"{dataset}"
         arg_dict["inner_reader"] = f"{inner_reader.__name__}"  # type:ignore
         arg_dict["row_format"] = f"{row_format}"
-        get_logger().debug(json.serialize(arg_dict))
+        get_logger().debug(arg_dict)
 
         # number of days to walk backwards to find records
         self.step_back_days = int(kwargs.get("step_back_days", -1))
@@ -239,13 +239,19 @@ class Reader:
 
         # index caching
         self.cache_folder = None
-        if kwargs.get("cache_indexes", True):
+        if kwargs.get("cache_indexes", False):
+            # saving in the environment allows us to reuse the cache across readers
+            # in the same execution
             self.cache_folder = os.environ.get("CACHE_FOLDER")
             if not self.cache_folder:
                 import tempfile
-                self.cache_folder = tempfile.TemporaryDirectory(prefix="MABEL").name + os.sep
+
+                self.cache_folder = (
+                    tempfile.TemporaryDirectory(prefix="mabel_cache-").name + os.sep
+                )
                 os.environ["CACHE_FOLDER"] = self.cache_folder
                 os.makedirs(self.cache_folder, exist_ok=True)
+                # delete the cache when the application closes
                 atexit.register(shutil.rmtree, self.cache_folder, ignore_errors=True)
 
     """
@@ -267,9 +273,6 @@ class Reader:
         """
         This wraps the blob reader, including the filters and indexers
         """
-        get_logger().debug(
-            f"Reading data from `{blob}`, thread: {threading.get_ident()}"
-        )
         # If an index exists, get the rows we're interested in from the index
         rows = None
         for field, filter_value in self.indexable_fields:
@@ -281,23 +284,31 @@ class Reader:
             # TODO: index should only be used on all AND filters, no ORs
 
             if index_file in blob_list:
-
-                hashed_index_file = hash(index_file)
+                # if we have a cache folder, we're using the cache
+                # we hash the filename to remove any unwanted characters
+                hashed_index_file = abs(hash(index_file))
                 cache_hit = False
-                cache_file = None
+                cache_file = f"{self.cache_folder}{hashed_index_file}.index"
                 if self.cache_folder:
-                    cache_file = f"{self.cache_folder}{hashed_index_file}.index"
+                    # if the cache file exists, read it
                     if os.path.exists(cache_file):
-                        with open(cache_file, 'rb') as cache:
+                        with open(cache_file, "rb") as cache:
                             index_stream = io.BytesIO(cache.read())
                             cache_hit = True
-                            get_logger().debug(f"Reading index from `{index_file}` (cache hit)")
+                            get_logger().debug(
+                                f"Reading index from `{index_file}` (cache hit)"
+                            )
+                # if we didn't hit the cache, read the file
                 if not cache_hit:
-                    get_logger().debug(f"Reading index from `{index_file}` (cache miss)")
                     index_stream = self.reader_class.get_blob_stream(index_file)
-                    if cache_file:
-                        with open(cache_file, 'wb') as cache:
+                    get_logger().debug(
+                        f"Reading index from `{index_file}` (cache miss)"
+                    )
+                    # if we missed and he have a cache folder, cache the file
+                    if self.cache_folder:
+                        with open(cache_file, "wb") as cache:
                             cache.write(index_stream.read())
+                        index_stream.seek(0, 2)
 
                 index = Index(index_stream)
                 rows = rows or []

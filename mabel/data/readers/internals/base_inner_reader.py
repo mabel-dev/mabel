@@ -166,6 +166,7 @@ class BaseInnerReader(abc.ABC):
         Returns:
             Iterable of the rows
         """
+        get_logger().debug(f"Reading data from `{blob_name}`")
         # if the rows has been set but the set is empty, return empty list
         if isinstance(rows, (set, list)):
             if len(rows) == 0:

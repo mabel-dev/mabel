@@ -33,12 +33,17 @@ def test_group_by_advanced():
         {"user": "eve", "value": 7},
     ]
 
-    groups = dictset.group_by(ds, "user").apply(summarize)
-    assert groups == {
-        "bob": {"count": 5, "min": 1, "max": 2},
-        "alice": {"count": 6, "min": 3, "max": 5},
-        "eve": {"count": 2, "min": 6, "max": 7},
-    }
+    # don't deduplicate
+    groups = dictset.group_by(ds, "user", False).apply(summarize)
+    assert groups["bob"] == {"count": 5, "min": 1, "max": 2}
+    assert groups["alice"] == {"count": 6, "min": 3, "max": 5}
+    assert groups["eve"] == {"count": 2, "min": 6, "max": 7}
+
+    # deduplicate
+    groups = dictset.group_by(ds, "user", True).apply(summarize)
+    assert groups["bob"] == {"count": 2, "min": 1, "max": 2}
+    assert groups["alice"] == {"count": 3, "min": 3, "max": 5}
+    assert groups["eve"] == {"count": 2, "min": 6, "max": 7}
 
 
 def test_group_by():
