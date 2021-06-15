@@ -33,6 +33,8 @@ class EdgeModel(BaseModel):
 
 class NodeModel(BaseModel):
     nid: str
+    display_name: str
+    node_type: str
     attributes: dict = {}
 
 
