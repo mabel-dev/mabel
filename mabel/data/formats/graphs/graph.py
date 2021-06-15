@@ -62,6 +62,7 @@ class Graph(object):
             graph_path: string
                 The folder ?to save the node and edge files to
         """
+        raise NotImplementedError("save not implemented")
         path = Path(graph_path)
         path.mkdir(exist_ok=True)
 
