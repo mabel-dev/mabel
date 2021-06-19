@@ -194,11 +194,29 @@ class Reader:
         # initialize the reader
         self._inner_line_reader = None
 
+        # index caching
+        self.cache_folder = None
+        if kwargs.get("cache_indexes", False):
+            # saving in the environment allows us to reuse the cache across readers
+            # in the same execution
+            self.cache_folder = os.environ.get("CACHE_FOLDER")
+            if not self.cache_folder:
+                import tempfile
+
+                self.cache_folder = (
+                    tempfile.TemporaryDirectory(prefix="mabel_cache-").name + os.sep
+                )
+                os.environ["CACHE_FOLDER"] = self.cache_folder
+                os.makedirs(self.cache_folder, exist_ok=True)
+                # delete the cache when the application closes
+                atexit.register(shutil.rmtree, self.cache_folder, ignore_errors=True)
+
         arg_dict = kwargs.copy()
         arg_dict["select"] = f"{select}"
         arg_dict["dataset"] = f"{dataset}"
         arg_dict["inner_reader"] = f"{inner_reader.__name__}"  # type:ignore
         arg_dict["row_format"] = f"{row_format}"
+        arg_dict["cache_folder"] = self.cache_folder
         get_logger().debug(arg_dict)
 
         # number of days to walk backwards to find records
@@ -236,23 +254,6 @@ class Reader:
 
         # time travel
         self.as_at = kwargs.get("as_at")
-
-        # index caching
-        self.cache_folder = None
-        if kwargs.get("cache_indexes", False):
-            # saving in the environment allows us to reuse the cache across readers
-            # in the same execution
-            self.cache_folder = os.environ.get("CACHE_FOLDER")
-            if not self.cache_folder:
-                import tempfile
-
-                self.cache_folder = (
-                    tempfile.TemporaryDirectory(prefix="mabel_cache-").name + os.sep
-                )
-                os.environ["CACHE_FOLDER"] = self.cache_folder
-                os.makedirs(self.cache_folder, exist_ok=True)
-                # delete the cache when the application closes
-                atexit.register(shutil.rmtree, self.cache_folder, ignore_errors=True)
 
     """
     Iterable
