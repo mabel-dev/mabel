@@ -3,6 +3,7 @@ import mmh3  # type:ignore
 import struct
 from operator import itemgetter
 from typing import Iterable
+from functools import lru_cache
 
 
 MAX_INDEX = 4294967295  # 2^32 - 1
@@ -21,12 +22,13 @@ Terminology:
 """
 
 
-class IndexEntry:
+class IndexEntry(object):
     """
     Python friendly representation of index entries.
-
     Includes binary translations for reading and writing to the index.
     """
+
+    __slots__ = ("value", "location", "count")
 
     def to_bin(self) -> bytes:
         """
@@ -86,12 +88,11 @@ class Index:
             builder.add(position, row)
         return builder.build()
 
+    @lru_cache(8)
     def _get_entry(self, location: int):
         """
         get a specific entry from the index
         """
-        if location >= self.size:
-            return IndexEntry(value=-1, location=-1, count=-1)
         self._index.seek(RECORD_SIZE * location)
         return IndexEntry.from_bin(self._index.read(RECORD_SIZE))
 
@@ -99,7 +100,7 @@ class Index:
         """
         Use a binary search algorithm to search the index
         """
-        left, right = 0, self.size
+        left, right = 0, (self.size - 1)
         while left <= right:
             middle = (left + right) >> 1
             entry = self._get_entry(middle)
@@ -127,7 +128,7 @@ class Index:
         # us how many rows to go back, but not how many forward
         start_location = location - found_entry.count + 1
         end_location = location + 1
-        while self._get_entry(end_location).value == value:
+        while end_location < self.size and self._get_entry(end_location).value == value:
             end_location += 1
 
         # extract the row numbers in the target dataset
@@ -145,7 +146,7 @@ class Index:
             search_term = [search_term]
         result: list = []
         for term in search_term:
-            result += self._inner_search(term)
+            result[0:0] = self._inner_search(term)
         return set(result)
 
 
