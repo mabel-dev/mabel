@@ -29,7 +29,7 @@ def extract_caller():
     return frame.name, tail, frame.lineno
 
 
-class GoogleLogger:
+class GoogleLogger(object):
     @staticmethod
     def supported():
         if not stackdriver:
@@ -114,3 +114,7 @@ class GoogleLogger:
         self.error = self.create_logger(LEVELS.ERROR)
         self.audit = self.create_logger(LEVELS.AUDIT)
         self.alert = self.create_logger(LEVELS.ALERT)
+
+
+    def __call__(self, message):
+        self.debug(message)
