@@ -9,7 +9,8 @@ import os
 import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], "../.."))
-from mabel.data.readers import Reader, FileReader
+from mabel import Reader
+from mabel.adapters.disk import DiskReader
 from mabel.data.formats import dictset
 
 try:
@@ -26,7 +27,7 @@ def where_clause(row):
 
 def get_data():
     """ensure we can read the test files"""
-    r = Reader(inner_reader=FileReader, dataset="tests/data/tweets")
+    r = Reader(inner_reader=DiskReader, dataset="tests/data/tweets")
     return list(r) * 1000000
 
 
