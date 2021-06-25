@@ -1,12 +1,10 @@
 import os
 import sys
 import time
-import datetime
-from pprint import pprint
 
 sys.path.insert(1, os.path.join(sys.path[0], "../.."))
-from mabel.data.readers import Reader, MinioReader
-from mabel.data.formats import dictset
+from mabel import Reader
+from mabel.adapters.minio import MinIoReader
 
 try:
     from rich import traceback
@@ -28,7 +26,7 @@ except ImportError:
 
 reader = Reader(
     thread_count=4,
-    reader=MinioReader,
+    reader=MinIoReader,
     secure=False,
     end_point=os.getenv("MINIO_END_POINT"),
     access_key=os.getenv("MINIO_ACCESS_KEY"),

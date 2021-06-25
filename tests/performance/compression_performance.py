@@ -74,7 +74,7 @@ os.makedirs("_temp", exist_ok=True)
 def execute_test(func, **kwargs):
     runs = []
 
-    for i in range(10):
+    for i in range(5):
         start = time.perf_counter_ns()
         [r for r in func(**kwargs)]
         runs.append((time.perf_counter_ns() - start) / 1e9)
