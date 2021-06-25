@@ -1,3 +1,4 @@
+import datetime
 import io
 import sys
 import shutil
@@ -18,6 +19,7 @@ from ...utils import safe_field_name
 from ...utils.parameter_validator import validate
 from ...utils.ipython import is_running_from_ipython
 from ...utils.paths import get_parts
+from ...utils.dates import parse_delta
 
 
 # available parsers
@@ -39,10 +41,11 @@ RULES = [
     {"name": "extension", "required": False, "warning": None, "incompatible_with": []},
     {"name": "filters", "required": False, "warning": None, "incompatible_with": []},
     {"name": "fork_processes", "required": False, "warning": "Forked Reader is Alpha - it's interface may change and some features may not be supported","incompatible_with": ["thread_count"]},
+    {"name": "freshness_limit", "required": False, "warning": None, "incompatible_with": ["step_back_days"]},
     {"name": "from_path", "required": False, "warning": "DEPRECATION: Reader 'from_path' parameter will be replaced with 'dataset'","incompatible_with": ["dataset"]},
     {"name": "inner_reader", "required": False, "warning": None, "incompatible_with": []},
     {"name": "project", "required": False, "warning": None, "incompatible_with": []},
-    {"name": "raw_path", "required": False, "warning": None, "incompatible_with": ["step_back_days"]},
+    {"name": "raw_path", "required": False, "warning": None, "incompatible_with": ["step_back_days", "freshness_limit"]},
     {"name": "row_format", "required": False, "warning": None, "incompatible_with": []},
     {"name": "select", "required": False, "warning": None, "incompatible_with": []},
     {"name": "self", "required": True, "warning": None, "incompatible_with": []},
@@ -131,8 +134,14 @@ class Reader:
                 Use multiple threads to read data files, the default is to not use
                 additional threads, the maximum number of threads is 8
             step_back_days: integer (optional):
+                **TO BE DEPRICATED**
                 The number of days to look back if data for the current date is not
-                available.
+                available. (use freshness_limit instead)
+            freshness_limit: string (optional):
+                a time delta string (e.g. 6h30m = 6hours and 30 minutes) which
+                incidates the maximum age of a dataset before it is no longer
+                considered fresh. Where the 'time' of a dataset cannot be
+                determined, it will be treated as midnight (00:00) for the date.
             fork_processes: boolean (alpha):
                 **ALPHA**
                 Create parallel processes to read data files
@@ -220,13 +229,16 @@ class Reader:
         get_logger().debug(arg_dict)
 
         # number of days to walk backwards to find records
-        self.step_back_days = int(kwargs.get("step_back_days", -1))
+        if kwargs.get("step_back_days"):
+            kwargs["freshness_limit"] = f"{kwargs['step_back_days']}d{datetime.time.hour}h{datetime.time.minute}m"
+        self.freshness_limit = parse_delta(kwargs.get("freshness_limit", ""))
+
         if (
-            self.step_back_days > 0
+            self.freshness_limit
             and self.reader_class.start_date != self.reader_class.end_date
         ):  # pragma: no cover
             raise InvalidCombinationError(
-                "step_back_days can only be used when the start and end dates are the same"
+                "step_back_days/freshness_limit can only be used when the start and end dates are the same"
             )
 
         if (
@@ -329,21 +341,21 @@ class Reader:
         blob_list = self.reader_class.get_list_of_blobs()
 
         # handle stepping back if the option is set
-        if self.step_back_days > 0:
+        if self.freshness_limit > datetime.timedelta(seconds=1):
             while (
                 not bool(blob_list)
-                and self.step_back_days >= self.reader_class.days_stepped_back
+                and self.freshness_limit >= datetime.timedelta(days=self.reader_class.days_stepped_back)
             ):
                 self.reader_class.step_back_a_day()
                 blob_list = self.reader_class.get_list_of_blobs()
-            if self.step_back_days < self.reader_class.days_stepped_back:
+            if self.freshness_limit < datetime.timedelta(days=self.reader_class.days_stepped_back):
                 get_logger().alert(
-                    f"No data found in last {self.step_back_days} days - aborting"
+                    f"No data found in last {self.freshness_limit} - aborting"
                 )
                 sys.exit(-1)
             if self.reader_class.days_stepped_back > 0:
                 get_logger().warning(
-                    f"Stepped back {self.reader_class.days_stepped_back} days to {self.reader_class.start_date} to find last data, my limit is {self.step_back_days} days."
+                    f"Stepped back {self.reader_class.days_stepped_back} days to {self.reader_class.start_date} to find last data, my limit is {self.freshness_limit}."
                 )
 
         readable_blobs = [b for b in blob_list if not self._is_system_file(b)]

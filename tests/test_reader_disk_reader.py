@@ -57,6 +57,16 @@ def test_step_back():
     )
     assert len(list(r)) == 50
 
+def test_freshness_limits():
+    # step back through time
+    r = Reader(
+        inner_reader=DiskReader,
+        dataset="tests/data/dated/{date}",
+        start_date=datetime.date(2021, 1, 1),
+        end_date=datetime.date(2021, 1, 1),
+        freshness_limit="30d",
+    )
+    assert len(list(r)) == 50
 
 def test_step_past():
     # step back through time
@@ -65,7 +75,7 @@ def test_step_past():
         dataset="tests/data/dated/{date}",
         start_date=datetime.date(2021, 1, 1),
         end_date=datetime.date(2021, 1, 1),
-        step_back_days=5,
+        freshness_limit="5d",
     )
     with pytest.raises(SystemExit):
         assert len(list(r)) == 0
@@ -77,5 +87,6 @@ if __name__ == "__main__":  # pragma: no cover
     test_step_back()
     test_step_past()
     test_only_read_selected_rows()
+    test_freshness_limits()
 
     print("okay")

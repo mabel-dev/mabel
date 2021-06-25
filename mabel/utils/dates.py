@@ -26,3 +26,4 @@ def parse_delta(delta: str) -> datetime.timedelta:
     if match:
         parts = {k: int(v) for k, v in match.groupdict().items() if v}
         return datetime.timedelta(**parts)
+    return datetime.timedelta(seconds=0)
