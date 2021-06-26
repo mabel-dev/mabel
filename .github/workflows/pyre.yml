@@ -1,12 +1,6 @@
 name: pyre
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
-
-  workflow_dispatch:
+on: [push]
 
 jobs:
   pyre:
