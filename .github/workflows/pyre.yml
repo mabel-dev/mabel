@@ -16,8 +16,7 @@ jobs:
           python -m pip install -r requirements.txt
           python -m pip install cython
           python -m pip install flask flask_cors graphql-core typing_inspect
-          VERSION=$(grep "version" .pyre_configuration | sed -n -e 's/.*\(0\.0\.[0-9]*\).*/\1/p')
-          python -m pip install pyre-check-nightly==$VERSION
+          python -m pip install pyre-check-nightly
 
       - name: Run Pyre
         continue-on-error: true
