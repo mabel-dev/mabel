@@ -158,6 +158,8 @@ THE_LIST = [
 COMPOUNDS = [
         {"name":"water", "elements":["hydrogen", "oxygen"]},
         {"name":"ammonia", "elements":["nitrogen","hydrogen"]},
+        {"name":"acetic acid", "elements":["carbon", "hydrogen", "oxygen"]},
+        {"name":"ethylene", "elements":["carbon", "hydrogen"]},
         {"name":"carbon monoxide", "elements":["carbon","oxygen"]},
         {"name":"carbon dioxide", "elements":["carbon","oxygen"]},
         {"name":"sodium chloride", "elements":["sodium","chlorine"]},
@@ -168,7 +170,8 @@ COMPOUNDS = [
         {"name":"calcium phosphate", "elements":["calcium","phosphorus","oxygen"]},
         {"name":"calcium sulfate", "elements":["calcium","sulfur","oxygen"]},
         {"name":"methane", "elements":["carbon","hyrogen"]},
-        {"name":"ethanol", "elements":["carbon","hydrogen","oxygen"]}
+        {"name":"ethanol", "elements":["carbon","hydrogen","oxygen"]},
+        {"name":"sulfuric acid", "elements":["hydrogen", "sulfur", "oxygen"]}
 ]
 # fmt: on
 
