@@ -230,7 +230,9 @@ class Reader:
 
         # number of days to walk backwards to find records
         if kwargs.get("step_back_days"):
-            kwargs["freshness_limit"] = f"{kwargs['step_back_days']}d{datetime.time.hour}h{datetime.time.minute}m"
+            kwargs[
+                "freshness_limit"
+            ] = f"{kwargs['step_back_days']}d{datetime.time.hour}h{datetime.time.minute}m"
         self.freshness_limit = parse_delta(kwargs.get("freshness_limit", ""))
 
         if (
@@ -342,13 +344,14 @@ class Reader:
 
         # handle stepping back if the option is set
         if self.freshness_limit > datetime.timedelta(seconds=1):
-            while (
-                not bool(blob_list)
-                and self.freshness_limit >= datetime.timedelta(days=self.reader_class.days_stepped_back)
+            while not bool(blob_list) and self.freshness_limit >= datetime.timedelta(
+                days=self.reader_class.days_stepped_back
             ):
                 self.reader_class.step_back_a_day()
                 blob_list = self.reader_class.get_list_of_blobs()
-            if self.freshness_limit < datetime.timedelta(days=self.reader_class.days_stepped_back):
+            if self.freshness_limit < datetime.timedelta(
+                days=self.reader_class.days_stepped_back
+            ):
                 get_logger().alert(
                     f"No data found in last {self.freshness_limit} - aborting"
                 )

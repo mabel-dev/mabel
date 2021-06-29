@@ -26,7 +26,9 @@ def do_writer():
 
 def do_writer_abs():
     w = BatchWriter(
-        inner_writer=DiskWriter, dataset=os.getcwd()+"/_temp", date=datetime.date.today()
+        inner_writer=DiskWriter,
+        dataset=os.getcwd() + "/_temp",
+        date=datetime.date.today(),
     )
     for i in range(int(1e5)):
         w.append({"Barney Stinson": "Lorenzo Von Matterhorn"})

@@ -27,8 +27,9 @@ def test_can_find_files():
         # without a trailing /
         r = DiskReader(dataset=p, raw_path=True)
         assert len(list(r.get_list_of_blobs())) == 4  # 2 data, 2 index
+
     _inner("tests/data/tweets/")
-    _inner(os.getcwd()+"/tests/data/tweets/")
+    _inner(os.getcwd() + "/tests/data/tweets/")
 
 
 def test_can_read_files():
@@ -39,8 +40,9 @@ def test_can_read_files():
             for index, item in enumerate(r.get_records(file)):
                 pass
             assert index == 24, index
+
     _inner("tests/data/tweets/")
-    _inner(os.getcwd()+"/tests/data/tweets/")
+    _inner(os.getcwd() + "/tests/data/tweets/")
 
 
 def test_only_read_selected_rows():
@@ -51,8 +53,9 @@ def test_only_read_selected_rows():
             for index, item in enumerate(r.get_records(file, rows=[1, 2, 3])):
                 pass
             assert index == 2, index
+
     _inner("tests/data/tweets/")
-    _inner(os.getcwd()+"/tests/data/tweets/")
+    _inner(os.getcwd() + "/tests/data/tweets/")
 
 
 def test_step_back():
@@ -66,8 +69,9 @@ def test_step_back():
             step_back_days=30,
         )
         assert len(list(r)) == 50
+
     _inner("tests/data/dated/{date}")
-    _inner(os.getcwd()+"/tests/data/dated/{date}")
+    _inner(os.getcwd() + "/tests/data/dated/{date}")
 
 
 def test_freshness_limits():
@@ -81,8 +85,9 @@ def test_freshness_limits():
             freshness_limit="30d",
         )
         assert len(list(r)) == 50
+
     _inner("tests/data/dated/{date}")
-    _inner(os.getcwd()+"/tests/data/dated/{date}")
+    _inner(os.getcwd() + "/tests/data/dated/{date}")
 
 
 def test_step_past():
@@ -97,8 +102,9 @@ def test_step_past():
         )
         with pytest.raises(SystemExit):
             assert len(list(r)) == 0
+
     _inner("tests/data/dated/{date}")
-    _inner(os.getcwd()+"/tests/data/dated/{date}")
+    _inner(os.getcwd() + "/tests/data/dated/{date}")
 
 
 if __name__ == "__main__":  # pragma: no cover

@@ -118,6 +118,5 @@ class GoogleLogger(object):
         self.audit = self.create_logger(LEVELS.AUDIT)
         self.alert = self.create_logger(LEVELS.ALERT)
 
-
     def __call__(self, message):
         self.debug(message)

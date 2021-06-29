@@ -21,7 +21,7 @@ VAMPIRIC_COUNCIL = [
     {"player": "Wesley Snipes", "from": "Blade"},
     {"player": "Brad Pitt", "from": "Interview with a Vampire"},
     {"player": "Kiefer Sutherland", "from": "The Lost Boys"},
-    {"player": "Jemaine Clement", "from": "What We Do in the Shadows"}
+    {"player": "Jemaine Clement", "from": "What We Do in the Shadows"},
 ]
 
 

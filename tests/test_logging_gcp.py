@@ -10,12 +10,14 @@ from mabel.logging.google_cloud_logger import GoogleLogger
 
 os.environ["IGNORE_STACKDRIVER"] = "true"
 
+
 def test_google_logging():
     """
     This doesn't save to StackDriver, instead we're testing that this is handled
     gracefully and doesn't error
     """
     GoogleLogger().warning("Noooooo")
+
 
 if __name__ == "__main__":  # pragma: no cover
     test_google_logging()
