@@ -118,6 +118,7 @@ class BaseOperator(abc.ABC):
         """
         if not context:
             context = {}
+
         return context
 
     def __call__(self, data: dict = {}, context: dict = {}):

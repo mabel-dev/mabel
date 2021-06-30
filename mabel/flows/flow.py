@@ -198,13 +198,20 @@ class Flow:
         self._validate_flow()
         return FlowRunner(self)
 
-    def __exit__(self, *args):
+    def __exit__(self, exc_type, exc_value, exc_traceback):
         """
         Finalize concludes the flow and returns the sensor information
         """
         from ..logging import get_logger
 
-        FlowRunner(self)(BaseOperator.sigterm(), {})
+        # determine if we're closing because we had an error condition
+        context = {}
+        has_failure = False
+        if exc_type:
+            has_failure = exc_type.__name__ == "SystemExit"
+        context['mabel:errored'] = has_failure
+
+        FlowRunner(self)(BaseOperator.sigterm(), context)
         for operator_name in self.nodes.keys():
             operator = self.get_operator(operator_name)
             if operator:
