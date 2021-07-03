@@ -10,37 +10,40 @@ from rich import traceback
 traceback.install()
 
 FIGHT_CLUB_RULES = [
-            "The first rule of Fight Club is: You do not talk about Fight Club.",
-            "The second rule of Fight Club is: You do not talk about Fight Club.",
-            "Third rule of Fight Club: Someone yells 'Stop!', goes limp, taps out, the fight is over.",
-            "Fourth rule: Only two guys to a fight.",
-            "Fifth rule: One fight at a time, fellas.",
-            "Sixth rule: No shirts, no shoes.",
-            "Seventh rule: Fights will go on as long as they have to.",
-            "And the eighth and final rule: If this is your first night at Fight Club, you have to fight."
+    "The first rule of Fight Club is: You do not talk about Fight Club.",
+    "The second rule of Fight Club is: You do not talk about Fight Club.",
+    "Third rule of Fight Club: Someone yells 'Stop!', goes limp, taps out, the fight is over.",
+    "Fourth rule: Only two guys to a fight.",
+    "Fifth rule: One fight at a time, fellas.",
+    "Sixth rule: No shirts, no shoes.",
+    "Seventh rule: Fights will go on as long as they have to.",
+    "And the eighth and final rule: If this is your first night at Fight Club, you have to fight.",
 ]
 
 
 class SimpleFatalOperation(BaseOperator):
     def finalize(self, context: dict):
         super().finalize(context=context)
-        assert context.get('mabel:errored', False)
+        assert context.get("mabel:errored", False)
         return context
+
     def execute(self, data: dict, context: dict):
         super().execute(data=data, context=context)
         raise SystemExit("This was always doomed to failure")
-    
+
 
 class TriggerFatalOperation(BaseOperator):
     def execute(self, data: dict, context: dict):
         super().execute(data=data, context=context)
         raise SystemExit("This was always doomed to failure")
-    
+
+
 class DetectFatalOperation(BaseOperator):
     def finalize(self, context: dict):
         super().finalize(context=context)
-        assert context.get('mabel:errored', False)
+        assert context.get("mabel:errored", False)
         return context
+
     def execute(self, data: dict, context: dict):
         super().execute(data=data, context=context)
         return data, context
@@ -64,6 +67,7 @@ def test_detect_failure_simple():
 
     assert errored
 
+
 def test_detect_failure_fork():
     """
     Run a basic flow
@@ -83,7 +87,6 @@ def test_detect_failure_fork():
         errored = True
 
     assert errored
-
 
 
 if __name__ == "__main__":  # pragma: no cover

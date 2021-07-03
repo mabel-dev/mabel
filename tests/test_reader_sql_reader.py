@@ -29,7 +29,8 @@ def test_most_basic_sql():
     assert len(findings) == 50, len(findings)
     shutil.rmtree("_temp", ignore_errors=True)
 
-#fmt:off
+
+# fmt:off
 SQL_TESTS = [
     {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = 'Verizon Support'", "result":2},
     {"statement":"SELECT * FROM tests.data.index.not WHERE user_name = 'Verizon Support'", "result":2},
@@ -43,19 +44,21 @@ SQL_TESTS = [
     {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id = 1346604539923853313 or user_verified = True", "result":453},
     {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = 'Dave Jamieson' and user_verified = True", "result":1},
 ]
-#fmt:on
+# fmt:on
 
 
 def test_sql():
 
     for test in SQL_TESTS:
         s = SqlReader(
-            test.get('statement'),
+            test.get("statement"),
             inner_reader=DiskReader,
             raw_path=True,
         )
         findings = list(s)
-        assert len(findings) == test.get('result'), f"{test.get('statement')} == {len(findings)}"
+        assert len(findings) == test.get(
+            "result"
+        ), f"{test.get('statement')} == {len(findings)}"
 
 
 if __name__ == "__main__":  # pragma: no cover

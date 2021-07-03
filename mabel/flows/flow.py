@@ -209,7 +209,7 @@ class Flow:
         has_failure = False
         if exc_type:
             has_failure = exc_type.__name__ == "SystemExit"
-        context['mabel:errored'] = has_failure
+        context["mabel:errored"] = has_failure
 
         FlowRunner(self)(BaseOperator.sigterm(), context)
         for operator_name in self.nodes.keys():

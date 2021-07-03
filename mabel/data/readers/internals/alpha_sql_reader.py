@@ -24,6 +24,7 @@ def _div(x, y):
 def _like(x, y):
     return _sql_like_fragment_to_regex(y).match(str(x))
 
+
 import operator
 
 # functions which implement the Operators
@@ -45,17 +46,17 @@ OPERATORS = {
 def _get_operand(operand):
     if not isinstance(operand, dict):
         # strings are field names
-#        if isinstance(operand, str):
-#            return row[operand]
+        #        if isinstance(operand, str):
+        #            return row[operand]
         # otherwise it's a constant
         return operand
     # string constants are 'literals'
     if "literal" in operand:
         return operand["literal"]
     # some values are handled unusually
-#    value = [row.get(k) for k, v in operand.items() if k in ["timestamp", "text"]]
-#    if len(value):
-#        return value.pop()
+    #    value = [row.get(k) for k, v in operand.items() if k in ["timestamp", "text"]]
+    #    if len(value):
+    #        return value.pop()
     # if we're here, the operand is probably a function
     return _build_filters(operand)
 
@@ -67,11 +68,11 @@ def _build_filters(where_object):
         return None
     # the Operator is the head of the dictionary
     operator = list(where_object.keys())[0]
-    if operator in ('and'):
+    if operator in ("and"):
         for predicate in where_object[operator]:
             filters.append(_build_filters(predicate))
         return filters
-    if operator in ('or'):
+    if operator in ("or"):
         for predicate in where_object[operator]:
             filters.append([_build_filters(predicate)])
         return filters
@@ -121,16 +122,16 @@ class SqlReader:
 
         table = sql.get("from").replace(".", "/")
 
-        #where_statement = _build_where_function(sql.get("where"))
+        # where_statement = _build_where_function(sql.get("where"))
         filters = _build_filters(sql.get("where"))
         print(">>", filters)
 
         thread_count = 4
 
         self.reader = Reader(
-#            thread_count=thread_count,
+            #            thread_count=thread_count,
             select=fields,
-            filters = filters,
+            filters=filters,
             dataset=table,
             **kwargs,
         )
