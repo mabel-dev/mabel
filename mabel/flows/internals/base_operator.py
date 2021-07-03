@@ -118,6 +118,7 @@ class BaseOperator(abc.ABC):
         """
         if not context:
             context = {}
+
         return context
 
     def __call__(self, data: dict = {}, context: dict = {}):
@@ -199,6 +200,16 @@ class BaseOperator(abc.ABC):
                 # add a failure to the last_few_results list
                 self.last_few_results.append(0)
                 self.last_few_results.pop(0)
+
+        if type(outcome).__name__ not in ("NoneType", "generator"):
+            if not (
+                isinstance(outcome, tuple)
+                and len(outcome) == 2
+                and isinstance(outcome[1], dict)
+            ):
+                raise ValueError(
+                    f"Operator `{self.name}` returned type `{type(outcome).__name__}`, not the expected (value, context) values."
+                )
 
         # message tracing
         if context.get("trace", False):

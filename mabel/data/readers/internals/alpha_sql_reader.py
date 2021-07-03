@@ -5,7 +5,6 @@ from ....logging import get_logger
 from ...formats import json
 from functools import lru_cache
 import re
-import os
 
 # https://codereview.stackexchange.com/a/248421
 _special_regex_chars = {ch: "\\" + ch for ch in ".^$*+?{}[]|()\\"}
@@ -18,131 +17,74 @@ def _sql_like_fragment_to_regex(fragment):
     return re.compile("^" + safe_fragment.replace("%", ".*?").replace("_", ".") + "$")
 
 
-def _eq(x, y):
-    return x == y
-
-
-def _neq(x, y):
-    return x != y
-
-
-def _lt(x, y):
-    return x < y
-
-
-def _gt(x, y):
-    return x > y
-
-
-def _lte(x, y):
-    return x <= y
-
-
-def _gte(x, y):
-    return x >= y
-
-
-def _and(x, y):
-    return x and y
-
-
-def _or(x, y):
-    return x or y
-
-
-def _add(x, y):
-    return x + y
-
-
-def _mul(x, y):
-    return x * y
-
-
 def _div(x, y):
     return x / y
-
-
-def _sub(x, y):
-    return x - y
 
 
 def _like(x, y):
     return _sql_like_fragment_to_regex(y).match(str(x))
 
 
+import operator
+
 # functions which implement the Operators
 OPERATORS = {
-    "eq": _eq,
-    "neq": _neq,
-    "lt": _lt,
-    "gt": _gt,
-    "lte": _lte,
-    "gte": _gte,
-    "and": _and,
-    "or": _or,
-    "like": _like,
-    "add": _add,
-    "mul": _mul,
+    "eq": "==",
+    "neq": "!=",
+    "lt": "<",
+    "gt": ">",
+    "lte": ">=",
+    "gte": "<=",
+    "like": "like",
+    "add": operator.add,
+    "mul": operator.mul,
     "div": _div,
-    "sub": _sub,
+    "sub": operator.sub,
 }
 
 
-def _get_operand(operand, row):
+def _get_operand(operand):
     if not isinstance(operand, dict):
         # strings are field names
-        if isinstance(operand, str):
-            return row[operand]
+        #        if isinstance(operand, str):
+        #            return row[operand]
         # otherwise it's a constant
         return operand
     # string constants are 'literals'
     if "literal" in operand:
         return operand["literal"]
     # some values are handled unusually
-    value = [row.get(k) for k, v in operand.items() if k in ["timestamp", "text"]]
-    if len(value):
-        return value.pop()
+    #    value = [row.get(k) for k, v in operand.items() if k in ["timestamp", "text"]]
+    #    if len(value):
+    #        return value.pop()
     # if we're here, the operand is probably a function
-    return _build_where_function(operand)(row)
+    return _build_filters(operand)
 
 
-def _build_where_function(where_object):
+def _build_filters(where_object):
     # None is None
+    filters = []
     if where_object is None:
         return None
     # the Operator is the head of the dictionary
     operator = list(where_object.keys())[0]
+    if operator in ("and"):
+        for predicate in where_object[operator]:
+            filters.append(_build_filters(predicate))
+        return filters
+    if operator in ("or"):
+        for predicate in where_object[operator]:
+            filters.append([_build_filters(predicate)])
+        return filters
+
     # the operands are the values in for the key
     operands = where_object.get(operator)
     # if the operands are a list, it's the left and right operands
     if isinstance(operands, list):
         left_operand, right_operand = operands[0], operands[1]
-    # if it's a dict, run the Operator against it
-    elif isinstance(operands, dict):
-        return lambda row: _get_operand(operands, row)
 
     # we build a function, load some of the values and pass it to the Reader
-    return SqlOperator(operator, left_operand, right_operand)
-
-
-class SqlOperator:
-    """
-    This is implemented as a class so it can be picked so it can be used with
-    the multi-processing library via the fork_processes option in the Reader.
-    """
-
-    __slots__ = ("left_operand", "right_operand", "operation", "__name__")
-
-    def __init__(self, operator, left_operand, right_operand):
-        self.left_operand = left_operand
-        self.right_operand = right_operand
-        self.operation = OPERATORS.get(operator)
-        self.__name__ = f"SQL_WHERE('{operator}')"
-
-    def __call__(self, row):
-        _left_operand = _get_operand(self.left_operand, row)
-        _right_operand = _get_operand(self.right_operand, row)
-        return self.operation(_left_operand, _right_operand)
+    return (left_operand, OPERATORS.get(operator), _get_operand(right_operand))
 
 
 class SqlReader:
@@ -180,14 +122,16 @@ class SqlReader:
 
         table = sql.get("from").replace(".", "/")
 
-        where_statement = _build_where_function(sql.get("where"))
+        # where_statement = _build_where_function(sql.get("where"))
+        filters = _build_filters(sql.get("where"))
+        print(">>", filters)
 
         thread_count = 4
 
         self.reader = Reader(
-            thread_count=thread_count,
+            #            thread_count=thread_count,
             select=fields,
-            where=where_statement,
+            filters=filters,
             dataset=table,
             **kwargs,
         )

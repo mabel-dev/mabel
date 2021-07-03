@@ -60,7 +60,8 @@ class BlobWriter(object):
         # if this write would exceed the blob size, close it so another
         # blob will be created
         self.bytes_in_blob += len(serialized) + 1
-        if self.bytes_in_blob > self.maximum_blob_size:
+        if self.bytes_in_blob > self.maximum_blob_size and self.records_in_blob > 0:
+            self.bytes_in_blob -= len(serialized) + 1
             self.commit()
             self._open_blob()
 

@@ -16,9 +16,12 @@ BUCKET_NAME = "test"
 VAMPIRIC_COUNCIL = [
     {"player": "Tilda Swinton", "from": "Only Lovers Left Alive"},
     {"player": "Evan Rachel Wood", "from": "True Blood"},
-    {"player": "Danny Trejo", "from": "From Duck Til Dawn"},
+    {"player": "Danny Trejo", "from": "From Dusk Til Dawn"},
     {"player": "Paul Reubens", "from": "Buffy the Vampire Slayer"},
     {"player": "Wesley Snipes", "from": "Blade"},
+    {"player": "Brad Pitt", "from": "Interview with a Vampire"},
+    {"player": "Kiefer Sutherland", "from": "The Lost Boys"},
+    {"player": "Jemaine Clement", "from": "What We Do in the Shadows"},
 ]
 
 
@@ -51,7 +54,8 @@ def test_using_batch_writer():
         for member in VAMPIRIC_COUNCIL:
             w.append(member)
         w.finalize()
-    except:
+    except Exception as a:
+        print(a)
         errored = True
 
     assert not errored

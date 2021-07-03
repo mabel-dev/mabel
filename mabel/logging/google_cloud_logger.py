@@ -51,9 +51,6 @@ class GoogleLogger(object):
 
         from .create_logger import LOG_NAME
 
-        client = stackdriver.Client()
-        logger = client.logger(safe_field_name(LOG_SINK))
-
         labels = {}
         if system:
             labels["system"] = system
@@ -62,10 +59,16 @@ class GoogleLogger(object):
         labels["module"] = module
         labels["line"] = str(line)
 
-        if os.environ.get("DUAL_LOG", False):
+        if os.environ.get("DUAL_LOG", False) or os.environ.get("IGNORE_STACKDRIVER"):
             print(
                 f"{LOG_NAME} | {LEVELS_TO_STRING.get(severity, 'UNKNOWN')} | {datetime.datetime.now().isoformat()} | {method}() | {module}:{line} | {message}"  # type:ignore
             )
+
+        if os.environ.get("IGNORE_STACKDRIVER"):
+            return
+
+        client = stackdriver.Client()
+        logger = client.logger(safe_field_name(LOG_SINK))
 
         if isinstance(message, dict):
             logger.log_struct(
@@ -114,7 +117,6 @@ class GoogleLogger(object):
         self.error = self.create_logger(LEVELS.ERROR)
         self.audit = self.create_logger(LEVELS.AUDIT)
         self.alert = self.create_logger(LEVELS.ALERT)
-
 
     def __call__(self, message):
         self.debug(message)
