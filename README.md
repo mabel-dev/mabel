@@ -51,8 +51,10 @@ with flow as runner:
 -  Trace messages through the pipeline (random sampling)
 -  Automatic retry of failed operations
 -  Low-memory requirements, even with terabytes of data
--  Indexing and partitioning of data for fast reads 
+-  Indexing and partitioning of data for fast reads (beta) 
 -  Cursors for tracking reading position
+-  SQL Query support (alpha)
+-  Data validation through Expectations (alpha)
 
 ## Installation
 
