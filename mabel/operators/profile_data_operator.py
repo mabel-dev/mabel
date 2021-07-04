@@ -119,13 +119,13 @@ class ProfileDataOperator(BaseOperator):
             del self.summary[k]["bloom_filter"]
 
         # rebin all of the binned data into a set of 10 bins
-        new_bins = [
-            (k, ProfileDataOperator.redistribute_bins(self.summary[k]["bins"], 10))
-            for k in self.summary
-            if "bins" in self.summary[k]
-        ]
-        for k, bins in new_bins:
-            self.summary[k]["bins"] = bins
+        # new_bins = [
+        #    (k, ProfileDataOperator.redistribute_bins(self.summary[k]["bins"], 10))
+        #    for k in self.summary
+        #    if "bins" in self.summary[k]
+        # ]
+        # for k, bins in new_bins:
+        #    self.summary[k]["bins"] = bins
 
         # convert date fields back to dates
         date_fields = [k for k in self.summary if self.summary[k]["type"] == "date"]
@@ -136,29 +136,29 @@ class ProfileDataOperator(BaseOperator):
             self.summary[date_field]["max"] = ProfileDataOperator.date_from_epoch(
                 self.summary[date_field].get("max", 0)
             )
-            new_bins = {}  # type:ignore
-            for bound in self.summary[date_field].get("bins", []):
-                bottom, top = bound
-                bottom = ProfileDataOperator.date_from_epoch(bottom)
-                top = ProfileDataOperator.date_from_epoch(top)
-                new_bins[(bottom, top)] = self.summary[date_field][  # type:ignore
-                    "bins"
-                ][bound]
-            self.summary[date_field]["bins"] = new_bins
+            # new_bins = {}  # type:ignore
+            # for bound in self.summary[date_field].get("bins", []):
+            #    bottom, top = bound
+            #    bottom = ProfileDataOperator.date_from_epoch(bottom)
+            #    top = ProfileDataOperator.date_from_epoch(top)
+            #    new_bins[(bottom, top)] = self.summary[date_field][  # type:ignore
+            #        "bins"
+            #    ][bound]
+            # self.summary[date_field]["bins"] = new_bins
             if self.summary[date_field].get("mean"):
                 del self.summary[date_field]["mean"]
             if self.summary[date_field].get("cumsum"):
                 del self.summary[date_field]["cumsum"]
 
         # change the bin names to strings from tuples
-        for k in [k for k in self.summary if "bins" in self.summary[k]]:
-            new_bins = {}  # type:ignore
-            old_bins = self.summary[k]["bins"]
-            for ranges, v in old_bins.items():
-                bottom, top = ranges
-                label = f"{ProfileDataOperator.short_form(bottom)} to {ProfileDataOperator.short_form(top)}"
-                new_bins[label] = v  # type:ignore
-            self.summary[k]["bins"] = new_bins
+        # for k in [k for k in self.summary if "bins" in self.summary[k]]:
+        #    new_bins = {}  # type:ignore
+        #    old_bins = self.summary[k]["bins"]
+        #    for ranges, v in old_bins.items():
+        #        bottom, top = ranges
+        #        label = f"{ProfileDataOperator.short_form(bottom)} to {ProfileDataOperator.short_form(top)}"
+        #        new_bins[label] = v  # type:ignore
+        #    self.summary[k]["bins"] = new_bins
 
         # put the profile into the context so it gets passed along
         context["mabel:profile"] = self.summary
@@ -264,7 +264,7 @@ class ProfileDataOperator(BaseOperator):
         - mean
         - approximate distribution
 
-        This method take signle value at a time to build the profile
+        This method take single value at a time to build the profile
         """
         if collector.get("max", value) <= value:
             collector["max"] = value
@@ -273,21 +273,21 @@ class ProfileDataOperator(BaseOperator):
         collector["cumsum"] = collector.get("cumsum", 0) + value
         collector["mean"] = collector["cumsum"] / collector["items"]
 
-        if collector.get("bins") is None:
-            collector["bins"] = {}
-        binned = False
-        for bounds in collector["bins"]:
-            bottom, top = bounds
-            if value >= bottom and value <= top:
-                collector["bins"][bounds] += 1
-                binned = True
-        if not binned:
-            collector["bins"][(value, value)] = 1
-
-        if len(collector["bins"]) > 10007:  # first prime over 10000
-            collector["bins"] = ProfileDataOperator.redistribute_bins(
-                collector["bins"], 101
-            )  # first prime over 100
+        #        if collector.get("bins") is None:
+        #            collector["bins"] = {}
+        #        binned = False
+        #        for bounds in collector["bins"]:
+        #            bottom, top = bounds
+        #            if value >= bottom and value <= top:
+        #                collector["bins"][bounds] += 1
+        #                binned = True
+        #        if not binned:
+        #            collector["bins"][(value, value)] = 1
+        #
+        #        if len(collector["bins"]) > 5007:  # first prime over 10000
+        #            collector["bins"] = ProfileDataOperator.redistribute_bins(
+        #                collector["bins"], 101
+        #            )  # first prime over 100
 
         return collector
 
@@ -300,7 +300,7 @@ class ProfileDataOperator(BaseOperator):
         - maximum length
         - unique values (capped upper limit)
 
-        This method take signle value at a time to build the profile
+        This method take single value at a time to build the profile
         """
         if collector.get("max_length", len(value)) <= len(value):
             collector["max_length"] = len(value)
