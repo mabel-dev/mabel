@@ -57,7 +57,7 @@ with flow as runner:
 -  Data validation through Expectations (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />alpha)
 
 Note:
-- **<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />alpha** features are subject to change and are not stable  
+- **<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />alpha** features are subject to change and are not recommended for production systems  
 - **<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />beta** features may change to resolve issues during testing
 
 ## Installation
