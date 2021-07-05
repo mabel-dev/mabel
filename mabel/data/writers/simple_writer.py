@@ -1,13 +1,15 @@
 import datetime
+from mabel.errors.invalid_combination_error import InvalidCombinationError
 from pydantic import BaseModel  # type:ignore
 from typing import Any, Optional, Union, List
 from dateutil import parser
 from .internals.blob_writer import BlobWriter
 from ..validator import Schema  # type:ignore
 from ...utils import paths
-from ...errors import ValidationError, InvalidDataSetError
+from ...errors import ValidationError, InvalidDataSetError, ExpectationNotMetError
 from ...logging import get_logger
 from ...data.formats import json
+from ...data.expectations import Expectations
 
 
 class SimpleWriter:
@@ -24,6 +26,7 @@ class SimpleWriter:
         self,
         *,
         schema: Optional[Union[Schema, list]] = None,
+        set_of_expectations: Optional[list] = None,
         format: str = "zstd",
         date: Any = None,
         **kwargs,
@@ -54,6 +57,17 @@ class SimpleWriter:
             schema = Schema(schema)
         if isinstance(schema, Schema):
             self.schema = schema
+
+#        if self.schema:
+#            get_logger().warning("Schema/Fields will be replaced by Expectations in a future version")
+
+        self.expectations = None
+        if set_of_expectations:
+            self.expectations = Expectations(set_of_expectations=set_of_expectations)
+
+        if self.schema is not None and self.expectations is not None:
+            raise InvalidCombinationError("Writer cannot have `schema`\`fields` and `expectations` set at the same time.")
+
         self.finalized = False
         self.batch_date = self._get_writer_date(date)
 
@@ -104,6 +118,9 @@ class SimpleWriter:
             raise ValidationError(
                 f"Schema Validation Failed ({self.schema.last_error})"
             )
+        elif self.expectations and not self.expectations.test_record(record):
+            raise ExpectationNotMetError(record)
+
 
         self.blob_writer.append(record)
         self.records += 1

@@ -18,6 +18,11 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│          NOTE: BINNING HAS BEEN REMOVED AS BOTH SLOW AND INACCURATE          │
+└──────────────────────────────────────────────────────────────────────────────┘
+
 """
 from ..flows.internals.base_operator import BaseOperator
 from ..data.formats import json

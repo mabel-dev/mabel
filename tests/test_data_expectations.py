@@ -10,12 +10,19 @@ from rich import traceback
 
 traceback.install()
 
+# fmt:off
 set_of_expectations = [
     {"expectation": "expect_column_to_exist", "column": "string_field"},
     {"expectation": "expect_column_values_to_not_be_null", "column": "string_field"},
-    {"expectation": "expect_column_values_to_be_of_type", "column": "boolean_field", "expected_type": "bool"},
-
+    {"expectation": "expect_column_values_to_be_of_type","column": "boolean_field","expected_type": "bool"},
+    {"expectation": "expect_column_values_to_match_like", "column": "string_field", "like":"%"}
 ]
+
+print(
+    Expectations([]).expect_column_values_to_match_like(
+        row={"a": "anakin skywalker"}, column="a", like="an%ker"
+    )
+)
 
 
 def test_expectation():
@@ -35,9 +42,7 @@ def test_expectation():
     assert test.test_record(TEST_DATA)
 
 
-
-
 if __name__ == "__main__":  # pragma: no cover
-    test_expectation()
+    # test_expectation()
 
     print("okay")
