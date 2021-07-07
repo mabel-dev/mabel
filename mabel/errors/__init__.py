@@ -11,3 +11,4 @@ from .missing_dependency_error import MissingDependencyError
 from .data_not_found_error import DataNotFoundError
 from .time_exceeded import TimeExceeded
 from .expectation_not_met_error import ExpectationNotMetError
+from .expectation_not_understood_error import ExpectationNotUnderstoodError

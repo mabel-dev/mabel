@@ -19,14 +19,13 @@ of all of the values in a table.
 
 - if data doesn't match, I'm not cross, I'm just disappointed.
 """
-from mabel.data.expectations.internals.text import build_regex
 import re
 import inspect
 from functools import lru_cache
 from typing import Any, Iterable
 from functools import lru_cache
 from ...logging import get_logger
-from ...errors import ExpectationNotMetError
+from ...errors import ExpectationNotMetError, ExpectationNotUnderstoodError
 from .internals import sql_like_to_regex
 
 
@@ -166,13 +165,16 @@ class Expectations(object):
                 expectations[handle] = member
         return expectations
 
-    def test_record(self, record):
+    def test_record(self, record, suppress_errors:bool = False):
         full_suite = self._available_expectations()
         for expectation in self.set_of_expectations:
             if expectation['expectation'] in full_suite:
                 if not full_suite[expectation['expectation']](row=record, **expectation):
-                    #print(expectation['expectation'])
+                    if not suppress_errors:
+                        raise ExpectationNotMetError(f"{expectation['expectation']} - {record}")
                     return False  # data failed to meet expectation
             else:
+                if not suppress_errors:
+                    raise ExpectationNotUnderstoodError(expectation['expectation'])
                 return False  # unknown expectation
         return True

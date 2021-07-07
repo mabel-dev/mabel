@@ -118,8 +118,8 @@ class SimpleWriter:
             raise ValidationError(
                 f"Schema Validation Failed ({self.schema.last_error})"
             )
-        elif self.expectations and not self.expectations.test_record(record):
-            raise ExpectationNotMetError(record)
+        elif self.expectations:
+            self.expectations.test_record(record)
 
 
         self.blob_writer.append(record)
