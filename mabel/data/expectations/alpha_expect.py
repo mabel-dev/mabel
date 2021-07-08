@@ -26,12 +26,14 @@ from functools import lru_cache
 from ...logging import get_logger
 from ...errors import ExpectationNotMetError, ExpectationNotUnderstoodError
 from .internals import sql_like_to_regex, build_regex
+from .metrics import MetricCollector
 
 
 class Expectations(object):
 
     def __init__(self, set_of_expectations: Iterable[dict]):
         self.set_of_expectations = set_of_expectations
+        self.metrics_collector = MetricCollector()
         get_logger().warning("Data Expectations is alpha functionality - it's interface may change and some features may not be supported")
 
     ###################################################################################
@@ -165,6 +167,7 @@ class Expectations(object):
         return expectations
 
     def test_record(self, record, suppress_errors:bool = False):
+        self.metrics_collector.add(record)
         full_suite = self._available_expectations()
         for expectation in self.set_of_expectations:
             if expectation['expectation'] in full_suite:

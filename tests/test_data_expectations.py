@@ -41,8 +41,10 @@ def test_expectation():
     test = Expectations(set_of_expectations)
     assert test.test_record(TEST_DATA)
 
+    print(test.metrics_collector.collector)
+
 
 if __name__ == "__main__":  # pragma: no cover
-    # test_expectation()
+    test_expectation()
 
     print("okay")
