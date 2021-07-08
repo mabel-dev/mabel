@@ -19,14 +19,13 @@ of all of the values in a table.
 
 - if data doesn't match, I'm not cross, I'm just disappointed.
 """
-import re
 import inspect
 from functools import lru_cache
 from typing import Any, Iterable
 from functools import lru_cache
 from ...logging import get_logger
 from ...errors import ExpectationNotMetError, ExpectationNotUnderstoodError
-from .internals import sql_like_to_regex
+from .internals import sql_like_to_regex, build_regex
 
 
 class Expectations(object):
