@@ -51,8 +51,14 @@ with flow as runner:
 -  Trace messages through the pipeline (random sampling)
 -  Automatic retry of failed operations
 -  Low-memory requirements, even with terabytes of data
--  Indexing and partitioning of data for fast reads 
--  Cursors for tracking reading position
+-  Indexing and partitioning of data for fast reads (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />beta) 
+-  Cursors for tracking reading position (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />beta) 
+-  SQL Query support (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />alpha)
+-  Data validation through Expectations (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />alpha)
+
+Note:
+- **<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />alpha** features are subject to change and are not recommended for production systems  
+- **<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />beta** features may change to resolve issues during testing
 
 ## Installation
 

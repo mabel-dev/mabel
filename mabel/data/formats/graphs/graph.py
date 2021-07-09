@@ -19,6 +19,7 @@ limitations under the License.
 from pathlib import Path
 from typing import Iterable, Tuple
 from ....errors import MissingDependencyError
+from ...formats.json import serialize
 
 
 class Graph(object):
@@ -62,7 +63,6 @@ class Graph(object):
             graph_path: string
                 The folder ?to save the node and edge files to
         """
-        raise NotImplementedError("save not implemented")
         path = Path(graph_path)
         path.mkdir(exist_ok=True)
 
@@ -77,9 +77,8 @@ class Graph(object):
                 )
                 edge_file.write(edge_record.json() + "\n")
         with open(path / "nodes.jsonl", "w", encoding="utf8") as node_file:
-            for nid, attributes in self.nodes(data=True):
-                node_record = NodeModel(nid=nid, attributes=attributes)
-                node_file.write(node_record.json() + "\n")
+            for nid, attr in self.nodes(data=True):
+                node_file.write(serialize({"nid": nid, "attributes": attr}) + "\n")
 
     def add_edge(self, source: str, target: str, relationship: str):
         """
