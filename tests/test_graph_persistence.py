@@ -52,5 +52,4 @@ if __name__ == "__main__":  # pragma: no cover
     test_save_graph()
     test_networkx()
 
-
     print("okay")

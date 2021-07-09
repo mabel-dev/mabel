@@ -58,15 +58,17 @@ class SimpleWriter:
         if isinstance(schema, Schema):
             self.schema = schema
 
-#        if self.schema:
-#            get_logger().warning("Schema/Fields will be replaced by Expectations in a future version")
+        #        if self.schema:
+        #            get_logger().warning("Schema/Fields will be replaced by Expectations in a future version")
 
         self.expectations = None
         if set_of_expectations:
             self.expectations = Expectations(set_of_expectations=set_of_expectations)
 
         if self.schema is not None and self.expectations is not None:
-            raise InvalidCombinationError("Writer cannot have `schema`\`fields` and `expectations` set at the same time.")
+            raise InvalidCombinationError(
+                "Writer cannot have `schema`\`fields` and `expectations` set at the same time."
+            )
 
         self.finalized = False
         self.batch_date = self._get_writer_date(date)
@@ -120,7 +122,6 @@ class SimpleWriter:
             )
         elif self.expectations:
             self.expectations.test_record(record)
-
 
         self.blob_writer.append(record)
         self.records += 1
