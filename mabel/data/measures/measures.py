@@ -16,6 +16,3 @@ class Measures(BaseModel):
     count: int = 0
     missing: int = 0
     cummulative_sum: float = 0
-
-
-

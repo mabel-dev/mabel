@@ -1,6 +1,7 @@
 import datetime
 from .measures import Measures
 
+
 class MeasuresCollector(object):
     def __init__(self):
         self.counter = 0
