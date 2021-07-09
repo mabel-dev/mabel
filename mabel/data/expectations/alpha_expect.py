@@ -22,7 +22,6 @@ of all of the values in a table.
 import inspect
 from functools import lru_cache
 from typing import Any, Iterable
-from functools import lru_cache
 from ...logging import get_logger
 from ...errors import ExpectationNotMetError, ExpectationNotUnderstoodError
 from .internals import sql_like_to_regex, build_regex
