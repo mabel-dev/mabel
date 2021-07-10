@@ -7,6 +7,7 @@ from mabel.flows.internals.trace_blocks import TraceBlocks
 from mabel.data.formats.json import parse, serialize
 from mabel.utils import entropy
 from rich import traceback
+import binascii
 
 traceback.install()
 
@@ -14,8 +15,8 @@ traceback.install()
 def test_hashes():
 
     data_hashes = []
-    data_hashes.append(entropy.random_string(length=32, characters=string.hexdigits))
-    data_hashes.append(entropy.random_string(length=32, characters=string.hexdigits))
+    data_hashes.append(entropy.random_string(length=32, encoder=binascii.hexlify))
+    data_hashes.append(entropy.random_string(length=32, encoder=binascii.hexlify))
 
     tb = TraceBlocks()
     tb.add_block(data_hash=data_hashes[0])

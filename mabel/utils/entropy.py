@@ -18,15 +18,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import os
-import string
+import base64
+from math import ceil
 from typing import Any, Union
 
-
-def random_string(
-    length: int = 64, characters: str = string.ascii_letters + string.digits
-) -> str:
-    result_str = "".join(random_choice(characters) for _ in range(length))
-    return result_str
+def random_string(length: int = 64, encoder=base64.b64encode) -> str:
+    """
+    Generate a random string, this is done by creating an array of random bytes
+    and then base64 encoding them. This gives a higher density of entropy than
+    selecting random character.
+    """
+    b = os.urandom(ceil(length * 0.75))
+    return encoder(b).decode('utf8')[:length]
 
 
 def random_int() -> int:

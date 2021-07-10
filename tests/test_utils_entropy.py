@@ -16,18 +16,8 @@ traceback.install()
 def test_random_string():
 
     """test the string is the right length"""
-    rnd_str = entropy.random_string(length=32, characters="abc")
+    rnd_str = entropy.random_string(length=32)
     assert len(rnd_str) == 32
-
-    """ test the string only has the recquested chars """
-    counter = collections.Counter(rnd_str)
-    if "a" in counter:
-        counter.pop("a")
-    if "b" in counter:
-        counter.pop("b")
-    if "c" in counter:
-        counter.pop("c")
-    assert len(counter) == 0
 
 
 def test_random_int():

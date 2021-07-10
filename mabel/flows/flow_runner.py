@@ -1,4 +1,3 @@
-import uuid
 from .internals.trace_blocks import TraceBlocks
 from ..utils import entropy
 from ..errors import FlowError
@@ -32,7 +31,7 @@ class FlowRunner:
 
         # create a run_id for the message if it doesn't already have one
         if not context.get("run_id"):
-            context["run_id"] = str(uuid.uuid4())
+            context["run_id"] = str(entropy.random_string(32))
 
         # create a tracer for the message
         if not context.get("execution_trace"):
