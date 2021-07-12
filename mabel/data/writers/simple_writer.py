@@ -88,7 +88,7 @@ class SimpleWriter:
         arg_dict["dataset"] = f"{self.dataset}"
         arg_dict[
             "inner_writer"
-        ] = f"{arg_dict.get('inner_writer', {}).__name__}"  # type:ignore
+        ] = f"{arg_dict.get('inner_writer', type(None)).__name__}"  # type:ignore
         get_logger().debug(json.serialize(arg_dict))
 
         # default index
