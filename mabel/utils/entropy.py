@@ -22,6 +22,7 @@ import base64
 from math import ceil
 from typing import Any, Union
 
+
 def random_string(length: int = 64, encoder=base64.b64encode) -> str:
     """
     Generate a random string, this is done by creating an array of random bytes
@@ -29,7 +30,7 @@ def random_string(length: int = 64, encoder=base64.b64encode) -> str:
     selecting random character.
     """
     b = os.urandom(ceil(length * 0.75))
-    return encoder(b).decode('utf8')[:length]
+    return encoder(b).decode("utf8")[:length]
 
 
 def random_int() -> int:
