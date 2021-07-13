@@ -66,7 +66,7 @@ class SimpleWriter:
         self.expectations = None
         if set_of_expectations:
             try:
-                import data_expectations as de
+                import data_expectations as de  # type: ignore
             except:
                 raise MissingDependencyError(
                     "`data_expectations` is missing, please install or include in requirements.txt"
@@ -129,7 +129,7 @@ class SimpleWriter:
                 f"Schema Validation Failed ({self.schema.last_error})"
             )
         elif self.expectations:
-            import data_expectations as de
+            import data_expectations as de  # type: ignore
 
             de.evaluate_record(self.expectations, record)
 
