@@ -4,13 +4,14 @@
 
 try:
     import dotenv  # type:ignore
-except ImportError:    # pragma: no cover
-    dotenv = None
+except ImportError:  # pragma: no cover
+    dotenv = None  # type:ignore
 
 from pathlib import Path
+
 env_path = Path(".") / ".env"
 
-if env_path.exists() and dotenv is None:   # pragma: no cover
+if env_path.exists() and dotenv is None:  # pragma: no cover
     print("`.env` file exists but `dotEnv` not installed.")
 else:  # pragma: no cover
     dotenv.load_dotenv(dotenv_path=env_path)
