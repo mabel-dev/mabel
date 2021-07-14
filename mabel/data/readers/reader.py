@@ -331,8 +331,8 @@ class Reader:
 
         # read the rows from the file
         ds = self.reader_class.get_records(blob, rows)
-        # reformat the rows
-        ds = self._parse(ds)
+        # reformat the rows - ignoring blanks
+        ds = self._parse([line for line in ds if len(line.strip()) > 0])
         # filter the rows, either with the filters or `dictset.select_from`
         if self.filters:
             yield from self.filters.filter_dictset(ds)
