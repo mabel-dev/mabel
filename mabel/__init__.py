@@ -1,14 +1,19 @@
 # python-dotenv allows us to create an environment file to store secrets. If
 # there is no .env it will fail gracefully and fall back to the actual os
 # environment.
-try:
-    from dotenv import load_dotenv  # type:ignore
-    from pathlib import Path
 
-    env_path = Path(".") / ".env"
-    load_dotenv(dotenv_path=env_path)
-except ImportError:  # pragma: no cover
-    pass
+try:
+    import dotenv  # type:ignore
+except ImportError:    # pragma: no cover
+    dotenv = None
+
+from pathlib import Path
+env_path = Path(".") / ".env"
+
+if env_path.exists() and dotenv is None:   # pragma: no cover
+    print("`.env` file exists but `dotEnv` not installed.")
+else:  # pragma: no cover
+    dotenv.load_dotenv(dotenv_path=env_path)
 
 import os
 from .version import __version__
