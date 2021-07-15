@@ -77,7 +77,7 @@ class BaseOperator(abc.ABC):
         # Log the hashes of the __call__ and version methods
         call_hash = self._hash(inspect.getsource(self.__call__))[-8:]
         version_hash = self._hash(inspect.getsource(self.version))[-8:]
-        self.logger.audit(
+        self.logger.debug(
             {
                 "operator": self.name,
                 "call_hash": call_hash,
@@ -244,7 +244,7 @@ class BaseOperator(abc.ABC):
             "error_count": self.errors,
             "execution_seconds": self.execution_time_ns / 1e9,
         }
-        if self.executions == 0:
+        if self.executions == 0 and self.name != 'EndOperator':
             self.logger.warning(f"`{self.name}` was never executed")
         if self.commencement_time:
             response["commencement_time"] = self.commencement_time.isoformat()

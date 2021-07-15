@@ -83,6 +83,7 @@ pip install --upgrade git+https://github.com/mabel-dev/mabel
 -  **[UltraJSON](https://github.com/ultrajson/ultrajson)** (AKA `ujson`) is used where `orjson` is not available. (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />1)
 -  **[zstandard](https://github.com/indygreg/python-zstandard)** is used for real-time compression
 
+
 There are a number of optional dependencies which are usually only required for
 specific features and functionality. These are listed in the
 [requirements.txt](https://github.com/mabel-dev/mabel/blob/main/tests/requirements.txt)

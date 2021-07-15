@@ -86,9 +86,7 @@ class BaseInnerReader(abc.ABC):
         ".lxml",
         ".parquet",
         ".ignore",
-        ".profile",
         ".index",
-        ".bloom",
         ".complete",
     )
 

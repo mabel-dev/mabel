@@ -7,6 +7,9 @@ exec(vers)  # nosec
 with open("README.md", "r") as rm:
     long_description = rm.read()
 
+with open("requirements.txt") as f:
+    required = f.read().splitlines()
+
 setup(
     name="mabel",
     version=__version__,
@@ -16,5 +19,5 @@ setup(
     maintainer="Joocer",
     packages=find_packages(include=["mabel", "mabel.*"]),
     url="https://github.com/mabel-dev/mabel/",
-    install_requires=["ujson", "python-dateutil", "zstandard", "mmh3", "pydantic"],
+    install_requires=required,
 )
