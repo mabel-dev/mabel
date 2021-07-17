@@ -60,7 +60,7 @@ class SimpleWriter:
 
         if self.schema:
             get_logger().warning(
-                "Schema/Fields will be replaced by `data_expectations` in a future version"
+                "Some Schema/Fields checks will be replaced by `data_expectations` in a future version"
             )
 
         self.expectations = None
