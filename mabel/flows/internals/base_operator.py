@@ -244,7 +244,7 @@ class BaseOperator(abc.ABC):
             "error_count": self.errors,
             "execution_seconds": self.execution_time_ns / 1e9,
         }
-        if self.executions == 0 and self.name != 'EndOperator':
+        if self.executions == 0 and self.name != "EndOperator":
             self.logger.warning(f"`{self.name}` was never executed")
         if self.commencement_time:
             response["commencement_time"] = self.commencement_time.isoformat()

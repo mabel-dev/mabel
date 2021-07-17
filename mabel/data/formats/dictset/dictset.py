@@ -149,7 +149,7 @@ def drop_duplicates(dictset: Iterator[dict], cache_size: int = 10000):
     Removes duplicate records from a dictset, as it able to run against
     an unbounded (infinite) set, it may not fully deduplicate a set. The
     larger the cache_size the more likely the duplication will be correct
-    however, this is at the expense of memory.
+    however, this is at the expense of speed and memory.
 
     Parameters:
         dictset: iterable of dictionaries:
@@ -255,7 +255,7 @@ def sort(
 
     This method works best with partially sorted data, for randomized data
     and a small cache, the effect of sorting is poor; for partially sorted
-    data, and/or a large cache, the performance is better.
+    data, and/or a large cache, the effect is better.
 
     Note that if this method is placed in a pipeline, it will need to process
     cache_size number of records before it will emit any records.
@@ -285,13 +285,12 @@ def sort(
 
         return _inner_sort_key
 
-    # cache_size is the high water mark, 3/4 is the low water mark.
-    # We fill the cache to the high water mark, sort it and yield
-    # the top 1/4 before filling again.
-    # This reduces the number of times we execute the sorted function
-    # which is the slowest part of this method.
-    # A cache_size of 1000 has a neglible impact on performance, a
-    # cache_size of 50000 introduces a performance hit of about 15%.
+    # cache_size is the high water mark, 3/4 is the low water mark. We fill the cache
+    # to the high water mark, sort it and yield the top 1/4 before filling again.
+    # This reduces the number of times we execute the sorted function which is the
+    # slowest part of this method.
+    # A cache_size of 1000 has a neglible impact on performance, a cache_size of
+    # 50000 introduces a performance hit of about 15%.
     quarter_cache = max(cache_size // 4, 1)
     cache = []
     for record in dictset:

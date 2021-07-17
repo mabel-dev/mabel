@@ -36,6 +36,7 @@ def test_validator_expected_to_work():
     w = SimpleWriter(inner_writer=NullWriter, **VALID_TARGET)
     w.append({"name": "Barney Stinson", "alter": "Lorenzo Von Matterhorn"})
     w.append({"name": "Laszlo Cravensworth", "alter": "Jackie Daytona"})
+    w.append({"name": "Pheobe Buffay", "alter": "Regina Phalange"})
     w.finalize()
 
 

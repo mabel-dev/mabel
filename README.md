@@ -54,6 +54,7 @@ with flow as runner:
 -  Indexing and partitioning of data for fast reads (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />beta) 
 -  Cursors for tracking reading position (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />beta) 
 -  SQL Query support (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />alpha)
+-  Schema and [data_expectations](https://github.com/joocer/data_expectations) validation
 
 Note:
 - **<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />alpha** features are subject to change and are not recommended for production systems  
