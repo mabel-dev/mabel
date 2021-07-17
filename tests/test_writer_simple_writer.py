@@ -18,6 +18,7 @@ def do_writer():
     for i in range(int(1e5)):
         w.append({"Barney Stinson": "Lorenzo Von Matterhorn"})
         w.append({"Laszlo Cravensworth": "Jackie Daytona"})
+        w.append({"name": "Pheobe Buffay", "alter": "Regina Phalange"})
     w.finalize()
 
 
@@ -52,7 +53,7 @@ def test_reader_writer():
     r = Reader(inner_reader=DiskReader, dataset="_temp")
     l = len(list(r))
     shutil.rmtree("_temp", ignore_errors=True)
-    assert l == 200000, l
+    assert l == 300000, l
 
 
 def test_reader_writer_format_lzma():

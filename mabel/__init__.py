@@ -11,7 +11,8 @@ from pathlib import Path
 
 env_path = Path(".") / ".env"
 
-if env_path.exists() and dotenv is None:  # pragma: no cover
+if env_path.exists() and (dotenv is None):  # pragma: no cover
+    # using logger here will tie us in knots
     print("`.env` file exists but `dotEnv` not installed.")
 elif dotenv is not None:  # pragma: no cover
     dotenv.load_dotenv(dotenv_path=env_path)

@@ -5,9 +5,8 @@ Implements an arbitrary length LRU Index, this is not a LRU cache, this is the '
 of a deduplication engine - where the most recently seen 'size' items are remembered
 and older items are ejected.
 
-Some implementation decisions are to optimize for speed and memory.
-
-This relies on dictionaries being ordered.
+Some implementation decisions are to optimize for speed and memory - when deduplicating
+millions of records, speed is important.
 
 #nodoc - don't add to the documentation wiki
 """
