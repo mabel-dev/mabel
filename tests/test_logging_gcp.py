@@ -13,10 +13,12 @@ os.environ["IGNORE_STACKDRIVER"] = "true"
 
 def test_google_logging():
     """
-    This doesn't save to StackDriver, instead we're testing that this is handled
-    gracefully and doesn't error
+    This doesn't save to StackDriver - we're mainly ensuring that the redaction works
     """
-    GoogleLogger().warning("Noooooo")
+    assert "Noooooo" in GoogleLogger().warning("Noooooo")
+    redacted = GoogleLogger().warning({"password":"sauce"})
+    assert "password" in redacted
+    assert "sauce" not in redacted
 
 
 if __name__ == "__main__":  # pragma: no cover
