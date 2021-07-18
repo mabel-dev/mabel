@@ -21,7 +21,7 @@ COLOR_EXCHANGES = {
 
 
 class LogFormatter(logging.Formatter):
-    def __init__(self, orig_formatter):
+    def __init__(self, orig_formatter, suppress_color:bool = False):
         """
         Remove sensitive data from records before saving to external logs.
         Note that the value is hashed using (SHA256) and only the first 8
@@ -36,9 +36,13 @@ class LogFormatter(logging.Formatter):
         Based On: https://github.com/joocer/cronicl/blob/main/cronicl/utils/sanitizer.py
         """
         self.orig_formatter = orig_formatter
+        self.suppress_color = suppress_color
 
     def format(self, record):
-        msg = self.orig_formatter.format(record)
+        try:
+            msg = self.orig_formatter.format(record)
+        except:
+            msg = record
         msg = self.sanitize_record(msg)
         if "://" in msg:
             msg = re.sub(r":\/\/(.*?)\@", r"://{BOLD_PURPLE}<redacted>{OFF}", msg)
@@ -47,6 +51,8 @@ class LogFormatter(logging.Formatter):
     @lru_cache(1)
     def _can_colorize(self):
 
+        if self.suppress_color:
+            return False
         if is_running_from_ipython():
             return True
 

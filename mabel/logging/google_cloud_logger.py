@@ -1,6 +1,8 @@
 # google-cloud-logging
 # pydantic
+from mabel.logging.log_formatter import LogFormatter
 import os
+import ujson as json
 import logging
 import datetime
 from typing import Union, Optional
@@ -51,6 +53,9 @@ class GoogleLogger(object):
 
         from .create_logger import LOG_NAME
 
+        if isinstance(message, dict):
+            message = json.dumps(message)
+
         labels = {}
         if system:
             labels["system"] = system
@@ -59,13 +64,15 @@ class GoogleLogger(object):
         labels["module"] = module
         labels["line"] = str(line)
 
+        log = f"{LOG_NAME} | {LEVELS_TO_STRING.get(severity, 'UNKNOWN')} | {datetime.datetime.now().isoformat()} | {method}() | {module}:{line} | {message}"  # type:ignore
+        formatter = LogFormatter(None, suppress_color=True)
+        log = formatter.format(log)
+
         if os.environ.get("DUAL_LOG", False) or os.environ.get("IGNORE_STACKDRIVER"):
-            print(
-                f"{LOG_NAME} | {LEVELS_TO_STRING.get(severity, 'UNKNOWN')} | {datetime.datetime.now().isoformat()} | {method}() | {module}:{line} | {message}"  # type:ignore
-            )
+            print(log)
 
         if os.environ.get("IGNORE_STACKDRIVER"):
-            return
+            return log
 
         client = stackdriver.Client()
         logger = client.logger(safe_field_name(LOG_SINK))
@@ -82,6 +89,8 @@ class GoogleLogger(object):
                 severity=LEVELS_TO_STRING.get(severity),  # type:ignore
                 labels=labels,
             )
+        
+        return message
 
     def __init__(self):
         # rewrite one of the levels
@@ -99,7 +108,7 @@ class GoogleLogger(object):
         from .create_logger import LOG_NAME
 
         def base_logger(message):
-            GoogleLogger.write_event(message=message, system=LOG_NAME, severity=level)
+            return GoogleLogger.write_event(message=message, system=LOG_NAME, severity=level)
 
         def do_nothing(message):
             pass
