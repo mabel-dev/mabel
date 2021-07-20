@@ -1,7 +1,6 @@
-import shutil
+
 import os
 import sys
-import glob
 import pytest
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
