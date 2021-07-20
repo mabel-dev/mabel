@@ -1,8 +1,7 @@
 from .internals.trace_blocks import TraceBlocks
 from ..utils import entropy
-from ..errors import FlowError
+from ..errors import FlowError, TimeExceeded
 from ..logging import get_logger
-from mabel.errors.time_exceeded import TimeExceeded
 
 
 class FlowRunner:
