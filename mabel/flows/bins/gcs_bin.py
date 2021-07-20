@@ -1,13 +1,14 @@
 """
 Google Cloud Storage Bin Writer
 """
+import os
 import time
 from .base_bin import BaseBin
 from ...errors import MissingDependencyError
 
 try:
-    from google.cloud import storage  # type:ignore
-
+    from google.cloud import storage
+    from google.auth.credentials import AnonymousCredentials
     google_cloud_storage_installed = True
 except ImportError:  # pragma: no cover
     google_cloud_storage_installed = False
@@ -21,7 +22,15 @@ class GoogleCloudStorageBin(BaseBin):
                 "`google-cloud-storage` is missing, please install or include in requirements.txt"
             )
 
-        client = storage.Client(project=project)
+        # this means we're testing
+        if os.environ.get("STORAGE_EMULATOR_HOST") is not None:
+            client = storage.Client(
+                credentials=AnonymousCredentials(),
+                project=self.project,
+            )
+        else:  # pragma: no cover
+            client = storage.Client(project=project)
+
         self.bucket = client.get_bucket(bucket)
         self.path = path
         self.name = bin_name
