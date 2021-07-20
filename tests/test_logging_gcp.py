@@ -16,7 +16,7 @@ def test_google_logging():
     This doesn't save to StackDriver - we're mainly ensuring that the redaction works
     """
     assert "Noooooo" in GoogleLogger().warning("Noooooo")
-    redacted = GoogleLogger().warning({"password":"sauce"})
+    redacted = GoogleLogger().warning({"password": "sauce"})
     assert "password" in redacted
     assert "sauce" not in redacted
 

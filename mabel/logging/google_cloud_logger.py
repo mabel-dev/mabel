@@ -89,7 +89,7 @@ class GoogleLogger(object):
                 severity=LEVELS_TO_STRING.get(severity),  # type:ignore
                 labels=labels,
             )
-        
+
         return message
 
     def __init__(self):
@@ -108,7 +108,9 @@ class GoogleLogger(object):
         from .create_logger import LOG_NAME
 
         def base_logger(message):
-            return GoogleLogger.write_event(message=message, system=LOG_NAME, severity=level)
+            return GoogleLogger.write_event(
+                message=message, system=LOG_NAME, severity=level
+            )
 
         def do_nothing(message):
             pass
