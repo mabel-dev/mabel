@@ -28,7 +28,6 @@ def test_can_read_xml():
     print(row)
 
 
-
 if __name__ == "__main__":  # pragma: no cover
     test_can_read_xml()
 

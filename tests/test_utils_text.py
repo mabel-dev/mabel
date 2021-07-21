@@ -38,10 +38,57 @@ def test_tokenizer():
 
     assert text.tokenize("the") == ["the"]
     assert text.tokenize("CVE-2017-0144") == ["cve20170144"]
-    assert text.tokenize(QUOTE) == ['if', 'youre', 'frightened', 'of', 'dying', 'and', 'youre', 'holding', 'on', 'youll', 'see', 'devils', 'tearing',
-'your', 'life', 'away', 'but', 'if', 'youve', 'made', 'your', 'peace', 'then', 'the', 'devils', 'are', 'really', 'angels', 
-'freeing', 'you', 'from', 'the', 'earth', 'eckhart', 'von', 'hochheim']
-    assert text.tokenize(SNIPPET) == ['html', 'center', 'blink', 'b', 'this', 'is', 'important', 'b', 'blink', 'center', 'html']
+    assert text.tokenize(QUOTE) == [
+        "if",
+        "youre",
+        "frightened",
+        "of",
+        "dying",
+        "and",
+        "youre",
+        "holding",
+        "on",
+        "youll",
+        "see",
+        "devils",
+        "tearing",
+        "your",
+        "life",
+        "away",
+        "but",
+        "if",
+        "youve",
+        "made",
+        "your",
+        "peace",
+        "then",
+        "the",
+        "devils",
+        "are",
+        "really",
+        "angels",
+        "freeing",
+        "you",
+        "from",
+        "the",
+        "earth",
+        "eckhart",
+        "von",
+        "hochheim",
+    ]
+    assert text.tokenize(SNIPPET) == [
+        "html",
+        "center",
+        "blink",
+        "b",
+        "this",
+        "is",
+        "important",
+        "b",
+        "blink",
+        "center",
+        "html",
+    ]
 
 
 if __name__ == "__main__":  # pragma: no cover

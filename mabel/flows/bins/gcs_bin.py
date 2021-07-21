@@ -9,6 +9,7 @@ from ...errors import MissingDependencyError
 try:
     from google.cloud import storage  # type:ignore
     from google.auth.credentials import AnonymousCredentials  # type:ignore
+
     google_cloud_storage_installed = True
 except ImportError:  # pragma: no cover
     google_cloud_storage_installed = False
