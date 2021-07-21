@@ -1,10 +1,6 @@
 from ...formats.json import parse
 from ....errors import MissingDependencyError
-
-try:
-    import xmltodict  # type:ignore
-except ImportError:
-    xmltodict = None
+from ....utils import xml_parse
 
 
 def json_parser(ds):
@@ -25,8 +21,4 @@ def block_parser(ds):
 
 
 def xml_parser(ds):
-    if not xmltodict:  # pragma: no cover
-        raise MissingDependencyError(
-            "`xmltodict` is missing, please install or include in requirements.txt"
-        )
-    yield from map(xmltodict.parse, ds)
+    yield from map(xml_parse.parse, ds)

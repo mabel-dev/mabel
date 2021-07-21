@@ -62,5 +62,5 @@ def graph_is_as_expected(graph):
         "Saturn",
         "Sharlene",
         "Toodyay",
-    ]
+    ], sorted(graph.nodes())
     assert len(list(graph.edges())) == 17
