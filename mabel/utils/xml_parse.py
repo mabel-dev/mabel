@@ -1,4 +1,4 @@
-from xml.etree import cElementTree as ElementTree
+from xml.etree import cElementTree as ElementTree  # nosec
 
 def strip_namespace(entry):
     if isinstance(entry, dict):
