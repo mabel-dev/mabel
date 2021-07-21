@@ -7,8 +7,8 @@ from .base_bin import BaseBin
 from ...errors import MissingDependencyError
 
 try:
-    from google.cloud import storage
-    from google.auth.credentials import AnonymousCredentials
+    from google.cloud import storage  # type:ignore
+    from google.auth.credentials import AnonymousCredentials  # type:ignore
     google_cloud_storage_installed = True
 except ImportError:  # pragma: no cover
     google_cloud_storage_installed = False
@@ -26,7 +26,7 @@ class GoogleCloudStorageBin(BaseBin):
         if os.environ.get("STORAGE_EMULATOR_HOST") is not None:
             client = storage.Client(
                 credentials=AnonymousCredentials(),
-                project=self.project,
+                project=project,
             )
         else:  # pragma: no cover
             client = storage.Client(project=project)
