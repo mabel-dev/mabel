@@ -68,10 +68,10 @@ class SimpleWriter:
                 )
             self.expectations = de.Expectations(set_of_expectations=set_of_expectations)
 
-#        if self.schema is not None and self.expectations is not None:
-#            raise InvalidCombinationError(
-#                "Writer does not support having `schema`\`fields` and `expectations` set at the same time."
-#            )
+        #        if self.schema is not None and self.expectations is not None:
+        #            raise InvalidCombinationError(
+        #                "Writer does not support having `schema`\`fields` and `expectations` set at the same time."
+        #            )
 
         self.finalized = False
         self.batch_date = self._get_writer_date(date)
@@ -117,16 +117,17 @@ class SimpleWriter:
         """
         if isinstance(record, BaseModel):
             record = record.dict()
-        
+
         if self.schema and not self.schema.validate(
             subject=record, raise_exception=False
         ):
             raise ValidationError(
                 f"Schema Validation Failed ({self.schema.last_error})"
             )
-        
+
         if self.expectations:
             import data_expectations as de  # type: ignore
+
             de.evaluate_record(self.expectations, record)
 
         self.blob_writer.append(record)

@@ -21,7 +21,7 @@ COLOR_EXCHANGES = {
 
 
 class LogFormatter(logging.Formatter):
-    def __init__(self, orig_formatter, suppress_color:bool = False):
+    def __init__(self, orig_formatter, suppress_color: bool = False):
         """
         Remove sensitive data from records before saving to external logs.
         Note that the value is hashed using (SHA256) and only the first 8

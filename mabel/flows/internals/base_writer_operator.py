@@ -1,7 +1,4 @@
-import datetime
 from ..internals.base_operator import BaseOperator
-from ...utils import paths
-from ...data.formats import json
 
 
 class BaseWriterOperator(BaseOperator):

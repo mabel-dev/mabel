@@ -208,7 +208,7 @@ class BaseInnerReader(abc.ABC):
 
             while not is_complete(blobs) or is_invalid(blobs):
                 if not is_complete(blobs):
-                    get_logger().warning(
+                    get_logger().debug(
                         f"Frame `{as_at}` is not complete - `frame.complete` file is not present - skipping this frame."
                     )
                 if is_invalid(blobs):

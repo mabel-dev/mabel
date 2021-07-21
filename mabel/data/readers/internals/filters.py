@@ -1,12 +1,5 @@
 """
-This is an initial implementation of a filtering mechanism to be applied
-when reading data. There is an existing function-based implemented
-however, as this makes it difficult to understand the fields being
-used to filter on, when data is indexed it won't be able to take 
-advantage of the filters.
-
-This current implementation is a step toward that, it does not use
-any indices at this point.
+This is a filtering mechanism to be applied when reading data.
 """
 import re
 import operator
@@ -78,25 +71,24 @@ def evaluate(predicate: Union[tuple, list], record: dict) -> bool:
     """
     This is the evaluation routine for the Filter class.
 
-    Implements a DNF (Disjunctive Normal Form) interpretter. Predicates in the
-    same list are joined with an AND (*all()*) and predicates in adjacent lists
-    are joined with an OR (*any()*). This allows for non-trivial filters to be
-    written with just _tuples_ and _lists_.
+    Implements a DNF (Disjunctive Normal Form) interpretter. Predicates in the same
+    list are joined with an AND (*all()*) and predicates in adjacent lists are joined
+    with an OR (*any()*). This allows for non-trivial filters to be written with just
+    _tuples_ and _lists_.
 
-    The predicates are in _tuples_ in the form (`key`, `op`, `value`) where the
-    `key` is the value looked up from the record, the `op` is the operator and
-    the `value` is a literal.
+    The predicates are in _tuples_ in the form (`key`, `op`, `value`) where the `key`
+    is the value looked up from the record, the `op` is the operator and the `value`
+    is a literal.
     """
     # No filter doesn't filter
     if predicate is None:  # pragma: no cover
         return True
 
-    # If we have a tuple extract out the key, operator and value
-    # and do the evaluation
+    # If we have a tuple extract out the key, operator and value and do the evaluation
     if isinstance(predicate, tuple):
         key, op, value = predicate
         if key in record:
-            return OPERATORS[op](record[key], value)
+            return OPERATORS[op.lower()](record[key], value)
         return False
 
     if isinstance(predicate, list):

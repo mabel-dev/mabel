@@ -19,10 +19,10 @@ limitations under the License.
 import types
 from pathlib import Path
 from .graph import Graph
+from pydantic import BaseModel
 from .traverse import Traverse
-from ..json import parse
-from ....errors import MissingDependencyError
-from pydantic import BaseModel  # type:ignore
+from ..json import parse, serialize
+from ....utils import xml_parse
 
 
 class EdgeModel(BaseModel):
@@ -68,20 +68,17 @@ def read_graphml(graphml_file: str):
     Returns:
         Graph
     """
-    try:
-        import xmltodict  # type:ignore
-    except ImportError:  # pragma: no cover
-        raise MissingDependencyError(
-            "`xmltodict` is missing, please install or include in requirements.txt"
-        )
 
     with open(graphml_file, "r") as fd:
-        xml_dom = xmltodict.parse(fd.read())
+        xml_dom = xml_parse.parse(fd.read())
 
     g = Graph()
 
     # load the keys
     keys = {}
+    #    print(xml_dom)
+    #    print('\n\n', serialize(xml_dom), '\n\n')
+    #    print(xml_dom.get('key'))
     for key in xml_dom["graphml"].get("key", {}):
         keys[key["@id"]] = key["@attr.name"]
 
