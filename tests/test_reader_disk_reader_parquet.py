@@ -25,7 +25,6 @@ def test_can_read_parquet():
     assert isinstance(row, str)
 
 
-
 if __name__ == "__main__":  # pragma: no cover
     test_can_read_parquet()
 
