@@ -1,6 +1,5 @@
 import os
 import datetime
-import traceback
 from typing import Any
 from .simple_writer import SimpleWriter
 from .internals.blob_writer import BlobWriter
@@ -78,11 +77,10 @@ class BatchWriter(SimpleWriter):
         # create the writer
         self.blob_writer = BlobWriter(**kwargs)
 
-    def finalize(self):
+    def finalize(self, has_failure: bool = False):
         final = super().finalize()
 
-        ex = traceback.format_exc()
-        if ex != "NoneType: None\n":
+        if has_failure:
             get_logger().debug(
                 f"Error found in the stack, not marking frame as complete."
             )

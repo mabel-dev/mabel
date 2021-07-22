@@ -36,7 +36,7 @@ def test_ignore_flag_step_back_days():
         inner_reader=DiskReader,
         start_date=DATA_DATE,
         end_date=DATA_DATE,
-        step_back_days=1,
+        freshness_limit="24h",
     )
     print(next(records))
 

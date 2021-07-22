@@ -1,6 +1,8 @@
+import datetime
 from .internals.trace_blocks import TraceBlocks
 from ..utils import entropy
-from ..errors import FlowError, TimeExceeded
+from ..utils.text import wrap_text
+from ..errors import FlowError, TimeExceeded, render_error_stack
 from ..logging import get_logger
 
 
@@ -51,10 +53,30 @@ class FlowRunner:
         except TimeExceeded as te:
             raise te
         except (Exception, SystemExit) as err:
-            # if we have a uncaught failure, make sure it's logged
-            get_logger().alert(  # type:ignore
-                f"FLOW ABEND - {type(err).__name__} - {err}"
-            )
+            if hasattr(self, "error_writer"):
+                error_log_reference = "NOT LOGGED"
+                try:
+                    error_payload = (
+                        f"timestamp  : {datetime.datetime.today().isoformat()}\n"
+                        f"location   : flow_runner\n"
+                        f"error type : {type(err).__name__}\n"
+                        f"details    : {err}\n"
+                        "========================================================================================================================\n"
+                        f"{wrap_text(render_error_stack(), 120)}\n"
+                        "=======================================================  context  ======================================================\n"
+                        f"{wrap_text(str(context), 120)}\n"
+                        "========================================================  data  ========================================================\n"
+                        f"{wrap_text(str(data), 120)}\n"
+                        "========================================================================================================================\n"
+                    )
+                    error_log_reference = self.error_writer(  # type:ignore
+                        error_payload
+                    )  # type:ignore
+                except:
+                    # if we have a uncaught failure, make sure it's logged
+                    get_logger().alert(  # type:ignore
+                        f"FLOW ABEND - {type(err).__name__} - {err} ({error_log_reference})"
+                    )
             raise err
 
         # if being traced, send the trace to the trace writer
