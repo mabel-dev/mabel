@@ -1,6 +1,6 @@
 import queue
 import threading
-from ...formats import dictset
+from juon import dictset
 
 
 def threaded_reader(items_to_read: list, blob_list, reader):

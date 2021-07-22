@@ -4,7 +4,7 @@ import string
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.flows.internals.trace_blocks import TraceBlocks
-from mabel.data.formats.json import parse, serialize
+from juon import json
 from mabel.utils import entropy
 from rich import traceback
 import binascii
@@ -21,7 +21,7 @@ def test_hashes():
     tb = TraceBlocks()
     tb.add_block(data_hash=data_hashes[0])
     tb.add_block(data_hash=data_hashes[1])
-    blocks = parse(str(tb))
+    blocks = json.parse(str(tb))
 
     previous_block = ""
 

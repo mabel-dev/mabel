@@ -39,7 +39,7 @@ def add_logging_level(level_name, level_num, method_name=None):
     def log_for_level(self, message, *args, **kwargs):
         # if we've added the level,it doesn't format the message as JSON
         if isinstance(message, dict):
-            from ..data.formats import json
+            from juon import json
 
             message = json.serialize(message)
         if self.isEnabledFor(level_num):

@@ -4,7 +4,7 @@ from typing import Any
 from .simple_writer import SimpleWriter
 from .internals.blob_writer import BlobWriter
 from ...utils import paths
-from ...data.formats import json
+from juon import json
 from ...logging import get_logger
 
 

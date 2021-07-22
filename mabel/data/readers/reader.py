@@ -9,9 +9,9 @@ from .internals.threaded_reader import threaded_reader
 from .internals.alpha_processed_reader import processed_reader
 from .internals.parsers import pass_thru_parser, block_parser, json_parser, xml_parser
 from .internals.filters import Filters, get_indexable_filter_columns
-from ..formats.dictset import select_record_fields, select_from
-from ..formats.dictset.display import html_table, ascii_table
-from ..formats import json
+from juon.dictset import select_record_fields, select_from
+from juon.dictset.display import html_table, ascii_table
+from juon import json
 from ...logging import get_logger
 from ...errors import InvalidCombinationError, MissingDependencyError, DataNotFoundError
 from ...index.index import Index

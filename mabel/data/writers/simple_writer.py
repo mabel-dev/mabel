@@ -8,7 +8,7 @@ from ..validator import Schema  # type:ignore
 from ...utils import paths
 from ...errors import ValidationError, InvalidDataSetError, MissingDependencyError
 from ...logging import get_logger
-from ...data.formats import json
+from juon import json
 
 
 class SimpleWriter:

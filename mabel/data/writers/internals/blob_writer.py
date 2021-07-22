@@ -2,7 +2,7 @@ import threading
 import tempfile
 import os
 from typing import Any
-from ...formats.json import serialize
+from juon import json
 from ....logging import get_logger
 from ....utils.paths import get_parts
 from ....utils import safe_field_name
@@ -50,7 +50,7 @@ class BlobWriter(object):
         if self.format == "text":
             serialized = str(record).encode() + b"\n"
         else:
-            serialized = serialize(record, as_bytes=True) + b"\n"  # type:ignore
+            serialized = json.serialize(record, as_bytes=True) + b"\n"  # type:ignore
 
         # add the columns to the index
         for column in self.indexes:

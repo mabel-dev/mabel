@@ -6,9 +6,9 @@ import abc
 import pathlib
 import datetime
 from io import IOBase
+from juon import json
 from typing import Iterable, Optional
 from dateutil import parser
-from ...formats import json
 from ....utils import common, paths
 from ....logging import get_logger
 from ....errors import MissingDependencyError

@@ -7,7 +7,7 @@ Problems
 import multiprocessing
 import os
 import time
-from ...formats import dictset
+from juon import dictset
 from ....logging import get_logger
 
 

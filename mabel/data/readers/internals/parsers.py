@@ -1,11 +1,10 @@
-from ...formats.json import parse
+from juon import json, xmler
 from ....errors import MissingDependencyError
-from ....utils import xml_parse
 
 
 def json_parser(ds):
     """parse each line in the file to a dictionary"""
-    yield from map(parse, ds)
+    yield from map(json.parse, ds)
 
 
 def pass_thru_parser(ds):
@@ -21,4 +20,4 @@ def block_parser(ds):
 
 
 def xml_parser(ds):
-    yield from map(xml_parse.parse, ds)
+    yield from map(xmler.parse, ds)

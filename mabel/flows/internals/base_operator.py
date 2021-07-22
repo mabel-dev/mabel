@@ -9,7 +9,7 @@ import functools
 from typing import List
 from ...logging import get_logger  # type:ignore
 from ...errors import render_error_stack, TimeExceeded
-from ...data.formats.json import parse, serialize
+from juon import json
 from ...utils.text import wrap_text
 
 
@@ -220,7 +220,7 @@ class BaseOperator(abc.ABC):
                 operator=self.name,
                 operator_version=self.version(),
                 execution_ns=my_execution_time,
-                data_block=serialize(data),
+                data_block=json.serialize(data),
             )
             self.logger.audit(f"{context.get('run_id')} {self.name} {data_hash}")
 

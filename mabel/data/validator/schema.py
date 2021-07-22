@@ -2,9 +2,9 @@ import os
 import re
 import datetime
 from typing import Any, Union, List, Dict
-from ..formats.json import parse
+from juon import json
 from ...errors import ValidationError
-from ..formats.dictset.display import ascii_table
+from juon.dictset.display import ascii_table
 
 
 DEFAULT_MIN = -9223372036854775808
@@ -170,9 +170,9 @@ class Schema:
         # if we have a schema as a string, load it into a dictionary
         if isinstance(definition, str):
             if os.path.exists(definition):  # type:ignore
-                definition = parse(open(definition, mode="r").read())  # type:ignore
+                definition = json.parse(open(definition, mode="r").read())  # type:ignore
             else:
-                definition = parse(definition)  # type:ignore
+                definition = json.parse(definition)  # type:ignore
 
         if isinstance(definition, dict):
             if definition.get("fields"):  # type:ignore

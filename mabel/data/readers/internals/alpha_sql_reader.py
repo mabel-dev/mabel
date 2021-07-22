@@ -1,10 +1,11 @@
 # no-maintain-checks
+import re
+from juon import json
+from functools import lru_cache
 from moz_sql_parser import parse  # type:ignore
 from ..reader import Reader
 from ....logging import get_logger
-from ...formats import json
-from functools import lru_cache
-import re
+
 
 # https://codereview.stackexchange.com/a/248421
 _special_regex_chars = {ch: "\\" + ch for ch in ".^$*+?{}[]|()\\"}

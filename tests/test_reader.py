@@ -7,7 +7,7 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.data import Reader
 from mabel.adapters.disk import DiskReader
-from mabel.data.formats import dictset
+from juon import dictset
 from rich import traceback
 
 traceback.install()

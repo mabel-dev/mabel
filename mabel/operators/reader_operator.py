@@ -1,7 +1,7 @@
 import time
 from ..flows.internals.base_operator import BaseOperator
 from ..data import Reader
-from ..data.formats import json
+from juon import json
 from ..errors.time_exceeded import TimeExceeded
 
 

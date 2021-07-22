@@ -2,7 +2,7 @@ import os
 import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
-from mabel.data.formats import Graph
+from juon.graphs import Graph
 
 
 def build_graph():

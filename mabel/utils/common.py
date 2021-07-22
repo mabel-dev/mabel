@@ -1,7 +1,7 @@
 import glob
 import datetime
+from juon import json
 from typing import Optional
-from ..data.formats.json import parse
 from ..logging import get_logger
 
 
@@ -36,7 +36,7 @@ def build_context(**kwargs: dict):
             file_location = glob.glob("**/" + config_file, recursive=True).pop()
             get_logger().debug(f"Reading configuration from `{file_location}`.")
             with open(file_location, "r") as f:
-                config = parse(f.read())
+                config = json.parse(f.read())
             return config
         except IndexError as e:
             raise IndexError(

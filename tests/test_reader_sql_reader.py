@@ -2,11 +2,11 @@ import os
 import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
+import shutil
 from mabel.data import Reader
 from mabel.data import BatchWriter
 from mabel.adapters.disk import DiskWriter, DiskReader
 from mabel.data.readers.internals.alpha_sql_reader import SqlReader
-import shutil
 from rich import traceback
 
 traceback.install()

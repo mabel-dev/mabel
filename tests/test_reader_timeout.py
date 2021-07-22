@@ -6,7 +6,7 @@ sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.operators.reader_operator import ReaderOperator
 from mabel.errors.time_exceeded import TimeExceeded
 from mabel.adapters.disk import DiskReader
-from mabel.data.formats import json
+from juon import json
 from rich import traceback
 
 traceback.install()
