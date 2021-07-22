@@ -17,6 +17,8 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     maintainer="Joocer",
+    author="joocer",
+    author_email="justin.joyce@joocer.com",
     packages=find_packages(include=["mabel", "mabel.*"]),
     url="https://github.com/mabel-dev/mabel/",
     install_requires=required,

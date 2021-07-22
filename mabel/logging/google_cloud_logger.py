@@ -53,9 +53,6 @@ class GoogleLogger(object):
 
         from .create_logger import LOG_NAME
 
-        if isinstance(message, dict):
-            message = json.dumps(message)
-
         labels = {}
         if system:
             labels["system"] = system
@@ -64,7 +61,11 @@ class GoogleLogger(object):
         labels["module"] = module
         labels["line"] = str(line)
 
-        log = f"{LOG_NAME} | {LEVELS_TO_STRING.get(severity, 'UNKNOWN')} | {datetime.datetime.now().isoformat()} | {method}() | {module}:{line} | {message}"  # type:ignore
+        payload = message
+        if isinstance(message, dict):
+            payload = json.dumps(message)
+
+        log = f"{LOG_NAME} | {LEVELS_TO_STRING.get(severity, 'UNKNOWN')} | {datetime.datetime.now().isoformat()} | {method}() | {module}:{line} | {payload}"  # type:ignore
         formatter = LogFormatter(None, suppress_color=True)
         log = formatter.format(log)
 
