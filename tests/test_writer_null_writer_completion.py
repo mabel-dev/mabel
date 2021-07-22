@@ -12,7 +12,7 @@ from mabel.operators.null import NullBatchWriterOperator
 class FailOnT800Operator(BaseOperator):
     def execute(self, data: dict, context: dict):
         if data.get('name') == "T-800":
-            raise Exception("Terminator")
+            raise Exception("Terminator Found")
         return data, context
 
 class FeedMeRobotsOperator(BaseOperator):
@@ -42,13 +42,33 @@ def test_null_writer():
     assert w.finalize(has_failure=True) == -1
 
 
-def test_terminating_flow():
+def test_terminating_flow(caplog):
     flow = FeedMeRobotsOperator() >> FailOnT800Operator() >> NullBatchWriterOperator(dataset="NOWHERE") >> EndOperator()
-    with flow as runner:
-        runner(None, None, 0)
+    try:
+        with flow as runner:
+            runner(None, None, 0)
+    except:
+        pass
+
+    if caplog is None:
+        print("Test must be run in pytest")
+        return
+
+    frame_written = False
+    frame_skipped = False
+
+    for log_name, log_level, log_text in caplog.record_tuples:
+        if "Frame completion file" in log_text:
+            frame_written = True
+        if "Error found in the stack, not marking frame as complete." in log_text:
+            frame_skipped = True
+
+    assert not frame_written
+    assert frame_skipped
+
 
 if __name__ == "__main__":  # pragma: no cover
     test_null_writer()
-    test_terminating_flow()
+    test_terminating_flow(None)
 
     print("okay")
