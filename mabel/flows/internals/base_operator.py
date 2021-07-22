@@ -10,6 +10,7 @@ from typing import List
 from ...logging import get_logger  # type:ignore
 from ...errors import render_error_stack, TimeExceeded
 from ...data.formats.json import parse, serialize
+from ...utils.text import wrap_text
 
 
 # inheriting ABC is part of ensuring that this class only ever
@@ -175,11 +176,11 @@ class BaseOperator(abc.ABC):
                             f"error type : {type(err).__name__}\n"
                             f"details    : {err}\n"
                             "========================================================================================================================\n"
-                            f"{self._wrap_text(render_error_stack(), 120)}\n"
+                            f"{wrap_text(render_error_stack(), 120)}\n"
                             "=======================================================  context  ======================================================\n"
-                            f"{self._wrap_text(str(context), 120)}\n"
+                            f"{wrap_text(str(context), 120)}\n"
                             "========================================================  data  ========================================================\n"
-                            f"{self._wrap_text(str(data), 120)}\n"
+                            f"{wrap_text(str(data), 120)}\n"
                             "========================================================================================================================\n"
                         )
                         error_log_reference = self.error_writer(
@@ -394,15 +395,6 @@ class BaseOperator(abc.ABC):
         raw_hash = hashlib.sha256(bytes_object.encode())
         hex_hash = raw_hash.hexdigest()
         return hex_hash
-
-    def _wrap_text(self, text, line_len):
-        from textwrap import fill
-
-        def _inner(text):
-            for line in text.splitlines():
-                yield fill(line, line_len)
-
-        return "\n".join(list(_inner(text)))
 
     def __repr__(self):
         return f"<{self.name}, version: {self.version()}>"

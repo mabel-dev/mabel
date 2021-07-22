@@ -1,6 +1,7 @@
 import datetime
 from .internals.trace_blocks import TraceBlocks
 from ..utils import entropy
+from ..utils.text import wrap_text
 from ..errors import FlowError, TimeExceeded, render_error_stack
 from ..logging import get_logger
 
@@ -57,18 +58,18 @@ class FlowRunner:
                 try:
                     error_payload = (
                         f"timestamp  : {datetime.datetime.today().isoformat()}\n"
-                        f"operator   : {self.name}\n"
+                        f"location   : flow_runner\n"
                         f"error type : {type(err).__name__}\n"
                         f"details    : {err}\n"
                         "========================================================================================================================\n"
-                        f"{self._wrap_text(render_error_stack(), 120)}\n"
+                        f"{wrap_text(render_error_stack(), 120)}\n"
                         "=======================================================  context  ======================================================\n"
-                        f"{self._wrap_text(str(context), 120)}\n"
+                        f"{wrap_text(str(context), 120)}\n"
                         "========================================================  data  ========================================================\n"
-                        f"{self._wrap_text(str(data), 120)}\n"
+                        f"{wrap_text(str(data), 120)}\n"
                         "========================================================================================================================\n"
                     )
-                    error_log_reference = self.error_writer(
+                    error_log_reference = self.error_writer(   # type:ignore
                         error_payload
                     )  # type:ignore
                 except:
