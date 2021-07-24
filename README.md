@@ -95,11 +95,12 @@ is the preferred JSON library but not available on all platforms.
 
 mabel comes with adapters for the following services:
 
-| | Service | Support
-|-- |-- |-- 
-| <img align="centre" alt="GCP Storage" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/gcs-logo.png" /> | Google Cloud Storage |  Read/Write
-| <img align="centre" alt="MinIo" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/minio-logo.png" /> | MinIO | Read/Write
-| <img align="centre" alt="AWS S3" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/s3-logo.png" /> | S3 | Read/Write
+|   | Service |
+|-- |-- |
+| <img align="centre" alt="GCP Storage" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/gcs-logo.png" /> | Google Cloud Storage |
+| <img align="centre" alt="MinIo" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/minio-logo.png" /> | MinIO |
+| <img align="centre" alt="AWS S3" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/s3-logo.png" /> | S3 | 
+| <img align="centre" alt="Azure" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/azure.svg" /> | Azure |
 
 MongoDB and MQTT Readers are included in the base library but are not supported.
 
@@ -111,17 +112,16 @@ mabel supports running on a range of platforms:
 |-- |-- |
 | <img align="centre" alt="Docker" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/docker-logo.png" /> | Docker
 | <img align="centre" alt="Kubernetes" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/kubernetes-logo.svg" /> | Kubernetes
-| <img align="centre" alt="Raspberry Pi" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/raspberry-pi-logo.svg" /> | Raspberry Pi (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg">1)
-| <img align="centre" alt="Windows" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/windows-logo.png" /> | Windows (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />2)
-| <img align="centre" alt="Linux" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/linux-logo.jpg" /> | Linux (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />3)
+| <img align="centre" alt="Windows" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/windows-logo.png" /> | Windows (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />1)
+| <img align="centre" alt="Linux" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/linux-logo.jpg" /> | Linux (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />2)
+
 
 MacOS also supported.
 
 Adapters for other data services can be written. 
 
-<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />1 - Raspbian fully functional with `ujson`.  
-<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />2 - Multi-Processing not available on Windows. Alternate indexing libraries may be used on Windows.  
-<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />3 - Tested on Debian and Ubuntu.
+<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />1 - Multi-Processing not available on Windows. Alternate indexing libraries may be used on Windows.  
+<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />2 - Tested on Debian (WSL) and Ubuntu.
 
 ## How Can I Contribute?
 
