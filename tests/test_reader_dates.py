@@ -3,11 +3,14 @@ Written following a bug discovered in how the Reader determines the data range.
 """
 import datetime
 import os
+from re import sub
 import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.data.readers.internals.base_inner_reader import BaseInnerReader
 from rich import traceback
+from mabel import Reader
+from mabel.adapters.disk import DiskReader
 
 traceback.install()
 
@@ -52,10 +55,16 @@ def test_dates_as_string():
     assert subject.end_date == END_DATE
 
 
+def test_short_dates():
+    subject = Reader(inner_reader=DiskReader, dataset="tests/data/dated/{datefolders_short}", start_date="1979-08-23", end_date="1979-08-23")
+    assert len(list(subject)) == 25
+
+
 if __name__ == "__main__":  # pragma: no cover
     test_start_date_only()
     test_end_date_only()
     test_start_and_end_dates()
     test_dates_as_string()
+    test_short_dates()
 
     print("okay")

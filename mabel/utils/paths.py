@@ -58,14 +58,11 @@ def date_format(path_string: str, date: datetime.date = None):
 
     path_string = str(path_string)
 
-    path_string = path_string.replace(
-        "%datefolders", f"year_{year}/month_{month}/day_{day}"
-    )
+    date_folders = f"year_{year}/month_{month}/day_{day}"
+    path_string = path_string.replace("%datefolders", date_folders)
     path_string = path_string.replace("%date", f"{year}-{month}-{day}")
-
-    path_string = path_string.replace(
-        "{datefolders}", f"year_{year}/month_{month}/day_{day}"
-    )
+    path_string = path_string.replace("{datefolders}", date_folders)
     path_string = path_string.replace("{date}", f"{year}-{month}-{day}")
+    path_string = path_string.replace("{datefolders_short}", f"{year}/{month}/{day}")
 
     return path_string
