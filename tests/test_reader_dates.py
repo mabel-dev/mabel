@@ -56,7 +56,12 @@ def test_dates_as_string():
 
 
 def test_short_dates():
-    subject = Reader(inner_reader=DiskReader, dataset="tests/data/dated/{datefolders_short}", start_date="1979-08-23", end_date="1979-08-23")
+    subject = Reader(
+        inner_reader=DiskReader,
+        dataset="tests/data/dated/{datefolders_short}",
+        start_date="1979-08-23",
+        end_date="1979-08-23",
+    )
     assert len(list(subject)) == 25
 
 
