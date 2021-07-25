@@ -11,7 +11,7 @@ except ImportError:  # pragma: no cover
     google_cloud_storage_installed = False
 
 
-class GoogleCloudStorageWriter(BaseInnerWriter):
+class AzureBlobStorageWriter(BaseInnerWriter):
     def __init__(self, project: str, **kwargs):
         if not google_cloud_storage_installed:  # pragma: no cover
             raise MissingDependencyError(

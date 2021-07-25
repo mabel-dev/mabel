@@ -1,5 +1,5 @@
 """
-Google Cloud Storage Reader
+Azure Storage Reader
 """
 import io
 import os
@@ -8,22 +8,21 @@ from ...errors import MissingDependencyError
 from ...utils import paths
 
 try:
-    from google.auth.credentials import AnonymousCredentials  # type:ignore
-    from google.cloud import storage  # type:ignore
+    from azure.storage.blob import BlobServiceClient
 
-    google_cloud_storage_installed = True
+    azure_blob_storage_installed = True
 except ImportError:  # pragma: no cover
-    google_cloud_storage_installed = False
+    azure_blob_storage_installed = False
 
 
-class GoogleCloudStorageReader(BaseInnerReader):
+class AzureBlobStorageReader(BaseInnerReader):
 
     RULES = [{"name": "project", "required": False}]
 
     def __init__(self, project: str, **kwargs):
-        if not google_cloud_storage_installed:  # pragma: no cover
+        if not azure_blob_storage_installed:  # pragma: no cover
             raise MissingDependencyError(
-                "`google-cloud-storage` is missing, please install or include in requirements.txt"
+                "`azure-storage-blob` is missing, please install or include in requirements.txt"
             )
 
         super().__init__(**kwargs)

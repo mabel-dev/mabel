@@ -1,2 +1,2 @@
-from .google_cloud_storage_reader import GoogleCloudStorageReader
-from .google_cloud_storage_writer import GoogleCloudStorageWriter
+from .azure_blob_storage_reader import AzureBlobStorageReader
+from .azure_blob_storage_writer import AzureBlobStorageWriter

@@ -1,4 +1,4 @@
-ujson
+orjson
 python-dateutil
 zstandard
 mmh3
