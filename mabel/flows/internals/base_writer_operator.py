@@ -22,5 +22,5 @@ class BaseWriterOperator(BaseOperator):
         if self.writer.schema:
             context["schema_object"] = self.writer.schema
 
-        self.writer.finalize(has_failure = context.get("mabel:errored", False))
+        self.writer.finalize(has_failure=context.get("mabel:errored", False))
         return context

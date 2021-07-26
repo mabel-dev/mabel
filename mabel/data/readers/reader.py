@@ -10,15 +10,15 @@ from .internals.alpha_processed_reader import processed_reader
 from .internals.parsers import pass_thru_parser, block_parser, json_parser, xml_parser
 from .internals.filters import Filters, get_indexable_filter_columns
 from juon.dictset import select_record_fields, select_from
-from juon.dictset.display import html_table, ascii_table
+
 from juon import json
-from .internals.dataset import DataSet
-from ...logging import get_logger
+
+
 from ...errors import InvalidCombinationError, MissingDependencyError, DataNotFoundError
 from ...index.index import Index
 from ...utils import safe_field_name
 from ...utils.parameter_validator import validate
-from ...utils.ipython import is_running_from_ipython
+
 from ...utils.paths import get_parts
 from ...utils.dates import parse_delta
 
@@ -54,11 +54,8 @@ RULES = [
 ]
 # fmt:on
 
-
-class Reader:
-    @validate(RULES)
-    def __init__(
-        self,
+@validate(RULES)
+def Reader(
         *,  # force all paramters to be keyworded
         select: list = ["*"],
         dataset: str = None,
@@ -66,7 +63,7 @@ class Reader:
         inner_reader=None,  # type:ignore
         row_format: str = "json",
         **kwargs,
-    ):
+    ) -> DataSet:
         """
         Reads records from a data store, opinionated toward Google Cloud Storage but a
         filesystem reader is available to assist with local development.
@@ -428,33 +425,3 @@ class Reader:
             return self.__next__()
         except StopIteration:
             return None
-
-    """
-    Exports
-    """
-
-    def to_pandas(self):
-        """
-        Load the contents of the _Reader_ to a _Pandas_ DataFrame.
-
-        Returns:
-            Pandas DataFrame
-        """
-        try:
-            import pandas as pd  # type:ignore
-        except ImportError:  # pragma: no cover
-            raise MissingDependencyError(
-                "`pands` is missing, please install or include in requirements.txt"
-            )
-        return pd.DataFrame(self)
-
-    def __repr__(self):  # pragma: no cover
-
-        if is_running_from_ipython():
-            from IPython.display import HTML, display  # type:ignore
-
-            html = html_table(self, 5)
-            display(HTML(html))
-            return ""  # __repr__ must return something
-        else:
-            return ascii_table(self, 5)

@@ -9,11 +9,13 @@ from mabel import BaseOperator
 from mabel.operators import EndOperator
 from mabel.operators.null import NullBatchWriterOperator
 
+
 class FailOnT800Operator(BaseOperator):
     def execute(self, data: dict, context: dict):
-        if data.get('name') == "T-800":
+        if data.get("name") == "T-800":
             raise Exception("Terminator Found")
         return data, context
+
 
 class FeedMeRobotsOperator(BaseOperator):
     def execute(self, data: dict, context: dict):
@@ -43,7 +45,12 @@ def test_null_writer():
 
 
 def test_terminating_flow(caplog):
-    flow = FeedMeRobotsOperator() >> FailOnT800Operator() >> NullBatchWriterOperator(dataset="NOWHERE") >> EndOperator()
+    flow = (
+        FeedMeRobotsOperator()
+        >> FailOnT800Operator()
+        >> NullBatchWriterOperator(dataset="NOWHERE")
+        >> EndOperator()
+    )
     try:
         with flow as runner:
             runner(None, None, 0)

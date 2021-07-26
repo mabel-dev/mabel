@@ -69,7 +69,7 @@ class FlowRunner:
                         f"{wrap_text(str(data), 120)}\n"
                         "========================================================================================================================\n"
                     )
-                    error_log_reference = self.error_writer(   # type:ignore
+                    error_log_reference = self.error_writer(  # type:ignore
                         error_payload
                     )  # type:ignore
                 except:

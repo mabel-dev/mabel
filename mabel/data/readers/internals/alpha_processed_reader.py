@@ -15,9 +15,7 @@ MAXIMUM_SECONDS_PROCESSES_CAN_RUN = 600  # 5 minutes
 TERMINATE_SIGNAL = -1
 
 
-def _inner_process(
-    flag, reader, source_queue, reply_queue, parser
-):  # pragma: no cover
+def _inner_process(flag, reader, source_queue, reply_queue, parser):  # pragma: no cover
 
     try:
         source = source_queue.get(timeout=0.1)

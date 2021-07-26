@@ -77,7 +77,7 @@ class BatchWriter(SimpleWriter):
         # create the writer
         self.blob_writer = BlobWriter(**kwargs)
 
-    def finalize(self, has_failure:bool = False):
+    def finalize(self, has_failure: bool = False):
         final = super().finalize()
 
         if has_failure:
