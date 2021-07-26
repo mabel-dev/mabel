@@ -12,6 +12,7 @@ from .internals.filters import Filters, get_indexable_filter_columns
 from juon.dictset import select_record_fields, select_from
 from juon.dictset.display import html_table, ascii_table
 from juon import json
+from .internals.dataset import DataSet
 from ...logging import get_logger
 from ...errors import InvalidCombinationError, MissingDependencyError, DataNotFoundError
 from ...index.index import Index
@@ -41,18 +42,15 @@ RULES = [
     {"name": "extension", "required": False, "warning": None, "incompatible_with": []},
     {"name": "filters", "required": False, "warning": None, "incompatible_with": []},
     {"name": "fork_processes", "required": False, "warning": "Forked Reader is Alpha - it's interface may change and some features may not be supported","incompatible_with": ["thread_count"]},
-    {"name": "freshness_limit", "required": False, "warning": None, "incompatible_with": ["step_back_days"]},
-    {"name": "from_path", "required": False, "warning": "DEPRECATION: Reader 'from_path' parameter will be replaced with 'dataset'","incompatible_with": ["dataset"]},
+    {"name": "freshness_limit", "required": False, "warning": None, "incompatible_with": []},
     {"name": "inner_reader", "required": False, "warning": None, "incompatible_with": []},
     {"name": "project", "required": False, "warning": None, "incompatible_with": []},
-    {"name": "raw_path", "required": False, "warning": None, "incompatible_with": ["step_back_days", "freshness_limit"]},
+    {"name": "raw_path", "required": False, "warning": None, "incompatible_with": ["freshness_limit"]},
     {"name": "row_format", "required": False, "warning": None, "incompatible_with": []},
     {"name": "select", "required": False, "warning": None, "incompatible_with": []},
     {"name": "self", "required": True, "warning": None, "incompatible_with": []},
     {"name": "start_date", "required": False, "warning": None, "incompatible_with": []},
-    {"name": "step_back_days", "required": False, "warning": None, "incompatible_with": []},
     {"name": "thread_count", "required": False, "warning": "Threaded Reader is Beta - use in production systems is not recommended", "incompatible_with": []},
-    {"name": "where", "required": False, "warning": "`where` will be deprecated, use `filters` or `dictset.select_from` instead", "incompatible_with": ["filters"]},
 ]
 # fmt:on
 
@@ -64,7 +62,6 @@ class Reader:
         *,  # force all paramters to be keyworded
         select: list = ["*"],
         dataset: str = None,
-        where: Optional[Callable] = None,
         filters: Optional[List[Tuple[str, str, object]]] = None,
         inner_reader=None,  # type:ignore
         row_format: str = "json",
@@ -99,11 +96,6 @@ class Reader:
                 default is all columns
             dataset: string:
                 The path to the data
-            where: callable (optional):
-                **TO BE DEPRECATED**
-                A method (function or lambda expression) to filter the returned
-                records, where the function returns True the record is returned, False
-                the record is skipped. The default is all records
             filters: List of tuples (optional)
                 Rows which do not match the filter predicate will be removed from
                 scanned data. Default is no filtering.
@@ -133,10 +125,6 @@ class Reader:
                 **BETA**
                 Use multiple threads to read data files, the default is to not use
                 additional threads, the maximum number of threads is 8
-            step_back_days: integer (optional):
-                **TO BE DEPRICATED**
-                The number of days to look back if data for the current date is not
-                available. (use freshness_limit instead)
             freshness_limit: string (optional):
                 a time delta string (e.g. 6h30m = 6hours and 30 minutes) which
                 incidates the maximum age of a dataset before it is no longer
@@ -170,8 +158,6 @@ class Reader:
         """
         if not isinstance(select, list):  # pragma: no cover
             raise TypeError("Reader 'select' parameter must be a list")
-        if where is not None and not hasattr(where, "__call__"):
-            raise TypeError("Reader 'where' parameter must be Callable or None")
 
         # load the line converter
         self._parse = PARSERS.get(row_format.lower())
@@ -179,9 +165,6 @@ class Reader:
             raise TypeError(
                 f"Row format unsupported: {row_format} - valid options are {list(PARSERS.keys())}."
             )
-
-        if dataset is None and kwargs.get("from_path"):  # pragma: no cover
-            dataset = kwargs["from_path"]
 
         # lazy loading of dependency
         if inner_reader is None:
@@ -198,7 +181,6 @@ class Reader:
             self.cursor = {}
 
         self.select = select.copy()
-        self.where: Optional[Callable] = where
 
         # initialize the reader
         self._inner_line_reader = None
@@ -229,10 +211,6 @@ class Reader:
         get_logger().debug(arg_dict)
 
         # number of days to walk backwards to find records
-        if kwargs.get("step_back_days"):
-            kwargs[
-                "freshness_limit"
-            ] = f"{kwargs['step_back_days']}d{datetime.time.hour}h{datetime.time.minute}m"
         self.freshness_limit = parse_delta(kwargs.get("freshness_limit", ""))
 
         if (
@@ -240,7 +218,7 @@ class Reader:
             and self.reader_class.start_date != self.reader_class.end_date
         ):  # pragma: no cover
             raise InvalidCombinationError(
-                "step_back_days/freshness_limit can only be used when the start and end dates are the same"
+                "freshness_limit can only be used when the start and end dates are the same"
             )
 
         if (
@@ -337,7 +315,7 @@ class Reader:
         if self.filters:
             yield from self.filters.filter_dictset(ds)
         else:
-            yield from select_from(ds, where=self.where)
+            yield from ds
 
     def _create_line_reader(self):
         blob_list = self.reader_class.get_list_of_blobs()
@@ -389,7 +367,7 @@ class Reader:
 
         elif self.fork_processes:
             yield from processed_reader(
-                readable_blobs, self.reader_class, self._parse, self.where
+                readable_blobs, self.reader_class, self._parse
             )
 
         else:
