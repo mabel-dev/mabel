@@ -3,9 +3,6 @@ import time
 import orjson
 import statistics
 
-from pathlib import Path
-
-from os import urandom
 from tempfile import TemporaryDirectory
 from functools import reduce
 
@@ -26,6 +23,29 @@ class STORAGE_CLASS(int, Enum):
 
 
 MAXIMUM_RECORDS_IN_PARTITION = 65535  # 2^16 -1
+
+
+class _DiskIterator():
+    """
+    This provides the reader for the DISK variation of STORAGE. 
+    """
+    def __init__(self, folder):
+        self.folder = folder
+        self.inner_reader = None
+    def _inner_reader(self):
+        import glob
+        import orjson
+        for file in glob.glob(self.folder + "/**.jsonl"):
+            with open(file, "r") as fh:
+                for line in fh:
+                    yield orjson.loads(line)
+    def __iter__(self):
+        self.inner_reader = self._inner_reader()
+        return self
+    def __next__(self):
+        record = next(self.inner_reader)
+        if record:
+            return record
 
 
 class DictSet(object):
@@ -66,6 +86,10 @@ class DictSet(object):
                 file.write(orjson.dumps(row) + b'\n')
             if file:
                 file.close()
+            self._iterator = _DiskIterator(self.temporary_folder.name)
+
+    def __iter__(self):
+        return iter(self._iterator)
 
     def __del__(self):
         if self.temporary_folder:
@@ -102,7 +126,7 @@ class DictSet(object):
         """
         selector = int(1 / fraction)
         for row in self._iterator:
-            random_value = int.from_bytes(urandom(2), "big")
+            random_value = int.from_bytes(os.urandom(2), "big")
             if random_value % selector == 0:
                 yield row
 
@@ -425,9 +449,13 @@ if __name__ == "__main__":
 
     d = DictSet(THE_LIST, STORAGE_CLASS.DISK)
 
+    
+
     # d.max("number")
     # print(d.max("number"))
 
     import time
 
-    print(d.min_max("description"))
+    print([a for a in d.collect("description")])
+    print(d.sum("number"))
+    print(d.min_max("number"))
