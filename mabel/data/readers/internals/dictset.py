@@ -132,7 +132,7 @@ class DictSet(object):
             return list(self._iterator)
         return map(itemgetter(key), self._iterator)
 
-    def keys(self, number_of_rows:int=10):
+    def keys(self, number_of_rows: int = 10):
         """
         Get all of the keys from the _DictSet_. This iterates through the entire
         _DictSet_.
@@ -273,8 +273,7 @@ class DictSet(object):
             )
         return pandas.DataFrame(self)
 
-
-    def take(self, items:int):
+    def take(self, items: int):
         """
         Return the first _items_ number of items from the _DictSet_. This loads
         these items into memory. If returning a large number of items, use itake.
@@ -286,7 +285,7 @@ class DictSet(object):
             result.append(item)
         return result
 
-    def itake(self, items:int):
+    def itake(self, items: int):
         """
         Return the first _items_ number of items from the _DictSet_. This returns
         a generator.
@@ -296,7 +295,6 @@ class DictSet(object):
             if count == items:
                 return
             yield item
-
 
     def filter(self, predicate):
         """
