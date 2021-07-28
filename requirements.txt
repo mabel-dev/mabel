@@ -4,3 +4,4 @@ zstandard
 mmh3
 pydantic
 juon
+cityhash

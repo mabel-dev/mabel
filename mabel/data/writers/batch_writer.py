@@ -87,9 +87,7 @@ class BatchWriter(SimpleWriter):
             return -1
 
         if self.records == 0:
-            get_logger().debug(
-                f"No records written, not marking frame as complete."
-            )
+            get_logger().debug(f"No records written, not marking frame as complete.")
             return -1
 
         completion_path = self.blob_writer.inner_writer.filename

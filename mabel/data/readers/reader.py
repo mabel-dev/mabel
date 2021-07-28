@@ -58,189 +58,188 @@ RULES = [
 ]
 # fmt:on
 
+
 @validate(RULES)
 def Reader(
-        *,  # force all paramters to be keyworded
-        select: list = ["*"],
-        dataset: str = None,
-        filters: Optional[List[Tuple[str, str, object]]] = None,
-        inner_reader=None,  # type:ignore
-        row_format: str = "json",
-        **kwargs,
-    ) -> DictSet:
-        """
-        Reads records from a data store, opinionated toward Google Cloud Storage but a
-        filesystem reader is available to assist with local development.
+    *,  # force all paramters to be keyworded
+    select: list = ["*"],
+    dataset: str = None,
+    filters: Optional[List[Tuple[str, str, object]]] = None,
+    inner_reader=None,  # type:ignore
+    row_format: str = "json",
+    **kwargs,
+) -> DictSet:
+    """
+    Reads records from a data store, opinionated toward Google Cloud Storage but a
+    filesystem reader is available to assist with local development.
 
-        The Reader will iterate over a set of files and return them to the caller as a
-        single stream of records. The files can be read from a single folder or can be
-        matched over a set of date/time formatted folder names. This is useful to read
-        over a set of logs. The date range is provided as part of the call; this is
-        essentially a way to partition the data by date/time.
+    The Reader will iterate over a set of files and return them to the caller as a
+    single stream of records. The files can be read from a single folder or can be
+    matched over a set of date/time formatted folder names. This is useful to read
+    over a set of logs. The date range is provided as part of the call; this is
+    essentially a way to partition the data by date/time.
 
-        The reader can filter records to return a subset, for JSON formatted data the
-        records can be converted to dictionaries before filtering. JSON data can also
-        be used to select columns, so not all read data is returned.
+    The reader can filter records to return a subset, for JSON formatted data the
+    records can be converted to dictionaries before filtering. JSON data can also
+    be used to select columns, so not all read data is returned.
 
-        The reader does not support aggregations, calculations or grouping of data, it
-        is a log reader and returns log entries. The reader can convert a set into
-        _Pandas_ dataframe, or the _dictset_ helper library can perform some activities
-        on the set in a more memory efficient manner.
+    The reader does not support aggregations, calculations or grouping of data, it
+    is a log reader and returns log entries. The reader can convert a set into
+    _Pandas_ dataframe, or the _dictset_ helper library can perform some activities
+    on the set in a more memory efficient manner.
 
-        Note:
-            Different _inner_readers_ may take or require additional parameters. This
-            class has a decorator which helps to ensure it is called correctly.
+    Note:
+        Different _inner_readers_ may take or require additional parameters. This
+        class has a decorator which helps to ensure it is called correctly.
 
-        Parameters:
-            select: list of strings (optional):
-                A list of the names of the columns to return from the dataset, the
-                default is all columns
-            dataset: string:
-                The path to the data
-            filters: List of tuples (optional)
-                Rows which do not match the filter predicate will be removed from
-                scanned data. Default is no filtering.
-                Each tuple has format: (`key`, `op`, `value`) and compares the key with
-                the value. The supported op are: `=` or `==`, `!=`,  `<`, `>`, `<=`,
-                `>=`, `in`, `!in` (not in), `contains` and `!contains` (doesn't
-                contain) and `like`. If the `op` is `in` or `!in`, the `value` must be
-                a _list_. `like` performs similar to the SQL operator `%` is a
-                multicharacter wildcard and `_` is a single character wildcard.
-                If a field is indexed, it will be used only for '==' and 'in' and
-                'contains' operations.
-            inner_reader: BaseReader (optional):
-                The reader class to perform the data access Operators, the default is
-                GoogleCloudStorageReader
-            row_format: string (optional):
-                Controls how the data is interpretted. 'json' will parse to a
-                dictionary before _select_ or _where_ is applied, 'text' will just
-                return the line that has been read, 'block' will return the content of
-                a file as a record. the default is 'json'.
-            start_date: datetime (optional):
-                The starting date of the range to read over - if used with
-                _date_range_, this value will be preferred, default is today
-            end_date: datetime (optional):
-                The end date of the range to read over - if used with _date_range_,
-                this value will be preferred, default is today
-            thread_count: integer (optional):
-                **BETA**
-                Use multiple threads to read data files, the default is to not use
-                additional threads, the maximum number of threads is 8
-            freshness_limit: string (optional):
-                a time delta string (e.g. 6h30m = 6hours and 30 minutes) which
-                incidates the maximum age of a dataset before it is no longer
-                considered fresh. Where the 'time' of a dataset cannot be
-                determined, it will be treated as midnight (00:00) for the date.
-            fork_processes: boolean (alpha):
-                **ALPHA**
-                Create parallel processes to read data files
-            as_at: datetime (alpha)
-                **ALPHA**
-                Time travel
-            cursor: dictionary (or string)
-                Resume read from a given point (assumes other parameters are the same).
-                If a JSON string is provided, it will converted to a dictionary.
-            cache_indexes: boolean
-                Cache indexes to speed up secondary access, default is False
-                (do not use cache)
+    Parameters:
+        select: list of strings (optional):
+            A list of the names of the columns to return from the dataset, the
+            default is all columns
+        dataset: string:
+            The path to the data
+        filters: List of tuples (optional)
+            Rows which do not match the filter predicate will be removed from
+            scanned data. Default is no filtering.
+            Each tuple has format: (`key`, `op`, `value`) and compares the key with
+            the value. The supported op are: `=` or `==`, `!=`,  `<`, `>`, `<=`,
+            `>=`, `in`, `!in` (not in), `contains` and `!contains` (doesn't
+            contain) and `like`. If the `op` is `in` or `!in`, the `value` must be
+            a _list_. `like` performs similar to the SQL operator `%` is a
+            multicharacter wildcard and `_` is a single character wildcard.
+            If a field is indexed, it will be used only for '==' and 'in' and
+            'contains' operations.
+        inner_reader: BaseReader (optional):
+            The reader class to perform the data access Operators, the default is
+            GoogleCloudStorageReader
+        row_format: string (optional):
+            Controls how the data is interpretted. 'json' will parse to a
+            dictionary before _select_ or _where_ is applied, 'text' will just
+            return the line that has been read, 'block' will return the content of
+            a file as a record. the default is 'json'.
+        start_date: datetime (optional):
+            The starting date of the range to read over - if used with
+            _date_range_, this value will be preferred, default is today
+        end_date: datetime (optional):
+            The end date of the range to read over - if used with _date_range_,
+            this value will be preferred, default is today
+        thread_count: integer (optional):
+            **BETA**
+            Use multiple threads to read data files, the default is to not use
+            additional threads, the maximum number of threads is 8
+        freshness_limit: string (optional):
+            a time delta string (e.g. 6h30m = 6hours and 30 minutes) which
+            incidates the maximum age of a dataset before it is no longer
+            considered fresh. Where the 'time' of a dataset cannot be
+            determined, it will be treated as midnight (00:00) for the date.
+        fork_processes: boolean (alpha):
+            **ALPHA**
+            Create parallel processes to read data files
+        as_at: datetime (alpha)
+            **ALPHA**
+            Time travel
+        cursor: dictionary (or string)
+            Resume read from a given point (assumes other parameters are the same).
+            If a JSON string is provided, it will converted to a dictionary.
+        cache_indexes: boolean
+            Cache indexes to speed up secondary access, default is False
+            (do not use cache)
 
-        Yields:
-            dictionary (string if data format is 'text')
+    Yields:
+        dictionary (string if data format is 'text')
 
-        Raises:
-            TypeError
-                Reader _select_ parameter must be a list
-            TypeError
-                Data format unsupported
-            InvalidCombinationError
-                Forking and Threading can not be used at the same time
-        """
-        if not isinstance(select, list):  # pragma: no cover
-            raise TypeError("Reader 'select' parameter must be a list")
+    Raises:
+        TypeError
+            Reader _select_ parameter must be a list
+        TypeError
+            Data format unsupported
+        InvalidCombinationError
+            Forking and Threading can not be used at the same time
+    """
+    if not isinstance(select, list):  # pragma: no cover
+        raise TypeError("Reader 'select' parameter must be a list")
 
-        # load the line converter
-        parser = PARSERS.get(row_format.lower())
-        if parser is None:  # pragma: no cover
-            raise TypeError(
-                f"Row format unsupported: {row_format} - valid options are {list(PARSERS.keys())}."
+    # load the line converter
+    parser = PARSERS.get(row_format.lower())
+    if parser is None:  # pragma: no cover
+        raise TypeError(
+            f"Row format unsupported: {row_format} - valid options are {list(PARSERS.keys())}."
+        )
+
+    # lazy loading of dependency
+    if inner_reader is None:
+        from ...adapters.google import GoogleCloudStorageReader
+
+        inner_reader = GoogleCloudStorageReader
+    # instantiate the injected reader class
+    reader_class = inner_reader(dataset=dataset, **kwargs)  # type:ignore
+
+    cursor = kwargs.get("cursor", None)
+    if isinstance(cursor, str):
+        cursor = json.parse(cursor)
+    if not isinstance(cursor, dict):
+        cursor = {}
+
+    select = select.copy()
+
+    # index caching
+    cache_folder = None
+    if kwargs.get("cache_indexes", False):
+        # saving in the environment allows us to reuse the cache across readers
+        # in the same execution
+        cache_folder = os.environ.get("CACHE_FOLDER")
+        if not cache_folder:
+            import tempfile
+
+            cache_folder = (
+                tempfile.TemporaryDirectory(prefix="mabel_cache-").name + os.sep
             )
+            os.environ["CACHE_FOLDER"] = cache_folder
+            os.makedirs(cache_folder, exist_ok=True)
+            # delete the cache when the application closes
+            atexit.register(shutil.rmtree, cache_folder, ignore_errors=True)
 
-        # lazy loading of dependency
-        if inner_reader is None:
-            from ...adapters.google import GoogleCloudStorageReader
+    arg_dict = kwargs.copy()
+    arg_dict["select"] = f"{select}"
+    arg_dict["dataset"] = f"{dataset}"
+    arg_dict["inner_reader"] = f"{inner_reader.__name__}"  # type:ignore
+    arg_dict["row_format"] = f"{row_format}"
+    arg_dict["cache_folder"] = cache_folder
+    get_logger().debug(arg_dict)
 
-            inner_reader = GoogleCloudStorageReader
-        # instantiate the injected reader class
-        reader_class = inner_reader(dataset=dataset, **kwargs)  # type:ignore
+    # number of days to walk backwards to find records
+    freshness_limit = parse_delta(kwargs.get("freshness_limit", ""))
 
-        cursor = kwargs.get("cursor", None)
-        if isinstance(cursor, str):
-            cursor = json.parse(cursor)
-        if not isinstance(cursor, dict):
-            cursor = {}
+    if (
+        freshness_limit and reader_class.start_date != reader_class.end_date
+    ):  # pragma: no cover
+        raise InvalidCombinationError(
+            "freshness_limit can only be used when the start and end dates are the same"
+        )
 
-        select = select.copy()
+    if (
+        row_format != "pass-thru" and kwargs.get("extension") == ".parquet"
+    ):  # pragma: no cover
+        raise InvalidCombinationError(
+            "`parquet` extension much be used with the `pass-thru` row_format"
+        )
 
-        # index caching
-        cache_folder = None
-        if kwargs.get("cache_indexes", False):
-            # saving in the environment allows us to reuse the cache across readers
-            # in the same execution
-            cache_folder = os.environ.get("CACHE_FOLDER")
-            if not cache_folder:
-                import tempfile
+    filters = None
+    indexable_fields = []
+    if filters:
+        filters = Filters(filters)
+        indexable_fields = get_indexable_filter_columns(filters.predicates)
 
-                cache_folder = (
-                    tempfile.TemporaryDirectory(prefix="mabel_cache-").name + os.sep
-                )
-                os.environ["CACHE_FOLDER"] = cache_folder
-                os.makedirs(cache_folder, exist_ok=True)
-                # delete the cache when the application closes
-                atexit.register(shutil.rmtree, cache_folder, ignore_errors=True)
+    """ FEATURES IN DEVELOPMENT """
 
-        arg_dict = kwargs.copy()
-        arg_dict["select"] = f"{select}"
-        arg_dict["dataset"] = f"{dataset}"
-        arg_dict["inner_reader"] = f"{inner_reader.__name__}"  # type:ignore
-        arg_dict["row_format"] = f"{row_format}"
-        arg_dict["cache_folder"] = cache_folder
-        get_logger().debug(arg_dict)
+    # threaded reader
+    thread_count = int(kwargs.get("thread_count", 0))
 
-        # number of days to walk backwards to find records
-        freshness_limit = parse_delta(kwargs.get("freshness_limit", ""))
+    # multiprocessed reader
+    fork_processes = bool(kwargs.get("fork_processes", False))
 
-        if (
-            freshness_limit
-            and reader_class.start_date != reader_class.end_date
-        ):  # pragma: no cover
-            raise InvalidCombinationError(
-                "freshness_limit can only be used when the start and end dates are the same"
-            )
-
-        if (
-            row_format != "pass-thru" and kwargs.get("extension") == ".parquet"
-        ):  # pragma: no cover
-            raise InvalidCombinationError(
-                "`parquet` extension much be used with the `pass-thru` row_format"
-            )
-
-        filters = None
-        indexable_fields = []
-        if filters:
-            filters = Filters(filters)
-            indexable_fields = get_indexable_filter_columns(
-                filters.predicates
-            )
-
-        """ FEATURES IN DEVELOPMENT """
-
-        # threaded reader
-        thread_count = int(kwargs.get("thread_count", 0))
-
-        # multiprocessed reader
-        fork_processes = bool(kwargs.get("fork_processes", False))
-
-        return DictSet(_LowLevelReader(
+    return DictSet(
+        _LowLevelReader(
             indexable_fields,
             cache_folder,
             reader_class,
@@ -250,9 +249,9 @@ def Reader(
             cursor,
             thread_count,
             fork_processes,
-            select
-        ))
-
+            select,
+        )
+    )
 
 
 def _is_system_file(filename):
@@ -263,8 +262,19 @@ def _is_system_file(filename):
 
 
 class _LowLevelReader(object):
-
-    def __init__(self, indexable_fields, cache_folder, reader_class, parser, filters, freshness_limit, cursor, thread_count, fork_processes, select):
+    def __init__(
+        self,
+        indexable_fields,
+        cache_folder,
+        reader_class,
+        parser,
+        filters,
+        freshness_limit,
+        cursor,
+        thread_count,
+        fork_processes,
+        select,
+    ):
         self.indexable_fields = indexable_fields
         self.cache_folder = cache_folder
         self.reader_class = reader_class
@@ -276,7 +286,6 @@ class _LowLevelReader(object):
         self.fork_processes = fork_processes
         self._inner_line_reader = None
         self.select = select
-
 
     def _read_blob(self, blob, blob_list):
         """
@@ -382,9 +391,7 @@ class _LowLevelReader(object):
             yield from threaded_reader(readable_blobs, blob_list, self)
 
         elif self.fork_processes:
-            yield from processed_reader(
-                readable_blobs, self.reader_class, self.parser
-            )
+            yield from processed_reader(readable_blobs, self.reader_class, self.parser)
 
         else:
             offset = self.cursor.get("offset", 0)
