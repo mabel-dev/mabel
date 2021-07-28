@@ -49,8 +49,6 @@ class STORAGE_CLASS(int, Enum):
 MAXIMUM_RECORDS_IN_PARTITION = 65535  # 2^16 -1
 
 
-
-
 class DictSet(object):
 
     def __init__(self, iterator: Iterable, storage_class=STORAGE_CLASS.NO_PERSISTANCE):
