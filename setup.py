@@ -11,7 +11,7 @@ with open("requirements.txt") as f:
     required = f.read().splitlines()
 
 setup(
-    name="mabel",
+    name="mabelbeta",
     version=__version__,
     description="Python Data Libraries",
     long_description=long_description,

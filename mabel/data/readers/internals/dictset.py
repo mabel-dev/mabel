@@ -1,3 +1,25 @@
+"""
+DICT(IONARY) (DATA)SET
+
+A group of functions to assist with handling lists of dictionaries.
+
+(C) 2021 Justin Joyce.
+
+https://github.com/joocer
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+"""
+
 import os
 import time
 import orjson
@@ -15,6 +37,8 @@ from juon.dictset.display import html_table, ascii_table
 from operator import itemgetter
 from enum import Enum
 
+from .disk_iterator import DiskIterator
+
 
 class STORAGE_CLASS(int, Enum):
     NO_PERSISTANCE = 1
@@ -25,34 +49,11 @@ class STORAGE_CLASS(int, Enum):
 MAXIMUM_RECORDS_IN_PARTITION = 65535  # 2^16 -1
 
 
-class _DiskIterator():
-    """
-    This provides the reader for the DISK variation of STORAGE. 
-    """
-    def __init__(self, folder):
-        self.folder = folder
-        self.inner_reader = None
-    def _inner_reader(self):
-        import glob
-        import orjson
-        for file in glob.glob(self.folder + "/**.jsonl"):
-            with open(file, "r") as fh:
-                for line in fh:
-                    yield orjson.loads(line)
-    def __iter__(self):
-        self.inner_reader = self._inner_reader()
-        return self
-    def __next__(self):
-        record = next(self.inner_reader)
-        if record:
-            return record
 
 
 class DictSet(object):
 
-    temporary_folder = None
-
-    def __init__(self, iterator: Iterable, persistance=STORAGE_CLASS.NO_PERSISTANCE):
+    def __init__(self, iterator: Iterable, storage_class=STORAGE_CLASS.NO_PERSISTANCE):
         """
         Create a DictSet.
 
@@ -65,52 +66,57 @@ class DictSet(object):
                 into a Python `list`, DISK saves to disk - disk persistance is slower
                 but can handle much larger data sets.
         """
-        self.persistance = persistance
+        self.storage_class = storage_class
         self._iterator = iterator
+        self._temporary_folder = None
 
         # if we're persisting to memory, load into a list
-        if persistance == STORAGE_CLASS.MEMORY:
+        if storage_class == STORAGE_CLASS.MEMORY:
             self._iterator = list(iterator)
 
         # if we're persisting to disk, save it
-        if persistance == STORAGE_CLASS.DISK:
-            # save the data to a temporary folder
-            file = None
-            self.temporary_folder = TemporaryDirectory("dictset")
-            os.makedirs(self.temporary_folder.name, exist_ok=True)
-            for index, row in enumerate(iterator):
-                if index % MAXIMUM_RECORDS_IN_PARTITION == 0:
-                    if file:
-                        file.close()
-                    file = open(f"{self.temporary_folder.name}/{time.time_ns()}.jsonl", "wb")
-                file.write(orjson.dumps(row) + b'\n')
-            if file:
-                file.close()
-            self._iterator = _DiskIterator(self.temporary_folder.name)
+        if storage_class == STORAGE_CLASS.DISK:
+            self._persist_to_disk()
+
+    def _persist_to_disk(self):
+        # save the data to a temporary folder
+        file = None
+        self._temporary_folder = TemporaryDirectory("dictset")
+        os.makedirs(self._temporary_folder.name, exist_ok=True)
+        for index, row in enumerate(self._iterator):
+            if index % MAXIMUM_RECORDS_IN_PARTITION == 0:
+                if file:
+                    file.close()
+                file = open(f"{self._temporary_folder.name}/{time.time_ns()}.jsonl", "wb")
+            file.write(orjson.dumps(row) + b'\n')
+        if file:
+            file.close()
+        self._iterator = DiskIterator(self._temporary_folder.name)
 
     def __iter__(self):
         return iter(self._iterator)
 
     def __del__(self):
-        if self.temporary_folder:
-            self.temporary_folder.cleanup()
+        try:
+            if self._temporary_folder:
+                self._temporary_folder.cleanup()
+        except:
+            pass
 
-    def __repr__(self):
-        pass
+    def persist(self, storage_class=STORAGE_CLASS.MEMORY):
+        if storage_class == STORAGE_CLASS.NO_PERSISTANCE:
+            raise InvalidArgument("Persist cannot persist to 'NO_PERISISTANCE'")
+        if self.storage_class == storage_class:
+            return None
+        if storage_class == STORAGE_CLASS.MEMORY:
+            self._iterator == list(self._iterator)
+            if self._temporary_folder:
+                self._temporary_folder.cleanup()
+                self._temporary_folder = None
+        if storage_class == STORAGE_CLASS.DISK:
+            self._persist_to_disk()
+        self.storage_class = storage_class
 
-    def persist(self, MEMORY_OR_DISK):
-        pass
-
-    def load(self, LOCATION):
-        pass
-
-    def location(self):
-        # where to seek back to
-        pass
-
-    def seek(self, position):
-        # jump to a location
-        pass
 
     def filter(self):
         # filter the records
@@ -160,7 +166,8 @@ class DictSet(object):
 
     def collect(self, key: str = None) -> Union[list, map]:
         """
-        Convert a _DictSet_ to a list, optionally just extract a specific column.
+        Convert a _DictSet_ to a list, optionally, but probably usually, just extract
+        a specific column.
         """
         if not key:
             return list(self._iterator)
@@ -459,3 +466,4 @@ if __name__ == "__main__":
     print([a for a in d.collect("description")])
     print(d.sum("number"))
     print(d.min_max("number"))
+    print(d.count())

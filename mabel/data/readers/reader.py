@@ -5,12 +5,15 @@ import shutil
 import atexit
 import os.path
 from typing import Callable, Optional, Tuple, List
+
+from .internals.dictset import DictSet
+
 from .internals.threaded_reader import threaded_reader
 from .internals.alpha_processed_reader import processed_reader
 from .internals.parsers import pass_thru_parser, block_parser, json_parser, xml_parser
 from .internals.filters import Filters, get_indexable_filter_columns
-from juon.dictset import select_record_fields, select_from
 
+from juon.dictset import select_record_fields, select_from
 from juon import json
 
 
@@ -21,6 +24,8 @@ from ...utils.parameter_validator import validate
 
 from ...utils.paths import get_parts
 from ...utils.dates import parse_delta
+
+from ...logging import get_logger
 
 
 # available parsers
@@ -48,7 +53,6 @@ RULES = [
     {"name": "raw_path", "required": False, "warning": None, "incompatible_with": ["freshness_limit"]},
     {"name": "row_format", "required": False, "warning": None, "incompatible_with": []},
     {"name": "select", "required": False, "warning": None, "incompatible_with": []},
-    {"name": "self", "required": True, "warning": None, "incompatible_with": []},
     {"name": "start_date", "required": False, "warning": None, "incompatible_with": []},
     {"name": "thread_count", "required": False, "warning": "Threaded Reader is Beta - use in production systems is not recommended", "incompatible_with": []},
 ]
@@ -63,7 +67,7 @@ def Reader(
         inner_reader=None,  # type:ignore
         row_format: str = "json",
         **kwargs,
-    ) -> DataSet:
+    ) -> DictSet:
         """
         Reads records from a data store, opinionated toward Google Cloud Storage but a
         filesystem reader is available to assist with local development.
@@ -147,8 +151,6 @@ def Reader(
             TypeError
                 Reader _select_ parameter must be a list
             TypeError
-                Reader _where_ parameter must be Callable or None
-            TypeError
                 Data format unsupported
             InvalidCombinationError
                 Forking and Threading can not be used at the same time
@@ -157,8 +159,8 @@ def Reader(
             raise TypeError("Reader 'select' parameter must be a list")
 
         # load the line converter
-        self._parse = PARSERS.get(row_format.lower())
-        if self._parse is None:  # pragma: no cover
+        parser = PARSERS.get(row_format.lower())
+        if parser is None:  # pragma: no cover
             raise TypeError(
                 f"Row format unsupported: {row_format} - valid options are {list(PARSERS.keys())}."
             )
@@ -169,50 +171,47 @@ def Reader(
 
             inner_reader = GoogleCloudStorageReader
         # instantiate the injected reader class
-        self.reader_class = inner_reader(dataset=dataset, **kwargs)  # type:ignore
+        reader_class = inner_reader(dataset=dataset, **kwargs)  # type:ignore
 
-        self.cursor = kwargs.get("cursor", None)
-        if isinstance(self.cursor, str):
-            self.cursor = json.parse(self.cursor)
-        if not isinstance(self.cursor, dict):
-            self.cursor = {}
+        cursor = kwargs.get("cursor", None)
+        if isinstance(cursor, str):
+            cursor = json.parse(cursor)
+        if not isinstance(cursor, dict):
+            cursor = {}
 
-        self.select = select.copy()
-
-        # initialize the reader
-        self._inner_line_reader = None
+        select = select.copy()
 
         # index caching
-        self.cache_folder = None
+        cache_folder = None
         if kwargs.get("cache_indexes", False):
             # saving in the environment allows us to reuse the cache across readers
             # in the same execution
-            self.cache_folder = os.environ.get("CACHE_FOLDER")
-            if not self.cache_folder:
+            cache_folder = os.environ.get("CACHE_FOLDER")
+            if not cache_folder:
                 import tempfile
 
-                self.cache_folder = (
+                cache_folder = (
                     tempfile.TemporaryDirectory(prefix="mabel_cache-").name + os.sep
                 )
-                os.environ["CACHE_FOLDER"] = self.cache_folder
-                os.makedirs(self.cache_folder, exist_ok=True)
+                os.environ["CACHE_FOLDER"] = cache_folder
+                os.makedirs(cache_folder, exist_ok=True)
                 # delete the cache when the application closes
-                atexit.register(shutil.rmtree, self.cache_folder, ignore_errors=True)
+                atexit.register(shutil.rmtree, cache_folder, ignore_errors=True)
 
         arg_dict = kwargs.copy()
         arg_dict["select"] = f"{select}"
         arg_dict["dataset"] = f"{dataset}"
         arg_dict["inner_reader"] = f"{inner_reader.__name__}"  # type:ignore
         arg_dict["row_format"] = f"{row_format}"
-        arg_dict["cache_folder"] = self.cache_folder
+        arg_dict["cache_folder"] = cache_folder
         get_logger().debug(arg_dict)
 
         # number of days to walk backwards to find records
-        self.freshness_limit = parse_delta(kwargs.get("freshness_limit", ""))
+        freshness_limit = parse_delta(kwargs.get("freshness_limit", ""))
 
         if (
-            self.freshness_limit
-            and self.reader_class.start_date != self.reader_class.end_date
+            freshness_limit
+            and reader_class.start_date != reader_class.end_date
         ):  # pragma: no cover
             raise InvalidCombinationError(
                 "freshness_limit can only be used when the start and end dates are the same"
@@ -225,39 +224,59 @@ def Reader(
                 "`parquet` extension much be used with the `pass-thru` row_format"
             )
 
-        self.filters = None
-        self.indexable_fields = []
+        filters = None
+        indexable_fields = []
         if filters:
-            self.filters = Filters(filters)
-            self.indexable_fields = get_indexable_filter_columns(
-                self.filters.predicates
+            filters = Filters(filters)
+            indexable_fields = get_indexable_filter_columns(
+                filters.predicates
             )
 
         """ FEATURES IN DEVELOPMENT """
 
         # threaded reader
-        self.thread_count = int(kwargs.get("thread_count", 0))
+        thread_count = int(kwargs.get("thread_count", 0))
 
         # multiprocessed reader
-        self.fork_processes = bool(kwargs.get("fork_processes", False))
+        fork_processes = bool(kwargs.get("fork_processes", False))
 
-        # time travel
-        self.as_at = kwargs.get("as_at")
+        return DictSet(_LowLevelReader(
+            indexable_fields,
+            cache_folder,
+            reader_class,
+            parser,
+            filters,
+            freshness_limit,
+            cursor,
+            thread_count,
+            fork_processes,
+            select
+        ))
 
-    """
-    Iterable
 
-    Use this class as an iterable:
 
-        for line in Reader("file"):
-            print(line)
-    """
+def _is_system_file(filename):
+    if "_SYS." in filename:
+        base = os.path.basename(filename)
+        return base.startswith("_SYS.")
+    return False
 
-    def _is_system_file(self, filename):
-        if "_SYS." in filename:
-            base = os.path.basename(filename)
-            return base.startswith("_SYS.")
-        return False
+
+class _LowLevelReader(object):
+
+    def __init__(self, indexable_fields, cache_folder, reader_class, parser, filters, freshness_limit, cursor, thread_count, fork_processes, select):
+        self.indexable_fields = indexable_fields
+        self.cache_folder = cache_folder
+        self.reader_class = reader_class
+        self.parser = parser
+        self.filters = filters
+        self.freshness_limit = freshness_limit
+        self.cursor = cursor
+        self.thread_count = thread_count
+        self.fork_processes = fork_processes
+        self._inner_line_reader = None
+        self.select = select
+
 
     def _read_blob(self, blob, blob_list):
         """
@@ -307,7 +326,7 @@ def Reader(
         # read the rows from the file
         ds = self.reader_class.get_records(blob, rows)
         # reformat the rows - ignoring blanks
-        ds = self._parse(ds)
+        ds = self.parser(ds)
         # filter the rows, either with the filters or `dictset.select_from`
         if self.filters:
             yield from self.filters.filter_dictset(ds)
@@ -336,7 +355,7 @@ def Reader(
                     f"Stepped back {self.reader_class.days_stepped_back} days to {self.reader_class.start_date} to find last data, my limit is {self.freshness_limit}."
                 )
 
-        readable_blobs = [b for b in blob_list if not self._is_system_file(b)]
+        readable_blobs = [b for b in blob_list if not _is_system_file(b)]
 
         # skip to the blob in the cursor
         if self.cursor.get("blob"):
@@ -364,7 +383,7 @@ def Reader(
 
         elif self.fork_processes:
             yield from processed_reader(
-                readable_blobs, self.reader_class, self._parse
+                readable_blobs, self.reader_class, self.parser
             )
 
         else:
@@ -396,32 +415,3 @@ def Reader(
         if self.select != ["*"]:
             record = select_record_fields(record, self.select)
         return record
-
-    """
-    Context Manager
-
-    Use this class using the 'with' statement:
-
-        with Reader("file") as r:
-            line = r.read_line()
-            while line:
-                print(line)
-    """
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        pass  # exist needs to exist to be a context manager
-
-    def read_line(self):
-        """
-        Read the next line from the _Reader_.
-
-        Returns:
-            dictionary (or string)
-        """
-        try:
-            return self.__next__()
-        except StopIteration:
-            return None
