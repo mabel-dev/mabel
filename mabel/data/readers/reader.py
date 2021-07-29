@@ -353,12 +353,12 @@ class Reader:
                 days=self.reader_class.days_stepped_back
             ):
                 get_logger().alert(
-                    f"No data found in last {self.freshness_limit} - aborting"
+                    f"No data found in last {self.freshness_limit} - aborting ({self.reader_class.dataset})"
                 )
                 sys.exit(-1)
             if self.reader_class.days_stepped_back > 0:
                 get_logger().warning(
-                    f"Stepped back {self.reader_class.days_stepped_back} days to {self.reader_class.start_date} to find last data, my limit is {self.freshness_limit}."
+                    f"Stepped back {self.reader_class.days_stepped_back} days to {self.reader_class.start_date} to find last data, my limit is {self.freshness_limit} ({self.reader_class.dataset})."
                 )
 
         readable_blobs = [b for b in blob_list if not self._is_system_file(b)]
