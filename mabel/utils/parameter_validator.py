@@ -68,7 +68,9 @@ class validate:
             ]:
                 suggestion = []
                 for valid in valid_parameters:
-                    if get_levenshtein_distance(not_on_list, valid) <= 2:
+                    if get_levenshtein_distance(not_on_list, valid) <= (
+                        len(valid) // 2
+                    ):
                         suggestion.append(valid)
                 if len(suggestion):
                     get_logger().error(

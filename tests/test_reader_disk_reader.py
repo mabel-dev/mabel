@@ -58,22 +58,6 @@ def test_only_read_selected_rows():
     _inner(os.getcwd() + "/tests/data/tweets/")
 
 
-def test_step_back():
-    def _inner(p):
-        # step back through time
-        r = Reader(
-            inner_reader=DiskReader,
-            dataset=p,
-            start_date=datetime.date(2021, 1, 1),
-            end_date=datetime.date(2021, 1, 1),
-            step_back_days=30,
-        )
-        assert len(list(r)) == 50
-
-    _inner("tests/data/dated/{date}")
-    _inner(os.getcwd() + "/tests/data/dated/{date}")
-
-
 def test_freshness_limits():
     def _inner(p):
         # step back through time
@@ -110,7 +94,6 @@ def test_step_past():
 if __name__ == "__main__":  # pragma: no cover
     test_can_find_files()
     test_can_read_files()
-    test_step_back()
     test_step_past()
     test_only_read_selected_rows()
     test_freshness_limits()

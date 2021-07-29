@@ -45,19 +45,6 @@ def test_reader_select_not_list():
         )
 
 
-def test_reader_where_not_callable():
-    with pytest.raises((TypeError)):
-        reader = Reader(
-            project="",
-            select=["a", "b"],
-            dataset="",
-            where=True,
-            start_date=datetime.datetime.now(),
-            end_date=datetime.datetime.now(),
-            row_format="json",
-        )
-
-
 def test_format_not_known():
     with pytest.raises((TypeError)):
         reader = Reader(
@@ -73,5 +60,4 @@ def test_format_not_known():
 if __name__ == "__main__":  # pragma: no cover
     test_reader_all_good()
     test_reader_select_not_list()
-    test_reader_where_not_callable()
     test_format_not_known()

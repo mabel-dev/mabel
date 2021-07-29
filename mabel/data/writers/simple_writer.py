@@ -35,11 +35,6 @@ class SimpleWriter:
         """
 
         dataset = kwargs.get("dataset", "")
-        if kwargs.get("to_path"):  # pragma: no cover
-            get_logger().warning(
-                "DEPRECATION: Writer 'to_path' parameter has been replaced with 'dataset' "
-            )
-            dataset = kwargs.pop("to_path")
 
         if "BACKOUT" in dataset:
             InvalidDataSetError(

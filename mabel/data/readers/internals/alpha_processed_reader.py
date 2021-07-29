@@ -15,9 +15,7 @@ MAXIMUM_SECONDS_PROCESSES_CAN_RUN = 600  # 5 minutes
 TERMINATE_SIGNAL = -1
 
 
-def _inner_process(
-    flag, reader, source_queue, reply_queue, parser, where
-):  # pragma: no cover
+def _inner_process(flag, reader, source_queue, reply_queue, parser):  # pragma: no cover
 
     try:
         source = source_queue.get(timeout=0.1)
@@ -27,8 +25,6 @@ def _inner_process(
     while source is not None and flag.value != TERMINATE_SIGNAL:
         data = reader.get_records(source)
         data = parser(data)
-        if where is not None:
-            data = filter(where, data)
         for chunk in dictset.page_dictset(data, 256):
             # wait - to save memory we have limited number of slots
             reply_queue.put(chunk, timeout=60)
@@ -41,7 +37,7 @@ def _inner_process(
     get_logger().debug("Terminating background process")
 
 
-def processed_reader(items_to_read, reader, parser, where):  # pragma: no cover
+def processed_reader(items_to_read, reader, parser):  # pragma: no cover
 
     if os.name == "nt":  # pragma: no cover
         raise NotImplementedError(
@@ -62,7 +58,7 @@ def processed_reader(items_to_read, reader, parser, where):  # pragma: no cover
         flag = multiprocessing.Value("i", 1 - TERMINATE_SIGNAL)
         process = multiprocessing.Process(
             target=_inner_process,
-            args=(flag, reader, send_queue, reply_queue, parser, where),
+            args=(flag, reader, send_queue, reply_queue, parser),
         )
         process.daemon = True
         process.start()

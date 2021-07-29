@@ -81,47 +81,40 @@ pip install --upgrade git+https://github.com/mabel-dev/mabel
 -  **[dateutil](https://dateutil.readthedocs.io/en/stable/)** is used to convert dates received as strings
 -  **[mmh3](https://github.com/hajimes/mmh3)** is used for non-cryptographic hashing
 -  **[pydantic](https://pydantic-docs.helpmanual.io/)** is used to define internal data models  
--  **[UltraJSON](https://github.com/ultrajson/ultrajson)** (AKA `ujson`) is used where `orjson` is not available. (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />1)
 -  **[zstandard](https://github.com/indygreg/python-zstandard)** is used for real-time compression
-
+-  **[juon](https://github.com/joocer/juon)** is used for low-level data handling 
 
 There are a number of optional dependencies which are usually only required for
 specific features and functionality. These are listed in the
 [requirements.txt](https://github.com/mabel-dev/mabel/blob/main/tests/requirements.txt)
-file in the _tests_ folder which is used for testing. The exception is `orjson` which
-is the preferred JSON library but not available on all platforms.
+file in the _tests_ folder which is used for testing.
 
 ## Integrations
 
 mabel comes with adapters for the following services:
 
-| | Service | Support
-|-- |-- |-- 
-| <img align="centre" alt="GCP Storage" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/gcs-logo.png" /> | Google Cloud Storage |  Read/Write
-| <img align="centre" alt="MinIo" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/minio-logo.png" /> | MinIO | Read/Write
-| <img align="centre" alt="AWS S3" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/s3-logo.png" /> | S3 | Read/Write
-
-MongoDB and MQTT Readers are included in the base library but are not supported.
+|   | Service |
+|-- |-- |
+| <img align="centre" alt="GCP Storage" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/gcs-logo.png" /> | Google Cloud Storage |
+| <img align="centre" alt="MinIo" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/minio-logo.png" /> | MinIO |
+| <img align="centre" alt="AWS S3" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/s3-logo.png" /> | S3 | 
+| <img align="centre" alt="Azure" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/azure.svg" /> | Azure |
 
 ## Deployment and Execution
 
 mabel supports running on a range of platforms:
 
-| | Platform |
+|   | Platform |
 |-- |-- |
 | <img align="centre" alt="Docker" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/docker-logo.png" /> | Docker
 | <img align="centre" alt="Kubernetes" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/kubernetes-logo.svg" /> | Kubernetes
-| <img align="centre" alt="Raspberry Pi" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/raspberry-pi-logo.svg" /> | Raspberry Pi (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg">1)
-| <img align="centre" alt="Windows" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/windows-logo.png" /> | Windows (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />2)
-| <img align="centre" alt="Linux" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/linux-logo.jpg" /> | Linux (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />3)
-
-MacOS also supported.
+| <img align="centre" alt="Windows" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/windows-logo.png" /> | Windows (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />1)
+| <img align="centre" alt="Linux" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/linux-logo.jpg" /> | Linux (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />2)
 
 Adapters for other data services can be written. 
 
-<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />1 - Raspbian fully functional with `ujson`.  
-<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />2 - Multi-Processing not available on Windows. Alternate indexing libraries may be used on Windows.  
-<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />3 - Tested on Debian and Ubuntu.
+<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />1 - Multi-Processing not available on Windows.
+<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />2 - Tested on Debian (WSL) and Ubuntu.
 
 ## How Can I Contribute?
 

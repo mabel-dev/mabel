@@ -170,7 +170,9 @@ class Schema:
         # if we have a schema as a string, load it into a dictionary
         if isinstance(definition, str):
             if os.path.exists(definition):  # type:ignore
-                definition = json.parse(open(definition, mode="r").read())  # type:ignore
+                definition = json.parse(
+                    open(definition, mode="r").read()
+                )  # type:ignore
             else:
                 definition = json.parse(definition)  # type:ignore
 

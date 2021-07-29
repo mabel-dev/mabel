@@ -1,10 +1,10 @@
 import os
 import datetime
 from typing import Any
+from juon import json
 from .simple_writer import SimpleWriter
 from .internals.blob_writer import BlobWriter
 from ...utils import paths
-from juon import json
 from ...logging import get_logger
 
 
@@ -77,13 +77,17 @@ class BatchWriter(SimpleWriter):
         # create the writer
         self.blob_writer = BlobWriter(**kwargs)
 
-    def finalize(self, has_failure:bool = False):
+    def finalize(self, has_failure: bool = False):
         final = super().finalize()
 
         if has_failure:
             get_logger().debug(
                 f"Error found in the stack, not marking frame as complete."
             )
+            return -1
+
+        if self.records == 0:
+            get_logger().debug(f"No records written, not marking frame as complete.")
             return -1
 
         completion_path = self.blob_writer.inner_writer.filename

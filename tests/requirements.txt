@@ -8,7 +8,6 @@ mypy
 # used for optional functionality
 google_cloud_storage>=1.35
 pandas
-orjson
 matplotlib
 python-dotenv
 networkx
@@ -18,9 +17,11 @@ pyarrow
 rsa>=4.7 # not directly required, pinned by Snyk to avoid a vulnerability
 minio
 data_expectations
+azure-storage-blob
 
 
 # used by mypy
 types-orjson
 types-ujson
 types-python-dateutil
+types-protobuf
