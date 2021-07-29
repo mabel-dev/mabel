@@ -15,14 +15,18 @@
 # limitations under the License.
 #
 
+
 class Partitioner(object):
     def __init__(self, numPartitions, partitionFunc):
         self.numPartitions = numPartitions
         self.partitionFunc = partitionFunc
 
     def __eq__(self, other):
-        return (isinstance(other, Partitioner) and self.numPartitions == other.numPartitions
-                and self.partitionFunc == other.partitionFunc)
+        return (
+            isinstance(other, Partitioner)
+            and self.numPartitions == other.numPartitions
+            and self.partitionFunc == other.partitionFunc
+        )
 
     def __call__(self, k):
         return self.partitionFunc(k) % self.numPartitions

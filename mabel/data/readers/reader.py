@@ -27,6 +27,8 @@ from ...utils.dates import parse_delta
 
 from ...logging import get_logger
 
+from ..readers import STORAGE_CLASS
+
 
 # available parsers
 PARSERS = {
@@ -67,6 +69,7 @@ def Reader(
     filters: Optional[List[Tuple[str, str, object]]] = None,
     inner_reader=None,  # type:ignore
     row_format: str = "json",
+    persistence: STORAGE_CLASS = STORAGE_CLASS.NO_PERSISTANCE,
     **kwargs,
 ) -> DictSet:
     """
@@ -135,9 +138,10 @@ def Reader(
         fork_processes: boolean (alpha):
             **ALPHA**
             Create parallel processes to read data files
-        as_at: datetime (alpha)
-            **ALPHA**
-            Time travel
+        persistence: STORAGE_CLASS (optional)
+            How to cache the results, the default is NO_PERSISTANCE which will almost
+            always return a generator. MEMORY should only be used where the dataset
+            isn't huge and DISK is many times slower than MEMORY.
         cursor: dictionary (or string)
             Resume read from a given point (assumes other parameters are the same).
             If a JSON string is provided, it will converted to a dictionary.
@@ -224,7 +228,6 @@ def Reader(
             "`parquet` extension much be used with the `pass-thru` row_format"
         )
 
-    filters = None
     indexable_fields = []
     if filters:
         filters = Filters(filters)
@@ -250,7 +253,7 @@ def Reader(
             thread_count,
             fork_processes,
             select,
-        )
+        ), persistence
     )
 
 
