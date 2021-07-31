@@ -202,6 +202,8 @@ class Query(object):
         return self.evaluateRecursive(self.root, variable_dict)
 
     def evaluateRecursive(self, treeNode, variable_dict):
+        #print('>>>', treeNode.tokenType, treeNode.value)
+
         if treeNode.tokenType in (TokenType.NUM, TokenType.STR):
             return treeNode.value
         if treeNode.tokenType == TokenType.VAR:
@@ -222,6 +224,7 @@ class Query(object):
         return self.indexable_predicates_recursive(self.root)
 
     def indexable_predicates_recursive(self, treeNode):
+        print(treeNode.tokenType, treeNode.value)
         if treeNode.tokenType in (TokenType.NUM, TokenType.STR):
             return f"value:{treeNode.value}"
         if treeNode.tokenType == TokenType.VAR:
@@ -231,4 +234,4 @@ class Query(object):
         right = self.indexable_predicates_recursive(treeNode.right)
 
         if treeNode.tokenType.get("symbol") == "==":
-            print (left, "==", right) 
+            return (left, "==", right) 
