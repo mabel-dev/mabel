@@ -41,6 +41,7 @@ from ....errors import MissingDependencyError, InvalidArgument
 from operator import itemgetter
 
 from .disk_iterator import DiskIterator
+from .query import Query
 from .filters import Filters
 
 
@@ -327,7 +328,7 @@ class DictSet(object):
 
         return DictSet(inner_filter(predicate, self._iterator), self.storage_class)
 
-    def filters(self, dnf_filters):
+    def dnf_filter(self, dnf_filters):
         """
         Filter a _DictSet_ returning only the items that match the predicates.
 
@@ -340,6 +341,23 @@ class DictSet(object):
             Filters.filter_dictset(filter_set, self._iterator), self.storage_class
         )
 
+    def query(self, expression):
+        """
+        Query a _DictSet_ returning only the items that match the expression.
+
+        Parameters:
+            expression: string
+                Query expression (e.g. _name == 'mabel'_)
+        """
+        q = Query(expression)
+
+        def _inner(dictset):
+            for record in dictset:
+                if q.evaluate(record):
+                    yield record
+
+        return DictSet(_inner(self._iterator))
+
     def __getitem__(self, columns):
         """
         Selects columns from a _DictSet_. If the column doesn't exist it is populated
@@ -347,9 +365,11 @@ class DictSet(object):
         """
         if not isinstance(columns, (list, set, tuple)):
             columns = set([columns])
+
         def inner_select(it):
             for record in it:
                 yield {k: record.get(k, None) for k in columns}
+
         return DictSet(inner_select(self._iterator), self.storage_class)
 
     def __hash__(self, seed: int = 703115) -> int:

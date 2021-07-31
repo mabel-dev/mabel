@@ -41,7 +41,6 @@ PARSERS = {
 
 # fmt:off
 RULES = [
-    {"name": "as_at", "required": False,"warning": "Time Travel (as_at) is Alpha - it's interface may change and some features may not be supported","incompatible_with": ["start_date", "end_date"]},
     {"name": "cache_indexes", "required":False, "warning":None, "incompatible_with": []},
     {"name": "cursor", "required": False, "warning": None, "incompatible_with": ["thread_count", "fork_processes"]},
     {"name": "dataset", "required": True, "warning": None, "incompatible_with": []},
@@ -253,7 +252,8 @@ def Reader(
             thread_count,
             fork_processes,
             select,
-        ), persistence
+        ),
+        persistence,
     )
 
 

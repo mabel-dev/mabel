@@ -1,31 +1,11 @@
 """
 This is a filtering mechanism to be applied when reading data.
 """
-import re
 import operator
-from functools import lru_cache
 from typing import Optional, Iterable, List, Tuple, Union
 from ....errors import InvalidSyntaxError
 from ....logging import get_logger
-
-
-# https://codereview.stackexchange.com/a/248421
-_special_regex_chars = {ch: "\\" + ch for ch in ".^$*+?{}[]|()\\"}
-
-
-@lru_cache(4)
-def _sql_like_fragment_to_regex(fragment):
-    """
-    Allows us to accepts LIKE statements to search data
-    """
-    # https://codereview.stackexchange.com/a/36864/229677
-    safe_fragment = "".join([_special_regex_chars.get(ch, ch) for ch in fragment])
-    return re.compile("^" + safe_fragment.replace("%", ".*?").replace("_", ".") + "$")
-
-
-# set of operators we can interpret not in the `operator` module
-def _like(x, y):
-    return _sql_like_fragment_to_regex(y.lower()).match(str(x).lower())
+from ....utils.text import like
 
 
 def _in(x, y):
@@ -58,7 +38,7 @@ OPERATORS = {
     ">": operator.gt,
     "<=": operator.le,
     ">=": operator.ge,
-    "like": _like,
+    "like": like,
     "in": _in,
     "!in": _nin,
     "not in": _nin,

@@ -1,12 +1,10 @@
-
-
 from mabel.data.readers.internals.dictset import DictSet
 
 
 BAR_CHARS = [r" ", r"▁", r"▂", r"▃", r"▄", r"▅", r"▆", r"▇", r"█"]
 
-class Histogram():
 
+class Histogram:
     def __init__(self, values, *, key: str, number_of_bins: int = 10):
 
         if isinstance(values, DictSet):
@@ -19,7 +17,7 @@ class Histogram():
 
         for v in values:
             self.bins[int((v - mn) / interval)] += 1
-        
+
     def __repr__(self):
         """
         Draws a pre-binned set off histogram data
@@ -37,4 +35,4 @@ class Histogram():
                 height = int(value / bar_height)
                 histogram += BAR_CHARS[height]
 
-        return F">{histogram}<"
+        return f">{histogram}<"
