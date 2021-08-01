@@ -1,5 +1,5 @@
 
-from ....utils.text import like, tokenize
+from ....utils.text import like
 import operator
 
 TOKENS = {
