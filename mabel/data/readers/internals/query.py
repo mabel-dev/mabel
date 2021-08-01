@@ -1,46 +1,36 @@
-from enum import Enum
-from ....utils.text import like
-from ....errors import BaseException
 
-
-class UnableToParseExpression(BaseException):
-    pass
-
-class TokenType(str, Enum):
-    NUM = "$NUM$"
-    STR = "$STR$"
-    VAR = "$VAR$"
-    GT = ">"
-    GTE = ">="
-    LT = "<"
-    LTE = "<="
-    EQ = "=="
-    NEQ = "!="
-    LP = "("
-    RP = ")"
-    AND = "AND"
-    OR = "OR"
-    LIKE = "LIKE"
-
-
+from ....utils.text import like, tokenize
 import operator
 
-# fmt:off
-Operators = {
-    TokenType.GT: { "func": operator.gt, "symbol": TokenType.GT },
-    TokenType.GTE: { "func": operator.ge, "symbol": TokenType.GTE },
-    TokenType.LT: { "func": operator.lt, "symbol": TokenType.LT },
-    TokenType.LTE: { "func": operator.le, "symbol": TokenType.LTE },
-    TokenType.EQ: { "func": operator.eq, "symbol": TokenType.EQ },
-    TokenType.NEQ: { "func": operator.ne, "symbol": TokenType.NEQ },
-    TokenType.LIKE: { "func": like, "symbol": TokenType.LIKE },
-    TokenType.AND: { "func": operator.and_, "symbol": TokenType.AND },
-    TokenType.OR: { "func": operator.or_, "symbol": TokenType.OR }
+TOKENS = {
+    "NUM" : "$Number$",
+    "STR" : "$Literal$",
+    "VAR" : "$Variable$",
+    "BOOL": "$Boolean$",
+    ">" : ">",
+    ">=" : ">=",
+    "<" : "<",
+    "<=" : "<=",
+    "==" : "==",
+    "!=" : "!=",
+    "LP" : "(",
+    "RP" : ")",
+    "AND" : "AND",
+    "OR" : "OR",
+    "LIKE" : "LIKE"
 }
-# fmt:on
 
+TOKEN_OPERATORS = {
+    ">": operator.gt,
+    ">=": operator.ge,
+    "<": operator.lt,
+    "<=": operator.le,
+    "==": operator.eq,
+    "!=": operator.ne,
+    "LIKE": like
+}
 
-class TreeNode(object):
+class TreeNode:
     tokenType = None
     value = None
     left = None
@@ -50,7 +40,7 @@ class TreeNode(object):
         self.tokenType = tokenType
 
 
-class Tokenizer(object):
+class Tokenizer:
     expression = None
     tokens = None
     tokenTypes = None
@@ -74,34 +64,36 @@ class Tokenizer(object):
 
     def nextTokenTypeIsOperator(self):
         t = self.tokenTypes[self.i]
-        return isinstance(t, dict)
+        return t in TOKEN_OPERATORS
 
     def tokenize(self):
         import re
 
-        reg = re.compile(r"(\bAND\b|\bOR\b|\bIN\b|\bLIKE\b|!=|==|<=|>=|<|>|\(|\))")
+        reg = re.compile(r"(\bAND\b|\bOR\b|!=|==|<=|>=|<|>|\(|\)|LIKE)")
         self.tokens = reg.split(self.expression)
         self.tokens = [t.strip() for t in self.tokens if t.strip() != ""]
 
         self.tokenTypes = []
         for t in self.tokens:
-            if t in Operators:
-                self.tokenTypes.append(Operators[t])
+            if t in TOKENS:
+                self.tokenTypes.append(t)
             else:
-                # number of string or variable
-                if t[0] == t[-1] == '"' or t[0] == t[-1] == "'":
-                    self.tokenTypes.append(TokenType.STR)
+                if t in ('True', 'False'):
+                    self.tokenTypes.append(TOKENS["BOOL"])
+                elif t[0] == t[-1] == '"' or t[0] == t[-1] == "'":
+                    self.tokenTypes.append(TOKENS["STR"])
                 else:
                     try:
                         number = float(t)
-                        self.tokenTypes.append(TokenType.NUM)
+                        self.tokenTypes.append(TOKENS["NUM"])
                     except:
                         if re.search("^[a-zA-Z_]+$", t):
-                            self.tokenTypes.append(TokenType.VAR)
+                            self.tokenTypes.append(TOKENS["VAR"])
                         else:
                             self.tokenTypes.append(None)
 
-class Query(object):
+
+class Query:
     tokenizer = None
     root = None
 
@@ -116,11 +108,11 @@ class Query(object):
     def parseExpression(self):
         andTerm1 = self.parseAndTerm()
         while (
-            self.tokenizer.hasNext() and self.tokenizer.nextTokenType() == TokenType.OR
+                self.tokenizer.hasNext() and self.tokenizer.nextTokenType() == TOKENS["OR"]
         ):
             self.tokenizer.next()
             andTermX = self.parseAndTerm()
-            andTerm = TreeNode(TokenType.OR)
+            andTerm = TreeNode(TOKENS["OR"])
             andTerm.left = andTerm1
             andTerm.right = andTermX
             andTerm1 = andTerm
@@ -129,30 +121,28 @@ class Query(object):
     def parseAndTerm(self):
         condition1 = self.parseCondition()
         while (
-            self.tokenizer.hasNext() and self.tokenizer.nextTokenType() == TokenType.AND
+                self.tokenizer.hasNext() and self.tokenizer.nextTokenType() == TOKENS["AND"]
         ):
             self.tokenizer.next()
             conditionX = self.parseCondition()
-            condition = TreeNode(TokenType.AND)
+            condition = TreeNode(TOKENS["AND"])
             condition.left = condition1
             condition.right = conditionX
             condition1 = condition
         return condition1
 
     def parseCondition(self):
-        if self.tokenizer.hasNext() and self.tokenizer.nextTokenType() == TokenType.LP:
+        if self.tokenizer.hasNext() and self.tokenizer.nextTokenType() == TOKENS["LP"]:
             self.tokenizer.next()
             expression = self.parseExpression()
             if (
-                self.tokenizer.hasNext()
-                and self.tokenizer.nextTokenType() == TokenType.RP
+                    self.tokenizer.hasNext()
+                    and self.tokenizer.nextTokenType() == TOKENS["RP"]
             ):
                 self.tokenizer.next()
                 return expression
             else:
-                raise UnableToParseExpression(
-                    "Closing ) expected, but got " + self.tokenizer.next()
-                )
+                raise Exception("Closing ) expected, but got " + self.tokenizer.next())
 
         terminal1 = self.parseTerminal()
         if self.tokenizer.hasNext():
@@ -164,74 +154,83 @@ class Query(object):
                 condition.right = terminal2
                 return condition
             else:
-                raise UnableToParseExpression(
-                    "Operator expected, but got " + self.tokenizer.next()
-                )
+                raise Exception("Operator expected, but got " + self.tokenizer.next())
         else:
-            raise UnableToParseExpression("Operator expected, but got nothing")
+            raise Exception("Operator expected, but got nothing")
 
     def parseTerminal(self):
         if self.tokenizer.hasNext():
             tokenType = self.tokenizer.nextTokenType()
-            if tokenType == TokenType.NUM:
+            if tokenType == TOKENS["NUM"]:
                 n = TreeNode(tokenType)
                 n.value = float(self.tokenizer.next())
                 return n
-            elif tokenType == TokenType.VAR:
+            elif tokenType == TOKENS["VAR"]:
                 n = TreeNode(tokenType)
                 n.value = self.tokenizer.next()
                 return n
-            elif tokenType == TokenType.STR:
+            elif tokenType == TOKENS["STR"]:
                 n = TreeNode(tokenType)
                 n.value = self.tokenizer.next()[1:-1]
                 return n
+            elif tokenType == TOKENS["BOOL"]:
+                n = TreeNode(tokenType)
+                n.value = self.tokenizer.next() == 'True'
+                return n
             else:
-                # NUM, STR, or VAR
-                raise UnableToParseExpression(
-                    "Number, Literal, or Field expected, but got "
-                    + self.tokenizer.next()
+                raise Exception(
+                    "NUM, STR, or VAR expected, but got " + self.tokenizer.next()
                 )
 
         else:
-            # NUM, STR, or VAR
-            raise UnableToParseExpression(
-                "Number, Literal, or Field  expected, but got " + self.tokenizer.next()
+            raise Exception(
+                "NUM, STR, or VAR expected, but got " + self.tokenizer.next()
             )
 
     def evaluate(self, variable_dict):
         return self.evaluateRecursive(self.root, variable_dict)
 
     def evaluateRecursive(self, treeNode, variable_dict):
-        #print('>>>', treeNode.tokenType, treeNode.value)
-
-        if treeNode.tokenType in (TokenType.NUM, TokenType.STR):
+        if treeNode.tokenType in (TOKENS["NUM"], TOKENS["STR"], TOKENS["BOOL"]):
             return treeNode.value
-        if treeNode.tokenType == TokenType.VAR:
+        if treeNode.tokenType == TOKENS["VAR"]:
             if treeNode.value in variable_dict:
-                return variable_dict[treeNode.value]
+                value = variable_dict[treeNode.value]
+                if isinstance(value, int):
+                    return float(value)
+                if value in ('True', 'False'):
+                    return value == 'True'
+                return value 
             return None
 
         left = self.evaluateRecursive(treeNode.left, variable_dict)
         right = self.evaluateRecursive(treeNode.right, variable_dict)
+        if treeNode.tokenType in TOKEN_OPERATORS:
+            return TOKEN_OPERATORS[treeNode.tokenType](left, right)
+        elif treeNode.tokenType == TOKENS["AND"]:
+            return left and right
+        elif treeNode.tokenType == TOKENS["OR"]:
+            return left or right
+        else:
+            raise Exception("Unexpected type " + str(treeNode.tokenType))
 
-        func = treeNode.tokenType.get("func")
 
-        if func:
-            return func(left, right)
-        raise UnableToParseExpression("Unexpected type " + str(treeNode.tokenType))
+    def to_dnf(self):
+        return self.inner_to_dnf(self.root)
 
-    def indexable_predicates(self):
-        return self.indexable_predicates_recursive(self.root)
+    def inner_to_dnf(self, treeNode):
+        if treeNode.tokenType in (TOKENS["NUM"], TOKENS["STR"], TOKENS["VAR"]):
+            return treeNode.value
 
-    def indexable_predicates_recursive(self, treeNode):
-        print(treeNode.tokenType, treeNode.value)
-        if treeNode.tokenType in (TokenType.NUM, TokenType.STR):
-            return f"value:{treeNode.value}"
-        if treeNode.tokenType == TokenType.VAR:
-            return f"field:{treeNode.value}"
+        left = self.inner_to_dnf(treeNode.left)
+        right = self.inner_to_dnf(treeNode.right)
 
-        left = self.indexable_predicates_recursive(treeNode.left)
-        right = self.indexable_predicates_recursive(treeNode.right)
+        if treeNode.tokenType == TOKENS["AND"]:
+            return [left, right]
 
-        if treeNode.tokenType.get("symbol") == "==":
-            return (left, "==", right) 
+        if treeNode.tokenType == TOKENS["OR"]:
+            return [left],[right]
+
+        if treeNode.tokenType in TOKEN_OPERATORS:
+            return (left, treeNode.tokenType, right)
+

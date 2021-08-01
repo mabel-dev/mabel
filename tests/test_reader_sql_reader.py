@@ -32,17 +32,17 @@ def test_most_basic_sql():
 
 # fmt:off
 SQL_TESTS = [
-    {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = 'Verizon Support'", "result":2},
-    {"statement":"SELECT * FROM tests.data.index.not WHERE user_name = 'Verizon Support'", "result":2},
-    {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = '*******'", "result":0},
+    {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name == 'Verizon Support'", "result":2},
+    {"statement":"SELECT * FROM tests.data.index.not WHERE user_name == 'Verizon Support'", "result":2},
+    {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name == '*******'", "result":0},
     {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name LIKE '_erizon _upport'", "result":2},
     {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name LIKE '%Support%'", "result":31},
-    {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = 'Verizon Support'", "result":2},
-    {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id = 1346604539923853313", "result":1}, 
-    {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id = 1346604539923853313 and user_id = 4832862820", "result":1},
-    {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id = 1346604539923853313 or user_id = 2147860407", "result":2},
-    {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id = 1346604539923853313 or user_verified = True", "result":453},
-    {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = 'Dave Jamieson' and user_verified = True", "result":1},
+    {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name == 'Verizon Support'", "result":2},
+    {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id == 1346604539923853313", "result":1}, 
+    {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id == 1346604539923853313 AND user_id == 4832862820", "result":1},
+    {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id == 1346604539923853313 OR user_id == 2147860407", "result":2},
+    {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id == 1346604539923853313 OR user_verified == True", "result":453},
+    {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name == 'Dave Jamieson' AND user_verified == True", "result":1},
 ]
 # fmt:on
 

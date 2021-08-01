@@ -12,8 +12,8 @@ def tokenize(text):
     return text.split()
 
 
-def sanitize(text, safe_characters: str = string.ascii_letters + string.digits + " "):
-    return "".join([c for c in text if c in VALID_CHARACTERS])
+def sanitize(text, safe_characters: str = VALID_CHARACTERS):
+    return "".join([c for c in text if c in safe_characters])
 
 
 def wrap_text(text, line_len):

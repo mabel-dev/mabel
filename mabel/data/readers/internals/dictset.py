@@ -94,6 +94,9 @@ class DictSet(object):
     def __iter__(self):
         return iter(self._iterator)
 
+    def __next__(self):
+        return next(self._iterator)
+
     def __del__(self):
         try:
             if self._temporary_folder:
@@ -357,6 +360,11 @@ class DictSet(object):
                     yield record
 
         return DictSet(_inner(self._iterator))
+
+    def cursor(self):
+        if hasattr(self._iterator, "cursor"):
+            return self._iterator.cursor
+        return None
 
     def __getitem__(self, columns):
         """

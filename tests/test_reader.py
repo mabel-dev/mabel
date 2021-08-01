@@ -1,5 +1,3 @@
-import datetime
-import time
 import pytest
 import os
 import sys
@@ -7,7 +5,6 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.data import Reader
 from mabel.adapters.disk import DiskReader
-from juon import dictset
 from rich import traceback
 
 traceback.install()
@@ -33,17 +30,17 @@ def test_unknown_format():
         )
 
 
-def test_reader_context():
-    counter = 0
-    with Reader(
-        inner_reader=DiskReader, dataset="tests/data/tweets", raw_path=True
-    ) as r:
-        n = r.read_line()
-        while n:
-            counter += 1
-            n = r.read_line()
-
-    assert counter == 50
+#def test_reader_context():
+#    counter = 0
+#    with Reader(
+#        inner_reader=DiskReader, dataset="tests/data/tweets", raw_path=True
+#    ) as r:
+#        n = r.read_line()
+#        while n:
+#            counter += 1
+#            n = r.read_line()
+#
+#    assert counter == 50
 
 
 def test_reader_to_pandas():
@@ -81,7 +78,7 @@ def test_multiprocess_reader():
 if __name__ == "__main__":  # pragma: no cover
     test_reader_can_read()
     test_unknown_format()
-    test_reader_context()
+#    test_reader_context()
     test_reader_to_pandas()
     test_threaded_reader()
     test_multiprocess_reader()

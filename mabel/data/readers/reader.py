@@ -12,6 +12,7 @@ from .internals.threaded_reader import threaded_reader
 from .internals.alpha_processed_reader import processed_reader
 from .internals.parsers import pass_thru_parser, block_parser, json_parser, xml_parser
 from .internals.filters import Filters, get_indexable_filter_columns
+from .internals.query import Query
 
 from juon.dictset import select_record_fields, select_from
 from juon import json
@@ -56,6 +57,8 @@ RULES = [
     {"name": "select", "required": False, "warning": None, "incompatible_with": []},
     {"name": "start_date", "required": False, "warning": None, "incompatible_with": []},
     {"name": "thread_count", "required": False, "warning": "Threaded Reader is Beta - use in production systems is not recommended", "incompatible_with": []},
+    {"name": "query", "required": False, "warning": "", "incompatible_with": ["filters"]},
+
 ]
 # fmt:on
 
@@ -252,6 +255,7 @@ def Reader(
             thread_count,
             fork_processes,
             select,
+            kwargs.get("query"),
         ),
         persistence,
     )
@@ -277,6 +281,7 @@ class _LowLevelReader(object):
         thread_count,
         fork_processes,
         select,
+        query
     ):
         self.indexable_fields = indexable_fields
         self.cache_folder = cache_folder
@@ -289,6 +294,7 @@ class _LowLevelReader(object):
         self.fork_processes = fork_processes
         self._inner_line_reader = None
         self.select = select
+        self.query = query
 
     def _read_blob(self, blob, blob_list):
         """
@@ -342,6 +348,8 @@ class _LowLevelReader(object):
         # filter the rows, either with the filters or `dictset.select_from`
         if self.filters:
             yield from self.filters.filter_dictset(ds)
+        if self.query:
+            yield from filter(Query(self.query).evaluate, ds)
         else:
             yield from ds
 
