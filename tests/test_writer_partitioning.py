@@ -1,8 +1,6 @@
 import os
 import sys
 
-from moz_sql_parser.keywords import BLOB
-
 # assert False, "test records over the partition size are saved"
 # assert False, "test the partitions are respected"
 
