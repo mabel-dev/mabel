@@ -218,7 +218,7 @@ class Query:
         return self.inner_to_dnf(self.root)
 
     def inner_to_dnf(self, treeNode):
-        if treeNode.tokenType in (TOKENS["NUM"], TOKENS["STR"], TOKENS["VAR"]):
+        if treeNode.tokenType in (TOKENS["NUM"], TOKENS["STR"], TOKENS["VAR"], TOKENS["BOOL"]):
             return treeNode.value
 
         left = self.inner_to_dnf(treeNode.left)

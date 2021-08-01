@@ -21,6 +21,5 @@ azure-storage-blob
 
 # used by mypy
 types-orjson
-types-ujson
 types-python-dateutil
 types-protobuf

@@ -22,10 +22,7 @@ from mabel.data.validator import Schema
 from mabel.data.formats import dictset
 from mabel.data.formats.dictset import display
 
-try:
-    import orjson as json
-except ImportError:
-    import ujson as json
+import orjson as json
 
 
 py_tweet = {

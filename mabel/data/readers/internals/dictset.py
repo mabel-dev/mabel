@@ -101,7 +101,7 @@ class DictSet(object):
         try:
             if self._temporary_folder:
                 self._temporary_folder.cleanup()
-        except:
+        except:  # nosec
             pass
 
     def persist(self, storage_class=STORAGE_CLASS.MEMORY):

@@ -2,7 +2,7 @@
 # pydantic
 from mabel.logging.log_formatter import LogFormatter
 import os
-import ujson as json
+import orjson as json
 import logging
 import datetime
 from typing import Union, Optional
@@ -63,7 +63,7 @@ class GoogleLogger(object):
 
         payload = message
         if isinstance(message, dict):
-            payload = json.dumps(message)
+            payload = json.dumps(message).decode("UTF8")
 
         log = f"{LOG_NAME} | {LEVELS_TO_STRING.get(severity, 'UNKNOWN')} | {datetime.datetime.now().isoformat()} | {method}() | {module}:{line} | {payload}"  # type:ignore
         formatter = LogFormatter(None, suppress_color=True)
