@@ -1,23 +1,22 @@
-
 from ....utils.text import like
 import operator
 
 TOKENS = {
-    "NUM" : "$Number$",
-    "STR" : "$Literal$",
-    "VAR" : "$Variable$",
+    "NUM": "$Number$",
+    "STR": "$Literal$",
+    "VAR": "$Variable$",
     "BOOL": "$Boolean$",
-    ">" : ">",
-    ">=" : ">=",
-    "<" : "<",
-    "<=" : "<=",
-    "==" : "==",
-    "!=" : "!=",
-    "LP" : "(",
-    "RP" : ")",
-    "AND" : "AND",
-    "OR" : "OR",
-    "LIKE" : "LIKE"
+    ">": ">",
+    ">=": ">=",
+    "<": "<",
+    "<=": "<=",
+    "==": "==",
+    "!=": "!=",
+    "LP": "(",
+    "RP": ")",
+    "AND": "AND",
+    "OR": "OR",
+    "LIKE": "LIKE",
 }
 
 TOKEN_OPERATORS = {
@@ -27,8 +26,9 @@ TOKEN_OPERATORS = {
     "<=": operator.le,
     "==": operator.eq,
     "!=": operator.ne,
-    "LIKE": like
+    "LIKE": like,
 }
+
 
 class TreeNode:
     tokenType = None
@@ -78,7 +78,7 @@ class Tokenizer:
             if t in TOKENS:
                 self.tokenTypes.append(t)
             else:
-                if t in ('True', 'False'):
+                if t in ("True", "False"):
                     self.tokenTypes.append(TOKENS["BOOL"])
                 elif t[0] == t[-1] == '"' or t[0] == t[-1] == "'":
                     self.tokenTypes.append(TOKENS["STR"])
@@ -108,7 +108,7 @@ class Query:
     def parseExpression(self):
         andTerm1 = self.parseAndTerm()
         while (
-                self.tokenizer.hasNext() and self.tokenizer.nextTokenType() == TOKENS["OR"]
+            self.tokenizer.hasNext() and self.tokenizer.nextTokenType() == TOKENS["OR"]
         ):
             self.tokenizer.next()
             andTermX = self.parseAndTerm()
@@ -121,7 +121,7 @@ class Query:
     def parseAndTerm(self):
         condition1 = self.parseCondition()
         while (
-                self.tokenizer.hasNext() and self.tokenizer.nextTokenType() == TOKENS["AND"]
+            self.tokenizer.hasNext() and self.tokenizer.nextTokenType() == TOKENS["AND"]
         ):
             self.tokenizer.next()
             conditionX = self.parseCondition()
@@ -136,8 +136,8 @@ class Query:
             self.tokenizer.next()
             expression = self.parseExpression()
             if (
-                    self.tokenizer.hasNext()
-                    and self.tokenizer.nextTokenType() == TOKENS["RP"]
+                self.tokenizer.hasNext()
+                and self.tokenizer.nextTokenType() == TOKENS["RP"]
             ):
                 self.tokenizer.next()
                 return expression
@@ -175,7 +175,7 @@ class Query:
                 return n
             elif tokenType == TOKENS["BOOL"]:
                 n = TreeNode(tokenType)
-                n.value = self.tokenizer.next() == 'True'
+                n.value = self.tokenizer.next() == "True"
                 return n
             else:
                 raise Exception(
@@ -198,9 +198,9 @@ class Query:
                 value = variable_dict[treeNode.value]
                 if isinstance(value, int):
                     return float(value)
-                if value in ('True', 'False'):
-                    return value == 'True'
-                return value 
+                if value in ("True", "False"):
+                    return value == "True"
+                return value
             return None
 
         left = self.evaluateRecursive(treeNode.left, variable_dict)
@@ -213,7 +213,6 @@ class Query:
             return left or right
         else:
             raise Exception("Unexpected type " + str(treeNode.tokenType))
-
 
     def to_dnf(self):
         return self.inner_to_dnf(self.root)
@@ -229,8 +228,7 @@ class Query:
             return [left, right]
 
         if treeNode.tokenType == TOKENS["OR"]:
-            return [left],[right]
+            return [left], [right]
 
         if treeNode.tokenType in TOKEN_OPERATORS:
             return (left, treeNode.tokenType, right)
-

@@ -30,7 +30,7 @@ def test_unknown_format():
         )
 
 
-#def test_reader_context():
+# def test_reader_context():
 #    counter = 0
 #    with Reader(
 #        inner_reader=DiskReader, dataset="tests/data/tweets", raw_path=True
@@ -78,7 +78,7 @@ def test_multiprocess_reader():
 if __name__ == "__main__":  # pragma: no cover
     test_reader_can_read()
     test_unknown_format()
-#    test_reader_context()
+    #    test_reader_context()
     test_reader_to_pandas()
     test_threaded_reader()
     test_multiprocess_reader()

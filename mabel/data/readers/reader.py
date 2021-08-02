@@ -281,7 +281,7 @@ class _LowLevelReader(object):
         thread_count,
         fork_processes,
         select,
-        query
+        query,
     ):
         self.indexable_fields = indexable_fields
         self.cache_folder = cache_folder
