@@ -1,5 +1,5 @@
 import io
-import mmh3  # type:ignore
+import cityhash
 import struct
 from operator import itemgetter
 from typing import Iterable
@@ -114,7 +114,7 @@ class Index:
 
     def _inner_search(self, search_term) -> Iterable:
         # hash the value and make fit in a four byte unsinged int
-        value = mmh3.hash(f"{search_term}") % MAX_INDEX
+        value = cityhash.CityHash32(f"{search_term}") % MAX_INDEX
 
         # search for an instance of the value in the index
         location, found_entry = self._locate_record(value)
@@ -166,7 +166,7 @@ class IndexBuilder:
                 values = [values]
             for value in values:
                 entry = {
-                    "value": mmh3.hash(f"{value}") % MAX_INDEX,
+                    "value": cityhash.CityHash32(f"{value}") % MAX_INDEX,
                     "position": position,
                 }
                 self.temporary_index.append(entry)

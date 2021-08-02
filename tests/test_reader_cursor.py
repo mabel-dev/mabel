@@ -30,7 +30,7 @@ def test_cursor():
 
     for row in limit(reader, lim):
         test_counter += 1
-    cursor = reader.cursor
+    cursor = reader.cursor()
 
     assert isinstance(cursor, dict)
     assert cursor["offset"] == (lim % 25), cursor["offset"]

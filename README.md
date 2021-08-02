@@ -1,3 +1,5 @@
+# DEVELOPMENT MABEL - use at your own risk
+
 <img align="centre" alt="overlapping arrows" height="92" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/mabel.svg" />
 
 **mabel** is a fully-portable Data Engineering platform designed to run on low-spec compute nodes.
@@ -37,7 +39,7 @@ from mabel.operators import EndOperator
 def say_hello(name):
     print(F"Hello, {name}!")
 
-flow = say_hello > EndOperator()
+flow = say_hello >> EndOperator()
 with flow as runner:
     runner("world")  # Hello, world!
 ~~~
@@ -78,11 +80,12 @@ pip install --upgrade git+https://github.com/mabel-dev/mabel
 
 ## Dependencies
 
+-  **[orjson](https://github.com/ijl/orjson)** is used for JSON handling
 -  **[dateutil](https://dateutil.readthedocs.io/en/stable/)** is used to convert dates received as strings
--  **[mmh3](https://github.com/hajimes/mmh3)** is used for non-cryptographic hashing
+-  **[cityhash](https://github.com/google/cityhash)** is used for non-cryptographic hashing
 -  **[pydantic](https://pydantic-docs.helpmanual.io/)** is used to define internal data models  
 -  **[zstandard](https://github.com/indygreg/python-zstandard)** is used for real-time compression
--  **[juon](https://github.com/joocer/juon)** is used for low-level data handling 
+
 
 There are a number of optional dependencies which are usually only required for
 specific features and functionality. These are listed in the

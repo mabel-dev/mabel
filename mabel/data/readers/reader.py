@@ -12,6 +12,7 @@ from .internals.threaded_reader import threaded_reader
 from .internals.alpha_processed_reader import processed_reader
 from .internals.parsers import pass_thru_parser, block_parser, json_parser, xml_parser
 from .internals.filters import Filters, get_indexable_filter_columns
+from .internals.query import Query
 
 from juon.dictset import select_record_fields, select_from
 from juon import json
@@ -27,6 +28,8 @@ from ...utils.dates import parse_delta
 
 from ...logging import get_logger
 
+from ..readers import STORAGE_CLASS
+
 
 # available parsers
 PARSERS = {
@@ -39,7 +42,6 @@ PARSERS = {
 
 # fmt:off
 RULES = [
-    {"name": "as_at", "required": False,"warning": "Time Travel (as_at) is Alpha - it's interface may change and some features may not be supported","incompatible_with": ["start_date", "end_date"]},
     {"name": "cache_indexes", "required":False, "warning":None, "incompatible_with": []},
     {"name": "cursor", "required": False, "warning": None, "incompatible_with": ["thread_count", "fork_processes"]},
     {"name": "dataset", "required": True, "warning": None, "incompatible_with": []},
@@ -55,6 +57,8 @@ RULES = [
     {"name": "select", "required": False, "warning": None, "incompatible_with": []},
     {"name": "start_date", "required": False, "warning": None, "incompatible_with": []},
     {"name": "thread_count", "required": False, "warning": "Threaded Reader is Beta - use in production systems is not recommended", "incompatible_with": []},
+    {"name": "query", "required": False, "warning": "", "incompatible_with": ["filters"]},
+
 ]
 # fmt:on
 
@@ -67,6 +71,7 @@ def Reader(
     filters: Optional[List[Tuple[str, str, object]]] = None,
     inner_reader=None,  # type:ignore
     row_format: str = "json",
+    persistence: STORAGE_CLASS = STORAGE_CLASS.NO_PERSISTANCE,
     **kwargs,
 ) -> DictSet:
     """
@@ -135,9 +140,10 @@ def Reader(
         fork_processes: boolean (alpha):
             **ALPHA**
             Create parallel processes to read data files
-        as_at: datetime (alpha)
-            **ALPHA**
-            Time travel
+        persistence: STORAGE_CLASS (optional)
+            How to cache the results, the default is NO_PERSISTANCE which will almost
+            always return a generator. MEMORY should only be used where the dataset
+            isn't huge and DISK is many times slower than MEMORY.
         cursor: dictionary (or string)
             Resume read from a given point (assumes other parameters are the same).
             If a JSON string is provided, it will converted to a dictionary.
@@ -224,7 +230,6 @@ def Reader(
             "`parquet` extension much be used with the `pass-thru` row_format"
         )
 
-    filters = None
     indexable_fields = []
     if filters:
         filters = Filters(filters)
@@ -250,7 +255,9 @@ def Reader(
             thread_count,
             fork_processes,
             select,
-        )
+            kwargs.get("query"),
+        ),
+        persistence,
     )
 
 
@@ -274,6 +281,7 @@ class _LowLevelReader(object):
         thread_count,
         fork_processes,
         select,
+        query
     ):
         self.indexable_fields = indexable_fields
         self.cache_folder = cache_folder
@@ -286,6 +294,7 @@ class _LowLevelReader(object):
         self.fork_processes = fork_processes
         self._inner_line_reader = None
         self.select = select
+        self.query = query
 
     def _read_blob(self, blob, blob_list):
         """
@@ -339,6 +348,8 @@ class _LowLevelReader(object):
         # filter the rows, either with the filters or `dictset.select_from`
         if self.filters:
             yield from self.filters.filter_dictset(ds)
+        if self.query:
+            yield from filter(Query(self.query).evaluate, ds)
         else:
             yield from ds
 

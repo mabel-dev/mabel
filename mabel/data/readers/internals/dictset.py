@@ -20,11 +20,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-import enum
 import os
 import time
 import orjson
+import cityhash
 import statistics
+
 
 from tempfile import TemporaryDirectory
 from functools import reduce
@@ -38,9 +39,10 @@ from ....errors import MissingDependencyError, InvalidArgument
 
 
 from operator import itemgetter
-from enum import Enum
 
 from .disk_iterator import DiskIterator
+from .query import Query
+from .filters import Filters
 
 
 MAXIMUM_RECORDS_IN_PARTITION = 65535  # 2^16 -1
@@ -92,6 +94,9 @@ class DictSet(object):
     def __iter__(self):
         return iter(self._iterator)
 
+    def __next__(self):
+        return next(self._iterator)
+
     def __del__(self):
         try:
             if self._temporary_folder:
@@ -103,7 +108,7 @@ class DictSet(object):
         if storage_class == STORAGE_CLASS.NO_PERSISTANCE:
             raise InvalidArgument("Persist cannot persist to 'NO_PERISISTANCE'")
         if self.storage_class == storage_class:
-            return None
+            return False
         if storage_class == STORAGE_CLASS.MEMORY:
             self._iterator == list(self._iterator)
             if self._temporary_folder:
@@ -112,16 +117,21 @@ class DictSet(object):
         if storage_class == STORAGE_CLASS.DISK:
             self._persist_to_disk()
         self.storage_class = storage_class
+        return True
 
     def sample(self, fraction: float = 0.5):
         """
         Select a random stample of
         """
-        selector = int(1 / fraction)
-        for row in self._iterator:
-            random_value = int.from_bytes(os.urandom(2), "big")
-            if random_value % selector == 0:
-                yield row
+
+        def inner_sampler(dictset):
+            selector = int(1 / fraction)
+            for row in dictset:
+                random_value = int.from_bytes(os.urandom(2), "big")
+                if random_value % selector == 0:
+                    yield row
+
+        return DictSet(inner_sampler, self.storage_class)
 
     def collect(self, key: str = None) -> Union[list, map]:
         """
@@ -130,18 +140,20 @@ class DictSet(object):
         """
         if not key:
             return list(self._iterator)
-        return map(itemgetter(key), self._iterator)
+        return list(map(itemgetter(key), self._iterator))
 
-    def keys(self, number_of_rows: int = 10):
+    def keys(self, number_of_rows: int = 0):
         """
-        Get all of the keys from the _DictSet_. This iterates through the entire
-        _DictSet_.
+        Get all of the keys from the _DictSet_. This iterates the entire
+        _DictSet_ unless told not to.
         """
         if number_of_rows > 0:
             rows = self.itake(number_of_rows)
-            return reduce(lambda x, y: [a for a in y.keys() if a not in x], rows, [])
+            return reduce(
+                lambda x, y: x + [a for a in y.keys() if a not in x], rows, []
+            )
         return reduce(
-            lambda x, y: [a for a in y.keys() if a not in x], self._iterator, []
+            lambda x, y: x + [a for a in y.keys() if a not in x], self._iterator, []
         )
 
     def aggregate(self, function: callable, key: str):
@@ -236,9 +248,20 @@ class DictSet(object):
 
     def distinct(self):
         """
-        Remove duplicates from a _DictSet_.
+        Remove duplicates from a _DictSet_. This creates a list of the items
+        already added to the result, so is not suitable for huge _DictSets_.
         """
-        return reduce(lambda x, y: x + [y] if not y in x else x, self._iterator, [])
+        hash_list = {}
+
+        def do_dedupe(data):
+            for item in data:
+                hashed_item = hash(orjson.dumps(item))
+                if hashed_item not in hash_list:
+                    yield item
+                else:
+                    hash_list[hashed_item] = True
+
+        return DictSet(do_dedupe(self._iterator), self.storage_class)
 
     def to_ascii_table(self, limit: int = 5):
         """
@@ -278,19 +301,14 @@ class DictSet(object):
         Return the first _items_ number of items from the _DictSet_. This loads
         these items into memory. If returning a large number of items, use itake.
         """
-        result = []
-        for count, item in enumerate(self._iterator):
-            if count == items:
-                return result
-            result.append(item)
-        return result
+        return DictSet(self.itake(items), self.storage_class)
 
     def itake(self, items: int):
         """
-        Return the first _items_ number of items from the _DictSet_. This returns
-        a generator.
+        Return the first _items_ number of items from the _DictSet_.
+
+        This returns a generator.
         """
-        result = []
         for count, item in enumerate(self._iterator):
             if count == items:
                 return
@@ -299,17 +317,76 @@ class DictSet(object):
     def filter(self, predicate):
         """
         Filter a _DictSet_ returning only the items that match the predicate.
+
+        Parameters:
+            predicate: callable
+                A function that takes a record as a parameter and should return
+                False for items to be filtered
         """
-        return [item for item in filter(predicate, self._iterator)]
+
+        def inner_filter(func, dictset):
+            for item in dictset:
+                if func(item):
+                    yield item
+
+        return DictSet(inner_filter(predicate, self._iterator), self.storage_class)
+
+    def dnf_filter(self, dnf_filters):
+        """
+        Filter a _DictSet_ returning only the items that match the predicates.
+
+        Parameters:
+            dnf_filters: tuple or list
+                DNF constructed predicates
+        """
+        filter_set = Filters(dnf_filters)
+        return DictSet(
+            Filters.filter_dictset(filter_set, self._iterator), self.storage_class
+        )
+
+    def query(self, expression):
+        """
+        Query a _DictSet_ returning only the items that match the expression.
+
+        Parameters:
+            expression: string
+                Query expression (e.g. _name == 'mabel'_)
+        """
+        q = Query(expression)
+
+        def _inner(dictset):
+            for record in dictset:
+                if q.evaluate(record):
+                    yield record
+
+        return DictSet(_inner(self._iterator))
+
+    def cursor(self):
+        if hasattr(self._iterator, "cursor"):
+            return self._iterator.cursor
+        return None
+
+    def __getitem__(self, columns):
+        """
+        Selects columns from a _DictSet_. If the column doesn't exist it is populated
+        with `None`.
+        """
+        if not isinstance(columns, (list, set, tuple)):
+            columns = set([columns])
+
+        def inner_select(it):
+            for record in it:
+                yield {k: record.get(k, None) for k in columns}
+
+        return DictSet(inner_select(self._iterator), self.storage_class)
 
     def __hash__(self, seed: int = 703115) -> int:
         """
-        Creates a consistent hash of the _DictSet_.
+        Creates a consistent hash of the _DictSet_ regardless of the order of
+        the items in the _DictSet_.
 
         703115 = 8 days, 3 hours, 18 minutes, 35 seconds
         """
-        import cityhash
-
-        return reduce(
-            lambda x, y: x ^ cityhash.CityHash32(orjson.dumps(y)), self._iterator, seed
-        )
+        serialized = map(orjson.dumps, self._iterator)
+        hashed = map(cityhash.CityHash32, serialized)
+        return reduce(lambda x, y: x ^ y, hashed, seed)
