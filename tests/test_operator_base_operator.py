@@ -5,7 +5,6 @@ import pytest
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.operators import EndOperator
-from mabel.errors import IntegrityError
 from mabel import BaseOperator
 from rich import traceback
 
@@ -28,7 +27,7 @@ def test_retry():
     """test the retry runs the specified amount of time"""
 
     with pytest.raises(SystemExit):
-        flow = failing_operator(retry_count=3, retry_wait=1) > EndOperator()
+        flow = failing_operator(retry_count=3, retry_wait=1) >> EndOperator()
         with flow as runner:
             runner(data="", context={})
         global fail_counter

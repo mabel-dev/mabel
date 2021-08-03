@@ -92,7 +92,7 @@ def test_flow_validator():
     #        f._validate_flow()
     #    assert "Flows must have a single entry point" in str(e.value), str(e.value)
 
-    flow = NoOpOperator() > EndOperator()
+    flow = NoOpOperator() >> EndOperator()
     with flow as runner:
         pass
     with pytest.raises(FlowError) as e:

@@ -2,9 +2,6 @@ from ..reader import Reader
 from ....logging import get_logger
 
 
-from os import stat
-
-
 class SqlParser:
     def __init__(self, statement):
         self.statement = statement
