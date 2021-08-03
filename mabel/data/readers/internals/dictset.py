@@ -41,7 +41,7 @@ from ....errors import MissingDependencyError, InvalidArgument
 from operator import itemgetter
 
 from .disk_iterator import DiskIterator
-from .query import Query
+from .expression import Expression
 from .filters import Filters
 
 
@@ -244,7 +244,11 @@ class DictSet(object):
         """
         # we use `reduce` so we don't need to load all of the items into a list
         # in order to count them.
-        return reduce(lambda x, y: x + 1, self._iterator, 0)
+        if self.storage_class in (STORAGE_CLASS.MEMORY, STORAGE_CLASS.DISK):
+            return reduce(lambda x, y: x + 1, self._iterator, 0)
+        else:
+            # we can't count the items in an non persisted DictSet
+            return -1
 
     def distinct(self):
         """

@@ -6,7 +6,6 @@ import os
 import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
-from mabel.logging import get_logger
 from mabel.operators import EndOperator, NoOpOperator
 from rich import traceback
 
@@ -20,7 +19,7 @@ def test_flow_runner():
     e = EndOperator()
     n = NoOpOperator()
     o = NoOpOperator()
-    flow = n > o > e
+    flow = n >> o >> e
 
     errored = False
     try:

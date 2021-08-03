@@ -4,7 +4,7 @@ import sys
 import shutil
 import atexit
 import os.path
-from typing import Callable, Optional, Tuple, List
+from typing import Optional, Tuple, List
 
 from .internals.dictset import DictSet
 
@@ -12,13 +12,13 @@ from .internals.threaded_reader import threaded_reader
 from .internals.alpha_processed_reader import processed_reader
 from .internals.parsers import pass_thru_parser, block_parser, json_parser, xml_parser
 from .internals.filters import Filters, get_indexable_filter_columns
-from .internals.query import Query
+from .internals.expression import Expression
 
-from juon.dictset import select_record_fields, select_from
+from juon.dictset import select_record_fields
 from juon import json
 
 
-from ...errors import InvalidCombinationError, MissingDependencyError, DataNotFoundError
+from ...errors import InvalidCombinationError, DataNotFoundError
 from ...index.index import Index
 from ...utils import safe_field_name
 from ...utils.parameter_validator import validate
@@ -103,7 +103,11 @@ def Reader(
             default is all columns
         dataset: string:
             The path to the data
-        filters: List of tuples (optional)
+        query: stting (optional):
+            An expression which when evaluated for each row, if False the row will
+            be removed from the resulant data set, like the WHERE clause of of a SQL
+            statement.
+        filters: List of tuples (optional):
             Rows which do not match the filter predicate will be removed from
             scanned data. Default is no filtering.
             Each tuple has format: (`key`, `op`, `value`) and compares the key with
@@ -243,6 +247,7 @@ def Reader(
     # multiprocessed reader
     fork_processes = bool(kwargs.get("fork_processes", False))
 
+
     return DictSet(
         _LowLevelReader(
             indexable_fields,
@@ -349,7 +354,7 @@ class _LowLevelReader(object):
         if self.filters:
             yield from self.filters.filter_dictset(ds)
         if self.query:
-            yield from filter(Query(self.query).evaluate, ds)
+            yield from filter(Expression(self.query).evaluate, ds)
         else:
             yield from ds
 
@@ -420,6 +425,9 @@ class _LowLevelReader(object):
                     for self.cursor["offset"], record in enumerate(local_reader):
                         yield record
                 offset = 0
+            # when we're done, the cursor shouldn't point anywhere
+            self.cursor = {}
+
 
     def __iter__(self):
         return self
