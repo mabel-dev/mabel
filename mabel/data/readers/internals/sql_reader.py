@@ -42,11 +42,9 @@ class SqlParser:
         return "< SQL: " + " ".join(self.parts) + " >"
 
 
-class SqlReader:
+class SqlReader():
     def __init__(self, sql_statement: str, **kwargs):
         """
-        THIS IS ALPHA - interface and features subject to change
-
         Use basic SQL queries to filter Reader.
 
         Parameters:
@@ -58,10 +56,6 @@ class SqlReader:
             `dataset` is taken from SQL FROM
             `query` is taken from SQL WHERE
         """
-        get_logger().warning(
-            "SQL Reader is Alpha - interface and features subject to change"
-        )
-
         sql = SqlParser(sql_statement)
         get_logger().debug(sql)
 

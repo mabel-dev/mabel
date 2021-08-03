@@ -1,8 +1,9 @@
+import os
 import threading
 import tempfile
-import os
+import collections
 from typing import Any
-from juon import json
+from orjson import dumps
 from ....logging import get_logger
 from ....utils.paths import get_parts
 from ....utils import safe_field_name
@@ -13,6 +14,27 @@ from ....errors import MissingDependencyError
 BLOB_SIZE = 64 * 1024 * 1024  # 64Mb, 16 files per gigabyte
 BUFFER_SIZE = BLOB_SIZE  # buffer in memory really
 SUPPORTED_FORMATS_ALGORITHMS = ("jsonl", "lzma", "zstd", "parquet", "text")
+
+
+def flatten(dictionary, parent_key=False, separator='.'):
+    """
+    Turn a nested dictionary into a flattened dictionary
+    :param dictionary: The dictionary to flatten
+    :param parent_key: The string to prepend to dictionary's keys
+    :param separator: The string used to separate flattened keys
+    :return: A flattened dictionary
+    """
+    items = []
+    for key, value in dictionary.items():
+        new_key = str(parent_key) + separator + key if parent_key else key
+        if isinstance(value, collections.MutableMapping):
+            items.extend(flatten(value, new_key, separator).items())
+        elif isinstance(value, list):
+            for k, v in enumerate(value):
+                items.extend(flatten({str(k): v}, new_key).items())
+        else:
+            items.append((new_key, value))
+    return dict(items)
 
 
 class BlobWriter(object):
@@ -50,7 +72,7 @@ class BlobWriter(object):
         if self.format == "text":
             serialized = str(record).encode() + b"\n"
         else:
-            serialized = json.serialize(record, as_bytes=True) + b"\n"  # type:ignore
+            serialized = dumps(flatten(record)) + b"\n"  # type:ignore
 
         # add the columns to the index
         for column in self.indexes:
