@@ -61,8 +61,19 @@ def test_sql():
         ), f"{test.get('statement')} == {len(findings)}"
 
 
+def test_sql_to_dictset():
+
+    s = SqlReader(
+        sql_statement="SELECT * FROM tests.data.index.not",
+        inner_reader=DiskReader,
+        raw_path=True,
+    )
+    assert len(s.reader.take(10).collect()) == 10
+
+
 if __name__ == "__main__":  # pragma: no cover
     test_sql()
     test_most_basic_sql()
+    test_sql_to_dictset()
 
     print("okay")

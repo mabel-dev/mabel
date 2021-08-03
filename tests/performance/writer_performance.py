@@ -27,10 +27,7 @@ from mabel.logging import get_logger
 from mabel.data.validator import Schema
 from mabel.data.formats import display, dictset
 
-try:
-    import orjson as json
-except ImportError:
-    import ujson as json
+import ujson as json
 
 
 logger = get_logger()

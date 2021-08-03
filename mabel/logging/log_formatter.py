@@ -2,7 +2,7 @@ import os
 import re
 import hashlib
 import logging
-import ujson as json  # use ujson rather than orjson for compatibility
+import orjson as json
 from functools import lru_cache
 from ..utils.colors import COLORS, colorize
 from ..utils.ipython import is_running_from_ipython
@@ -80,7 +80,7 @@ class LogFormatter(logging.Formatter):
         json_part = parts.pop()
 
         try:
-            dirty_record = json.loads(json_part)
+            dirty_record = json.loads(json_part.encode("UTF8"))
             clean_record = {}
             for key, value in dirty_record.items():
                 if any(
@@ -100,13 +100,13 @@ class LogFormatter(logging.Formatter):
                         "{GREEN}" + f"{value}" + "{OFF}"
                     )
 
-            parts.append(" " + json.dumps(clean_record))
+            parts.append(" " + json.dumps(clean_record).decode("UTF8"))
 
         except ValueError:
             json_part = re.sub("`([^`]*)`", r"`{YELLOW}\1{OFF}`", f"{json_part}")
             json_part = re.sub("'([^']*)'", r"'{YELLOW}\1{OFF}'", f"{json_part}")
             json_part = re.sub('"([^"]*)"', r"'{YELLOW}\1{OFF}'", f"{json_part}")
-            parts.append(" " + json_part.strip())
+            parts.append(" " + json_part.strip() + ' *')
 
         record = "|".join(parts)
         return colorize(record, self._can_colorize())

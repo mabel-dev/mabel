@@ -2,15 +2,11 @@ from ..reader import Reader
 from ....logging import get_logger
 
 
-from os import stat
-
-
-class SqlParser():
-
+class SqlParser:
     def __init__(self, statement):
         self.statement = statement
-        
-        self.select = ['*']
+
+        self.select = ["*"]
         self.dataset = None
         self.query = None
 
@@ -18,11 +14,11 @@ class SqlParser():
 
         for i, part in enumerate(self.parts):
             if part == "SELECT":
-                self.select = [self.parts[i+1]]
+                self.select = [self.parts[i + 1]]
             if part == "FROM":
-                self.dataset = self.parts[i+1].replace('.', '/')
+                self.dataset = self.parts[i + 1].replace(".", "/")
             if part == "WHERE":
-                self.query = self.parts[i+1]
+                self.query = self.parts[i + 1]
 
     def _split_statement(self, statement):
         import re
@@ -30,20 +26,20 @@ class SqlParser():
         reg = re.compile(r"(\bSELECT\b|\bFROM\b|\bWHERE\b|\-\-|\;)")
         tokens = []
 
-        for line in statement.split('\n'):
+        for line in statement.split("\n"):
             line_tokens = reg.split(line)
             line_tokens = [t.strip() for t in line_tokens if t.strip() != ""]
 
             # remove anything after the comments flag
             while "--" in line_tokens:
-                line_tokens = line_tokens[:line_tokens.index("--")]
-            
+                line_tokens = line_tokens[: line_tokens.index("--")]
+
             tokens += line_tokens
 
         return tokens
 
     def __repr__(self):
-        return '< SQL: '+' '.join(self.parts)+' >'
+        return "< SQL: " + " ".join(self.parts) + " >"
 
 
 class SqlReader:
@@ -69,7 +65,6 @@ class SqlReader:
         sql = SqlParser(sql_statement)
         get_logger().debug(sql)
 
-
         self.reader = Reader(
             #            thread_count=thread_count,
             select=sql.select,
@@ -80,4 +75,3 @@ class SqlReader:
 
     def __iter__(self):
         return self.reader._iterator
-

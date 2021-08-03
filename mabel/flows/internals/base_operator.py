@@ -278,12 +278,6 @@ class BaseOperator(abc.ABC):
         # this is a stub to be overridden
         raise ValueError("no error_writer attached")
 
-    def __gt__(self, next_operators):
-        """
-        Alias for __rshift__, `>`
-        """
-        self.logger.warning("Use of `>` to build flows will be replaced with `>>`")
-        return self.__rshift__(next_operators)
 
     def __rshift__(self, next_operators):
         from ...flows.flow import Flow

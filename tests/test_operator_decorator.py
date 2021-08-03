@@ -4,7 +4,7 @@ import time
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.operators import EndOperator, NoOpOperator
-from mabel import BaseOperator, operator
+from mabel import operator
 from rich import traceback
 
 traceback.install()
@@ -24,7 +24,7 @@ def test_operatify():
     error = False
 
     try:
-        f = do_something > EndOperator()
+        f = do_something >> EndOperator()
         with f as runner:
             for row in DATASET:
                 runner(row)
@@ -36,7 +36,7 @@ def test_operatify():
 
 def test_in_flow():
 
-    f = NoOpOperator() > do_something > EndOperator()
+    f = NoOpOperator() >> do_something >> EndOperator()
 
     print(f)
 
