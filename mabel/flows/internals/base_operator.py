@@ -278,7 +278,6 @@ class BaseOperator(abc.ABC):
         # this is a stub to be overridden
         raise ValueError("no error_writer attached")
 
-
     def __rshift__(self, next_operators):
         from ...flows.flow import Flow
 

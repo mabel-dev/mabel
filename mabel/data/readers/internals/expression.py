@@ -36,8 +36,8 @@ TOKEN_OPERATORS = {
 }
 
 
-class TreeNode():
-    __slots__ = ('token_type', 'value', 'left', 'right')
+class TreeNode:
+    __slots__ = ("token_type", "value", "left", "right")
 
     def __init__(self, token_type):
         self.token_type = token_type
@@ -45,7 +45,8 @@ class TreeNode():
         self.left = None
         self.right = None
 
-class ExpressionTokenizer():
+
+class ExpressionTokenizer:
     expression = None
     tokens = None
     token_types = None
@@ -113,7 +114,8 @@ class Expression(object):
     def parse_expression(self):
         andTerm1 = self.parse_and_term()
         while (
-            self.tokenizer.has_next() and self.tokenizer.next_token_type() == TOKENS["OR"]
+            self.tokenizer.has_next()
+            and self.tokenizer.next_token_type() == TOKENS["OR"]
         ):
             self.tokenizer.next()
             andTermX = self.parse_and_term()
@@ -126,7 +128,8 @@ class Expression(object):
     def parse_and_term(self):
         condition1 = self.parse_condition()
         while (
-            self.tokenizer.has_next() and self.tokenizer.next_token_type() == TOKENS["AND"]
+            self.tokenizer.has_next()
+            and self.tokenizer.next_token_type() == TOKENS["AND"]
         ):
             self.tokenizer.next()
             conditionX = self.parse_condition()
@@ -137,7 +140,10 @@ class Expression(object):
         return condition1
 
     def parse_condition(self):
-        if self.tokenizer.has_next() and self.tokenizer.next_token_type() == TOKENS["LP"]:
+        if (
+            self.tokenizer.has_next()
+            and self.tokenizer.next_token_type() == TOKENS["LP"]
+        ):
             self.tokenizer.next()
             expression = self.parse_expression()
             if (
@@ -223,7 +229,12 @@ class Expression(object):
         return self.inner_to_dnf(self.root)
 
     def inner_to_dnf(self, treeNode):
-        if treeNode.token_type in (TOKENS["NUM"], TOKENS["STR"], TOKENS["VAR"], TOKENS["BOOL"]):
+        if treeNode.token_type in (
+            TOKENS["NUM"],
+            TOKENS["STR"],
+            TOKENS["VAR"],
+            TOKENS["BOOL"],
+        ):
             return treeNode.value
 
         left = self.inner_to_dnf(treeNode.left)

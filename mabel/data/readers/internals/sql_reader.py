@@ -42,7 +42,7 @@ class SqlParser:
         return "< SQL: " + " ".join(self.parts) + " >"
 
 
-class SqlReader():
+class SqlReader:
     def __init__(self, sql_statement: str, **kwargs):
         """
         Use basic SQL queries to filter Reader.
