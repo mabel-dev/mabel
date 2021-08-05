@@ -20,8 +20,10 @@ TOKENS = {
     ">=": ">=",
     "<": "<",
     "<=": "<=",
+    "=": "==",
     "==": "==",
     "!=": "!=",
+    "<>": "!=",
     "LP": "(",
     "RP": ")",
     "AND": "AND",
@@ -79,14 +81,14 @@ class ExpressionTokenizer:
     def tokenize(self):
         import re
 
-        reg = re.compile(r"(\bAND\b|\bOR\b|!=|==|<=|>=|<|>|\(|\)|\bLIKE\b|\bNOT\b)", re.IGNORECASE)
+        reg = re.compile(r"(\bAND\b|\bOR\b|!=|==|=|\<\>|<=|>=|<|>|\(|\)|\bLIKE\b|\bNOT\b)", re.IGNORECASE)
         self.tokens = reg.split(self.expression)
         self.tokens = [t.strip() for t in self.tokens if t.strip() != ""]
 
         self.token_types = []
         for t in self.tokens:
-            if t in TOKENS:
-                self.token_types.append(t)
+            if t.upper() in TOKENS:
+                self.token_types.append(TOKENS[t])
             else:
                 if str(t).lower() in ("true", "false"):
                     self.token_types.append(TOKENS["BOOL"])
@@ -118,8 +120,6 @@ class Expression(object):
         self.root = self.parse_expression()
 
     def parse_expression(self):
-
-
         andTerm1 = self.parse_and_term()
         while (
             self.tokenizer.has_next()
@@ -221,6 +221,11 @@ class Expression(object):
             return None
 
         left = self.evaluate_recursive(treeNode.left, variable_dict)
+        
+        # if the VAR is None, the result is false
+        if left is None:
+            return False
+
         if treeNode.token_type == TOKENS["NOT"]:
             return not left
 
