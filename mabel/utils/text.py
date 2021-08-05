@@ -39,6 +39,8 @@ def _sql_like_fragment_to_regex(fragment):
     return re.compile("^" + safe_fragment.replace("%", ".*?").replace("_", ".") + "$")
 
 
-# set of operators we can interpret not in the `operator` module
 def like(x, y):
     return _sql_like_fragment_to_regex(y.lower()).match(str(x).lower())
+
+def not_like(x,y):
+    return not like(x,y)

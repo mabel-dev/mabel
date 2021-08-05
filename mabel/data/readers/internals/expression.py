@@ -1,11 +1,15 @@
 """
+This implements a SQL-like query syntax to filter dictionaries based on combinations
+of predicates.
+
+The implementation is as an expression tree, 
+
 Derived from: https://gist.github.com/leehsueh/1290686
 """
 
-from ....utils.text import like
+from ....utils.text import like, not_like
+import re
 import operator
-
-from ....errors import BaseException
 
 class InvalidExpression(BaseException):
     pass
@@ -15,11 +19,14 @@ TOKENS = {
     "STR": "<Literal>",
     "VAR": "<Variable>",
     "BOOL": "<Boolean>",
+    "NULL": "<Null>",
     "NOT": "NOT",
     ">": ">",
     ">=": ">=",
     "<": "<",
     "<=": "<=",
+    "IS": "IS",
+    "IS NOT": "IS NOT",
     "=": "==",
     "==": "==",
     "!=": "!=",
@@ -29,6 +36,7 @@ TOKENS = {
     "AND": "AND",
     "OR": "OR",
     "LIKE": "LIKE",
+    "NOT LIKE": "NOT LIKE"
 }
 
 TOKEN_OPERATORS = {
@@ -38,8 +46,13 @@ TOKEN_OPERATORS = {
     "<=": operator.le,
     "==": operator.eq,
     "!=": operator.ne,
+    "IS": operator.is_,
+    "IS NOT": operator.is_not,
     "LIKE": like,
+    "NOT LIKE": not_like
 }
+
+SPLITTER = re.compile(r"(\bNULL\b|\bIS NOT\b|\bIS\b|\bAND\b|\bOR\b|!=|==|=|\<\>|<=|>=|<|>|\(|\)|\bNOT LIKE\b|\bLIKE\b|\bNOT\b)", re.IGNORECASE)
 
 
 class TreeNode:
@@ -79,19 +92,18 @@ class ExpressionTokenizer:
         return t in TOKEN_OPERATORS
 
     def tokenize(self):
-        import re
-
-        reg = re.compile(r"(\bAND\b|\bOR\b|!=|==|=|\<\>|<=|>=|<|>|\(|\)|\bLIKE\b|\bNOT\b)", re.IGNORECASE)
-        self.tokens = reg.split(self.expression)
+        self.tokens = SPLITTER.split(self.expression)
         self.tokens = [t.strip() for t in self.tokens if t.strip() != ""]
 
         self.token_types = []
         for t in self.tokens:
             if t.upper() in TOKENS:
-                self.token_types.append(TOKENS[t])
+                self.token_types.append(TOKENS[t.upper()])
             else:
                 if str(t).lower() in ("true", "false"):
                     self.token_types.append(TOKENS["BOOL"])
+                elif str(t).lower() == "null":
+                    self.token_types.append(TOKENS["NULL"])
                 elif t[0] == t[-1] == '"' or t[0] == t[-1] == "'":
                     self.token_types.append(TOKENS["STR"])
                 else:
@@ -200,6 +212,10 @@ class Expression(object):
                 n = TreeNode(token_type)
                 n.value = self.tokenizer.next().lower() == "true"
                 return n
+            if token_type == TOKENS["NULL"]:
+                n = TreeNode(token_type)
+                n.value = None
+                return n
 
         raise InvalidExpression(f"Unexpected token, got `{self.tokenizer.next()}`")
 
@@ -208,7 +224,7 @@ class Expression(object):
         return self.evaluate_recursive(self.root, variable_dict)
 
     def evaluate_recursive(self, treeNode, variable_dict):
-        if treeNode.token_type in (TOKENS["NUM"], TOKENS["STR"], TOKENS["BOOL"]):
+        if treeNode.token_type in (TOKENS["NUM"], TOKENS["STR"], TOKENS["BOOL"], TOKENS["NULL"]):
             return treeNode.value
         if treeNode.token_type == TOKENS["VAR"]:
             if treeNode.value in variable_dict:
@@ -221,10 +237,6 @@ class Expression(object):
             return None
 
         left = self.evaluate_recursive(treeNode.left, variable_dict)
-        
-        # if the VAR is None, the result is false
-        if left is None:
-            return False
 
         if treeNode.token_type == TOKENS["NOT"]:
             return not left
@@ -249,6 +261,7 @@ class Expression(object):
             TOKENS["STR"],
             TOKENS["VAR"],
             TOKENS["BOOL"],
+            TOKENS["NULL"]
         ):
             return treeNode.value
 
