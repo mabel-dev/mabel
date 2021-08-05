@@ -58,6 +58,7 @@ RULES = [
     {"name": "start_date", "required": False, "warning": None, "incompatible_with": []},
     {"name": "thread_count", "required": False, "warning": "Threaded Reader is Beta - use in production systems is not recommended", "incompatible_with": []},
     {"name": "query", "required": False, "warning": "", "incompatible_with": ["filters"]},
+    {"name": "persistence", "required": False, "warning": "", "incompatible_with": []}
 
 ]
 # fmt:on

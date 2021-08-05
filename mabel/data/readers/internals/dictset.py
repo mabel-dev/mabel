@@ -300,6 +300,9 @@ class DictSet(object):
             )
         return pandas.DataFrame(self)
 
+    def first(self):
+        return next(iter(self._iterator), None)
+
     def take(self, items: int):
         """
         Return the first _items_ number of items from the _DictSet_. This loads
@@ -356,14 +359,14 @@ class DictSet(object):
             expression: string
                 Query expression (e.g. _name == 'mabel'_)
         """
-        q = Query(expression)
+        q = Expression(expression)
 
         def _inner(dictset):
             for record in dictset:
                 if q.evaluate(record):
                     yield record
 
-        return DictSet(_inner(self._iterator))
+        return DictSet(_inner(self._iterator), self.storage_class)
 
     def cursor(self):
         if hasattr(self._iterator, "cursor"):

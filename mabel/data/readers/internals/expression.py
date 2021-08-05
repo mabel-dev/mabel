@@ -1,17 +1,21 @@
 """
-
-
 Derived from: https://gist.github.com/leehsueh/1290686
 """
 
 from ....utils.text import like
 import operator
 
+from ....errors import BaseException
+
+class InvalidExpression(BaseException):
+    pass
+
 TOKENS = {
-    "NUM": "$Number$",
-    "STR": "$Literal$",
-    "VAR": "$Variable$",
-    "BOOL": "$Boolean$",
+    "NUM": "<Number>",
+    "STR": "<Literal>",
+    "VAR": "<Variable>",
+    "BOOL": "<Boolean>",
+    "NOT": "NOT",
     ">": ">",
     ">=": ">=",
     "<": "<",
@@ -75,7 +79,7 @@ class ExpressionTokenizer:
     def tokenize(self):
         import re
 
-        reg = re.compile(r"(\bAND\b|\bOR\b|!=|==|<=|>=|<|>|\(|\)|LIKE)")
+        reg = re.compile(r"(\bAND\b|\bOR\b|!=|==|<=|>=|<|>|\(|\)|\bLIKE\b|\bNOT\b)", re.IGNORECASE)
         self.tokens = reg.split(self.expression)
         self.tokens = [t.strip() for t in self.tokens if t.strip() != ""]
 
@@ -84,7 +88,7 @@ class ExpressionTokenizer:
             if t in TOKENS:
                 self.token_types.append(t)
             else:
-                if t in ("True", "False"):
+                if str(t).lower() in ("true", "false"):
                     self.token_types.append(TOKENS["BOOL"])
                 elif t[0] == t[-1] == '"' or t[0] == t[-1] == "'":
                     self.token_types.append(TOKENS["STR"])
@@ -93,7 +97,9 @@ class ExpressionTokenizer:
                         number = float(t)
                         self.token_types.append(TOKENS["NUM"])
                     except:
-                        if re.search("^[a-zA-Z_]+$", t):
+                        # starts with a letter, is made up of letters, numbers,
+                        # hyphens, underscores and dots
+                        if re.search(r"^[^\d\W][\w\-\.]*", t):
                             self.token_types.append(TOKENS["VAR"])
                         else:
                             self.token_types.append(None)
@@ -112,6 +118,8 @@ class Expression(object):
         self.root = self.parse_expression()
 
     def parse_expression(self):
+
+
         andTerm1 = self.parse_and_term()
         while (
             self.tokenizer.has_next()
@@ -140,6 +148,13 @@ class Expression(object):
         return condition1
 
     def parse_condition(self):
+        if (self.tokenizer.has_next() and self.tokenizer.next_token_type() == TOKENS["NOT"]):
+            not_condition = TreeNode(self.tokenizer.next_token_type())
+            self.tokenizer.next()
+            child_condition = self.parse_condition()
+            not_condition.left = child_condition
+            not_condition.right = None  # NOT is a unary operator
+            return not_condition
         if (
             self.tokenizer.has_next()
             and self.tokenizer.next_token_type() == TOKENS["LP"]
@@ -152,8 +167,7 @@ class Expression(object):
             ):
                 self.tokenizer.next()
                 return expression
-            else:
-                raise Exception("Closing ) expected, but got " + self.tokenizer.next())
+            raise InvalidExpression(f"`)` expected, but got `{self.tokenizer.next()}`")
 
         terminal1 = self.parse_terminal()
         if self.tokenizer.has_next():
@@ -164,10 +178,8 @@ class Expression(object):
                 condition.left = terminal1
                 condition.right = terminal2
                 return condition
-            else:
-                raise Exception("Operator expected, but got " + self.tokenizer.next())
-        else:
-            raise Exception("Operator expected, but got nothing")
+            raise InvalidExpression(f"Operator expected, but got `{self.tokenizer.next()}`")
+        raise InvalidExpression("Operator expected, but got nothing")
 
     def parse_terminal(self):
         if self.tokenizer.has_next():
@@ -176,27 +188,21 @@ class Expression(object):
                 n = TreeNode(token_type)
                 n.value = float(self.tokenizer.next())
                 return n
-            elif token_type == TOKENS["VAR"]:
+            if token_type in (TOKENS["VAR"], TOKENS["NOT"]):
                 n = TreeNode(token_type)
                 n.value = self.tokenizer.next()
                 return n
-            elif token_type == TOKENS["STR"]:
+            if token_type == TOKENS["STR"]:
                 n = TreeNode(token_type)
                 n.value = self.tokenizer.next()[1:-1]
                 return n
-            elif token_type == TOKENS["BOOL"]:
+            if token_type == TOKENS["BOOL"]:
                 n = TreeNode(token_type)
-                n.value = self.tokenizer.next() == "True"
+                n.value = self.tokenizer.next().lower() == "true"
                 return n
-            else:
-                raise Exception(
-                    "NUM, STR, or VAR expected, but got " + self.tokenizer.next()
-                )
 
-        else:
-            raise Exception(
-                "NUM, STR, or VAR expected, but got " + self.tokenizer.next()
-            )
+        raise InvalidExpression(f"Unexpected token, got `{self.tokenizer.next()}`")
+
 
     def evaluate(self, variable_dict):
         return self.evaluate_recursive(self.root, variable_dict)
@@ -210,20 +216,24 @@ class Expression(object):
                 if isinstance(value, int):
                     return float(value)
                 if value in ("True", "False"):
-                    return value == "True"
+                    return value.lower() == "true"
                 return value
             return None
 
         left = self.evaluate_recursive(treeNode.left, variable_dict)
+        if treeNode.token_type == TOKENS["NOT"]:
+            return not left
+
         right = self.evaluate_recursive(treeNode.right, variable_dict)
+
         if treeNode.token_type in TOKEN_OPERATORS:
             return TOKEN_OPERATORS[treeNode.token_type](left, right)
-        elif treeNode.token_type == TOKENS["AND"]:
+        if treeNode.token_type == TOKENS["AND"]:
             return left and right
-        elif treeNode.token_type == TOKENS["OR"]:
+        if treeNode.token_type == TOKENS["OR"]:
             return left or right
-        else:
-            raise Exception("Unexpected type " + str(treeNode.token_type))
+        
+        raise InvalidExpression(f"Unexpected value of type `{str(treeNode.token_type)}`")
 
     def to_dnf(self):
         return self.inner_to_dnf(self.root)
