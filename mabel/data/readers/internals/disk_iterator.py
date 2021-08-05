@@ -13,6 +13,12 @@ class DiskIterator:
         self.files = []
 
     def _read_file_in_chunks(self, filename, chunk_size=8 * 1024 * 1024):
+        """
+        Reading files in chunks improves performance.
+
+        We've chosen a conservative 8Mb cache as one of the reasons to use
+        DISK to persist the dataset is because you have limited memory.
+        """
         with open(filename, "r", encoding="utf8") as f:
             carry_forward = ""
             chunk = "INITIALIZED"

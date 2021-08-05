@@ -58,6 +58,7 @@ RULES = [
     {"name": "start_date", "required": False, "warning": None, "incompatible_with": []},
     {"name": "thread_count", "required": False, "warning": "Threaded Reader is Beta - use in production systems is not recommended", "incompatible_with": []},
     {"name": "query", "required": False, "warning": "", "incompatible_with": ["filters"]},
+    {"name": "persistence", "required": False, "warning": "", "incompatible_with": []}
 
 ]
 # fmt:on
@@ -247,7 +248,6 @@ def Reader(
     # multiprocessed reader
     fork_processes = bool(kwargs.get("fork_processes", False))
 
-
     return DictSet(
         _LowLevelReader(
             indexable_fields,
@@ -427,7 +427,6 @@ class _LowLevelReader(object):
                 offset = 0
             # when we're done, the cursor shouldn't point anywhere
             self.cursor = {}
-
 
     def __iter__(self):
         return self

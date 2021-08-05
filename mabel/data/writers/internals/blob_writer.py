@@ -16,7 +16,7 @@ BUFFER_SIZE = BLOB_SIZE  # buffer in memory really
 SUPPORTED_FORMATS_ALGORITHMS = ("jsonl", "lzma", "zstd", "parquet", "text")
 
 
-def flatten(dictionary, parent_key=False, separator='.'):
+def flatten(dictionary, parent_key=False, separator="."):
     """
     Turn a nested dictionary into a flattened dictionary
     :param dictionary: The dictionary to flatten

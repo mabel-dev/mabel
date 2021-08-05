@@ -18,6 +18,7 @@ def test_stream_rollover():
         dataset="bucket/path/file.extension",
         inner_writer=NullWriter,
         idle_timeout_seconds=1,
+        format="text"
     )
 
     with freeze_time("2012-01-14"):
