@@ -1,14 +1,14 @@
 import io
-import cityhash
 import struct
 from operator import itemgetter
-from typing import Iterable
+from typing import Iterable, Any
 from functools import lru_cache
+from cityhash import CityHash32
 
 
 MAX_INDEX = 4294967295  # 2^32 - 1
-STRUCT_DEF = "I I H"  # 4 byte unsigned int, 4 byte unsigned int, 2 byte unsigned int
-RECORD_SIZE = struct.calcsize(STRUCT_DEF)  # this should be 10
+STRUCT_DEF = "I I I"  # 4 byte unsigned int, 4 byte unsigned int, 4 byte unsigned int
+RECORD_SIZE = struct.calcsize(STRUCT_DEF)  # this should be 12
 
 """
 There are overlapping terms because we're traversing a dataset so we can traverse a
@@ -20,6 +20,26 @@ Terminology:
     Position  : the position of the row in the target file
     Row       : a record in the target file
 """
+
+# hashing can be slow, avoid if we can just convert to a number
+CONVERTERS = {
+    "int": lambda x: x,
+    "date": lambda x: (x.year * 1000) + (x.month * 10) + x.day,
+    "datetime": lambda x: int.from_bytes(struct.pack("d", x.timestamp()), "big"),
+    "float": lambda x: int.from_bytes(struct.pack("d", x), "big"),
+}
+
+
+def fallback_converter(val):
+    return CityHash32(val)
+
+
+def value_to_int(val: Any):
+    val_type = type(val).__name__
+    converter = fallback_converter
+    if val_type in CONVERTERS:
+        converter = CONVERTERS[val_type]
+    return converter(val)
 
 
 class IndexEntry(object):
@@ -93,8 +113,11 @@ class Index:
         """
         get a specific entry from the index
         """
-        self._index.seek(RECORD_SIZE * location)
-        return IndexEntry.from_bin(self._index.read(RECORD_SIZE))
+        try:
+            self._index.seek(RECORD_SIZE * location)
+            return IndexEntry.from_bin(self._index.read(RECORD_SIZE))
+        except Exception:
+            return None
 
     def _locate_record(self, value):
         """
@@ -114,7 +137,7 @@ class Index:
 
     def _inner_search(self, search_term) -> Iterable:
         # hash the value and make fit in a four byte unsinged int
-        value = cityhash.CityHash32(f"{search_term}") % MAX_INDEX
+        value = value_to_int(search_term) % MAX_INDEX
 
         # search for an instance of the value in the index
         location, found_entry = self._locate_record(value)
@@ -166,7 +189,7 @@ class IndexBuilder:
                 values = [values]
             for value in values:
                 entry = {
-                    "value": cityhash.CityHash32(f"{value}") % MAX_INDEX,
+                    "value": value_to_int(value) % MAX_INDEX,
                     "position": position,
                 }
                 self.temporary_index.append(entry)

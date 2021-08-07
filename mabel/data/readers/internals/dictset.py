@@ -49,7 +49,13 @@ MAXIMUM_RECORDS_IN_PARTITION = 65535  # 2^16 -1
 
 
 class DictSet(object):
-    def __init__(self, iterator: Iterable, storage_class=STORAGE_CLASS.NO_PERSISTANCE):
+    def __init__(
+        self,
+        iterator: Iterable,
+        *,
+        storage_class=STORAGE_CLASS.NO_PERSISTANCE,
+        number_of_partitions: int = 4,
+    ):
         """
         Create a DictSet.
 
@@ -61,6 +67,8 @@ class DictSet(object):
                 NO_PERSISTANCE which applies no specific persistance. MEMORY loads
                 into a Python `list`, DISK saves to disk - disk persistance is slower
                 but can handle much larger data sets.
+            number_of_partitions: integer (optional)
+
         """
         self.storage_class = storage_class
         self._iterator = iterator
@@ -238,6 +246,9 @@ class DictSet(object):
         """
         return statistics.stdev(self.collect(key))
 
+    def item(self, index):
+        return self._iterator[index]
+
     def count(self):
         """
         Count the number of items in the _DictSet_.
@@ -266,6 +277,38 @@ class DictSet(object):
                     hash_list[hashed_item] = True
 
         return DictSet(do_dedupe(self._iterator), self.storage_class)
+
+    def igroupby(self, column):
+        """ """
+        from ....index.index import IndexBuilder
+
+        builder = IndexBuilder(column)
+        for i, r in enumerate(self._iterator):
+            builder.add(i, r)
+        index = builder.build()
+
+        position = 0
+        entry = index._get_entry(position)
+        item_locations = []
+        while entry:
+            # get the uncompressed value
+            stored_value = self._iterator[entry.location].pop().get(column)
+            item_locations.append(entry.location)
+
+            # get the positions of the values in the index
+            end_location = position + 1
+            this_entry = index._get_entry(end_location)
+            while end_location < index.size and this_entry.value == entry.value:
+                item_locations.append(this_entry.location)
+                end_location += 1
+                this_entry = index._get_entry(end_location)
+
+            yield stored_value, DictSet(
+                self._iterator[item_locations], storage_class=self.storage_class
+            )
+            position = end_location
+            entry = index._get_entry(position)
+            item_locations = []
 
     def to_ascii_table(self, limit: int = 5):
         """
@@ -308,7 +351,7 @@ class DictSet(object):
         Return the first _items_ number of items from the _DictSet_. This loads
         these items into memory. If returning a large number of items, use itake.
         """
-        return DictSet(self.itake(items), self.storage_class)
+        return DictSet(self.itake(items), storage_class=self.storage_class)
 
     def itake(self, items: int):
         """
@@ -366,7 +409,7 @@ class DictSet(object):
                 if q.evaluate(record):
                     yield record
 
-        return DictSet(_inner(self._iterator), self.storage_class)
+        return DictSet(_inner(self._iterator), storage_class=self.storage_class)
 
     def cursor(self):
         if hasattr(self._iterator, "cursor"):
@@ -397,3 +440,6 @@ class DictSet(object):
         serialized = map(orjson.dumps, self._iterator)
         hashed = map(cityhash.CityHash32, serialized)
         return reduce(lambda x, y: x ^ y, hashed, seed)
+
+    def _parallelize(self, func):
+        pass

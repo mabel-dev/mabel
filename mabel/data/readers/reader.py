@@ -262,7 +262,7 @@ def Reader(
             select,
             kwargs.get("query"),
         ),
-        persistence,
+        storage_class=persistence,
     )
 
 

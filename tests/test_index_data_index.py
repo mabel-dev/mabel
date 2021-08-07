@@ -1,3 +1,4 @@
+import datetime
 import sys
 import os
 
@@ -198,8 +199,18 @@ def test_complex_indexes():
         assert "sodium" in COMPOUNDS[row]["elements"]
 
 
+def test_index_types():
+    ib = IndexBuilder("test")
+    ib.add(1, {"test": int(123)})
+    ib.add(1, {"test": float(123)})
+    ib.add(1, {"test": datetime.date.today()})
+    ib.add(1, {"test": datetime.datetime.now()})
+    ib.add(1, {"test": str("string")})
+
+
 if __name__ == "__main__":  # pragma: no cover
     test_data_index()
     test_complex_indexes()
+    test_index_types()
 
     print("okay")
