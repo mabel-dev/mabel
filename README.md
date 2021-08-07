@@ -1,10 +1,11 @@
-# DEVELOPMENT MABEL - use at your own risk
+# DEVELOPMENT MABEL
 
 <img align="centre" alt="overlapping arrows" height="92" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/mabel.svg" />
 
-**mabel** is a fully-portable Data Engineering platform designed to run on low-spec compute nodes.
+## mabel is a Data Engineering platform designed to run in serverless environments.
 
-There is no server component, **mabel** just runs when you need it, where you want it.
+**mabel** has no server component, **mabel** just runs when you need it making it ideal
+for deployments to platforms like Kubernetes, Cloud Run and Knative.
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/mabel-dev/mabel/blob/master/LICENSE)
 [![Status](https://img.shields.io/badge/status-beta-yellowgreen)](https://github.com/mabel-dev/mabel)
@@ -20,11 +21,11 @@ There is no server component, **mabel** just runs when you need it, where you wa
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 
-**Documentation** [GitHub Wiki](https://github.com/mabel-dev/mabel/wiki)  
-**Bug Reports** [GitHub Issues](https://github.com/mabel-dev/mabel/issues/new/choose)  
-**Feature Requests** [GitHub Issues](https://github.com/mabel-dev/mabel/issues/new/choose)  
-**Source Code**  [GitHub](https://github.com/mabel-dev/mabel)  
-**Discussions** [GitHub Discussions](https://github.com/mabel-dev/mabel/discussions)
+- **Documentation** [GitHub Wiki](https://github.com/mabel-dev/mabel/wiki)  
+- **Bug Reports** [GitHub Issues](https://github.com/mabel-dev/mabel/issues/new/choose)  
+- **Feature Requests** [GitHub Issues](https://github.com/mabel-dev/mabel/issues/new/choose)  
+- **Source Code**  [GitHub](https://github.com/mabel-dev/mabel)  
+- **Discussions** [GitHub Discussions](https://github.com/mabel-dev/mabel/discussions)
 
 ## Focus on What Matters
 
@@ -32,35 +33,20 @@ We've built **mabel** to enable Data Analysts to write complex data engineering 
 quickly and easily, so they could get on with doing what they do best.
 
 ~~~python
-from mabel import operator
-from mabel.operators import EndOperator
+from mabel import Reader
 
-@operator
-def say_hello(name):
-    print(F"Hello, {name}!")
-
-flow = say_hello >> EndOperator()
-with flow as runner:
-    runner("world")  # Hello, world!
+data = Reader(dataset="test_data")
+print(data.count())
 ~~~
 
 ## Key Features
 
--  Programatically define data pipelines
--  Treats datasets as immutable
 -  On-the-fly compression
--  Automatic version tracking of processing operations
--  Trace messages through the pipeline (random sampling)
--  Automatic retry of failed operations
 -  Low-memory requirements, even with terabytes of data
--  Indexing and partitioning of data for fast reads (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />beta) 
--  Cursors for tracking reading position (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />beta) 
--  SQL Query support (<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />alpha)
+-  Indexing and partitioning of data for fast reads 
+-  Cursors for tracking reading position between processes 
+-  Partial SQL DQL support 
 -  Schema and [data_expectations](https://github.com/joocer/data_expectations) validation
-
-Note:
-- **<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />alpha** features are subject to change and are not recommended for production systems  
-- **<img align="centre" alt="Notice" height="12" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/note.svg" />beta** features may change to resolve issues during testing
 
 ## Installation
 
@@ -75,7 +61,6 @@ pip install --upgrade git+https://github.com/mabel-dev/mabel
 
 ## Guides
 
-[How to Write a Flow](https://github.com/mabel-dev/mabel/wiki/how_to_write_a_flow)  
 [How to Read Data](https://github.com/mabel-dev/mabel/wiki/how_to_read_a_dataset)
 
 ## Dependencies
@@ -90,7 +75,7 @@ pip install --upgrade git+https://github.com/mabel-dev/mabel
 There are a number of optional dependencies which are usually only required for
 specific features and functionality. These are listed in the
 [requirements.txt](https://github.com/mabel-dev/mabel/blob/main/tests/requirements.txt)
-file in the _tests_ folder which is used for testing.
+file in the _tests_ folder.
 
 ## Integrations
 
