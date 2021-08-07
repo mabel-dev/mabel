@@ -42,5 +42,6 @@ def _sql_like_fragment_to_regex(fragment):
 def like(x, y):
     return _sql_like_fragment_to_regex(y.lower()).match(str(x).lower())
 
-def not_like(x,y):
-    return not like(x,y)
+
+def not_like(x, y):
+    return not like(x, y)

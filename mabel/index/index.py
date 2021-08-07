@@ -1,6 +1,5 @@
 import io
 import struct
-import datetime
 from operator import itemgetter
 from typing import Iterable, Any
 from functools import lru_cache
@@ -8,8 +7,8 @@ from cityhash import CityHash32
 
 
 MAX_INDEX = 4294967295  # 2^32 - 1
-STRUCT_DEF = "I I H"  # 4 byte unsigned int, 4 byte unsigned int, 2 byte unsigned int
-RECORD_SIZE = struct.calcsize(STRUCT_DEF)  # this should be 10
+STRUCT_DEF = "I I I"  # 4 byte unsigned int, 4 byte unsigned int, 4 byte unsigned int
+RECORD_SIZE = struct.calcsize(STRUCT_DEF)  # this should be 12
 
 """
 There are overlapping terms because we're traversing a dataset so we can traverse a
@@ -27,11 +26,13 @@ CONVERTERS = {
     "int": lambda x: x,
     "date": lambda x: (x.year * 1000) + (x.month * 10) + x.day,
     "datetime": lambda x: int.from_bytes(struct.pack("d", x.timestamp()), "big"),
-    "float": lambda x: int.from_bytes(struct.pack("d", x), "big")
+    "float": lambda x: int.from_bytes(struct.pack("d", x), "big"),
 }
+
 
 def fallback_converter(val):
     return CityHash32(val)
+
 
 def value_to_int(val: Any):
     val_type = type(val).__name__
@@ -39,6 +40,7 @@ def value_to_int(val: Any):
     if val_type in CONVERTERS:
         converter = CONVERTERS[val_type]
     return converter(val)
+
 
 class IndexEntry(object):
     """
@@ -111,8 +113,11 @@ class Index:
         """
         get a specific entry from the index
         """
-        self._index.seek(RECORD_SIZE * location)
-        return IndexEntry.from_bin(self._index.read(RECORD_SIZE))
+        try:
+            self._index.seek(RECORD_SIZE * location)
+            return IndexEntry.from_bin(self._index.read(RECORD_SIZE))
+        except Exception:
+            return None
 
     def _locate_record(self, value):
         """

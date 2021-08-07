@@ -25,9 +25,10 @@ TEST_DATA = [
 ]
 # fmt: on
 
+
 def test_simple_equals_expressions():
 
-    DATA = DictSet(TEST_DATA, STORAGE_CLASS.MEMORY)
+    DATA = DictSet(TEST_DATA, storage_class=STORAGE_CLASS.MEMORY)
 
     assert DATA.query("name == 'James Potter'").count() == 2
     assert DATA.query("age == 10").count() == 1
@@ -38,7 +39,7 @@ def test_simple_equals_expressions():
 
 def test_simple_not_expressions():
 
-    DATA = DictSet(TEST_DATA, STORAGE_CLASS.MEMORY)
+    DATA = DictSet(TEST_DATA, storage_class=STORAGE_CLASS.MEMORY)
 
     assert DATA.query("name <> 'James Potter'").count() == 5
     assert DATA.query("not age == 10").count() == 6
@@ -48,7 +49,7 @@ def test_simple_not_expressions():
 
 
 def test_simple_compound_expressions():
-    DATA = DictSet(TEST_DATA, STORAGE_CLASS.MEMORY)
+    DATA = DictSet(TEST_DATA, storage_class=STORAGE_CLASS.MEMORY)
 
     assert DATA.query("name like '%Potter' and alive == true").count() == 2
     assert DATA.query("name like '%Potter' or alive == true").count() == 5
@@ -58,6 +59,5 @@ if __name__ == "__main__":  # pragma: no cover
     test_simple_equals_expressions()
     test_simple_not_expressions()
     test_simple_compound_expressions()
-
 
     print("okay")

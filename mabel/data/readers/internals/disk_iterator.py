@@ -46,3 +46,15 @@ class DiskIterator:
         record = next(self.inner_reader)
         if record:
             return record
+
+    def __getitem__(self, items):
+        collected_items = []
+        if not isinstance(items, (list, set, tuple)):
+            items = set([items])
+        max_item = max(items)
+        for i, r in enumerate(self):
+            if i in items:
+                collected_items.append(r)
+            if i >= max_item:
+                return collected_items
+        return collected_items
