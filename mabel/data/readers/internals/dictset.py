@@ -30,7 +30,7 @@ import statistics
 from tempfile import TemporaryDirectory
 from functools import reduce
 
-from typing import Iterable, Union
+from typing import Iterable, Union, Callable
 from juon.dictset.display import html_table, ascii_table
 
 # from ....logging import get_logger
@@ -139,7 +139,7 @@ class DictSet(object):
                 if random_value % selector == 0:
                     yield row
 
-        return DictSet(inner_sampler, self.storage_class)
+        return DictSet(inner_sampler, storage_class=self.storage_class)
 
     def collect(self, key: str = None) -> Union[list, map]:
         """
@@ -164,7 +164,7 @@ class DictSet(object):
             lambda x, y: x + [a for a in y.keys() if a not in x], self._iterator, []
         )
 
-    def aggregate(self, function: callable, key: str):
+    def aggregate(self, function: Callable, key: str):
         # perform a function on all of the items in the
         # set, e.g. fold([1,2,3],add) == 6
         return reduce(function, self.collect(key))
@@ -278,7 +278,7 @@ class DictSet(object):
 
         return DictSet(do_dedupe(self._iterator), self.storage_class)
 
-    def igroupby(self, column):
+    def higroupby(self, column):
         """ """
         from ....index.index import IndexBuilder
 
@@ -309,6 +309,24 @@ class DictSet(object):
             position = end_location
             entry = index._get_entry(position)
             item_locations = []
+
+    def igroupby(self, column):
+        from ...internals.index import IndexBuilder
+
+        builder = IndexBuilder(column)
+        for i, r in enumerate(self._iterator):
+            builder.add(i, r)
+        temporary_index = sorted(builder.temporary_index, key=itemgetter("value"))
+
+        last_value = None
+        item_locations = []
+        for entry in temporary_index:
+            if last_value != entry["value"]:
+                yield (last_value, item_locations)
+                item_locations = []
+            item_locations.append(entry["position"])
+            last_value = entry["value"]
+        yield (last_value, item_locations)
 
     def to_ascii_table(self, limit: int = 5):
         """
@@ -440,6 +458,3 @@ class DictSet(object):
         serialized = map(orjson.dumps, self._iterator)
         hashed = map(cityhash.CityHash32, serialized)
         return reduce(lambda x, y: x ^ y, hashed, seed)
-
-    def _parallelize(self, func):
-        pass

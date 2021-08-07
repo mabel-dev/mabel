@@ -7,7 +7,7 @@ import shutil
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.data import BatchWriter
 from mabel.data import Reader
-from mabel.index.index import Index
+from mabel.data.internals.index import Index
 from mabel.adapters.disk import DiskReader, DiskWriter
 from rich import traceback
 

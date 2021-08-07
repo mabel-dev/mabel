@@ -1,34 +1,31 @@
-import datetime
 import io
 import sys
 import shutil
 import atexit
+import orjson
 import os.path
+import datetime
+import cityhash
+
 from typing import Optional, Tuple, List
 
 from .internals.dictset import DictSet
-
 from .internals.threaded_reader import threaded_reader
 from .internals.alpha_processed_reader import processed_reader
 from .internals.parsers import pass_thru_parser, block_parser, json_parser, xml_parser
 from .internals.filters import Filters, get_indexable_filter_columns
 from .internals.expression import Expression
 
-from juon.dictset import select_record_fields
-from juon import json
-
+from ..readers import STORAGE_CLASS
+from ..internals.index import Index
+from ..internals.records import select_record_fields
 
 from ...errors import InvalidCombinationError, DataNotFoundError
-from ...index.index import Index
 from ...utils import safe_field_name
 from ...utils.parameter_validator import validate
-
 from ...utils.paths import get_parts
 from ...utils.dates import parse_delta
-
 from ...logging import get_logger
-
-from ..readers import STORAGE_CLASS
 
 
 # available parsers
@@ -187,7 +184,7 @@ def Reader(
 
     cursor = kwargs.get("cursor", None)
     if isinstance(cursor, str):
-        cursor = json.parse(cursor)
+        cursor = orjson.loads(cursor)
     if not isinstance(cursor, dict):
         cursor = {}
 
@@ -237,8 +234,10 @@ def Reader(
 
     indexable_fields = []
     if filters:
-        filters = Filters(filters)
-        indexable_fields = get_indexable_filter_columns(filters.predicates)
+        filters = Filters(filters)  # type:ignore
+        indexable_fields = get_indexable_filter_columns(
+            filters.predicates
+        )  # type:ignore
 
     """ FEATURES IN DEVELOPMENT """
 
@@ -383,10 +382,12 @@ class _LowLevelReader(object):
         readable_blobs = [b for b in blob_list if not _is_system_file(b)]
 
         # skip to the blob in the cursor
-        if self.cursor.get("blob"):
+        if self.cursor.get("partition"):
             skipped = 0
             while len(readable_blobs) > 0:
-                if readable_blobs[0] != self.cursor.get("blob"):
+                if cityhash.CityHash32(readable_blobs[0]) != self.cursor.get(
+                    "partition"
+                ):
                     readable_blobs.pop(0)
                     skipped += 1
                 else:
@@ -412,7 +413,7 @@ class _LowLevelReader(object):
         else:
             offset = self.cursor.get("offset", 0)
             for blob in readable_blobs:
-                self.cursor["blob"] = blob
+                self.cursor["partition"] = cityhash.CityHash32(blob)
                 self.cursor["offset"] = -1
                 local_reader = self._read_blob(blob, blob_list)
                 if offset > 0:

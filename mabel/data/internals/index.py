@@ -21,7 +21,7 @@ Terminology:
     Row       : a record in the target file
 """
 
-# hashing can be slow, avoid if we can just convert to a number
+# hashing can be slow, avoid if we can just convert to a number without hashing
 CONVERTERS = {
     "int": lambda x: x,
     "date": lambda x: (x.year * 1000) + (x.month * 10) + x.day,
@@ -31,7 +31,7 @@ CONVERTERS = {
 
 
 def fallback_converter(val):
-    return CityHash32(val)
+    return CityHash32(f"{val}")
 
 
 def value_to_int(val: Any):

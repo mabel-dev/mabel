@@ -7,23 +7,44 @@ class SqlParser:
         self.statement = statement
 
         self.select = ["*"]
-        self.dataset = None
-        self.query = None
+        self._from = None
+        self.where = None
+        self.group_by = None
+        self.having = None
+        self.order_by = None
+        self.limit = None
 
         self.parts = self._split_statement(statement)
 
         for i, part in enumerate(self.parts):
-            if part == "SELECT":
+            if part.upper() == "SELECT":
                 self.select = [self.parts[i + 1]]
-            if part == "FROM":
-                self.dataset = self.parts[i + 1].replace(".", "/")
-            if part == "WHERE":
-                self.query = self.parts[i + 1]
+            if part.upper() == "FROM":
+                self._from = self.parts[i + 1].replace(".", "/")
+            if part.upper() == "WHERE":
+                self.where = self.parts[i + 1]
+            if part.upper() == "JOIN":
+                raise NotImplementedError("SQL `JOIN` not implemented")
+            if part.upper() == "GROUP BY":
+                self.group_by = self.parts[i + 1]
+                raise NotImplementedError("SQL `GROUP BY` not implemented")
+            if part.upper() == "HAVING":
+                self.having = self.parts[i + 1]
+                raise NotImplementedError("SQL `HAVING` not implemented")
+            if part.upper() == "ORDER BY":
+                self.order_by = self.parts[i + 1]
+                raise NotImplementedError("SQL `ORDER BY` not implemented")
+            if part.upper() == "LIMIT":
+                self.limit = self.parts[i + 1]
+                raise NotImplementedError("SQL `LIMIT` not implemented")
 
     def _split_statement(self, statement):
         import re
 
-        reg = re.compile(r"(\bSELECT\b|\bFROM\b|\bWHERE\b|\-\-|\;)")
+        reg = re.compile(
+            r"(\bSELECT\b|\bFROM\b|\bJOIN\b|\bWHERE\b|\bGROUP BY\b|\bHAVING\b|\bORDER BY\b|\bLIMIT\b|\-\-|\;)",
+            re.IGNORECASE,
+        )
         tokens = []
 
         for line in statement.split("\n"):
@@ -62,8 +83,8 @@ class SqlReader:
         self.reader = Reader(
             #            thread_count=thread_count,
             select=sql.select,
-            query=sql.query,
-            dataset=sql.dataset,
+            query=sql.where,
+            dataset=sql._from,
             **kwargs,
         )
 
