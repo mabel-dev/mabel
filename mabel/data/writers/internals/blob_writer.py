@@ -12,7 +12,7 @@ from ....errors import MissingDependencyError
 
 
 BLOB_SIZE = 64 * 1024 * 1024  # 64Mb, 16 files per gigabyte
-BUFFER_SIZE = BLOB_SIZE  # buffer in memory really
+BUFFER_SIZE = BLOB_SIZE  # buffer in memory
 SUPPORTED_FORMATS_ALGORITHMS = ("jsonl", "lzma", "zstd", "parquet", "text", "flat")
 
 

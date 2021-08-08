@@ -27,7 +27,6 @@ import cityhash
 import statistics
 
 
-from tempfile import TemporaryDirectory
 from functools import reduce
 
 from typing import Iterable, Union, Callable
@@ -44,8 +43,7 @@ from .disk_iterator import DiskIterator
 from .expression import Expression
 from .filters import Filters
 
-
-MAXIMUM_RECORDS_IN_PARTITION = 65535  # 2^16 -1
+from ...internals.index import value_to_int
 
 
 class DictSet(object):
@@ -80,24 +78,8 @@ class DictSet(object):
 
         # if we're persisting to disk, save it
         if storage_class == STORAGE_CLASS.DISK:
-            self._persist_to_disk()
+            self._iterator = DiskIterator(iterator)
 
-    def _persist_to_disk(self):
-        # save the data to a temporary folder
-        file = None
-        self._temporary_folder = TemporaryDirectory("dictset")
-        os.makedirs(self._temporary_folder.name, exist_ok=True)
-        for index, row in enumerate(self._iterator):
-            if index % MAXIMUM_RECORDS_IN_PARTITION == 0:
-                if file:
-                    file.close()
-                file = open(
-                    f"{self._temporary_folder.name}/{time.time_ns()}.jsonl", "wb"
-                )
-            file.write(orjson.dumps(row) + b"\n")
-        if file:
-            file.close()
-        self._iterator = DiskIterator(self._temporary_folder.name)
 
     def __iter__(self):
         return iter(self._iterator)
@@ -255,6 +237,8 @@ class DictSet(object):
         """
         # we use `reduce` so we don't need to load all of the items into a list
         # in order to count them.
+        if hasattr(self._iterator, "__length__"):
+            return len(self._iterator)
         if self.storage_class in (STORAGE_CLASS.MEMORY, STORAGE_CLASS.DISK):
             return reduce(lambda x, y: x + 1, self._iterator, 0)
         else:
@@ -278,55 +262,51 @@ class DictSet(object):
 
         return DictSet(do_dedupe(self._iterator), self.storage_class)
 
-    def higroupby(self, column):
-        """ """
-        from ....index.index import IndexBuilder
 
-        builder = IndexBuilder(column)
+    def igroupby(self, group_by_column):
+
+        group_index = []
+        group_keys = {}
+
+        def builder(position, record):
+            if group_by_column in record:
+                value_as_int = value_to_int(record[group_by_column])
+                group_keys[value_as_int] = record[group_by_column]
+                entry = (value_as_int, position)
+                group_index.append(entry)
+
         for i, r in enumerate(self._iterator):
-            builder.add(i, r)
-        index = builder.build()
+            builder(i, r)
 
-        position = 0
-        entry = index._get_entry(position)
-        item_locations = []
-        while entry:
-            # get the uncompressed value
-            stored_value = self._iterator[entry.location].pop().get(column)
-            item_locations.append(entry.location)
-
-            # get the positions of the values in the index
-            end_location = position + 1
-            this_entry = index._get_entry(end_location)
-            while end_location < index.size and this_entry.value == entry.value:
-                item_locations.append(this_entry.location)
-                end_location += 1
-                this_entry = index._get_entry(end_location)
-
-            yield stored_value, DictSet(
-                self._iterator[item_locations], storage_class=self.storage_class
-            )
-            position = end_location
-            entry = index._get_entry(position)
-            item_locations = []
-
-    def igroupby(self, column):
-        from ...internals.index import IndexBuilder
-
-        builder = IndexBuilder(column)
-        for i, r in enumerate(self._iterator):
-            builder.add(i, r)
-        temporary_index = sorted(builder.temporary_index, key=itemgetter("value"))
+        group_index.sort(key=lambda tup: tup[0])
 
         last_value = None
         item_locations = []
-        for entry in temporary_index:
-            if last_value != entry["value"]:
-                yield (last_value, item_locations)
+        for val, pos in group_index:
+            if last_value and last_value != val:
+                yield (group_keys[last_value], DictSet(self.get_items(*item_locations)))
                 item_locations = []
-            item_locations.append(entry["position"])
-            last_value = entry["value"]
-        yield (last_value, item_locations)
+            item_locations.append(pos)
+            last_value = val
+        yield (group_keys[last_value], DictSet(self.get_items(*item_locations)))
+
+    def get_items(self, *locations):
+
+        # if the iterator allows us to access items directly, use that
+        if self.storage_class == STORAGE_CLASS.MEMORY:
+            yield from [self._iterator[i] for i in locations]
+            return
+
+        # if there's no direct access to items, cycle through them
+        # yielding the items we want
+        if self.storage_class == STORAGE_CLASS.DISK:
+            for i, r in enumerate(self._iterator._inner_reader(*locations)):
+                yield r
+            return
+
+        if self.storage_class == STORAGE_CLASS.NO_PERSISTANCE:
+            raise NotImplementedError("")
+
 
     def to_ascii_table(self, limit: int = 5):
         """
