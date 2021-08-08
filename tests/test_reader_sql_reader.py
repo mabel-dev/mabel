@@ -3,6 +3,7 @@ import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 import shutil
+from mabel.data.readers import STORAGE_CLASS
 from mabel.data import Reader
 from mabel.data import BatchWriter
 from mabel.adapters.disk import DiskWriter, DiskReader
@@ -20,7 +21,7 @@ def do_writer():
     w.finalize()
 
 
-def test_most_basic_sql():
+def test_where():
 
     shutil.rmtree("_temp", ignore_errors=True)
     do_writer()
@@ -71,10 +72,36 @@ def test_sql_to_dictset():
     )
     assert len(s.reader.take(10).collect()) == 10
 
+def test_select():
+
+    s = SqlReader(
+        sql_statement="SELECT tweet_id, user_name FROM tests.data.index.not",
+        inner_reader=DiskReader,
+        raw_path=True,
+    )
+    first = s.reader.first()
+    print(first)
+    assert first.get('tweet_id') is not None
+    assert first.get('user_name') is not None
+    assert first.get('timestamp') is None
+
+def test_limit():
+
+    s = SqlReader(
+        sql_statement="SELECT tweet_id, user_name FROM tests.data.index.not LIMIT 12",
+        inner_reader=DiskReader,
+        raw_path=True,
+        persistence=STORAGE_CLASS.MEMORY
+    )
+    record_count = s.reader.count()
+    assert record_count == 12, record_count
+
 
 if __name__ == "__main__":  # pragma: no cover
     test_sql()
-    test_most_basic_sql()
     test_sql_to_dictset()
+    test_select()
+    test_where()
+    test_limit()
 
     print("okay")

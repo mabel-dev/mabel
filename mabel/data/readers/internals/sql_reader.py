@@ -18,7 +18,7 @@ class SqlParser:
 
         for i, part in enumerate(self.parts):
             if part.upper() == "SELECT":
-                self.select = [self.parts[i + 1]]
+                self.select = [t.strip() for t in self.parts[i + 1].split(',') if t.strip() != ""]
             if part.upper() == "FROM":
                 self._from = self.parts[i + 1].replace(".", "/")
             if part.upper() == "WHERE":
@@ -35,8 +35,7 @@ class SqlParser:
                 self.order_by = self.parts[i + 1]
                 raise NotImplementedError("SQL `ORDER BY` not implemented")
             if part.upper() == "LIMIT":
-                self.limit = self.parts[i + 1]
-                raise NotImplementedError("SQL `LIMIT` not implemented")
+                self.limit = int(self.parts[i + 1])
 
     def _split_statement(self, statement):
         import re
@@ -60,7 +59,7 @@ class SqlParser:
         return tokens
 
     def __repr__(self):
-        return "< SQL: " + " ".join(self.parts) + " >"
+        return f"< SQL: SELECT ({self.select}) FROM ({self._from}) WHERE ({self.where}) LIMIT ({self.limit}) >"
 
 
 class SqlReader:
@@ -87,6 +86,8 @@ class SqlReader:
             dataset=sql._from,
             **kwargs,
         )
+        if sql.limit:
+            self.reader = self.reader.take(sql.limit)
 
     def __iter__(self):
         return self.reader._iterator
