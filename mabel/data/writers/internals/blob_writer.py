@@ -13,7 +13,7 @@ from ....errors import MissingDependencyError
 
 BLOB_SIZE = 64 * 1024 * 1024  # 64Mb, 16 files per gigabyte
 BUFFER_SIZE = BLOB_SIZE  # buffer in memory really
-SUPPORTED_FORMATS_ALGORITHMS = ("jsonl", "lzma", "zstd", "parquet", "text")
+SUPPORTED_FORMATS_ALGORITHMS = ("jsonl", "lzma", "zstd", "parquet", "text", "flat")
 
 
 class BlobWriter(object):
@@ -50,8 +50,10 @@ class BlobWriter(object):
         # serialize the record
         if self.format == "text":
             serialized = str(record).encode() + b"\n"
-        else:
+        elif self.format == "flat":
             serialized = dumps(flatten(record)) + b"\n"  # type:ignore
+        else:
+            serialized = dumps(record) + b"\n"  # type:ignore
 
         # add the columns to the index
         for column in self.indexes:
