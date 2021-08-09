@@ -26,7 +26,7 @@ def test_where():
     shutil.rmtree("_temp", ignore_errors=True)
     do_writer()
     s = SqlReader("SELECT * FROM _temp.twitter", inner_reader=DiskReader, raw_path=True)
-    findings = list(s)
+    findings = list(s.reader)
     assert len(findings) == 50, len(findings)
     shutil.rmtree("_temp", ignore_errors=True)
 
@@ -57,7 +57,7 @@ def test_sql():
             inner_reader=DiskReader,
             raw_path=True,
         )
-        findings = list(s)
+        findings = list(s.reader)
         assert len(findings) == test.get(
             "result"
         ), f"{test.get('statement')} == {len(findings)}"
@@ -91,7 +91,6 @@ def test_limit():
         sql_statement="SELECT tweet_id, user_name FROM tests.data.index.not LIMIT 12",
         inner_reader=DiskReader,
         raw_path=True,
-        persistence=STORAGE_CLASS.MEMORY
     )
     record_count = s.reader.count()
     assert record_count == 12, record_count
