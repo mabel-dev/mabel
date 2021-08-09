@@ -83,7 +83,7 @@ def test_select():
     print(first)
     assert first.get('tweet_id') is not None
     assert first.get('user_name') is not None
-    assert first.get('timestamp') is None
+    assert first.get('timestamp') is None, first.get('timestamp')
 
 def test_limit():
 

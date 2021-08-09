@@ -9,16 +9,17 @@ import cityhash
 
 from typing import Optional, Tuple, List
 
-from .internals.dictset import DictSet
 from .internals.threaded_reader import threaded_reader
 from .internals.alpha_processed_reader import processed_reader
 from .internals.parsers import pass_thru_parser, block_parser, json_parser, xml_parser
-from .internals.filters import Filters, get_indexable_filter_columns
-from .internals.expression import Expression
 
 from ..readers import STORAGE_CLASS
+from ..internals.dictset import DictSet
 from ..internals.index import Index
 from ..internals.records import select_record_fields
+from ..internals.filters import Filters, get_indexable_filter_columns
+from ..internals.expression import Expression
+
 
 from ...errors import InvalidCombinationError, DataNotFoundError
 from ...utils import safe_field_name

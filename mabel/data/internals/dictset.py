@@ -33,8 +33,8 @@ from typing import Iterable, Union, Callable
 from juon.dictset.display import html_table, ascii_table
 
 # from ....logging import get_logger
-from ...readers import STORAGE_CLASS
-from ....errors import MissingDependencyError, InvalidArgument
+from ...data.readers import STORAGE_CLASS
+from ...errors import MissingDependencyError, InvalidArgument
 
 
 from operator import itemgetter
@@ -42,8 +42,7 @@ from operator import itemgetter
 from .disk_iterator import DiskIterator
 from .expression import Expression
 from .filters import Filters
-
-from ...internals.index import value_to_int
+from .index import value_to_int
 
 
 class DictSet(object):
@@ -284,11 +283,11 @@ class DictSet(object):
         item_locations = []
         for val, pos in group_index:
             if last_value and last_value != val:
-                yield (group_keys[last_value], DictSet(self.get_items(*item_locations)))
+                yield (group_keys[last_value], DictSet(self.get_items(*item_locations), storage_class=STORAGE_CLASS.MEMORY))
                 item_locations = []
             item_locations.append(pos)
             last_value = val
-        yield (group_keys[last_value], DictSet(self.get_items(*item_locations)))
+        yield (group_keys[last_value], DictSet(self.get_items(*item_locations), storage_class=STORAGE_CLASS.MEMORY))
 
     def get_items(self, *locations):
 
@@ -300,12 +299,14 @@ class DictSet(object):
         # if there's no direct access to items, cycle through them
         # yielding the items we want
         if self.storage_class == STORAGE_CLASS.DISK:
-            for i, r in enumerate(self._iterator._inner_reader(*locations)):
+            for r in self._iterator._inner_reader(*locations):
                 yield r
             return
 
         if self.storage_class == STORAGE_CLASS.NO_PERSISTANCE:
-            raise NotImplementedError("")
+            for i, r in self._iterator:
+                if i in locations:
+                    yield r
 
 
     def to_ascii_table(self, limit: int = 5):
@@ -414,7 +415,7 @@ class DictSet(object):
             return self._iterator.cursor
         return None
 
-    def __getitem__(self, columns):
+    def select(self, columns):
         """
         Selects columns from a _DictSet_. If the column doesn't exist it is populated
         with `None`.
@@ -426,7 +427,11 @@ class DictSet(object):
             for record in it:
                 yield {k: record.get(k, None) for k in columns}
 
-        return DictSet(inner_select(self._iterator), self.storage_class)
+        return DictSet(inner_select(self._iterator), storage_class=self.storage_class)
+
+    def __getitem__(self, columns):
+        return self.select(columns)
+
 
     def __hash__(self, seed: int = 703115) -> int:
         """

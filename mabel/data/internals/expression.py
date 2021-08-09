@@ -7,7 +7,7 @@ The implementation is as an expression tree,
 Derived from: https://gist.github.com/leehsueh/1290686
 """
 
-from ....utils.text import like, not_like
+from ...utils.text import like, not_like
 import re
 import operator
 
