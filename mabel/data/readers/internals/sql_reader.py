@@ -115,7 +115,6 @@ class SqlReader:
             #            thread_count=thread_count,
             query=sql.where,
             dataset=sql._from,
-            persistence=STORAGE_CLASS.MEMORY,
             **kwargs,
         )
 
