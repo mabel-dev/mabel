@@ -292,7 +292,7 @@ class DictSet(object):
     def get_items(self, *locations):
 
         # if the iterator allows us to access items directly, use that
-        if self.storage_class == STORAGE_CLASS.MEMORY:
+        if self.storage_class == STORAGE_CLASS.MEMORY or hasattr(self._iterator, "__getitem__"):
             yield from [self._iterator[i] for i in locations]
             return
 
