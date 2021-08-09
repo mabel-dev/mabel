@@ -3,7 +3,8 @@ import os
 import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
-from mabel.data import Reader
+from mabel import Reader
+from mabel.data import STORAGE_CLASS
 from mabel.adapters.disk import DiskReader
 from rich import traceback
 
@@ -56,9 +57,11 @@ def test_threaded_reader():
         inner_reader=DiskReader,
         dataset="tests/data/tweets",
         raw_path=True,
+        persistence=STORAGE_CLASS.MEMORY
     )
-    df = r.to_pandas()
-    assert len(df) == 50, len(df)
+    
+    print(r.collect())
+    assert r.count() == 50, r.count()
 
 
 def test_multiprocess_reader():

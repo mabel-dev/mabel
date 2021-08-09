@@ -1,14 +1,14 @@
+import orjson
 import datetime
 from mabel.errors.invalid_combination_error import InvalidCombinationError
 from pydantic import BaseModel  # type:ignore
 from typing import Any, Optional, Union, List
 from dateutil import parser
 from .internals.blob_writer import BlobWriter
-from ..validator import Schema  # type:ignore
+from ..validator import Schema
 from ...utils import paths
 from ...errors import ValidationError, InvalidDataSetError, MissingDependencyError
 from ...logging import get_logger
-from juon import json
 
 
 class SimpleWriter:
@@ -88,7 +88,7 @@ class SimpleWriter:
         arg_dict[
             "inner_writer"
         ] = f"{arg_dict.get('inner_writer', type(None)).__name__}"  # type:ignore
-        get_logger().debug(json.serialize(arg_dict))
+        get_logger().debug(orjson.dumps(arg_dict))
 
         # default index
         kwargs["index_on"] = kwargs.get("index_on", [])

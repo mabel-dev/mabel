@@ -5,15 +5,35 @@ Problems
 - The .limit method causes this reader to never end ()
 """
 import multiprocessing
+from typing import Iterator
 import os
 import time
-from juon import dictset
 from ....logging import get_logger
 
 
 MAXIMUM_SECONDS_PROCESSES_CAN_RUN = 600  # 5 minutes
 TERMINATE_SIGNAL = -1
 
+def page_dictset(dictset: Iterator[dict], page_size: int) -> Iterator:
+    """
+    Enables paging through a dictset by returning a page of records at a time.
+    Parameters:
+        dictset: iterable of dictionaries:
+            The dictset to process
+        page_size: integer:
+            The number of records per page
+    Yields:
+        dictionary
+    """
+    chunk: list = []
+    for record in dictset:
+        if len(chunk) >= page_size:
+            yield chunk
+            chunk = [record]
+        else:
+            chunk.append(record)
+    if chunk:
+        yield chunk
 
 def _inner_process(flag, reader, source_queue, reply_queue, parser):  # pragma: no cover
 
@@ -25,7 +45,7 @@ def _inner_process(flag, reader, source_queue, reply_queue, parser):  # pragma: 
     while source is not None and flag.value != TERMINATE_SIGNAL:
         data = reader.get_records(source)
         data = parser(data)
-        for chunk in dictset.page_dictset(data, 256):
+        for chunk in page_dictset(data, 256):
             # wait - to save memory we have limited number of slots
             reply_queue.put(chunk, timeout=60)
         try:

@@ -13,8 +13,7 @@ from .internals.threaded_reader import threaded_reader
 from .internals.alpha_processed_reader import processed_reader
 from .internals.parsers import pass_thru_parser, block_parser, json_parser, xml_parser
 
-from ..readers import STORAGE_CLASS
-from ..internals.dictset import DictSet
+from ..internals.dictset import DictSet, STORAGE_CLASS
 from ..internals.index import Index
 from ..internals.records import select_record_fields
 from ..internals.filters import Filters, get_indexable_filter_columns

@@ -70,6 +70,7 @@ pip install --upgrade git+https://github.com/mabel-dev/mabel
 -  **[cityhash](https://github.com/google/cityhash)** is used for non-cryptographic hashing
 -  **[pydantic](https://pydantic-docs.helpmanual.io/)** is used to define internal data models  
 -  **[zstandard](https://github.com/indygreg/python-zstandard)** is used for real-time compression
+-  **[ZeroMQ]**
 
 
 There are a number of optional dependencies which are usually only required for

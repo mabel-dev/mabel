@@ -3,7 +3,7 @@ import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 import shutil
-from mabel.data.readers import STORAGE_CLASS
+from mabel.data import STORAGE_CLASS
 from mabel.data import Reader
 from mabel.data import BatchWriter
 from mabel.adapters.disk import DiskWriter, DiskReader

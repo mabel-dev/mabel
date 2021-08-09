@@ -1,7 +1,8 @@
 import os
 import datetime
 from typing import Any
-from juon import json
+
+import orjson
 from .simple_writer import SimpleWriter
 from .internals.blob_writer import BlobWriter
 from ...utils import paths
@@ -94,7 +95,7 @@ class BatchWriter(SimpleWriter):
         completion_path = os.path.split(completion_path)[0] + "/frame.complete"
         status = {"records": self.records}
         flag = self.blob_writer.inner_writer.commit(
-            byte_data=json.serialize(status, as_bytes=True),
+            byte_data=orjson.dumps(status),
             override_blob_name=completion_path,
         )
         get_logger().debug(f"Frame completion file `{flag}` written")

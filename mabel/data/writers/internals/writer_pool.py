@@ -10,7 +10,6 @@ BlobWriters to recommend for evict.
 import time
 import threading
 from .blob_writer import BlobWriter
-from juon.dictset import display
 
 
 class WriterPool:

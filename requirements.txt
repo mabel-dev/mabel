@@ -4,4 +4,3 @@ zstandard
 pydantic
 cityhash
 pyzmq
-juon

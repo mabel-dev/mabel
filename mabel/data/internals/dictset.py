@@ -30,19 +30,25 @@ import statistics
 from functools import reduce
 
 from typing import Iterable, Union, Callable
-from juon.dictset.display import html_table, ascii_table
 
 # from ....logging import get_logger
-from ...data.readers import STORAGE_CLASS
 from ...errors import MissingDependencyError, InvalidArgument
 
 
 from operator import itemgetter
 
+from .display import html_table, ascii_table
 from .disk_iterator import DiskIterator
 from .expression import Expression
 from .filters import Filters
 from .index import value_to_int
+
+from enum import Enum
+
+class STORAGE_CLASS(int, Enum):
+    NO_PERSISTANCE = 1
+    MEMORY = 2
+    DISK = 3
 
 
 class DictSet(object):

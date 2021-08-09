@@ -1,10 +1,9 @@
 import os
 import re
+import orjson
 import datetime
 from typing import Any, Union, List, Dict
-from juon import json
 from ...errors import ValidationError
-from juon.dictset.display import ascii_table
 
 
 DEFAULT_MIN = -9223372036854775808
@@ -170,11 +169,11 @@ class Schema:
         # if we have a schema as a string, load it into a dictionary
         if isinstance(definition, str):
             if os.path.exists(definition):  # type:ignore
-                definition = json.parse(
+                definition = orjson.loads(
                     open(definition, mode="r").read()
                 )  # type:ignore
             else:
-                definition = json.parse(definition)  # type:ignore
+                definition = orjson.loads(definition)  # type:ignore
 
         if isinstance(definition, dict):
             if definition.get("fields"):  # type:ignore

@@ -1,5 +1,4 @@
-from mabel.data.internals.dictset import DictSet
-from mabel.data.readers import STORAGE_CLASS
+from mabel.data import DictSet, STORAGE_CLASS
 import re
 from ..reader import Reader
 from ....logging import get_logger
