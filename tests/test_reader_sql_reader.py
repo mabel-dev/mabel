@@ -91,6 +91,7 @@ def test_limit():
         sql_statement="SELECT tweet_id, user_name FROM tests.data.index.not LIMIT 12",
         inner_reader=DiskReader,
         raw_path=True,
+        persistence=STORAGE_CLASS.MEMORY
     )
     record_count = s.reader.count()
     assert record_count == 12, record_count
