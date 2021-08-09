@@ -27,15 +27,14 @@ import cityhash
 import statistics
 
 
-from tempfile import TemporaryDirectory
 from functools import reduce
 
-from typing import Iterable, Union
+from typing import Iterable, Union, Callable
 from juon.dictset.display import html_table, ascii_table
 
 # from ....logging import get_logger
-from ...readers import STORAGE_CLASS
-from ....errors import MissingDependencyError, InvalidArgument
+from ...data.readers import STORAGE_CLASS
+from ...errors import MissingDependencyError, InvalidArgument
 
 
 from operator import itemgetter
@@ -43,9 +42,7 @@ from operator import itemgetter
 from .disk_iterator import DiskIterator
 from .expression import Expression
 from .filters import Filters
-
-
-MAXIMUM_RECORDS_IN_PARTITION = 65535  # 2^16 -1
+from .index import value_to_int
 
 
 class DictSet(object):
@@ -80,24 +77,8 @@ class DictSet(object):
 
         # if we're persisting to disk, save it
         if storage_class == STORAGE_CLASS.DISK:
-            self._persist_to_disk()
+            self._iterator = DiskIterator(iterator)
 
-    def _persist_to_disk(self):
-        # save the data to a temporary folder
-        file = None
-        self._temporary_folder = TemporaryDirectory("dictset")
-        os.makedirs(self._temporary_folder.name, exist_ok=True)
-        for index, row in enumerate(self._iterator):
-            if index % MAXIMUM_RECORDS_IN_PARTITION == 0:
-                if file:
-                    file.close()
-                file = open(
-                    f"{self._temporary_folder.name}/{time.time_ns()}.jsonl", "wb"
-                )
-            file.write(orjson.dumps(row) + b"\n")
-        if file:
-            file.close()
-        self._iterator = DiskIterator(self._temporary_folder.name)
 
     def __iter__(self):
         return iter(self._iterator)
@@ -139,7 +120,7 @@ class DictSet(object):
                 if random_value % selector == 0:
                     yield row
 
-        return DictSet(inner_sampler, self.storage_class)
+        return DictSet(inner_sampler, storage_class=self.storage_class)
 
     def collect(self, key: str = None) -> Union[list, map]:
         """
@@ -164,7 +145,7 @@ class DictSet(object):
             lambda x, y: x + [a for a in y.keys() if a not in x], self._iterator, []
         )
 
-    def aggregate(self, function: callable, key: str):
+    def aggregate(self, function: Callable, key: str):
         # perform a function on all of the items in the
         # set, e.g. fold([1,2,3],add) == 6
         return reduce(function, self.collect(key))
@@ -255,6 +236,8 @@ class DictSet(object):
         """
         # we use `reduce` so we don't need to load all of the items into a list
         # in order to count them.
+        if hasattr(self._iterator, "__length__"):
+            return len(self._iterator)
         if self.storage_class in (STORAGE_CLASS.MEMORY, STORAGE_CLASS.DISK):
             return reduce(lambda x, y: x + 1, self._iterator, 0)
         else:
@@ -278,37 +261,53 @@ class DictSet(object):
 
         return DictSet(do_dedupe(self._iterator), self.storage_class)
 
-    def igroupby(self, column):
-        """ """
-        from ....index.index import IndexBuilder
 
-        builder = IndexBuilder(column)
+    def igroupby(self, group_by_column):
+
+        group_index = []
+        group_keys = {}
+
+        def builder(position, record):
+            if group_by_column in record:
+                value_as_int = value_to_int(record[group_by_column])
+                group_keys[value_as_int] = record[group_by_column]
+                entry = (value_as_int, position)
+                group_index.append(entry)
+
         for i, r in enumerate(self._iterator):
-            builder.add(i, r)
-        index = builder.build()
+            builder(i, r)
 
-        position = 0
-        entry = index._get_entry(position)
+        group_index.sort(key=lambda tup: tup[0])
+
+        last_value = None
         item_locations = []
-        while entry:
-            # get the uncompressed value
-            stored_value = self._iterator[entry.location].pop().get(column)
-            item_locations.append(entry.location)
+        for val, pos in group_index:
+            if last_value and last_value != val:
+                yield (group_keys[last_value], DictSet(self.get_items(*item_locations), storage_class=STORAGE_CLASS.MEMORY))
+                item_locations = []
+            item_locations.append(pos)
+            last_value = val
+        yield (group_keys[last_value], DictSet(self.get_items(*item_locations), storage_class=STORAGE_CLASS.MEMORY))
 
-            # get the positions of the values in the index
-            end_location = position + 1
-            this_entry = index._get_entry(end_location)
-            while end_location < index.size and this_entry.value == entry.value:
-                item_locations.append(this_entry.location)
-                end_location += 1
-                this_entry = index._get_entry(end_location)
+    def get_items(self, *locations):
 
-            yield stored_value, DictSet(
-                self._iterator[item_locations], storage_class=self.storage_class
-            )
-            position = end_location
-            entry = index._get_entry(position)
-            item_locations = []
+        # if the iterator allows us to access items directly, use that
+        if self.storage_class == STORAGE_CLASS.MEMORY:
+            yield from [self._iterator[i] for i in locations]
+            return
+
+        # if there's no direct access to items, cycle through them
+        # yielding the items we want
+        if self.storage_class == STORAGE_CLASS.DISK:
+            for r in self._iterator._inner_reader(*locations):
+                yield r
+            return
+
+        if self.storage_class == STORAGE_CLASS.NO_PERSISTANCE:
+            for i, r in self._iterator:
+                if i in locations:
+                    yield r
+
 
     def to_ascii_table(self, limit: int = 5):
         """
@@ -416,7 +415,7 @@ class DictSet(object):
             return self._iterator.cursor
         return None
 
-    def __getitem__(self, columns):
+    def select(self, columns):
         """
         Selects columns from a _DictSet_. If the column doesn't exist it is populated
         with `None`.
@@ -428,7 +427,11 @@ class DictSet(object):
             for record in it:
                 yield {k: record.get(k, None) for k in columns}
 
-        return DictSet(inner_select(self._iterator), self.storage_class)
+        return DictSet(inner_select(self._iterator), storage_class=self.storage_class)
+
+    def __getitem__(self, columns):
+        return self.select(columns)
+
 
     def __hash__(self, seed: int = 703115) -> int:
         """
@@ -440,6 +443,3 @@ class DictSet(object):
         serialized = map(orjson.dumps, self._iterator)
         hashed = map(cityhash.CityHash32, serialized)
         return reduce(lambda x, y: x ^ y, hashed, seed)
-
-    def _parallelize(self, func):
-        pass

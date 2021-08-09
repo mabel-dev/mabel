@@ -2,5 +2,6 @@ orjson
 python-dateutil
 zstandard
 pydantic
-juon
 cityhash
+pyzmq
+juon

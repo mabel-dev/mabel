@@ -3,9 +3,9 @@ This is a filtering mechanism to be applied when reading data.
 """
 import operator
 from typing import Optional, Iterable, List, Tuple, Union
-from ....errors import InvalidSyntaxError
-from ....logging import get_logger
-from ....utils.text import like
+from ...errors import InvalidSyntaxError
+from ...logging import get_logger
+from ...utils.text import like
 
 
 def _in(x, y):

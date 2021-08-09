@@ -3,7 +3,7 @@ import sys
 import os
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
-from mabel.index.index import Index, IndexBuilder
+from mabel.data.internals.index import Index, IndexBuilder
 from rich import traceback
 
 traceback.install()

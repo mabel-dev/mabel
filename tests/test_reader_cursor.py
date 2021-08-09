@@ -33,8 +33,10 @@ def test_cursor():
     cursor = reader.cursor()
 
     assert isinstance(cursor, dict)
+
+    print(cursor)
     assert cursor["offset"] == (lim % 25), cursor["offset"]
-    assert cursor["blob"] == "tests/data/tweets/tweets-0001.jsonl"
+    assert cursor["partition"] == 3412014897
 
     reader = Reader(
         inner_reader=DiskReader,
@@ -58,9 +60,7 @@ def test_cursor_as_text():
             inner_reader=DiskReader,
             dataset="tests/data/tweets/",
             raw_path=True,
-            cursor='{"blob": "tests/data/tweets/tweets-0001.jsonl", "offset": '
-            + str(offset)
-            + " }",
+            cursor='{"partition": 3412014897, "offset": ' + str(offset) + " }",
         )
         reader = list(reader)
         assert len(reader) == 25 - offset

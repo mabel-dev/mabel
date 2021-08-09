@@ -21,7 +21,7 @@ Terminology:
     Row       : a record in the target file
 """
 
-# hashing can be slow, avoid if we can just convert to a number
+# hashing can be slow, avoid if we can just convert to a number without hashing
 CONVERTERS = {
     "int": lambda x: x,
     "date": lambda x: (x.year * 1000) + (x.month * 10) + x.day,
@@ -31,7 +31,7 @@ CONVERTERS = {
 
 
 def fallback_converter(val):
-    return CityHash32(val)
+    return CityHash32(f"{val}")
 
 
 def value_to_int(val: Any):
@@ -182,6 +182,7 @@ class IndexBuilder:
         self.temporary_index: Iterable[dict] = []
 
     def add(self, position, record):
+        ret_val = []
         if record.get(self.column_name):
             # index lists of items separately
             values = record[self.column_name]
@@ -189,23 +190,25 @@ class IndexBuilder:
                 values = [values]
             for value in values:
                 entry = {
-                    "value": value_to_int(value) % MAX_INDEX,
-                    "position": position,
+                    "val": value_to_int(value) % MAX_INDEX,
+                    "pos": position,
                 }
-                self.temporary_index.append(entry)
+                ret_val.append(entry)
+        self.temporary_index += ret_val
+        return ret_val
 
     def build(self) -> Index:
         previous_value = None
         index = bytes()
         count: int = 0
-        self.temporary_index = sorted(self.temporary_index, key=itemgetter("value"))
+        self.temporary_index = sorted(self.temporary_index, key=itemgetter("val"))
         for row in self.temporary_index:
-            if row["value"] == previous_value:
+            if row["val"] == previous_value:
                 count += 1
             else:
                 count = 1
             index += IndexEntry(
-                value=row["value"], location=row["position"], count=count
+                value=row["val"], location=row["pos"], count=count
             ).to_bin()
-            previous_value = row["value"]
+            previous_value = row["val"]
         return Index(io.BytesIO(index))
