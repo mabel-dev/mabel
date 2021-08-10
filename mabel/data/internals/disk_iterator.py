@@ -3,12 +3,14 @@ import atexit
 import os
 from tempfile import NamedTemporaryFile
 
-BUFFER_SIZE = 16 * 1024 * 1024   # 16Mb
+BUFFER_SIZE = 16 * 1024 * 1024  # 16Mb
+
 
 class DiskIterator(object):
     """
     This provides the reader for the DISK variation of STORAGE.
     """
+
     def __init__(self, iterator):
         self.inner_reader = None
         self.length = -1

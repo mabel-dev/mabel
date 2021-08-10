@@ -7,9 +7,9 @@ import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.data.validator import Schema
-from juon import json
 from mabel.errors import ValidationError
 from rich import traceback
+import orjson
 
 traceback.install()
 
@@ -150,7 +150,7 @@ def test_validator_loaders():
     """
 
     TEST_SCHEMA_DICT = {"fields": [{"name": "string_field", "type": "string"}]}
-    TEST_SCHEMA_STRING = json.serialize(TEST_SCHEMA_DICT)
+    TEST_SCHEMA_STRING = orjson.dumps(TEST_SCHEMA_DICT).decode()
     TEST_SCHEMA_FILE = "temp"
 
     with open(TEST_SCHEMA_FILE, "w") as file:

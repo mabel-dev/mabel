@@ -1,6 +1,28 @@
 import queue
 import threading
-from juon import dictset
+from typing import Iterator
+
+
+def page_dictset(dictset: Iterator[dict], page_size: int) -> Iterator:
+    """
+    Enables paging through a dictset by returning a page of records at a time.
+    Parameters:
+        dictset: iterable of dictionaries:
+            The dictset to process
+        page_size: integer:
+            The number of records per page
+    Yields:
+        dictionary
+    """
+    chunk: list = []
+    for record in dictset:
+        if len(chunk) >= page_size:
+            yield chunk
+            chunk = [record]
+        else:
+            chunk.append(record)
+    if chunk:
+        yield chunk
 
 
 def threaded_reader(items_to_read: list, blob_list, reader):
@@ -39,7 +61,7 @@ def threaded_reader(items_to_read: list, blob_list, reader):
             source = None
         while source:
             source_reader = reader._read_blob(source, blob_list)
-            for chunk in dictset.page_dictset(source_reader, 256):
+            for chunk in page_dictset(source_reader, 256):
                 reply_queue.put(chunk)  # this will wait until there's a slot
             try:
                 source = source_queue.pop(0)

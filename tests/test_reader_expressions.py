@@ -7,7 +7,7 @@ import os
 import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
-from mabel.data.readers import STORAGE_CLASS
+from mabel.data import STORAGE_CLASS
 from mabel import DictSet
 from rich import traceback
 

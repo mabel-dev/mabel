@@ -13,8 +13,7 @@ from .internals.threaded_reader import threaded_reader
 from .internals.alpha_processed_reader import processed_reader
 from .internals.parsers import pass_thru_parser, block_parser, json_parser, xml_parser
 
-from ..readers import STORAGE_CLASS
-from ..internals.dictset import DictSet
+from ..internals.dictset import DictSet, STORAGE_CLASS
 from ..internals.index import Index
 from ..internals.records import select_record_fields
 from ..internals.filters import Filters, get_indexable_filter_columns
@@ -372,12 +371,12 @@ class _LowLevelReader(object):
                 days=self.reader_class.days_stepped_back
             ):
                 get_logger().alert(
-                    f"No data found in last {self.freshness_limit} - aborting"
+                    f"No data found in last {self.freshness_limit} - aborting ({self.reader_class.dataset})"
                 )
                 sys.exit(-1)
             if self.reader_class.days_stepped_back > 0:
                 get_logger().warning(
-                    f"Stepped back {self.reader_class.days_stepped_back} days to {self.reader_class.start_date} to find last data, my limit is {self.freshness_limit}."
+                    f"Stepped back {self.reader_class.days_stepped_back} days to {self.reader_class.start_date} to find last data, my limit is {self.freshness_limit} ({self.reader_class.dataset})"
                 )
 
         readable_blobs = [b for b in blob_list if not _is_system_file(b)]

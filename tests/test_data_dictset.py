@@ -3,7 +3,7 @@ import os
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel import DictSet
-from mabel.data.readers import STORAGE_CLASS
+from mabel.data import STORAGE_CLASS
 from rich import traceback
 
 traceback.install()
@@ -19,7 +19,6 @@ def test_take():
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
     assert ds.take(1).collect().pop() == {"key": 1, "value": "one", "plus1": 2}
     assert ds.take(2).count() == 2, ds.take(2).count()
-
 
 
 if __name__ == "__main__":  # pragma: no cover
