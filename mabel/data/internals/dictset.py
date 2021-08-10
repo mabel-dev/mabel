@@ -49,6 +49,13 @@ class STORAGE_CLASS(int, Enum):
     DISK = 3
 
 
+class DumbIter():
+    def __init__(self, i):
+        self._i = iter(i)
+    def __next__(self):
+        return next(self._i)
+
+
 class DictSet(object):
     def __init__(
         self,
@@ -84,16 +91,16 @@ class DictSet(object):
             self._iterator = DiskIterator(iterator)
 
     def __iter__(self):
-        return iter(self._iterator)
+        return DumbIter(self._iterator)
 
-#    def __next__(self):
-#        return next(self._iterator)
-#
-#    def __enter__(self):
-#        return self
-#
-#    def __exit__(self, exc_type, exc_val, exc_tb):
-#        pass  # exist needs to exist to be a context manager
+    def __next__(self):
+        return next(self._iterator)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        pass  # exist needs to exist to be a context manager
 
     def __del__(self):
         try:
