@@ -5,7 +5,7 @@ import re
 from ..reader import Reader
 from ....logging import get_logger
 
-AGGREGATORS = {"COUNT": len, "MIN": min, "MAX": max}
+AGGREGATORS = {"COUNT": len, "MIN": min, "MAX": max, "SUM": sum}
 
 
 class SqlParser:
