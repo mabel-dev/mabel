@@ -21,7 +21,6 @@ def test_take():
     assert ds.take(2).count() == 2, ds.take(2).count()
 
 
-
 if __name__ == "__main__":  # pragma: no cover
 
     test_take()

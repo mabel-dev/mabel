@@ -69,8 +69,14 @@ def test_sql_to_dictset():
         sql_statement="SELECT * FROM tests.data.index.not",
         inner_reader=DiskReader,
         raw_path=True,
+        persistence=STORAGE_CLASS.MEMORY,
     )
+    keys = s.reader.keys()
+    assert "tweet_id" in keys
+    assert "text" in keys
+    assert "followers" in keys
     assert len(s.reader.take(10).collect()) == 10
+
 
 def test_select():
 
@@ -81,9 +87,10 @@ def test_select():
     )
     first = s.reader.first()
     print(first)
-    assert first.get('tweet_id') is not None
-    assert first.get('user_name') is not None
-    assert first.get('timestamp') is None, first.get('timestamp')
+    assert first.get("tweet_id") is not None
+    assert first.get("user_name") is not None
+    assert first.get("timestamp") is None, first.get("timestamp")
+
 
 def test_limit():
 
@@ -91,10 +98,32 @@ def test_limit():
         sql_statement="SELECT tweet_id, user_name FROM tests.data.index.not LIMIT 12",
         inner_reader=DiskReader,
         raw_path=True,
-        persistence=STORAGE_CLASS.MEMORY
+        persistence=STORAGE_CLASS.MEMORY,
     )
     record_count = s.reader.count()
     assert record_count == 12, record_count
+
+
+def test_group_by_count():
+
+    s = SqlReader(
+        sql_statement="SELECT COUNT(*) FROM tests.data.index.not GROUP BY user_name",
+        inner_reader=DiskReader,
+        raw_path=True,
+    )
+    records = s.reader.collect()
+    record_count = len(records)
+    assert record_count == 56526, record_count
+
+    s = SqlReader(
+        sql_statement="SELECT COUNT(*) FROM tests.data.index.not GROUP BY user_name, following",
+        inner_reader=DiskReader,
+        raw_path=True,
+    )
+    records = s.reader.collect()
+    print(records)
+    record_count = len(records)
+    assert record_count == 61117, record_count
 
 
 if __name__ == "__main__":  # pragma: no cover
@@ -103,5 +132,6 @@ if __name__ == "__main__":  # pragma: no cover
     test_select()
     test_where()
     test_limit()
+    test_group_by_count()
 
     print("okay")

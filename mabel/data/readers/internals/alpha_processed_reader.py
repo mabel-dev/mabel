@@ -14,6 +14,7 @@ from ....logging import get_logger
 MAXIMUM_SECONDS_PROCESSES_CAN_RUN = 600  # 5 minutes
 TERMINATE_SIGNAL = -1
 
+
 def page_dictset(dictset: Iterator[dict], page_size: int) -> Iterator:
     """
     Enables paging through a dictset by returning a page of records at a time.
@@ -34,6 +35,7 @@ def page_dictset(dictset: Iterator[dict], page_size: int) -> Iterator:
             chunk.append(record)
     if chunk:
         yield chunk
+
 
 def _inner_process(flag, reader, source_queue, reply_queue, parser):  # pragma: no cover
 

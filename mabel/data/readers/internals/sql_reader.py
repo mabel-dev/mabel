@@ -1,13 +1,12 @@
-from mabel.data import DictSet, STORAGE_CLASS
+from mabel.data.internals.group_by import GroupBy
+from mabel import DictSet
+from mabel.data import STORAGE_CLASS
 import re
 from ..reader import Reader
 from ....logging import get_logger
 
-AGGREGATORS = {
-    "COUNT": len,
-    "MIN": min,
-    "MAX": max
-}
+AGGREGATORS = {"COUNT": len, "MIN": min, "MAX": max}
+
 
 class SqlParser:
     def __init__(self, statement):
@@ -25,7 +24,11 @@ class SqlParser:
 
         for i, part in enumerate(self.parts):
             if part.upper() == "SELECT":
-                self.select = [t.strip() for t in self.parts[i + 1].split(',') if t.strip() != ""]
+                self.select = [
+                    t.strip() for t in self.parts[i + 1].split(",") if t.strip() != ""
+                ]
+                if self.select == ["*"]:
+                    self.select = None
             if part.upper() == "FROM":
                 self._from = self.parts[i + 1].replace(".", "/")
             if part.upper() == "WHERE":
@@ -33,7 +36,9 @@ class SqlParser:
             if part.upper() == "JOIN":
                 raise NotImplementedError("SQL `JOIN` not implemented")
             if part.upper() == "GROUP BY":
-                self.group_by = self.parts[i + 1]
+                self.group_by = [
+                    t.strip() for t in self.parts[i + 1].split(",") if t.strip() != ""
+                ]
                 self.select = self._get_aggregators(self.select)
             if part.upper() == "HAVING":
                 self.having = self.parts[i + 1]
@@ -59,15 +64,15 @@ class SqlParser:
                     if token.upper() in AGGREGATORS:
                         if len(tokens) < (i + 3):
                             raise ValueError("Not Enough Tokens")
-                        if tokens[i+1] == "(" and tokens[i+3] == ")":
-                            yield (token.upper(), tokens[i+2])
+                        if tokens[i + 1] == "(" and tokens[i + 3] == ")":
+                            yield (token.upper(), tokens[i + 2])
                         else:
-                            raise ValueError("Expecting parenthesis, got `{tokens[i+1]}`, `{}`")
-                    i+= 4
-
+                            raise ValueError(
+                                "Expecting parenthesis, got `{tokens[i+1]}`, `{}`"
+                            )
+                    i += 4
 
         return list(inner(aggregators))
-
 
     def _split_statement(self, statement):
 
@@ -117,23 +122,14 @@ class SqlReader:
             **kwargs,
         )
 
+        #
         if sql.select and not sql.group_by:
             self.reader = self.reader.select(sql.select)
 
         if sql.group_by:
-            groups = self.reader.igroupby(sql.group_by)
 
-            result = []
-
-            for group, data in groups:
-                result_row = {}
-                result_row[sql.group_by] = group
-                for func, column in sql.select:
-                    col = data.collect(column)
-                    result_row[f"{column}.{func}"] = AGGREGATORS[func](col)
-                    result.append(result_row)
-
-            self.reader = DictSet(result)
+            groups = GroupBy(self.reader, *sql.group_by).count()
+            self.reader = DictSet(groups)
 
         if sql.limit:
             self.reader = self.reader.take(sql.limit)

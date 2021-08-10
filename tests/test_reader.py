@@ -31,17 +31,20 @@ def test_unknown_format():
         )
 
 
-# def test_reader_context():
-#    counter = 0
-#    with Reader(
-#        inner_reader=DiskReader, dataset="tests/data/tweets", raw_path=True
-#    ) as r:
-#        n = r.read_line()
-#        while n:
-#            counter += 1
-#            n = r.read_line()
-#
-#    assert counter == 50
+def test_reader_context():
+    counter = 0
+    with Reader(
+        inner_reader=DiskReader,
+        dataset="tests/data/tweets",
+        raw_path=True,
+        persistence=STORAGE_CLASS.MEMORY,
+    ) as r:
+        n = next(r)
+        while n:
+            counter += 1
+            n = next(r)
+
+    assert counter == 50
 
 
 def test_reader_to_pandas():
@@ -57,9 +60,9 @@ def test_threaded_reader():
         inner_reader=DiskReader,
         dataset="tests/data/tweets",
         raw_path=True,
-        persistence=STORAGE_CLASS.MEMORY
+        persistence=STORAGE_CLASS.MEMORY,
     )
-    
+
     print(r.collect())
     assert r.count() == 50, r.count()
 
@@ -81,7 +84,7 @@ def test_multiprocess_reader():
 if __name__ == "__main__":  # pragma: no cover
     test_reader_can_read()
     test_unknown_format()
-    #    test_reader_context()
+    test_reader_context()
     test_reader_to_pandas()
     test_threaded_reader()
     test_multiprocess_reader()

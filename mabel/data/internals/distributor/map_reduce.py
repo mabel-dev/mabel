@@ -6,8 +6,8 @@ from typing import Iterable, Tuple
 from itertools import groupby
 from operator import itemgetter
 
-class MapReduce(ABC):
 
+class MapReduce(ABC):
     def __init__(self, **kwargs):
         pass
 
@@ -33,9 +33,8 @@ class MapReduce(ABC):
 
 
 class MRGroupBy(MapReduce):
-
     def __init__(self, **kwargs):
-        self._column = kwargs.get("column") 
+        self._column = kwargs.get("column")
 
     def map(self, partition):
         for index, row in enumerate(partition):
@@ -46,8 +45,9 @@ class MRGroupBy(MapReduce):
 
     def reduce(self, groups):
         for group in groups:
-            print('GROUP>>', group)
-#        return [v for k, v in groups]
+            print("GROUP>>", group)
+
+    #        return [v for k, v in groups]
 
     def emit(self, reduced):
         return (self._column, reduced)
@@ -57,7 +57,7 @@ dataset = [
     {"a": "apple", "b": 2},
     {"a": "apple", "b": 1},
     {"a": "pear", "b": 5},
-    {"a": "banana", "b": 4}
+    {"a": "banana", "b": 4},
 ]
 
 mrg = MRGroupBy(column="a")
@@ -67,10 +67,10 @@ print("shuffled", shuffled)
 for group, shuff in shuffled:
     print(group)
     print(list(shuff))
-    #reduced = mrg.reduce()
-    #print(reduced)
-#print(mrg.emit(reduced))
+    # reduced = mrg.reduce()
+    # print(reduced)
+# print(mrg.emit(reduced))
 
 gs = groupby(dataset, itemgetter("a"))
-for k,g in gs:
-    print(k,list(g))
+for k, g in gs:
+    print(k, list(g))

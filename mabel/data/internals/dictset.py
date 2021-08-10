@@ -21,12 +21,11 @@ limitations under the License.
 """
 
 import os
-import time
 import orjson
 import cityhash
 import statistics
 
-
+from operator import itemgetter
 from functools import reduce
 
 from typing import Iterable, Union, Callable
@@ -35,8 +34,6 @@ from typing import Iterable, Union, Callable
 from ...errors import MissingDependencyError, InvalidArgument
 
 
-from operator import itemgetter
-
 from .display import html_table, ascii_table
 from .disk_iterator import DiskIterator
 from .expression import Expression
@@ -44,6 +41,7 @@ from .filters import Filters
 from .index import value_to_int
 
 from enum import Enum
+
 
 class STORAGE_CLASS(int, Enum):
     NO_PERSISTANCE = 1
@@ -85,12 +83,17 @@ class DictSet(object):
         if storage_class == STORAGE_CLASS.DISK:
             self._iterator = DiskIterator(iterator)
 
-
     def __iter__(self):
         return iter(self._iterator)
 
-    def __next__(self):
-        return next(self._iterator)
+#    def __next__(self):
+#        return next(self._iterator)
+#
+#    def __enter__(self):
+#        return self
+#
+#    def __exit__(self, exc_type, exc_val, exc_tb):
+#        pass  # exist needs to exist to be a context manager
 
     def __del__(self):
         try:
@@ -267,7 +270,6 @@ class DictSet(object):
 
         return DictSet(do_dedupe(self._iterator), self.storage_class)
 
-
     def igroupby(self, group_by_column):
 
         group_index = []
@@ -289,16 +291,29 @@ class DictSet(object):
         item_locations = []
         for val, pos in group_index:
             if last_value and last_value != val:
-                yield (group_keys[last_value], DictSet(self.get_items(*item_locations), storage_class=STORAGE_CLASS.MEMORY))
+                yield (
+                    group_keys[last_value],
+                    DictSet(
+                        self.get_items(*item_locations),
+                        storage_class=STORAGE_CLASS.MEMORY,
+                    ),
+                )
                 item_locations = []
             item_locations.append(pos)
             last_value = val
-        yield (group_keys[last_value], DictSet(self.get_items(*item_locations), storage_class=STORAGE_CLASS.MEMORY))
+        yield (
+            group_keys[last_value],
+            DictSet(
+                self.get_items(*item_locations), storage_class=STORAGE_CLASS.MEMORY
+            ),
+        )
 
     def get_items(self, *locations):
 
         # if the iterator allows us to access items directly, use that
-        if self.storage_class == STORAGE_CLASS.MEMORY or hasattr(self._iterator, "__getitem__"):
+        if self.storage_class == STORAGE_CLASS.MEMORY or hasattr(
+            self._iterator, "__getitem__"
+        ):
             yield from [self._iterator[i] for i in locations]
             return
 
@@ -313,7 +328,6 @@ class DictSet(object):
             for i, r in self._iterator:
                 if i in locations:
                     yield r
-
 
     def to_ascii_table(self, limit: int = 5):
         """
@@ -437,7 +451,6 @@ class DictSet(object):
 
     def __getitem__(self, columns):
         return self.select(columns)
-
 
     def __hash__(self, seed: int = 703115) -> int:
         """
