@@ -34,25 +34,6 @@ class GroupBy():
                 yield (group_key, column, record.get(column))
 
 
-    def count(self):
-        collector = {}
-        for index, record in enumerate(self._map()):
-            keys = collector.get(record[0], [])
-            keys.append((record[1], record[2],))
-            collector[record[0]] = keys
-
-        for k,v in collector.items():
-
-            result = {}
-            keys = self._group_keys[k]
-            for key in keys:
-                result[key[0]] = key[1]
-            
-            result["count"] = len(v) // len(self._columns)
-            yield result
-
-
-
     def aggregate(self, aggregations):
         if not isinstance(aggregations, list):
             aggregations = [aggregations]
@@ -65,7 +46,7 @@ class GroupBy():
         for index, record in enumerate(self._map(*columns_to_collect)):
             for func, col in aggregations:
 
-                key = f"{func}_of_{col}"
+                key = f"{func}({col})"
 
                 existing = collector.get(record[0], {}).get(key)
                 value = record[2]
@@ -84,6 +65,8 @@ class GroupBy():
                 if record[0] not in collector:
                     collector[record[0]] = {}
                 collector[record[0]][key] = value
+
+        collector = dict(sorted(collector.items()))
 
         for group, results in collector.items():
 
