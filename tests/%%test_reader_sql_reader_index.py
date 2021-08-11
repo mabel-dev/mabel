@@ -3,7 +3,7 @@ import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.adapters.disk import DiskReader
-from mabel.data.readers.internals.alpha_sql_reader import SqlReader
+from mabel.data.readers.internals.sql_reader import SqlReader
 from rich import traceback
 
 traceback.install()

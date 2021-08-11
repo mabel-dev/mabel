@@ -72,9 +72,9 @@ def test_sql_to_dictset():
         persistence=STORAGE_CLASS.MEMORY,
     )
     keys = s.reader.keys()
-    assert "tweet_id" in keys
-    assert "text" in keys
-    assert "followers" in keys
+    assert "tweet_id" in keys, keys
+    assert "text" in keys, keys
+    assert "followers" in keys, keys
     assert len(s.reader.take(10).collect()) == 10
 
 
@@ -86,7 +86,6 @@ def test_select():
         raw_path=True,
     )
     first = s.reader.first()
-    print(first)
     assert first.get("tweet_id") is not None
     assert first.get("user_name") is not None
     assert first.get("timestamp") is None, first.get("timestamp")
@@ -121,7 +120,6 @@ def test_group_by_count():
         raw_path=True,
     )
     records = s.reader.collect()
-    print(records)
     record_count = len(records)
     assert record_count == 61117, record_count
 

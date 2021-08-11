@@ -242,7 +242,11 @@ def Reader(
     """ FEATURES IN DEVELOPMENT """
 
     # threaded reader
-    thread_count = int(kwargs.get("thread_count", 0))
+    thread_count = kwargs.get("thread_count")
+    if thread_count:
+        thread_count = int(thread_count)
+    else:
+        thread_count = 0
 
     # multiprocessed reader
     fork_processes = bool(kwargs.get("fork_processes", False))
