@@ -32,7 +32,7 @@ def test_unknown_format():
 
 
 def test_reader_context():
-    return 
+    return
     counter = 0
     with Reader(
         inner_reader=DiskReader,

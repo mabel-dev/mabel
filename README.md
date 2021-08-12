@@ -5,7 +5,7 @@
 ## mabel is a Data Engineering platform designed to run in serverless environments.
 
 **mabel** has no server component, **mabel** just runs when you need it making it ideal
-for deployments to platforms like Kubernetes, Cloud Run and Knative.
+for deployments to platforms like Kubernetes, GCP Cloud Run, AWS Fargate and Knative.
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/mabel-dev/mabel/blob/master/LICENSE)
 [![Status](https://img.shields.io/badge/status-beta-yellowgreen)](https://github.com/mabel-dev/mabel)
@@ -45,7 +45,7 @@ print(data.count())
 -  Low-memory requirements, even with terabytes of data
 -  Indexing and partitioning of data for fast reads 
 -  Cursors for tracking reading position between processes 
--  Partial SQL DQL support 
+-  Partial SQL DQL (Data Query Language) support 
 -  Schema and [data_expectations](https://github.com/joocer/data_expectations) validation
 
 ## Installation
@@ -58,6 +58,16 @@ From GitHub
 ~~~
 pip install --upgrade git+https://github.com/mabel-dev/mabel
 ~~~
+
+A preview release of mabel is usually available from PyPI
+~~~
+pip install --upgrade mabelbeta
+~~~
+You may need to manually uninstall mabel before this will install.
+
+These versions are usually labelled with an `a` (signifying alpha status) in the
+library version. Alpha versions are more likely to have functional issues.
+
 
 ## Guides
 

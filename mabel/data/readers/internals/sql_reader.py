@@ -62,7 +62,7 @@ class SqlParser:
 
             elif collecting == "GROUP BY":
                 self.group_by.append(part)
-            
+
             else:
                 InvalidSqlError(f"Unexpected token `{part}`")
 
@@ -71,7 +71,6 @@ class SqlParser:
         if self.group_by:
             self.select = self._get_aggregators(self.select)
             self._use_threads = True
-
 
     def _get_aggregators(self, aggregators):
 
@@ -99,8 +98,10 @@ class SqlParser:
         if len(aggs) == 0:
             raise InvalidSqlError("SELECT cannot be `*` when using GROUP BY")
         if not all(isinstance(agg, tuple) for agg in aggs):
-            raise InvalidSqlError("SELECT must be a set of aggregation functions (e.g. COUNT, SUM) when using GROUP BY")
-        
+            raise InvalidSqlError(
+                "SELECT must be a set of aggregation functions (e.g. COUNT, SUM) when using GROUP BY"
+            )
+
         return aggs
 
     def _split_statement(self, statement):
@@ -113,7 +114,9 @@ class SqlParser:
 
         for line in statement.split("\n"):
             line_tokens = reg.split(line)
-            line_tokens = [t.strip() for t in line_tokens if t.strip() != "" and t.strip() != ","]
+            line_tokens = [
+                t.strip() for t in line_tokens if t.strip() != "" and t.strip() != ","
+            ]
 
             # remove anything after the comments flag
             while "--" in line_tokens:
@@ -158,7 +161,7 @@ class SqlReader:
         )
 
         #
-        if sql.select and not sql.group_by and not sql.select == ['*']:
+        if sql.select and not sql.group_by and not sql.select == ["*"]:
             self.reader = self.reader.select(sql.select)
 
         if sql.group_by:

@@ -1,6 +1,7 @@
+import os
+import mmap
 import orjson
 import atexit
-import os
 from tempfile import NamedTemporaryFile
 
 BUFFER_SIZE = 16 * 1024 * 1024  # 16Mb
@@ -12,36 +13,33 @@ class DiskIterator(object):
     """
 
     def __init__(self, iterator):
+
         self.inner_reader = None
         self.length = -1
 
         self.file = NamedTemporaryFile(prefix="mabel-dictset").name
         atexit.register(os.remove, self.file)
-        print(self.file)
 
-        with open(self.file, "wb", buffering=BUFFER_SIZE) as f:
+        buffer = bytearray()
+        with open(self.file, "wb") as f:
             for self.length, row in enumerate(iterator):
-                f.write(orjson.dumps(row) + b"\n")
-        f.close()
+                buffer.extend(orjson.dumps(row) + b"\n")
+                if len(buffer) > (BUFFER_SIZE):
+                    f.write(buffer)
+                    buffer = bytearray()
+            if len(buffer) > 0:
+                f.write(buffer)
+            f.flush()
 
     def _read_file(self):
-        """
-        Reading files in chunks improves performance.
-
-        We've chosen a conservative 8Mb cache as one of the reasons to use
-        DISK to persist the dataset is because you have limited memory.
-        """
-        with open(self.file, "r", encoding="utf8") as f:
-            carry_forward = ""
-            chunk = "INITIALIZED"
-            while len(chunk) > 0:
-                chunk = f.read(BUFFER_SIZE)
-                augmented_chunk = carry_forward + chunk
-                lines = augmented_chunk.splitlines()
-                carry_forward = lines.pop()
-                yield from lines
-            if carry_forward:
-                yield carry_forward
+        with open(self.file, mode="rb") as file_obj:
+            with mmap.mmap(
+                file_obj.fileno(), length=0, access=mmap.ACCESS_READ
+            ) as mmap_obj:
+                line = mmap_obj.readline()
+                while line:
+                    yield line
+                    line = mmap_obj.readline()
 
     def _inner_reader(self, *locations):
         if locations:
@@ -60,16 +58,11 @@ class DiskIterator(object):
                         return
         else:
             for line in self._read_file():
+                # this is about 50% of the time
                 yield orjson.loads(line)
 
     def __iter__(self):
-        self.inner_reader = self._inner_reader()
-        return self
-
-    def __next__(self):
-        record = next(self.inner_reader)
-        if record:
-            return record
+        return self._inner_reader()
 
     def __len__(self):
         return self.length
