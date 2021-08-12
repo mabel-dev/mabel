@@ -1,3 +1,4 @@
+# no-maintain-checks
 import re
 from mabel.data.internals.group_by import GroupBy, AGGREGATORS
 from mabel import DictSet

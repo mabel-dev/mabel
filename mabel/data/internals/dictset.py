@@ -1,7 +1,8 @@
+# no-maintain-checks
 """
 DICT(IONARY) (DATA)SET
 
-A group of functions to assist with handling lists of dictionaries.
+A class creating a Data Frame type construct with lists of dictionaries.
 
 (C) 2021 Justin Joyce.
 
@@ -89,7 +90,7 @@ class DictSet(object):
         """
         Wrap the iterator in a Iterable object
         """
-        return DumbIter(self._iterator)
+        return DumbIterator(self._iterator)
 
     def __next__(self):
         return next(self._iterator)
@@ -112,7 +113,7 @@ class DictSet(object):
         Persist changes the persistance engine used for the DictSet. The default
         is no defined persistance, we can persist to MEMORY, which is only really
         suitable for small datasets (or machines with large memories). The other
-        option is DISK, this is approximately 10x slower than MEMORY. 
+        option is DISK, this is approximately 10x slower than MEMORY.
         """
         if storage_class == STORAGE_CLASS.NO_PERSISTANCE:
             raise InvalidArgument("Persist cannot persist to 'NO_PERISISTANCE'")
@@ -131,11 +132,12 @@ class DictSet(object):
     def sample(self, fraction: float = 0.5):
         """
         Select a random sample of records, fraction indicates the portion of
-        records to select. 
-        
+        records to select.
+
         NOTE: records are randomly selected so is unlikely to perfectly match the
         fraction.
         """
+
         def inner_sampler(dictset):
             selector = int(1 / fraction)
             for row in dictset:

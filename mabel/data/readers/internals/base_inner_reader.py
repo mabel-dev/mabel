@@ -55,7 +55,9 @@ def parquet_reader(stream, rows, all_rows):
         dict_batch = batch.to_pydict()
         for index in range(len(batch)):
             if all_rows or index in rows:
-                yield orjson.dumps({k: v[index] for k, v in dict_batch.items()}).decode()  # type:ignore
+                yield orjson.dumps(
+                    {k: v[index] for k, v in dict_batch.items()}
+                ).decode()  # type:ignore
 
 
 def text_reader(stream, rows, all_rows):
