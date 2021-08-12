@@ -51,7 +51,7 @@ class GroupBy:
                 try:
                     value = float(value)
                     value = int(value)
-                except:
+                except:  # nosec
                     pass
 
                 if existing:

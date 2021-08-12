@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+from mabel.data.internals.group_by import GroupBy
 import os
 import orjson
 import cityhash
@@ -39,6 +40,7 @@ from .disk_iterator import DiskIterator
 from .expression import Expression
 from .filters import Filters
 from .index import value_to_int
+from .dumb_iterator import DumbIterator
 
 from enum import Enum
 
@@ -47,14 +49,6 @@ class STORAGE_CLASS(int, Enum):
     NO_PERSISTANCE = 1
     MEMORY = 2
     DISK = 3
-
-
-class DumbIter:
-    def __init__(self, i):
-        self._i = iter(i)
-
-    def __next__(self):
-        return next(self._i)
 
 
 class DictSet(object):
@@ -92,6 +86,9 @@ class DictSet(object):
             self._iterator = DiskIterator(iterator)
 
     def __iter__(self):
+        """
+        Wrap the iterator in a Iterable object
+        """
         return DumbIter(self._iterator)
 
     def __next__(self):
@@ -111,6 +108,12 @@ class DictSet(object):
             pass
 
     def persist(self, storage_class=STORAGE_CLASS.MEMORY):
+        """
+        Persist changes the persistance engine used for the DictSet. The default
+        is no defined persistance, we can persist to MEMORY, which is only really
+        suitable for small datasets (or machines with large memories). The other
+        option is DISK, this is approximately 10x slower than MEMORY. 
+        """
         if storage_class == STORAGE_CLASS.NO_PERSISTANCE:
             raise InvalidArgument("Persist cannot persist to 'NO_PERISISTANCE'")
         if self.storage_class == storage_class:
@@ -127,9 +130,12 @@ class DictSet(object):
 
     def sample(self, fraction: float = 0.5):
         """
-        Select a random stample of
+        Select a random sample of records, fraction indicates the portion of
+        records to select. 
+        
+        NOTE: records are randomly selected so is unlikely to perfectly match the
+        fraction.
         """
-
         def inner_sampler(dictset):
             selector = int(1 / fraction)
             for row in dictset:
@@ -161,11 +167,6 @@ class DictSet(object):
         return reduce(
             lambda x, y: x + [a for a in y.keys() if a not in x], self._iterator, []
         )
-
-    def aggregate(self, function: Callable, key: str):
-        # perform a function on all of the items in the
-        # set, e.g. fold([1,2,3],add) == 6
-        return reduce(function, self.collect(key))
 
     def max(self, key: str):
         """
@@ -244,9 +245,6 @@ class DictSet(object):
         """
         return statistics.stdev(self.collect(key))
 
-    def item(self, index):
-        return self._iterator[index]
-
     def count(self):
         """
         Count the number of items in the _DictSet_.
@@ -278,46 +276,17 @@ class DictSet(object):
 
         return DictSet(do_dedupe(self._iterator), self.storage_class)
 
-    def igroupby(self, group_by_column):
-
-        group_index = []
-        group_keys = {}
-
-        def builder(position, record):
-            if group_by_column in record:
-                value_as_int = value_to_int(record[group_by_column])
-                group_keys[value_as_int] = record[group_by_column]
-                entry = (value_as_int, position)
-                group_index.append(entry)
-
-        for i, r in enumerate(self._iterator):
-            builder(i, r)
-
-        group_index.sort(key=lambda tup: tup[0])
-
-        last_value = None
-        item_locations = []
-        for val, pos in group_index:
-            if last_value and last_value != val:
-                yield (
-                    group_keys[last_value],
-                    DictSet(
-                        self.get_items(*item_locations),
-                        storage_class=STORAGE_CLASS.MEMORY,
-                    ),
-                )
-                item_locations = []
-            item_locations.append(pos)
-            last_value = val
-        yield (
-            group_keys[last_value],
-            DictSet(
-                self.get_items(*item_locations), storage_class=STORAGE_CLASS.MEMORY
-            ),
-        )
+    def group_by(self, *group_by_column):
+        """
+        Group a dictset by a column or group of columns. Returns a GroupBy object.
+        """
+        return GroupBy(self, *group_by_column)
 
     def get_items(self, *locations):
-
+        """
+        Get items from the DictSet at a set of indicies, try to find the fastest
+        way possible to do this.
+        """
         # if the iterator allows us to access items directly, use that
         if self.storage_class == STORAGE_CLASS.MEMORY or hasattr(
             self._iterator, "__getitem__"
@@ -371,6 +340,9 @@ class DictSet(object):
         return pandas.DataFrame(self)
 
     def first(self):
+        """
+        Retun the first item in the DictSet
+        """
         return next(iter(self._iterator), None)
 
     def take(self, items: int):
@@ -439,6 +411,9 @@ class DictSet(object):
         return DictSet(_inner(self._iterator), storage_class=self.storage_class)
 
     def cursor(self):
+        """
+        If the DictSet supports cursors, return the cursor.
+        """
         if hasattr(self._iterator, "cursor"):
             return self._iterator.cursor
         return None
@@ -458,6 +433,9 @@ class DictSet(object):
         return DictSet(inner_select(self._iterator), storage_class=self.storage_class)
 
     def __getitem__(self, columns):
+        """
+        Select the columns from the _DictSet_, alias for .select
+        """
         return self.select(columns)
 
     def __hash__(self, seed: int = 703115) -> int:
