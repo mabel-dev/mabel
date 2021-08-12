@@ -7,7 +7,6 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.adapters.disk import DiskReader
 from mabel.data import Reader
-from juon.dictset import limit
 from rich import traceback
 
 traceback.install()
@@ -28,7 +27,7 @@ def test_cursor():
         inner_reader=DiskReader, dataset="tests/data/tweets/", raw_path=True
     )
 
-    for row in limit(reader, lim):
+    for row in reader.take(lim):
         test_counter += 1
     cursor = reader.cursor()
 

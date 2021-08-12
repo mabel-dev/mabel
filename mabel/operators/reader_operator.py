@@ -1,7 +1,8 @@
 import time
+
+import orjson
 from ..flows.internals.base_operator import BaseOperator
 from ..data import Reader
-from juon import json
 from ..errors.time_exceeded import TimeExceeded
 
 
@@ -41,7 +42,7 @@ class ReaderOperator(BaseOperator):
         for row in self.reader:
             if time.time() > self.time_out:
                 signal = self.signal_format.replace(
-                    "{cursor}", json.serialize(self.reader.cursor())
+                    "{cursor}", orjson.dumps(self.reader.cursor()).decode()
                 )
                 raise TimeExceeded(signal)
             yield row, context

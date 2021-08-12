@@ -3,4 +3,3 @@ python-dateutil
 zstandard
 pydantic
 cityhash
-pyzmq  # not used

@@ -2,9 +2,10 @@ import os
 import sys
 import string
 
+import orjson
+
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.flows.internals.trace_blocks import TraceBlocks
-from juon import json
 from mabel.utils import entropy
 from rich import traceback
 import binascii
@@ -21,7 +22,7 @@ def test_hashes():
     tb = TraceBlocks()
     tb.add_block(data_hash=data_hashes[0])
     tb.add_block(data_hash=data_hashes[1])
-    blocks = json.parse(str(tb))
+    blocks = orjson.loads(str(tb))
 
     previous_block = ""
 

@@ -1,7 +1,8 @@
 import glob
 import datetime
-from juon import json
 from typing import Optional
+
+import orjson
 from ..logging import get_logger
 
 
@@ -36,7 +37,7 @@ def build_context(**kwargs: dict):
             file_location = glob.glob("**/" + config_file, recursive=True).pop()
             get_logger().debug(f"Reading configuration from `{file_location}`.")
             with open(file_location, "r") as f:
-                config = json.parse(f.read())
+                config = orjson.loads(f.read())
             return config
         except IndexError as e:
             raise IndexError(
