@@ -1,3 +1,10 @@
+"""
+DiskIterator is a helper class for persisting DictSets locally, it is the backend
+for the DISK variation of the STORAGE CLASSES.
+
+The Reader and Writer are pretty fast, the problem is the parsing and serialization
+of JSON data - this accounts for over 50% of the read/write times.
+"""
 import os
 import mmap
 import orjson
@@ -32,6 +39,9 @@ class DiskIterator(object):
             f.flush()
 
     def _read_file(self):
+        """
+        MMAP is by far the fastest way to read files in Python.
+        """
         with open(self.file, mode="rb") as file_obj:
             with mmap.mmap(
                 file_obj.fileno(), length=0, access=mmap.ACCESS_READ

@@ -39,7 +39,7 @@ from ...errors import MissingDependencyError, InvalidArgument
 from .display import html_table, ascii_table
 from .disk_iterator import DiskIterator
 from .expression import Expression
-from .filters import Filters
+from .dnf_filters import DnfFilters
 from .index import value_to_int
 from .dumb_iterator import DumbIterator
 

@@ -1,4 +1,4 @@
-from typing import Iterator, Iterable, List
+from typing import Iterator
 
 
 def html_table(dictset: Iterator[dict], limit: int = 5):
@@ -25,7 +25,7 @@ def html_table(dictset: Iterator[dict], limit: int = 5):
             if counter == 0:
                 yield '<thead class="thead-light"><tr>'
                 for column in columns:
-                    yield "<th>" + column + "<th>\n"
+                    yield f"<th>{column}<th>\n"
                 yield "</tr></thead><tbody>"
 
             if (counter % 2) == 0:
@@ -33,7 +33,7 @@ def html_table(dictset: Iterator[dict], limit: int = 5):
             else:
                 yield "<tr>"
             for column in columns:
-                yield "<td>" + str(record.get(column)) + "<td>\n"
+                yield f"<td>{record.get(column)}<td>\n"
             yield "</tr>"
 
         yield "</tbody></table>"
@@ -112,38 +112,3 @@ def ascii_table(dictset: Iterator[dict], limit: int = 5):
     result.append("└" + "┴".join(bars) + "┘")
 
     return "\n".join(result)
-
-
-BAR_CHARS = [r" ", r"▁", r"▂", r"▃", r"▄", r"▅", r"▆", r"▇", r"█"]
-
-
-def draw_histogram_bins(bins: List[int]):
-    """
-    Draws a pre-binned set off histogram data
-    """
-    mx = max(bins)
-    bar_height = mx / 8
-    if bar_height == 0:
-        return " " * len(bins)
-
-    histogram = ""
-    for value in bins:
-        if value == 0:
-            histogram += BAR_CHARS[0]
-        else:
-            height = int(value / bar_height)
-            histogram += BAR_CHARS[height]
-
-    return histogram
-
-
-def histogram(values: Iterable[int], number_of_bins: int = 10):
-    """ """
-    bins = [0] * number_of_bins
-    mn = min(values)
-    mx = max(values)
-    interval = ((1 + mx) - mn) / (number_of_bins - 1)
-
-    for v in values:
-        bins[int(v / interval)] += 1
-    return draw_histogram_bins(bins)

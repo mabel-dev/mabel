@@ -16,7 +16,7 @@ from .internals.parsers import pass_thru_parser, block_parser, json_parser, xml_
 from ..internals.dictset import DictSet, STORAGE_CLASS
 from ..internals.index import Index
 from ..internals.records import select_record_fields
-from ..internals.filters import Filters, get_indexable_filter_columns
+from ..internals.dnf_filters import DnfFilters, get_indexable_filter_columns
 from ..internals.expression import Expression
 
 
@@ -234,7 +234,7 @@ def Reader(
 
     indexable_fields = []
     if filters:
-        filters = Filters(filters)  # type:ignore
+        filters = DnfFilters(filters)  # type:ignore
         indexable_fields = get_indexable_filter_columns(
             filters.predicates
         )  # type:ignore
