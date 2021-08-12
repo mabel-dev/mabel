@@ -1,4 +1,4 @@
-from typing import Iterator
+from typing import Iterator, Dict, Any
 
 
 def html_table(dictset: Iterator[dict], limit: int = 5):
@@ -59,7 +59,7 @@ def html_table(dictset: Iterator[dict], limit: int = 5):
     return "".join(_to_html_table(rows, columns)) + footer
 
 
-def ascii_table(dictset: Iterator[dict], limit: int = 5):
+def ascii_table(dictset: Iterator[Dict[Any, Any]], limit: int = 5):
     """
     Render the dictset as a ASCII table.
 

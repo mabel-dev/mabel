@@ -74,5 +74,8 @@ class DiskIterator(object):
     def __iter__(self):
         return self._inner_reader()
 
+    def __next__(self):
+        return next(self)
+
     def __len__(self):
         return self.length

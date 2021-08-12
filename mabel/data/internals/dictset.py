@@ -21,7 +21,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from mabel.data.internals.group_by import GroupBy
 import os
 import orjson
 import cityhash
@@ -30,7 +29,7 @@ import statistics
 from operator import itemgetter
 from functools import reduce
 
-from typing import Iterable, Union, Callable
+from typing import Iterator, Union, Dict, Any
 
 # from ....logging import get_logger
 from ...errors import MissingDependencyError, InvalidArgument
@@ -42,6 +41,7 @@ from .expression import Expression
 from .dnf_filters import DnfFilters
 from .index import value_to_int
 from .dumb_iterator import DumbIterator
+from .group_by import GroupBy
 
 from enum import Enum
 
@@ -55,7 +55,7 @@ class STORAGE_CLASS(int, Enum):
 class DictSet(object):
     def __init__(
         self,
-        iterator: Iterable,
+        iterator: Iterator[Dict[Any, Any]],
         *,
         storage_class=STORAGE_CLASS.NO_PERSISTANCE,
         number_of_partitions: int = 4,
@@ -80,7 +80,7 @@ class DictSet(object):
 
         # if we're persisting to memory, load into a list
         if storage_class == STORAGE_CLASS.MEMORY:
-            self._iterator = list(iterator)
+            self._iterator = list(iterator)  # type:ignore
 
         # if we're persisting to disk, save it
         if storage_class == STORAGE_CLASS.DISK:
@@ -145,7 +145,7 @@ class DictSet(object):
                 if random_value % selector == 0:
                     yield row
 
-        return DictSet(inner_sampler, storage_class=self.storage_class)
+        return DictSet(inner_sampler(self._iterator), storage_class=self.storage_class)
 
     def collect(self, key: str = None) -> Union[list, map]:
         """

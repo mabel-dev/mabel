@@ -7,6 +7,8 @@ import hashlib
 import datetime
 import functools
 from typing import List
+
+import orjson
 from ...logging import get_logger  # type:ignore
 from ...errors import render_error_stack, TimeExceeded
 from ...utils.text import wrap_text
@@ -219,7 +221,7 @@ class BaseOperator(abc.ABC):
                 operator=self.name,
                 operator_version=self.version(),
                 execution_ns=my_execution_time,
-                data_block=json.serialize(data),
+                data_block=orjson.dumps(data).decode(),
             )
             self.logger.audit(f"{context.get('run_id')} {self.name} {data_hash}")
 
