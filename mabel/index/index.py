@@ -7,8 +7,8 @@ from functools import lru_cache
 
 
 MAX_INDEX = 4294967295  # 2^32 - 1
-STRUCT_DEF = "I I H"  # 4 byte unsigned int, 4 byte unsigned int, 2 byte unsigned int
-RECORD_SIZE = struct.calcsize(STRUCT_DEF)  # this should be 10
+STRUCT_DEF = "I I I"  # 4 byte unsigned int, 4 byte unsigned int, 4 byte unsigned int
+RECORD_SIZE = struct.calcsize(STRUCT_DEF)  # this should be 12
 
 """
 There are overlapping terms because we're traversing a dataset so we can traverse a
