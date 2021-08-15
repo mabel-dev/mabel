@@ -1,3 +1,7 @@
+"""
+XML helper function, we don't create XML data, we read it.
+"""
+
 from xml.etree import cElementTree as ElementTree  # nosec
 
 

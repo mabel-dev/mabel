@@ -2,11 +2,13 @@ import time
 import os
 import sys
 
+import orjson
+
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.operators.reader_operator import ReaderOperator
 from mabel.errors.time_exceeded import TimeExceeded
 from mabel.adapters.disk import DiskReader
-from juon import json
+
 from rich import traceback
 
 traceback.install()
@@ -27,7 +29,7 @@ def test_reader_timeout():
         for i, record in enumerate(dataset):
             time.sleep(0.1)
     except TimeExceeded as te:
-        cursor = json.parse(str(te))
+        cursor = orjson.loads(str(te))
         assert (i + 1) == cursor["offset"]
         failed = True
     assert failed

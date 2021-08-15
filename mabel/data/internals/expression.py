@@ -1,3 +1,4 @@
+# no-maintain-checks
 """
 This implements a SQL-like query syntax to filter dictionaries based on combinations
 of predicates.

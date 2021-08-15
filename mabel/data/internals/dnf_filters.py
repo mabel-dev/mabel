@@ -126,7 +126,7 @@ def get_indexable_filter_columns(predicate):
     return []  # pragma: no cover
 
 
-class Filters:
+class DnfFilters:
 
     __slots__ = ("empty_filter", "predicates")
 

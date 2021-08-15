@@ -3,5 +3,3 @@ python-dateutil
 zstandard
 pydantic
 cityhash
-pyzmq
-juon

@@ -3,7 +3,7 @@ import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.adapters.disk import DiskReader
-from mabel.data.internals.filters import Filters
+from mabel.data.internals.dnf_filters import DnfFilters
 from mabel.data import Reader
 from rich import traceback
 
@@ -63,30 +63,30 @@ def test_reader_filters_multiple_filter():
 
 def test_filters():
 
-    d = Filters(filters=[("age", "==", 11), ("gender", "in", ("a", "b", "male"))])
+    d = DnfFilters(filters=[("age", "==", 11), ("gender", "in", ("a", "b", "male"))])
     assert len(list(d.filter_dictset(TEST_DATA))) == 1
 
 
 def test_empty_filters():
 
-    d = Filters(filters=None)
+    d = DnfFilters(filters=None)
     assert len(list(d.filter_dictset(TEST_DATA))) == 6
 
 
 def test_like_filters():
 
-    d = Filters(filters=[("dob", "like", "%-12-%")])
+    d = DnfFilters(filters=[("dob", "like", "%-12-%")])
     assert len(list(d.filter_dictset(TEST_DATA))) == 3
 
 
 def test_combined_filters():
 
     # just a tuple
-    filter01 = Filters(("name", "==", "Harry Potter"))
+    filter01 = DnfFilters(("name", "==", "Harry Potter"))
     # a tuple in a list
-    filter02 = Filters([("name", "==", "Harry Potter")])
+    filter02 = DnfFilters([("name", "==", "Harry Potter")])
     # ANDed conditions
-    filter03 = Filters(
+    filter03 = DnfFilters(
         [
             ("name", "like", "%otter%"),
             ("gender", "==", "male"),
@@ -95,7 +95,7 @@ def test_combined_filters():
         ]
     )
     # ANDed conditions - case insensitive LIKE
-    filter03a = Filters(
+    filter03a = DnfFilters(
         [
             ("name", "like", "%pOTTER%"),
             ("gender", "==", "male"),
@@ -104,17 +104,17 @@ def test_combined_filters():
         ]
     )
     # ORed conditions
-    filter04 = Filters(
+    filter04 = DnfFilters(
         [[("name", "==", "Harry Potter")], [("name", "==", "Hermione Grainger")]]
     )
     # no conditions
-    filter05 = Filters()
+    filter05 = DnfFilters()
     # IN conditions
-    filter06 = Filters(("name", "in", ["Fleur Isabelle Delacour", "Hermione Grainger"]))
+    filter06 = DnfFilters(("name", "in", ["Fleur Isabelle Delacour", "Hermione Grainger"]))
     # contains conditions - on lists
-    filter07 = Filters(("affiliations", "contains", "Griffindor"))
+    filter07 = DnfFilters(("affiliations", "contains", "Griffindor"))
     # contains conditions
-    filter08 = Filters(("name", "contains", "Isabelle"))
+    filter08 = DnfFilters(("name", "contains", "Isabelle"))
 
     assert len([a for a in filter01.filter_dictset(TEST_DATA)]) == 1
     assert len([a for a in filter02.filter_dictset(TEST_DATA)]) == 1
