@@ -75,8 +75,8 @@ class SqlParser:
         if self.group_by or "(" in ''.join(self.select):
             self.select = self._get_aggregators(self.select)
             self._use_threads = True
-        if len(self.select) > 1 and any([s.upper() == "COUNT(*)" for s in self.select]) and not self.group_by:
-            raise InvalidSqlError("`SELECT COUNT(*)` can only be used by itself")
+        if len(self.select) > 1 and any([f[0].upper() == "COUNT" for f in self.select if isinstance(self.select, tuple)]) and not self.group_by:
+            raise InvalidSqlError("`SELECT COUNT(*)` must be the only SELECT statement if COUNT(*) is used without a GROUP BY")
 
     def _get_aggregators(self, aggregators):
 
