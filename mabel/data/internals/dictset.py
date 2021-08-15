@@ -39,7 +39,6 @@ from .display import html_table, ascii_table
 from .disk_iterator import DiskIterator
 from .expression import Expression
 from .dnf_filters import DnfFilters
-from .index import value_to_int
 from .dumb_iterator import DumbIterator
 from .group_by import GroupBy
 
@@ -58,7 +57,6 @@ class DictSet(object):
         iterator: Iterator[Dict[Any, Any]],
         *,
         storage_class=STORAGE_CLASS.NO_PERSISTANCE,
-        number_of_partitions: int = 4,
     ):
         """
         Create a DictSet.
@@ -71,8 +69,6 @@ class DictSet(object):
                 NO_PERSISTANCE which applies no specific persistance. MEMORY loads
                 into a Python `list`, DISK saves to disk - disk persistance is slower
                 but can handle much larger data sets.
-            number_of_partitions: integer (optional)
-
         """
         self.storage_class = storage_class
         self._iterator = iterator
@@ -125,7 +121,7 @@ class DictSet(object):
                 self._temporary_folder.cleanup()
                 self._temporary_folder = None
         if storage_class == STORAGE_CLASS.DISK:
-            self._persist_to_disk()
+            self._iterator = DiskIterator(self._iterator)
         self.storage_class = storage_class
         return True
 
@@ -390,9 +386,9 @@ class DictSet(object):
             dnf_filters: tuple or list
                 DNF constructed predicates
         """
-        filter_set = Filters(dnf_filters)
+        filter_set = DnfFilters(dnf_filters)
         return DictSet(
-            Filters.filter_dictset(filter_set, self._iterator), self.storage_class
+            DnfFilters.filter_dictset(filter_set, self._iterator), self.storage_class
         )
 
     def query(self, expression):
@@ -433,6 +429,25 @@ class DictSet(object):
                 yield {k: record.get(k, None) for k in columns}
 
         return DictSet(inner_select(self._iterator), storage_class=self.storage_class)
+
+
+    def sort_and_take(self, column, take:int = 5000, descending: bool = False):
+
+        if self.storage_class == STORAGE_CLASS.MEMORY:
+            yield from sorted(self._iterator, key=itemgetter(column), reverse=descending)[:take]
+
+        else:
+            double_cache = max(take * 2, 1) + 1
+            cache = []
+            for record in self:
+                cache.append(record)
+                if len(cache) > double_cache:
+                    cache.sort(key=itemgetter(column), reverse=descending)
+                    del cache[take:]
+            cache.sort(key=itemgetter(column), reverse=descending)
+            yield from cache[:take]
+ 
+    
 
     def __getitem__(self, columns):
         """

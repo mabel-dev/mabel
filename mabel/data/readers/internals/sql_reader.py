@@ -9,6 +9,8 @@ from ....logging import get_logger
 class InvalidSqlError(Exception):
     pass
 
+def safe_get(arr, index, default=None):
+    return arr[index] if index < len(arr) else default
 
 class SqlParser:
     def __init__(self, statement):
@@ -20,6 +22,7 @@ class SqlParser:
         self.group_by = None
         self.having = None
         self.order_by = None
+        self.order_by_desc = False
         self.limit = None
 
         self._use_threads = False
@@ -35,7 +38,7 @@ class SqlParser:
                 self.select = []
             elif part.upper() == "FROM":
                 collecting = None
-                self._from = self.parts[i + 1].replace(".", "/")
+                self._from = safe_get(self.parts, i + 1, '').replace(".", "/")
             elif part.upper() == "WHERE":
                 collecting = None
                 self.where = self.parts[i + 1]
@@ -47,16 +50,16 @@ class SqlParser:
                 self.group_by = []
             elif part.upper() == "HAVING":
                 collecting = None
-                self.having = self.parts[i + 1]
+                self.having = safe_get(self.parts, i + 1, '')
                 raise NotImplementedError("SQL `HAVING` not implemented")
             elif part.upper() == "ORDER BY":
                 collecting = None
-                self.order_by = self.parts[i + 1]
+                self.order_by = safe_get(self.parts, i + 1, '')
+                self.order_by_desc = safe_get(self.parts, i + 2, '').upper() == "DESC"
                 self._use_threads = True
-                raise NotImplementedError("SQL `ORDER BY` not implemented")
             elif part.upper() == "LIMIT":
                 collecting = None
-                self.limit = int(self.parts[i + 1])
+                self.limit = int(safe_get(self.parts, i + 1, '100'))
 
             elif collecting == "SELECT":
                 self.select.append(part)
@@ -69,9 +72,11 @@ class SqlParser:
 
         if not self._from:
             raise InvalidSqlError("Queries must always have a FROM statement")
-        if self.group_by:
+        if self.group_by or "(" in ''.join(self.select):
             self.select = self._get_aggregators(self.select)
             self._use_threads = True
+        if len(self.select) > 1 and any([s.upper() == "COUNT(*)" for s in self.select]) and not self.group_by:
+            raise InvalidSqlError("`SELECT COUNT(*)` can only be used by itself")
 
     def _get_aggregators(self, aggregators):
 
@@ -108,7 +113,7 @@ class SqlParser:
     def _split_statement(self, statement):
 
         reg = re.compile(
-            r"(\bSELECT\b|\bFROM\b|\bJOIN\b|\bWHERE\b|\bGROUP\sBY\b|\bHAVING\b|\bORDER\sBY\b|\bLIMIT\b|,|\-\-|\;)",
+            r"(\bSELECT\b|\bFROM\b|\bJOIN\b|\bWHERE\b|\bGROUP\sBY\b|\bHAVING\b|\bORDER\sBY\b|\bLIMIT\b|\bDESC\b|,|\-\-|\;)",
             re.IGNORECASE,
         )
         tokens = []
@@ -128,7 +133,7 @@ class SqlParser:
         return tokens
 
     def __repr__(self):
-        return f"< SQL: SELECT ({self.select}) FROM ({self._from}) WHERE ({self.where}) GROUP BY ({self.group_by}) LIMIT ({self.limit}) >"
+        return f"< SQL: SELECT ({self.select})\nFROM ({self._from})\nWHERE ({self.where})\nGROUP BY ({self.group_by})\nORDER BY ({self.order_by})\nLIMIT ({self.limit}) >"
 
 
 class SqlReader:
@@ -148,28 +153,27 @@ class SqlReader:
         sql = SqlParser(sql_statement)
         get_logger().debug(sql)
 
-        # if the function forces the order of the results, use threads to
-        # speed up the read of the data
-        thread_count = None
-        if sql._use_threads:
-            thread_count = 2
-
         self.reader = Reader(
-            thread_count=thread_count,
             query=sql.where,
             dataset=sql._from,
             **kwargs,
         )
 
-        #
-        if sql.select and not sql.group_by and not sql.select == ["*"]:
+        if sql.select == [("COUNT", "*")] and not sql.group_by:
+            count = -1
+            for count, r in enumerate(self.reader):
+                pass
+            self.reader = DictSet([{"COUNT(*)": count + 1}])
+        elif sql.select and not sql.group_by and not sql.select == ["*"]:
             self.reader = self.reader.select(sql.select)
-
-        if sql.group_by:
-
+        elif sql.group_by:
             groups = GroupBy(self.reader, *sql.group_by).aggregate(sql.select)
             self.reader = DictSet(groups)
-
+        if sql.order_by:
+            take = 5000
+            if sql.limit:
+                take = sql.limit
+            self.reader = DictSet(self.reader.sort_and_take(column=sql.order_by, take=take, descending=sql.order_by_desc))
         if sql.limit:
             self.reader = self.reader.take(sql.limit)
 

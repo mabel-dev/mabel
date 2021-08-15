@@ -33,7 +33,7 @@ class BaseOperator(abc.ABC):
 
     def __init__(self, *args, **kwargs):
         """
-        All Operators should inherit from this class, it will help ensure a common
+        All Operators must inherit from this class, it will help ensure a common
         structure to Operator classes and provide some common functionality and
         interfaces.
 
