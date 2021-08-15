@@ -272,7 +272,7 @@ class DictSet(object):
                 else:
                     hash_list[hashed_item] = True
 
-        return DictSet(do_dedupe(self._iterator), self.storage_class)
+        return DictSet(do_dedupe(self._iterator), storage_class=self.storage_class)
 
     def group_by(self, *group_by_column):
         """
