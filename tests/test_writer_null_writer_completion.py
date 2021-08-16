@@ -50,7 +50,7 @@ def test_timing_out_flow(caplog):
             time_out=0.01,
             inner_reader=DiskReader,
             row_format="xml",
-            dataset="tests/data/formats/xml",
+            dataset="tests/data/formats/jsonl",
             raw_path=True) >> EndOperator()
 
     try:
