@@ -25,6 +25,7 @@ class FeedMeRobotsOperator(BaseOperator):
         for robot in ROBOTS:
             yield robot, context
 
+
 class WasteAMillisecondOperator(BaseOperator):
     def execute(self, data: dict, context: dict):
         time.sleep(1)
@@ -51,12 +52,18 @@ def test_null_writer():
         w.append(bot)
     assert w.finalize(has_failure=True) == -1
 
+
 def test_timing_out_flow(caplog):
-    flow = ReaderOperator(
+    flow = (
+        ReaderOperator(
             time_out=1,
             inner_reader=DiskReader,
             dataset="tests/data/formats/jsonl",
-            raw_path=True) >> WasteADecisecondOperator() >> EndOperator()
+            raw_path=True,
+        )
+        >> WasteAMillisecondOperator()
+        >> EndOperator()
+    )
 
     try:
         with flow as runner:
@@ -79,6 +86,7 @@ def test_timing_out_flow(caplog):
 
     assert not frame_written
     assert frame_skipped
+
 
 def test_terminating_flow(caplog):
     flow = (
