@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.adapters.disk.disk_reader import DiskReader
@@ -8,7 +9,7 @@ from mabel.adapters.null import NullWriter
 from mabel.data import BatchWriter
 from rich import traceback
 from mabel import BaseOperator
-from mabel.operators import EndOperator
+from mabel.operators import EndOperator, NoOpOperator
 from mabel.operators.null import NullBatchWriterOperator
 
 
@@ -23,6 +24,11 @@ class FeedMeRobotsOperator(BaseOperator):
     def execute(self, data: dict, context: dict):
         for robot in ROBOTS:
             yield robot, context
+
+class WasteAMillisecondOperator(BaseOperator):
+    def execute(self, data: dict, context: dict):
+        time.sleep(1)
+        return data, context
 
 
 traceback.install()
@@ -47,16 +53,15 @@ def test_null_writer():
 
 def test_timing_out_flow(caplog):
     flow = ReaderOperator(
-            time_out=0.01,
+            time_out=1,
             inner_reader=DiskReader,
-            row_format="xml",
             dataset="tests/data/formats/jsonl",
-            raw_path=True) >> EndOperator()
+            raw_path=True) >> WasteADecisecondOperator() >> EndOperator()
 
     try:
         with flow as runner:
             runner(None, None, 0)
-    except:
+    except Exception as err:
         pass
 
     if caplog is None:
