@@ -376,7 +376,7 @@ class DictSet(object):
                 if func(item):
                     yield item
 
-        return DictSet(inner_filter(predicate, self._iterator), self.storage_class)
+        return DictSet(inner_filter(predicate, self._iterator), storage_class=self.storage_class)
 
     def dnf_filter(self, dnf_filters):
         """
@@ -388,7 +388,7 @@ class DictSet(object):
         """
         filter_set = DnfFilters(dnf_filters)
         return DictSet(
-            DnfFilters.filter_dictset(filter_set, self._iterator), self.storage_class
+            DnfFilters.filter_dictset(filter_set, self._iterator), storage_class=self.storage_class
         )
 
     def query(self, expression):
