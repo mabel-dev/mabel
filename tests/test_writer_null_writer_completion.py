@@ -56,12 +56,13 @@ def test_null_writer():
 def test_timing_out_flow(caplog):
     flow = (
         ReaderOperator(
-            time_out=1,
+            time_out=0.5,
             inner_reader=DiskReader,
             dataset="tests/data/formats/jsonl",
             raw_path=True,
         )
         >> WasteAMillisecondOperator()
+        >> NullBatchWriterOperator(dataset="NOWHERE")
         >> EndOperator()
     )
 
