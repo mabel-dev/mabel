@@ -94,10 +94,11 @@ mabel comes with adapters for the following services:
 
 |   | Service |
 |-- |-- |
-| <img align="centre" alt="GCP Storage" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/gcs-logo.png" /> | Google Cloud Storage |
-| <img align="centre" alt="MinIo" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/minio-logo.png" /> | MinIO |
-| <img align="centre" alt="AWS S3" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/s3-logo.png" /> | S3 | 
-| <img align="centre" alt="Azure" height="48" src="https://raw.githubusercontent.com/mabel-dev/mabel/main/icons/azure.svg" /> | Azure |
+| <img align="centre" alt="GCP Storage" height="48" src="icons/gcs-logo.png" /> | Google Cloud Storage |
+| <img align="centre" alt="MinIo" height="48" src="icons/minio-logo.png" /> | MinIO |
+| <img align="centre" alt="AWS S3" height="48" src="icons/s3-logo.png" /> | S3 | 
+| <img align="centre" alt="Azure" height="48" src="icons/azure.svg" /> | Azure |
+| <img align="centre" alt="Local" height="48" src="icons/local-storage.png" /> | Local Storage |
 
 ## Deployment and Execution
 
