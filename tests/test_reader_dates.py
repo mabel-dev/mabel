@@ -55,6 +55,17 @@ def test_dates_as_string():
     assert subject.end_date == END_DATE
 
 
+def test_reading_across_dates():
+    subject = Reader(
+        inner_reader=DiskReader,
+        dataset="tests/data/dated",
+        start_date="2020-02-03",
+        end_date="2020-02-04",
+    )
+    record_count = len(list(subject))
+    assert record_count == 50, record_count
+
+
 def test_short_dates():
     subject = Reader(
         inner_reader=DiskReader,
@@ -71,5 +82,6 @@ if __name__ == "__main__":  # pragma: no cover
     test_start_and_end_dates()
     test_dates_as_string()
     test_short_dates()
+    test_reading_across_dates()
 
     print("okay")
