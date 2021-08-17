@@ -110,7 +110,7 @@ class BaseInnerReader(abc.ABC):
             raise ValueError("Readers must have the `dataset` parameter set")
         if not self.dataset.endswith("/"):
             self.dataset += "/"
-        if "date" not in self.dataset and not kwargs.get("raw_path", False):
+        if "{" not in self.dataset and "%" not in self.dataset and not kwargs.get("raw_path", False):
             self.dataset += "{datefolders}/"
 
         self.start_date = self._extract_date_part(kwargs.get("start_date"))
@@ -184,46 +184,49 @@ class BaseInnerReader(abc.ABC):
 
         blobs = []
         for cycle_date in common.date_range(self.start_date, self.end_date):
+
             # build the path name
             cycle_path = pathlib.Path(
                 paths.build_path(path=self.dataset, date=cycle_date)
             )
-            blobs += list(self.get_blobs_at_path(path=cycle_path))
+            cycle_blobs = list(self.get_blobs_at_path(path=cycle_path))
 
-        # remove any BACKOUT data
-        blobs = [blob for blob in blobs if "BACKOUT" not in blob]
+            # remove any BACKOUT data
+            cycle_blobs = [blob for blob in cycle_blobs if "BACKOUT" not in blob]
 
-        # work out if there's an as_at part
-        as_ats = {self._extract_as_at(blob) for blob in blobs if "as_at_" in blob}
-        if as_ats:
-            as_ats = sorted(as_ats)
-            as_at = as_ats.pop()
+            # work out if there's an as_at part
+            as_ats = {self._extract_as_at(blob) for blob in cycle_blobs if "as_at_" in blob}
+            if as_ats:
+                as_ats = sorted(as_ats)
+                as_at = as_ats.pop()
 
-            is_complete = lambda blobs: any(
-                [blob for blob in blobs if as_at + "/frame.complete" in blob]
-            )
-            is_invalid = lambda blobs: any(
-                [blob for blob in blobs if (as_at + "/frame.ignore" in blob)]
-            )
+                is_complete = lambda blobs: any(
+                    [blob for blob in blobs if as_at + "/frame.complete" in blob]
+                )
+                is_invalid = lambda blobs: any(
+                    [blob for blob in blobs if (as_at + "/frame.ignore" in blob)]
+                )
 
-            while not is_complete(blobs) or is_invalid(blobs):
-                if not is_complete(blobs):
-                    get_logger().debug(
-                        f"Frame `{as_at}` is not complete - `frame.complete` file is not present - skipping this frame."
-                    )
-                if is_invalid(blobs):
-                    get_logger().debug(
-                        f"Frame `{as_at}` is invalid - `frame.ignore` file is present - skipping this frame."
-                    )
-                if len(as_ats) > 0:
-                    as_at = as_ats.pop()
-                else:
-                    return []
-            get_logger().debug(f"Reading from DataSet frame `{as_at}`")
-            blobs = [
-                blob
-                for blob in blobs
-                if (as_at in blob) and ("/frame.complete" not in blob)
-            ]
+                while not is_complete(cycle_blobs) or is_invalid(cycle_blobs):
+                    if not is_complete(cycle_blobs):
+                        get_logger().debug(
+                            f"Frame `{as_at}` is not complete - `frame.complete` file is not present - skipping this frame."
+                        )
+                    if is_invalid(cycle_blobs):
+                        get_logger().debug(
+                            f"Frame `{as_at}` is invalid - `frame.ignore` file is present - skipping this frame."
+                        )
+                    if len(as_ats) > 0:
+                        as_at = as_ats.pop()
+                    else:
+                        return []
+                get_logger().debug(f"Reading from DataSet frame `{as_at}`")
+                cycle_blobs = [
+                    blob
+                    for blob in cycle_blobs
+                    if (as_at in blob) and ("/frame.complete" not in blob)
+                ]
+
+            blobs += cycle_blobs
 
         return sorted(blobs)
