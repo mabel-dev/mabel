@@ -125,11 +125,9 @@ def Reader(
             return the line that has been read, 'block' will return the content of
             a file as a record. the default is 'json'.
         start_date: datetime (optional):
-            The starting date of the range to read over - if used with
-            _date_range_, this value will be preferred, default is today
+            The starting date of the range to read over, default is today
         end_date: datetime (optional):
-            The end date of the range to read over - if used with _date_range_,
-            this value will be preferred, default is today
+            The end date of the range to read over, default is today
         thread_count: integer (optional):
             **BETA**
             Use multiple threads to read data files, the default is to not use
