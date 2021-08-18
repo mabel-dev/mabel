@@ -79,8 +79,8 @@ library version. Alpha versions are more likely to have functional issues.
 -  **[dateutil](https://dateutil.readthedocs.io/en/stable/)** is used to convert dates received as strings
 -  **[cityhash](https://github.com/google/cityhash)** is used for non-cryptographic hashing
 -  **[pydantic](https://pydantic-docs.helpmanual.io/)** is used to define internal data models  
--  **[zstandard](https://github.com/indygreg/python-zstandard)** is used for real-time compression
--  **[ZeroMQ]**
+-  **[zstandard](https://github.com/indygreg/python-zstandard)** is used for real-time on disk compression
+-  **[LZ4]** is used for real-time in memory compression
 
 
 There are a number of optional dependencies which are usually only required for
@@ -96,8 +96,8 @@ mabel comes with adapters for the following services:
 |-- |-- |
 | <img align="centre" alt="GCP Storage" height="48" src="icons/gcs-logo.png" /> | Google Cloud Storage |
 | <img align="centre" alt="MinIo" height="48" src="icons/minio-logo.png" /> | MinIO |
-| <img align="centre" alt="AWS S3" height="48" src="icons/s3-logo.png" /> | S3 | 
-| <img align="centre" alt="Azure" height="48" src="icons/azure.svg" /> | Azure |
+| <img align="centre" alt="AWS S3" height="48" src="icons/s3-logo.png" /> | AWS S3 | 
+| <img align="centre" alt="Azure" height="48" src="icons/azure.svg" /> | Azure Blob Storage |
 | <img align="centre" alt="Local" height="48" src="icons/local-storage.png" /> | Local Storage |
 
 ## Deployment and Execution

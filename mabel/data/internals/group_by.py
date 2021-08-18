@@ -72,3 +72,6 @@ class GroupBy:
                 results[key[0]] = key[1]
 
             yield results
+
+    def max(self, column):
+        return self.aggregate(('MAX', column))

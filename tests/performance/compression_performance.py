@@ -1,14 +1,13 @@
 """
-
 ┌──────────────────────┬─────────────────────┐
 │       function       │         time        │
 ├──────────────────────┼─────────────────────┤
-│   write_file_clear   │      0.14023676     │
-│   write_file_lzma    │     11.50867750     │
-│ write_file_zstandard │      0.24591732     │
-│   read_file_clear    │      0.04804908     │
-│    read_file_lzma    │      0.28942212     │
-│ read_file_zstandard  │      0.08270350     │
+│   write_file_clear   │      1.17631384     │
+│   write_file_lzma    │      20.1975742     │
+│ write_file_zstandard │      0.29924092     │
+│   read_file_clear    │ 0.27045020000000003 │
+│    read_file_lzma    │  0.8491690000000001 │
+│ read_file_zstandard  │      0.14227396     │
 └──────────────────────┴─────────────────────┘
 """
 import os
@@ -19,7 +18,7 @@ import statistics
 import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], "../.."))
-from mabel.data.formats import dictset
+import mabel
 
 
 def read_file_clear(filename="", chunk_size=32 * 1024 * 1024, delimiter="\n"):
@@ -89,11 +88,11 @@ result = {
     "time": execute_test(write_file_clear, filename="_temp/wfc.txt", content=lines),
 }
 results.append(result)
-result = {
-    "function": "write_file_lzma",
-    "time": execute_test(write_file_lzma, filename="_temp/wfl.lzma", content=lines),
-}
-results.append(result)
+#result = {
+#    "function": "write_file_lzma",
+#    "time": execute_test(write_file_lzma, filename="_temp/wfl.lzma", content=lines),
+#}
+#results.append(result)
 result = {
     "function": "write_file_zstandard",
     "time": execute_test(
@@ -106,15 +105,15 @@ result = {
     "time": execute_test(read_file_clear, filename="_temp/wfc.txt"),
 }
 results.append(result)
-result = {
-    "function": "read_file_lzma",
-    "time": execute_test(read_file_lzma, filename="_temp/wfl.lzma"),
-}
-results.append(result)
+#result = {
+#    "function": "read_file_lzma",
+#    "time": execute_test(read_file_lzma, filename="_temp/wfl.lzma"),
+#}
+#results.append(result)
 result = {
     "function": "read_file_zstandard",
     "time": execute_test(read_file_zstandard, filename="_temp/wfz.zstd"),
 }
 results.append(result)
 
-print(dictset.display.ascii_table(results, 100))
+print(mabel.data.internals.display.ascii_table(results, 100))

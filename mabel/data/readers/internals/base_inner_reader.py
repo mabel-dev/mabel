@@ -184,7 +184,6 @@ class BaseInnerReader(abc.ABC):
 
         blobs = []
         for cycle_date in common.date_range(self.start_date, self.end_date):
-
             # build the path name
             cycle_path = pathlib.Path(
                 paths.build_path(path=self.dataset, date=cycle_date)

@@ -1,8 +1,8 @@
 """
-DiskIterator is a helper class for persisting DictSets locally, it is the backend
+StorageClassDisk is a helper class for persisting DictSets locally, it is the backend
 for the DISK variation of the STORAGE CLASSES.
 
-The Reader and Writer are pretty fast, the problem is the parsing and serialization
+The Reader and Writer are pretty fast, the bottleneck is the parsing and serialization
 of JSON data - this accounts for over 50% of the read/write times.
 """
 import os
@@ -14,7 +14,7 @@ from tempfile import NamedTemporaryFile
 BUFFER_SIZE = 16 * 1024 * 1024  # 16Mb
 
 
-class DiskIterator(object):
+class StorageClassDisk(object):
     """
     This provides the reader for the DISK variation of STORAGE.
     """
@@ -37,6 +37,8 @@ class DiskIterator(object):
             if len(buffer) > 0:
                 f.write(buffer)
             f.flush()
+
+        self.length += 1
 
     def _read_file(self):
         """
