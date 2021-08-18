@@ -50,7 +50,7 @@ def test_blob_paths_get_paths():
 def test_blob_paths_builder():
 
     # without trailing /, the / should be added
-    template = "%datefolders/%date"
+    template = "{datefolders}/{date}"
     path = paths.build_path(template, datetime.datetime(2000, 9, 19, 1, 36, 42, 365))
     assert (
         path
