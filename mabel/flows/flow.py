@@ -208,7 +208,7 @@ class Flow:
         context = {}
         has_failure = False
         if exc_type:
-            has_failure = exc_type.__name__ == "SystemExit"
+            has_failure = exc_type.__name__ in ("SystemExit", "TimeExceeded")
         context["mabel:errored"] = has_failure
 
         FlowRunner(self)(BaseOperator.sigterm(), context)

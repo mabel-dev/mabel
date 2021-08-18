@@ -32,6 +32,7 @@ class BatchWriter(SimpleWriter):
             format: string (optional)
                 - text: raw text lines
                 - jsonl: raw json lines
+                - flat: flattened json records in json lines
                 - lzma: lzma compressed json lines
                 - zstd: zstandard compressed json lines (default)
                 - parquet: Apache Parquet

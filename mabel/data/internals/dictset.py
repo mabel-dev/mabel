@@ -36,7 +36,8 @@ from ...errors import MissingDependencyError, InvalidArgument
 
 
 from .display import html_table, ascii_table
-from .disk_iterator import DiskIterator
+from .storage_class_disk import StorageClassDisk
+from .storage_class_compressed_memory import StorageClassCompressedMemory
 from .expression import Expression
 from .dnf_filters import DnfFilters
 from .dumb_iterator import DumbIterator
@@ -46,9 +47,26 @@ from enum import Enum
 
 
 class STORAGE_CLASS(int, Enum):
+    """
+    How to cache the results for processing:
+
+    - NO_PERSISTANCE = don't do anything with the records to cache them, assumes
+      the records are already persisted (e.g. you've loaded a list) but most
+      functionality works with generators.
+    - MEMORY = load the entire dataset into a list, this is fast but if the 
+      dataset is too large it will kill the app.
+    - DISK = load the entire dataset to a temporary file, this can deal with
+      Tb of data (if you have that much disk space) but it is at least 3x slower
+      than memory from basic bench marks.
+    - COMPRESSED_MEMORY = a middle ground, allows you to load more data into 
+      memory but still needs to perform compression on the data so isn't as fast
+      as the MEMORY option. Bench marks show you can fit about 2x the data in
+      memory but at a cost of 2.5x - your results will vary.
+    """
     NO_PERSISTANCE = 1
     MEMORY = 2
     DISK = 3
+    COMPRESSED_MEMORY = 4
 
 
 class DictSet(object):
@@ -68,7 +86,8 @@ class DictSet(object):
                 How to store this dataset while we're processing it. The default is
                 NO_PERSISTANCE which applies no specific persistance. MEMORY loads
                 into a Python `list`, DISK saves to disk - disk persistance is slower
-                but can handle much larger data sets.
+                but can handle much larger data sets. 'COMPRESSED_MEMORY' uses 
+                compression to fit more in memory for a performance cost.
         """
         self.storage_class = storage_class
         self._iterator = iterator
@@ -80,7 +99,11 @@ class DictSet(object):
 
         # if we're persisting to disk, save it
         if storage_class == STORAGE_CLASS.DISK:
-            self._iterator = DiskIterator(iterator)
+            self._iterator = StorageClassDisk(iterator)
+
+        # if we're persisiting to compressed memory, do it
+        if storage_class == STORAGE_CLASS.COMPRESSED_MEMORY:
+            self._iterator = StorageClassCompressedMemory(iterator)
 
     def __iter__(self):
         """
@@ -121,7 +144,9 @@ class DictSet(object):
                 self._temporary_folder.cleanup()
                 self._temporary_folder = None
         if storage_class == STORAGE_CLASS.DISK:
-            self._iterator = DiskIterator(self._iterator)
+            self._iterator = StorageClassDisk(self._iterator)
+        if storage_class == STORAGE_CLASS.COMPRESSED_MEMORY:
+            self._iterator = StorageClassCompressedMemory(self._iterator)
         self.storage_class = storage_class
         return True
 
@@ -249,10 +274,8 @@ class DictSet(object):
         """
         # we use `reduce` so we don't need to load all of the items into a list
         # in order to count them.
-        if hasattr(self._iterator, "__length__"):
+        if hasattr(self._iterator, "__len__"):
             return len(self._iterator)
-        if self.storage_class in (STORAGE_CLASS.MEMORY, STORAGE_CLASS.DISK):
-            return reduce(lambda x, y: x + 1, self._iterator, 0)
         else:
             # we can't count the items in an non persisted DictSet
             return -1
@@ -272,7 +295,7 @@ class DictSet(object):
                 else:
                     hash_list[hashed_item] = True
 
-        return DictSet(do_dedupe(self._iterator), self.storage_class)
+        return DictSet(do_dedupe(self._iterator), storage_class=self.storage_class)
 
     def group_by(self, *group_by_column):
         """
@@ -285,18 +308,18 @@ class DictSet(object):
         Get items from the DictSet at a set of indicies, try to find the fastest
         way possible to do this.
         """
-        # if the iterator allows us to access items directly, use that
-        if self.storage_class == STORAGE_CLASS.MEMORY or hasattr(
-            self._iterator, "__getitem__"
-        ):
-            yield from [self._iterator[i] for i in locations]
-            return
 
         # if there's no direct access to items, cycle through them
         # yielding the items we want
-        if self.storage_class == STORAGE_CLASS.DISK:
+        if self.storage_class in (STORAGE_CLASS.DISK, STORAGE_CLASS.COMPRESSED_MEMORY):
             for r in self._iterator._inner_reader(*locations):
                 yield r
+            return
+
+        # if the iterator allows us to access items directly, use that
+        if self.storage_class == STORAGE_CLASS.MEMORY or hasattr(
+            self._iterator, "__getitem__"):
+            yield from [self._iterator[i] for i in locations]
             return
 
         if self.storage_class == STORAGE_CLASS.NO_PERSISTANCE:
@@ -376,7 +399,7 @@ class DictSet(object):
                 if func(item):
                     yield item
 
-        return DictSet(inner_filter(predicate, self._iterator), self.storage_class)
+        return DictSet(inner_filter(predicate, self._iterator), storage_class=self.storage_class)
 
     def dnf_filter(self, dnf_filters):
         """
@@ -388,7 +411,7 @@ class DictSet(object):
         """
         filter_set = DnfFilters(dnf_filters)
         return DictSet(
-            DnfFilters.filter_dictset(filter_set, self._iterator), self.storage_class
+            DnfFilters.filter_dictset(filter_set, self._iterator), storage_class=self.storage_class
         )
 
     def query(self, expression):
