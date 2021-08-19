@@ -32,14 +32,17 @@ jobs:
 
       - name: Start GCS Emulator
         run: |
-          docker run -d --name fake-gcs-server \
+          docker run -d --name \
+                     fake-gcs-server \
                      -p 9090:4443 \
-                     fsouza/fake-gcs-server -scheme http
+                     fsouza/fake-gcs-server \
+                     -scheme http
 
       - name: Start Azurite
         run: |
           docker run -p 10000:10000 \
-                     mcr.microsoft.com/azure-storage/azurite azurite-blob \
+                     mcr.microsoft.com/azure-storage/azurite \
+                     azurite-blob \
                      --blobHost 0.0.0.0
 
       - name: Run Regression Tests
