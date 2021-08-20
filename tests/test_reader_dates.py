@@ -22,6 +22,9 @@ class EmptyReader(BaseInnerReader):
     def get_blobs_at_path(self):
         pass
 
+    def get_blob_chunk(self):
+        pass
+
     def get_blob_stream(self):
         pass
 

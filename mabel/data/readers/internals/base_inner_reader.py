@@ -206,7 +206,6 @@ class BaseInnerReader(abc.ABC):
         Returns:
             Iterable of the rows
         """
-        get_logger().debug(f"Reading data from `{blob_name}`")
         # if the rows has been set but the set is empty, return empty list
         if isinstance(rows, (set, list)):
             if len(rows) == 0:
@@ -220,12 +219,14 @@ class BaseInnerReader(abc.ABC):
         path, ext = os.path.splitext(blob_name)
 
         if ext in READERS:
+            get_logger().debug(f"Reading {'all' if all_rows else len(rows)} rows from `{blob_name}` using a binary reader.")
             stream = self.get_blob_stream(blob_name=blob_name)
             yield from READERS.get(ext, text_reader)(stream=stream, rows=rows, all_rows=all_rows)
         else:
+            get_logger().debug(f"Reading {'all' if all_rows else len(rows)} rows from `{blob_name}` using the text reader.")
             for index, row in enumerate(self.get_blob_lines(blob_name=blob_name)):
                 if row and (all_rows or index in rows):
-                    yield row
+                    yield row.decode("UTF8")
 
     def get_list_of_blobs(self):
 

@@ -22,11 +22,11 @@ def test_can_find_files():
         """
         # with a trailing /
         r = DiskReader(dataset=p, raw_path=True)
-        assert len(list(r.get_list_of_blobs())) == 4  # 2 data, 2 index
+        assert len(list(r.get_list_of_blobs())) == 2  # 2 data, 2 index
 
         # without a trailing /
         r = DiskReader(dataset=p, raw_path=True)
-        assert len(list(r.get_list_of_blobs())) == 4  # 2 data, 2 index
+        assert len(list(r.get_list_of_blobs())) == 2  # 2 data, 2 index
 
     _inner("tests/data/tweets/")
     _inner(os.getcwd() + "/tests/data/tweets/")
