@@ -1,7 +1,6 @@
 import os
 import datetime
 from typing import Any
-
 import orjson
 from .simple_writer import SimpleWriter
 from .internals.blob_writer import BlobWriter
@@ -54,37 +53,48 @@ class BatchWriter(SimpleWriter):
         Note:
             Different inner_writers may take or require additional parameters.
         """
-        # call this now, we need this value before we call the base class init
-        self.batch_date = self._get_writer_date(date)
         # because jobs can be split, allow a frame_id to be passed in
         if not frame_id:
-            frame_id = BatchWriter.create_frame_id()
 
-        self.dataset = dataset
-        if "{date" not in self.dataset and not kwargs.get("raw_path", False):
-            self.dataset += "/{datefolders}"
-        self.dataset = paths.build_path(
-            self.dataset + "/" + frame_id,  # type:ignore
-            self.batch_date,
-        )
+            # as_ats are in UTC
+            as_at = datetime.datetime.utcnow().strftime("as_at_%Y%m%d-%H%M%S")
+            self.batch_date = self._get_writer_date(date)
+
+            if "{date" not in dataset and not kwargs.get("raw_path", False):
+                dataset += "/{datefolders}"
+            frame_id = paths.build_path(
+                dataset + "/" + as_at,  # type:ignore
+                self.batch_date,
+            )
 
         kwargs["raw_path"] = True  # we've just added the dates
         kwargs["format"] = format
-        kwargs["dataset"] = self.dataset
+        kwargs["dataset"] = frame_id
 
         super().__init__(**kwargs)
 
-        self.dataset = paths.build_path(self.dataset, self.batch_date)
+        self.dataset = frame_id
 
         # create the writer
         self.blob_writer = BlobWriter(**kwargs)
+
+        # in finalize is called more than once - it can be called with the
+        # error cleared from the stack.
+        self.seen_failures = False
 
     def finalize(self, has_failure: bool = False):
         final = super().finalize()
 
         if has_failure:
+            self.seen_failures = True
             get_logger().debug(
                 f"Error found in the stack, not marking frame as complete."
+            )
+            return -1
+
+        if self.seen_failures:
+            get_logger().debug(
+                f"Error previously seen in the stack, not marking frame as complete."
             )
             return -1
 
@@ -101,7 +111,3 @@ class BatchWriter(SimpleWriter):
         )
         get_logger().debug(f"Frame completion file `{flag}` written")
         return final
-
-    @staticmethod
-    def create_frame_id():
-        return datetime.datetime.now().strftime("as_at_%Y%m%d-%H%M%S")
