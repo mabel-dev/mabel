@@ -108,7 +108,7 @@ def test_disk_binary():
         # read over both paritions.
         r = Reader(
             inner_reader=DiskReader,
-            dataset=f"_temp/test/gcs/dataset/binary",
+            dataset=f"_temp/test/disk/dataset/binary",
         )
         l = list(r)
 
@@ -150,5 +150,7 @@ if __name__ == "__main__":  # pragma: no cover
     test_step_past()
     test_only_read_selected_rows()
     test_freshness_limits()
+    test_disk_text()
+    test_disk_binary()
 
     print("okay")
