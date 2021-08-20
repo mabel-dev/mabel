@@ -178,7 +178,7 @@ class Filters:
             self.predicates = filters
             self.empty_filter = False
             # record the filters, will help optimize indicies later
-            get_logger().info({"filter_columns": self._get_filter_columns(filters)})
+            get_logger().debug({"filter_columns": self._get_filter_columns(filters)})
         else:
             self.empty_filter = True
 
