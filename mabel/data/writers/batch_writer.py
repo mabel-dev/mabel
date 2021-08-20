@@ -111,4 +111,3 @@ class BatchWriter(SimpleWriter):
         )
         get_logger().debug(f"Frame completion file `{flag}` written")
         return final
-
