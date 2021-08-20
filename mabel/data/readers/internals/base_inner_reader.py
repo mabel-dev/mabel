@@ -110,7 +110,11 @@ class BaseInnerReader(abc.ABC):
             raise ValueError("Readers must have the `dataset` parameter set")
         if not self.dataset.endswith("/"):
             self.dataset += "/"
-        if "{" not in self.dataset and "%" not in self.dataset and not kwargs.get("raw_path", False):
+        if (
+            "{" not in self.dataset
+            and "%" not in self.dataset
+            and not kwargs.get("raw_path", False)
+        ):
             self.dataset += "{datefolders}/"
 
         self.start_date = self._extract_date_part(kwargs.get("start_date"))
@@ -195,7 +199,9 @@ class BaseInnerReader(abc.ABC):
             cycle_blobs = [blob for blob in cycle_blobs if "BACKOUT" not in blob]
 
             # work out if there's an as_at part
-            as_ats = {self._extract_as_at(blob) for blob in cycle_blobs if "as_at_" in blob}
+            as_ats = {
+                self._extract_as_at(blob) for blob in cycle_blobs if "as_at_" in blob
+            }
             if as_ats:
                 as_ats = sorted(as_ats)
                 as_at = as_ats.pop()
