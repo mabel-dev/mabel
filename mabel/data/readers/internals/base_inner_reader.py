@@ -14,6 +14,8 @@ from ....logging import get_logger
 from ....errors import MissingDependencyError
 
 
+BUFFER_SIZE: int = 64 * 1024 * 1024  # 64Mb
+
 def zstd_reader(stream, rows, all_rows):
     """
     Read zstandard compressed files
@@ -39,6 +41,18 @@ def lzma_reader(stream, rows, all_rows):
             if all_rows or index in rows:
                 yield row
 
+def zip_reader(stream, rows, all_rows):
+    """
+    Read ZIP compressed files
+    """
+    # zstandard should always be present
+    import zipfile
+
+    with zipfile.ZipFile(stream, 'r') as zip:
+        file = zip.read(zipfile.ZipFile.namelist(zip)[0])
+        for index, row in enumerate(file.split(b'\n')):
+            if row and (all_rows or index in rows):
+                yield row 
 
 def parquet_reader(stream, rows, all_rows):
     """
@@ -71,7 +85,7 @@ def text_reader(stream, rows, all_rows):
             yield row
 
 
-READERS = {".zstd": zstd_reader, ".lzma": lzma_reader, ".parquet": parquet_reader}
+READERS = {".zstd": zstd_reader, ".lzma": lzma_reader, ".parquet": parquet_reader, ".zip": zip_reader}
 
 
 class BaseInnerReader(abc.ABC):
@@ -81,8 +95,10 @@ class BaseInnerReader(abc.ABC):
         ".json",
         ".zstd",
         ".lzma",
+        ".zip",
         ".jsonl",
         ".csv",
+        ".xml",
         ".lxml",
         ".parquet",
         ".ignore",
@@ -144,6 +160,32 @@ class BaseInnerReader(abc.ABC):
         """
         pass
 
+    def get_blob_lines(self, blob_name: str) -> Iterable:
+        """
+        For larger files not written by mabel but we want to read, we need to
+        stream the content in rather than load it all at once.
+        """
+        offset = 0
+        carry_forward = b''
+        chunk = 'INITIALIZED'
+        while len(chunk) > 0:
+            # we read slightly more than the buffer size to reduce reads for
+            # slightly oversized files - it's hard to count to 64M.
+            chunk = self.get_blob_chunk(blob_name, offset, BUFFER_SIZE + (1024 * 1024))
+            offset += len(chunk)
+            lines = (carry_forward + chunk).split(b'\n')
+            carry_forward = lines.pop()
+            yield from lines
+        if carry_forward:
+            yield carry_forward
+
+    @abc.abstractmethod
+    def get_blob_chunk(self, blob_name: str, start: int, buffer_size: int) -> bytes:
+        """
+        Read a chunk of the text file
+        """
+        pass
+
     def get_records(
         self, blob_name: str, rows: Optional[Iterable[int]] = None
     ) -> Iterable[str]:
@@ -176,9 +218,14 @@ class BaseInnerReader(abc.ABC):
             rows = set([-1])
 
         path, ext = os.path.splitext(blob_name)
-        stream = self.get_blob_stream(blob_name)
 
-        yield from READERS.get(ext, text_reader)(stream, rows, all_rows)
+        if ext in READERS:
+            stream = self.get_blob_stream(blob_name=blob_name)
+            yield from READERS.get(ext, text_reader)(stream=stream, rows=rows, all_rows=all_rows)
+        else:
+            for index, row in enumerate(self.get_blob_lines(blob_name=blob_name)):
+                if row and (all_rows or index in rows):
+                    yield row
 
     def get_list_of_blobs(self):
 

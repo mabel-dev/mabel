@@ -2,13 +2,16 @@ import os
 import datetime
 from typing import Any
 import orjson
-from .simple_writer import SimpleWriter
+from .writer import Writer
 from .internals.blob_writer import BlobWriter
 from ...utils import paths
 from ...logging import get_logger
 
 
-class BatchWriter(SimpleWriter):
+class BatchWriter(Writer):
+    """
+    Extend the functionality of the Writer to better support batch data
+    """
     def __init__(
         self,
         *,

@@ -50,6 +50,8 @@ def test_smoke_test():
     logger.setLevel(LEVELS.DEBUG)
     logger.debug("debug")
     logger.warning("warn")
+    logger.warning("warn")
+    logger.warning("warn")
     logger.error("error")
     logger.alert("alert")
     logger.audit("audit")

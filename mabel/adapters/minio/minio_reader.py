@@ -1,6 +1,7 @@
 """
 MinIo Reader - also works with AWS
 """
+from functools import lru_cache
 import io
 from ...data.readers.internals.base_inner_reader import BaseInnerReader
 from ...utils import paths, common
@@ -49,8 +50,30 @@ class MinIoReader(BaseInnerReader):
             ]
 
     def get_blob_stream(self, blob_name: str) -> io.IOBase:
-        bucket, object_path, name, extension = paths.get_parts(blob_name)
-        stream = self.minio.get_object(bucket, object_path + name + extension).read()
+        try:
+            bucket, object_path, name, extension = paths.get_parts(blob_name)
+            stream = self.minio.get_object(bucket, object_path + name + extension)
 
-        io_stream = io.BytesIO(stream)
-        return io_stream
+            io_stream = io.BytesIO(stream.read())
+            return io_stream
+        finally:
+            stream.close()
+
+    @lru_cache(4)
+    def get_object_size(self, bucket_name, blob_name):
+        try:
+            return self.minio.stat_object(bucket_name, blob_name).size
+        except:
+            return 0
+
+    def get_blob_chunk(self, blob_name: str, start: int, buffer_size: int) -> bytes:
+        try:
+            bucket, object_path, name, extension = paths.get_parts(blob_name)
+            blob_path = object_path + name + extension
+            size = self.get_object_size(bucket, blob_path) - start
+            if size == 0:
+                return bytes()
+            stream = self.minio.get_object(bucket, blob_path, offset=start, length=min(buffer_size, size))
+            return stream.read()
+        finally:
+            pass #stream.close()

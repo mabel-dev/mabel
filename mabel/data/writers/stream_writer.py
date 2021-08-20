@@ -3,13 +3,16 @@ import datetime
 import threading
 from pydantic import BaseModel  # type:ignore
 from typing import Any, Union
-from .simple_writer import SimpleWriter
+from .writer import Writer
 from .internals.writer_pool import WriterPool
 from ...utils import paths
 from ...logging import get_logger
 
 
-class StreamWriter(SimpleWriter):
+class StreamWriter(Writer):
+    """
+    Extend the functionality of the Writer to better support streaming data
+    """
     def __init__(
         self,
         *,

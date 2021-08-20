@@ -23,15 +23,14 @@ COLOR_EXCHANGES = {
 class LogFormatter(logging.Formatter):
     def __init__(self, orig_formatter, suppress_color: bool = False):
         """
-        Remove sensitive data from records before saving to external logs.
-        Note that the value is hashed using (SHA256) and only the first 8
-        characters of the hex-encoded hash are presented. This information
-        allows values to be traced without disclosing the actual value.
+        Remove sensitive data from records before saving to external logs. Note that
+        the value is hashed using (SHA256) and only the first 8 characters of the
+        hex-encoded hash are presented. This information allows values to be traced
+        without disclosing the actual value.
 
-        The Sanitizer can only sanitize dictionaries, it doesn't
-        sanitize strings, which could contain sensitive information
-        We use the message id as a salt to further protect sensitive
-        information.
+        The Sanitizer can only sanitize dictionaries, it doesn't sanitize strings,
+        which could contain sensitive information We use the message id as a salt to
+        further protect sensitive information.
 
         Based On: https://github.com/joocer/cronicl/blob/main/cronicl/utils/sanitizer.py
         """

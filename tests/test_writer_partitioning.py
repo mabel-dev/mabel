@@ -6,7 +6,7 @@ import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.adapters.null import NullWriter
-from mabel.data import SimpleWriter
+from mabel.data import Writer
 from rich import traceback
 
 traceback.install()
@@ -16,7 +16,7 @@ from mabel.data.writers.internals.blob_writer import BLOB_SIZE
 
 def test_null_writer():
     # none of these should do anything
-    nw = SimpleWriter(inner_writer=NullWriter, dataset="bucket/path")
+    nw = Writer(inner_writer=NullWriter, dataset="bucket/path")
     for i in range(1):
         nw.append({"blob": ["2"] * BLOB_SIZE})
     res = nw.finalize()

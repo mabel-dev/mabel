@@ -34,14 +34,21 @@ class AzureBlobStorageReader(BaseInnerReader):
         self.blob_service_client = BlobServiceClient.from_connection_string(os.environ['AZURE_STORAGE_CONNECTION_STRING'])
 
 
-    def get_blob_stream(self, object_name):
-        print('BLOB', object_name)
-        container, object_path, name, extension = paths.get_parts(object_name)
+    def get_blob_stream(self, blob_name):
+        print('BLOB', blob_name)
+        container, object_path, name, extension = paths.get_parts(blob_name)
         container_client = self.blob_service_client.get_container_client(container)
         blob = container_client.get_blob_client(object_path + name + extension)
         stream = blob.download_blob().readall()
         io_stream = io.BytesIO(stream)
         return io_stream
+
+    def get_blob_chunk(self, blob_name: str, start: int, buffer_size: int) -> bytes:
+        container, object_path, name, extension = paths.get_parts(blob_name)
+        container_client = self.blob_service_client.get_container_client(container)
+        blob = container_client.get_blob_client(object_path + name + extension)
+        return blob.download_blob(offset=start, length=buffer_size).readall()
+
 
     def get_blobs_at_path(self, path):
 

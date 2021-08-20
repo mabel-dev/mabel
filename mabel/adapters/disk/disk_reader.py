@@ -27,3 +27,8 @@ class DiskReader(BaseInnerReader):
         with open(blob_name, "rb") as f:
             io_stream = io.BytesIO(f.read())
             return io_stream
+
+    def get_blob_chunk(self, blob_name: str, start: int, buffer_size: int) -> bytes:
+        with open(blob_name, "rb") as f:
+            f.seek(start, 0)
+            return f.read(buffer_size)
