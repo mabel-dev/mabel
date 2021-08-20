@@ -36,64 +36,60 @@ def set_up():
 
 def test_gcs_binary():
 
-    try:
-        # set up
-        set_up()
+    # set up
+    set_up()
 
-        w = BatchWriter(
-            inner_writer=GoogleCloudStorageWriter,
-            project="testing",
-            blob_size=1024,
-            dataset=f"{BUCKET_NAME}/test/gcs/dataset/binary",
-        )
-        for i in range(200):
-            w.append({"index": i + 300})
-        w.finalize()
+    w = BatchWriter(
+        inner_writer=GoogleCloudStorageWriter,
+        project="testing",
+        blob_size=1024,
+        dataset=f"{BUCKET_NAME}/test/gcs/dataset/binary",
+    )
+    for i in range(200):
+        w.append({"index": i + 300})
+    w.finalize()
 
-        # read the files we've just written, we should be able to
-        # read over both paritions.
-        r = Reader(
-            inner_reader=GoogleCloudStorageReader,
-            project="testing",
-            dataset=f"{BUCKET_NAME}/test/gcs/dataset/binary",
-            persistence=STORAGE_CLASS.MEMORY
-        )
+    # read the files we've just written, we should be able to
+    # read over both paritions.
+    r = Reader(
+        inner_reader=GoogleCloudStorageReader,
+        project="testing",
+        dataset=f"{BUCKET_NAME}/test/gcs/dataset/binary",
+        persistence=STORAGE_CLASS.MEMORY
+    )
 
-        assert r.count() == 200, r.count()
-    except Exception as e:  # pragma: no cover
-        raise e
+    assert r.count() == 200, r.count()
+
 
 
 
 def test_gcs_text():
 
-    try:
-        # set up
-        set_up()
+    # set up
+    set_up()
 
-        w = BatchWriter(
-            inner_writer=GoogleCloudStorageWriter,
-            project="testing",
-            blob_size=1024,
-            format="jsonl",
-            dataset=f"{BUCKET_NAME}/test/gcs/dataset/text",
-        )
-        for i in range(250):
-            w.append({"index": i + 300})
-        w.finalize()
+    w = BatchWriter(
+        inner_writer=GoogleCloudStorageWriter,
+        project="testing",
+        blob_size=1024,
+        format="jsonl",
+        dataset=f"{BUCKET_NAME}/test/gcs/dataset/text",
+    )
+    for i in range(250):
+        w.append({"index": i + 300})
+    w.finalize()
 
-        # read the files we've just written, we should be able to
-        # read over both paritions.
-        r = Reader(
-            inner_reader=GoogleCloudStorageReader,
-            project="testing",
-            dataset=f"{BUCKET_NAME}/test/gcs/dataset/text",
-            persistence=STORAGE_CLASS.MEMORY
-        )
+    # read the files we've just written, we should be able to
+    # read over both paritions.
+    r = Reader(
+        inner_reader=GoogleCloudStorageReader,
+        project="testing",
+        dataset=f"{BUCKET_NAME}/test/gcs/dataset/text",
+        persistence=STORAGE_CLASS.MEMORY
+    )
 
-        assert r.count() == 250, r
-    except Exception as e:  # pragma: no cover
-        raise e
+    assert r.count() == 250, r
+
 
 if __name__ == "__main__":  # pragma: no cover
     test_gcs_binary()
