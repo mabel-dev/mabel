@@ -2,8 +2,9 @@ import shutil
 import os
 import sys
 
-sys.path.insert(1, os.path.join(sys.path[0], ".."))
+sys.path.insert(1, os.path.join(sys.path[0], "../../.."))
 from mabel.adapters.google import GoogleCloudStorageWriter, GoogleCloudStorageReader
+from mabel.data.internals.dictset import STORAGE_CLASS
 from mabel.data import BatchWriter
 from mabel.data import Reader
 from google.auth.credentials import AnonymousCredentials
@@ -55,10 +56,10 @@ def test_gcs_binary():
             inner_reader=GoogleCloudStorageReader,
             project="testing",
             dataset=f"{BUCKET_NAME}/test/gcs/dataset/binary",
+            persistence=STORAGE_CLASS.MEMORY
         )
-        l = list(r)
 
-        assert len(l) == 200, len(l)
+        assert r.count() == 200, r.count()
     except Exception as e:  # pragma: no cover
         raise e
 
@@ -87,10 +88,10 @@ def test_gcs_text():
             inner_reader=GoogleCloudStorageReader,
             project="testing",
             dataset=f"{BUCKET_NAME}/test/gcs/dataset/text",
+            persistence=STORAGE_CLASS.MEMORY
         )
-        l = list(r)
 
-        assert len(l) == 250, len(l)
+        assert r.count() == 250, r
     except Exception as e:  # pragma: no cover
         raise e
 
