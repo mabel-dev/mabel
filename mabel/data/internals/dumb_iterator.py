@@ -10,7 +10,7 @@ class DumbIterator:
         self._i = iter(i)
 
     def __next__(self):
-        try:
-            return next(self._i)
-        except Exception:
-            raise StopIteration()
+        # try:
+        return next(self._i)
+        # except Exception:
+        #    raise StopIteration()

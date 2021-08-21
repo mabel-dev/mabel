@@ -160,6 +160,7 @@ class BlobWriter(object):
             self.file = lzma.open(self.file, mode="wb")
         if self.format == "zstd":
             import zstandard  # type:ignore
+
             self.file = zstandard.open(self.file_name, mode="wb")
 
         # create index builders

@@ -125,7 +125,7 @@ class GroupBy:
         """
         if not isinstance(columns, (tuple, list, set)):
             columns = [columns]
-        return self.aggregate([('MAX', column) for column in columns])
+        return self.aggregate([("MAX", column) for column in columns])
 
     def min(self, columns):
         """
@@ -140,7 +140,7 @@ class GroupBy:
         """
         if not isinstance(columns, (tuple, list, set)):
             columns = [columns]
-        return self.aggregate([('MIN', column) for column in columns])
+        return self.aggregate([("MIN", column) for column in columns])
 
     def sum(self, columns):
         """
@@ -155,7 +155,7 @@ class GroupBy:
         """
         if not isinstance(columns, (tuple, list, set)):
             columns = [columns]
-        return self.aggregate([('SUM', column) for column in columns])
+        return self.aggregate([("SUM", column) for column in columns])
 
     def count(self):
         """
@@ -166,7 +166,7 @@ class GroupBy:
         """
         # COUNT is a little different, it doesn't have any fields to perform the
         # aggregation on.
-        # This implementation could be improved by duplicating parts of the 
+        # This implementation could be improved by duplicating parts of the
         # aggregate() function and removing the bits that aren't needed to just
-        # count the values. 
-        return self.aggregate(('COUNT', '*'))
+        # count the values.
+        return self.aggregate(("COUNT", "*"))

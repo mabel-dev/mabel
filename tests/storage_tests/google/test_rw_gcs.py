@@ -55,12 +55,10 @@ def test_gcs_binary():
         inner_reader=GoogleCloudStorageReader,
         project="testing",
         dataset=f"{BUCKET_NAME}/test/gcs/dataset/binary",
-        persistence=STORAGE_CLASS.MEMORY
+        persistence=STORAGE_CLASS.MEMORY,
     )
 
     assert r.count() == 200, r.count()
-
-
 
 
 def test_gcs_text():
@@ -85,7 +83,7 @@ def test_gcs_text():
         inner_reader=GoogleCloudStorageReader,
         project="testing",
         dataset=f"{BUCKET_NAME}/test/gcs/dataset/text",
-        persistence=STORAGE_CLASS.MEMORY
+        persistence=STORAGE_CLASS.MEMORY,
     )
 
     assert r.count() == 250, r

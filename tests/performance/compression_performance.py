@@ -89,11 +89,11 @@ result = {
     "time": execute_test(write_file_clear, filename="_temp/wfc.txt", content=lines),
 }
 results.append(result)
-#result = {
+# result = {
 #    "function": "write_file_lzma",
 #    "time": execute_test(write_file_lzma, filename="_temp/wfl.lzma", content=lines),
-#}
-#results.append(result)
+# }
+# results.append(result)
 result = {
     "function": "write_file_zstandard",
     "time": execute_test(
@@ -106,11 +106,11 @@ result = {
     "time": execute_test(read_file_clear, filename="_temp/wfc.txt"),
 }
 results.append(result)
-#result = {
+# result = {
 #    "function": "read_file_lzma",
 #    "time": execute_test(read_file_lzma, filename="_temp/wfl.lzma"),
-#}
-#results.append(result)
+# }
+# results.append(result)
 result = {
     "function": "read_file_zstandard",
     "time": execute_test(read_file_zstandard, filename="_temp/wfz.zstd"),

@@ -16,20 +16,18 @@ BATCH_SIZE = 500
 
 
 class StorageClassCompressedMemory(object):
-
     def __init__(self, iterable):
         compressor = lz4.frame
 
         self.batches = []
         self.length = 0
 
-        for batch in zip_longest(*[iterable]*BATCH_SIZE):
+        for batch in zip_longest(*[iterable] * BATCH_SIZE):
             self.length += len(batch)
             self.batches.append(compressor.compress(orjson.dumps(batch)))
 
         # the last batch fills with Nones
         self.length -= batch.count(None)
-
 
     def _inner_reader(self, *locations):
         decompressor = lz4.frame
@@ -43,7 +41,9 @@ class StorageClassCompressedMemory(object):
             for i in ordered_location:
                 requested_batch = i % BATCH_SIZE
                 if requested_batch != batch_number:
-                    batch = orjson.loads(decompressor.decompress(self.batches[requested_batch]))
+                    batch = orjson.loads(
+                        decompressor.decompress(self.batches[requested_batch])
+                    )
                 yield batch[i - i % BATCH_SIZE]
 
         else:

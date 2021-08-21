@@ -25,17 +25,20 @@ class AzureBlobStorageReader(BaseInnerReader):
                 "`azure-storage-blob` is missing, please install or include in requirements.txt"
             )
         try:
-            os.environ['AZURE_STORAGE_CONNECTION_STRING']
+            os.environ["AZURE_STORAGE_CONNECTION_STRING"]
         except KeyError:
-            raise ValueError("Environment Variable `AZURE_STORAGE_CONNECTION_STRING` must be set.")
+            raise ValueError(
+                "Environment Variable `AZURE_STORAGE_CONNECTION_STRING` must be set."
+            )
 
         super().__init__(**kwargs)
 
-        self.blob_service_client = BlobServiceClient.from_connection_string(os.environ['AZURE_STORAGE_CONNECTION_STRING'])
-
+        self.blob_service_client = BlobServiceClient.from_connection_string(
+            os.environ["AZURE_STORAGE_CONNECTION_STRING"]
+        )
 
     def get_blob_stream(self, blob_name):
-        print('BLOB', blob_name)
+        print("BLOB", blob_name)
         container, object_path, name, extension = paths.get_parts(blob_name)
         container_client = self.blob_service_client.get_container_client(container)
         blob = container_client.get_blob_client(object_path + name + extension)
@@ -49,14 +52,12 @@ class AzureBlobStorageReader(BaseInnerReader):
         blob = container_client.get_blob_client(object_path + name + extension)
         return blob.download_blob(offset=start, length=buffer_size).readall()
 
-
     def get_blobs_at_path(self, path):
 
         container, object_path, name, extension = paths.get_parts(path)
         container_client = self.blob_service_client.get_container_client(container)
         blobs = container_client.list_blobs(name_starts_with=object_path)
 
-        blobs = list([container + '/' + b.name for b in blobs])
+        blobs = list([container + "/" + b.name for b in blobs])
         print(blobs)
         yield from blobs
-

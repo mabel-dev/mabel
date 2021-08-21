@@ -91,7 +91,6 @@ def test_step_past():
     _inner(os.getcwd() + "/tests/data/dated/{date}")
 
 
-
 def test_disk_binary():
 
     try:

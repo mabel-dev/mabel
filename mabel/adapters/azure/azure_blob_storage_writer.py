@@ -17,13 +17,17 @@ class AzureBlobStorageWriter(BaseInnerWriter):
                 "`azure-storage-blob` is missing, please install or include in requirements.txt"
             )
         try:
-            os.environ['AZURE_STORAGE_CONNECTION_STRING']
+            os.environ["AZURE_STORAGE_CONNECTION_STRING"]
         except KeyError:
-            raise ValueError("Environment Variable `AZURE_STORAGE_CONNECTION_STRING` must be set.")
+            raise ValueError(
+                "Environment Variable `AZURE_STORAGE_CONNECTION_STRING` must be set."
+            )
 
         super().__init__(**kwargs)
 
-        blob_service_client = BlobServiceClient.from_connection_string(os.environ['AZURE_STORAGE_CONNECTION_STRING'])
+        blob_service_client = BlobServiceClient.from_connection_string(
+            os.environ["AZURE_STORAGE_CONNECTION_STRING"]
+        )
         self.container_client = blob_service_client.get_container_client(self.bucket)
         self.filename = self.filename_without_bucket
 

@@ -47,7 +47,9 @@ class GoogleCloudStorageReader(BaseInnerReader):
             bucket=bucket,
             blob_name=object_path + name + extension,
         )
-        stream = blob.download_as_bytes(start=start, end=min(blob.size, start+buffer_size-1))
+        stream = blob.download_as_bytes(
+            start=start, end=min(blob.size, start + buffer_size - 1)
+        )
         return stream
 
     def get_blobs_at_path(self, path):

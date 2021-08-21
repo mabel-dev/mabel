@@ -16,6 +16,7 @@ from ....errors import MissingDependencyError
 
 BUFFER_SIZE: int = 64 * 1024 * 1024  # 64Mb
 
+
 def zstd_reader(stream, rows, all_rows):
     """
     Read zstandard compressed files
@@ -41,6 +42,7 @@ def lzma_reader(stream, rows, all_rows):
             if all_rows or index in rows:
                 yield row
 
+
 def zip_reader(stream, rows, all_rows):
     """
     Read ZIP compressed files
@@ -48,11 +50,12 @@ def zip_reader(stream, rows, all_rows):
     # zstandard should always be present
     import zipfile
 
-    with zipfile.ZipFile(stream, 'r') as zip:
+    with zipfile.ZipFile(stream, "r") as zip:
         file = zip.read(zipfile.ZipFile.namelist(zip)[0])
-        for index, row in enumerate(file.split(b'\n')):
+        for index, row in enumerate(file.split(b"\n")):
             if row and (all_rows or index in rows):
-                yield row 
+                yield row
+
 
 def parquet_reader(stream, rows, all_rows):
     """
@@ -85,7 +88,12 @@ def text_reader(stream, rows, all_rows):
             yield row
 
 
-READERS = {".zstd": zstd_reader, ".lzma": lzma_reader, ".parquet": parquet_reader, ".zip": zip_reader}
+READERS = {
+    ".zstd": zstd_reader,
+    ".lzma": lzma_reader,
+    ".parquet": parquet_reader,
+    ".zip": zip_reader,
+}
 
 
 class BaseInnerReader(abc.ABC):
@@ -166,14 +174,14 @@ class BaseInnerReader(abc.ABC):
         stream the content in rather than load it all at once.
         """
         offset = 0
-        carry_forward = b''
-        chunk = 'INITIALIZED'
+        carry_forward = b""
+        chunk = "INITIALIZED"
         while len(chunk) > 0:
             # we read slightly more than the buffer size to reduce reads for
             # slightly oversized files - it's hard to count to 64M.
             chunk = self.get_blob_chunk(blob_name, offset, BUFFER_SIZE + (1024 * 1024))
             offset += len(chunk)
-            lines = (carry_forward + chunk).split(b'\n')
+            lines = (carry_forward + chunk).split(b"\n")
             carry_forward = lines.pop()
             yield from lines
         if carry_forward:
@@ -219,11 +227,17 @@ class BaseInnerReader(abc.ABC):
         path, ext = os.path.splitext(blob_name)
 
         if ext in READERS:
-            get_logger().debug(f"Reading {'all' if all_rows else len(rows)} rows from `{blob_name}` using a binary reader.")
+            get_logger().debug(
+                f"Reading {'all' if all_rows else len(rows)} rows from `{blob_name}` using a binary reader."
+            )
             stream = self.get_blob_stream(blob_name=blob_name)
-            yield from READERS.get(ext, text_reader)(stream=stream, rows=rows, all_rows=all_rows)
+            yield from READERS.get(ext, text_reader)(
+                stream=stream, rows=rows, all_rows=all_rows
+            )
         else:
-            get_logger().debug(f"Reading {'all' if all_rows else len(rows)} rows from `{blob_name}` using the text reader.")
+            get_logger().debug(
+                f"Reading {'all' if all_rows else len(rows)} rows from `{blob_name}` using the text reader."
+            )
             for index, row in enumerate(self.get_blob_lines(blob_name=blob_name)):
                 if row and (all_rows or index in rows):
                     yield row.decode("UTF8")
@@ -242,7 +256,9 @@ class BaseInnerReader(abc.ABC):
             cycle_blobs = [blob for blob in cycle_blobs if "BACKOUT" not in blob]
 
             # work out if there's an as_at part
-            as_ats = {self._extract_as_at(blob) for blob in cycle_blobs if "as_at_" in blob}
+            as_ats = {
+                self._extract_as_at(blob) for blob in cycle_blobs if "as_at_" in blob
+            }
             if as_ats:
                 as_ats = sorted(as_ats)
                 as_at = as_ats.pop()

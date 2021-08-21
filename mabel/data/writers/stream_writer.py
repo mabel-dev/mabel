@@ -13,6 +13,7 @@ class StreamWriter(Writer):
     """
     Extend the functionality of the Writer to better support streaming data
     """
+
     def __init__(
         self,
         *,
