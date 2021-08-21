@@ -24,7 +24,6 @@ def test_can_read_zip():
     assert isinstance(row, dict)
 
 
-
 if __name__ == "__main__":  # pragma: no cover
     test_can_read_zip()
 

@@ -33,7 +33,7 @@ from typing import Iterator, Union, Dict, Any
 
 # from ....logging import get_logger
 from ...errors import MissingDependencyError, InvalidArgument
-
+from ...utils.ipython import is_running_from_ipython
 
 from .display import html_table, ascii_table
 from .storage_class_disk import StorageClassDisk
@@ -53,16 +53,17 @@ class STORAGE_CLASS(int, Enum):
     - NO_PERSISTANCE = don't do anything with the records to cache them, assumes
       the records are already persisted (e.g. you've loaded a list) but most
       functionality works with generators.
-    - MEMORY = load the entire dataset into a list, this is fast but if the 
+    - MEMORY = load the entire dataset into a list, this is fast but if the
       dataset is too large it will kill the app.
     - DISK = load the entire dataset to a temporary file, this can deal with
       Tb of data (if you have that much disk space) but it is at least 3x slower
       than memory from basic bench marks.
-    - COMPRESSED_MEMORY = a middle ground, allows you to load more data into 
+    - COMPRESSED_MEMORY = a middle ground, allows you to load more data into
       memory but still needs to perform compression on the data so isn't as fast
       as the MEMORY option. Bench marks show you can fit about 2x the data in
       memory but at a cost of 2.5x - your results will vary.
     """
+
     NO_PERSISTANCE = 1
     MEMORY = 2
     DISK = 3
@@ -86,7 +87,7 @@ class DictSet(object):
                 How to store this dataset while we're processing it. The default is
                 NO_PERSISTANCE which applies no specific persistance. MEMORY loads
                 into a Python `list`, DISK saves to disk - disk persistance is slower
-                but can handle much larger data sets. 'COMPRESSED_MEMORY' uses 
+                but can handle much larger data sets. 'COMPRESSED_MEMORY' uses
                 compression to fit more in memory for a performance cost.
         """
         self.storage_class = storage_class
@@ -318,7 +319,8 @@ class DictSet(object):
 
         # if the iterator allows us to access items directly, use that
         if self.storage_class == STORAGE_CLASS.MEMORY or hasattr(
-            self._iterator, "__getitem__"):
+            self._iterator, "__getitem__"
+        ):
             yield from [self._iterator[i] for i in locations]
             return
 
@@ -399,7 +401,9 @@ class DictSet(object):
                 if func(item):
                     yield item
 
-        return DictSet(inner_filter(predicate, self._iterator), storage_class=self.storage_class)
+        return DictSet(
+            inner_filter(predicate, self._iterator), storage_class=self.storage_class
+        )
 
     def dnf_filter(self, dnf_filters):
         """
@@ -411,7 +415,8 @@ class DictSet(object):
         """
         filter_set = DnfFilters(dnf_filters)
         return DictSet(
-            DnfFilters.filter_dictset(filter_set, self._iterator), storage_class=self.storage_class
+            DnfFilters.filter_dictset(filter_set, self._iterator),
+            storage_class=self.storage_class,
         )
 
     def query(self, expression):
@@ -453,11 +458,12 @@ class DictSet(object):
 
         return DictSet(inner_select(self._iterator), storage_class=self.storage_class)
 
-
-    def sort_and_take(self, column, take:int = 5000, descending: bool = False):
+    def sort_and_take(self, column, take: int = 5000, descending: bool = False):
 
         if self.storage_class == STORAGE_CLASS.MEMORY:
-            yield from sorted(self._iterator, key=itemgetter(column), reverse=descending)[:take]
+            yield from sorted(
+                self._iterator, key=itemgetter(column), reverse=descending
+            )[:take]
 
         else:
             double_cache = max(take * 2, 1) + 1
@@ -469,8 +475,6 @@ class DictSet(object):
                     del cache[take:]
             cache.sort(key=itemgetter(column), reverse=descending)
             yield from cache[:take]
- 
-    
 
     def __getitem__(self, columns):
         """
@@ -482,9 +486,19 @@ class DictSet(object):
         """
         Creates a consistent hash of the _DictSet_ regardless of the order of
         the items in the _DictSet_.
-
-        703115 = 8 days, 3 hours, 18 minutes, 35 seconds
         """
+        # The seed is the mission duration of the Apollo 11 mission.
+        #   703115 = 8 days, 3 hours, 18 minutes, 35 seconds
         serialized = map(orjson.dumps, self._iterator)
         hashed = map(cityhash.CityHash32, serialized)
         return reduce(lambda x, y: x ^ y, hashed, seed)
+
+    def __repr__(self):  # pragma: no cover
+        if is_running_from_ipython():
+            from IPython.display import HTML, display  # type:ignore
+
+            html = html_table(self, 5)
+            display(HTML(html))
+            return ""  # __repr__ must return something
+        else:
+            return ascii_table(self, 5)

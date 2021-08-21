@@ -63,7 +63,7 @@ def test_default_parser():
 
 
 if __name__ == "__main__":  # pragma: no cover
-   # test_block_parser()
+    # test_block_parser()
     test_text_parser()
     test_json_parser()
     test_default_parser()

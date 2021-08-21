@@ -4,7 +4,27 @@ from mabel.data.internals.group_by import GroupBy, AGGREGATORS
 from mabel import DictSet
 from ..reader import Reader
 from ....logging import get_logger
+from .sql_functions import *
 
+# not all are implemented
+SQL_KEYWORDS = [
+    r"SELECT", 
+    r"FROM",
+    r"JOIN",
+    r"WHERE",
+    r"GROUP\sBY",
+    r"HAVING",
+    r"ORDER\sBY",
+    r"LIMIT",
+    r"DESC",
+    r"INNER",
+    r"OUTER",
+    r"IN",
+    r"BETWEEN",
+    r"DISTINCT",
+    r"ASC",
+    r"TOP"
+]
 
 class InvalidSqlError(Exception):
     pass
@@ -73,14 +93,17 @@ class SqlParser:
         if not self._from:
             raise InvalidSqlError("Queries must always have a FROM statement")
         if self.group_by or "(" in ''.join(self.select):
-            self.select = self._get_aggregators(self.select)
+            self.select = self._get_functions(self.select)
             self._use_threads = True
+        if "(" in ''.join(self.group_by or []):
+            self.group_by = self._get_functions(self.group_by)
         if len(self.select) > 1 and any([f[0].upper() == "COUNT" for f in self.select if isinstance(self.select, tuple)]) and not self.group_by:
             raise InvalidSqlError("`SELECT COUNT(*)` must be the only SELECT statement if COUNT(*) is used without a GROUP BY")
 
-    def _get_aggregators(self, aggregators):
+    def _get_functions(self, aggregators):
 
         reg = re.compile(r"(\(|\)|,)")
+        KNOWN_FUNCTIONS = list(AGGREGATORS.keys()) + list(FUNCTIONS.keys())
 
         def inner(aggs):
             for entry in aggs or []:
@@ -89,31 +112,31 @@ class SqlParser:
                 i = 0
                 while i < len(tokens):
                     token = tokens[i]
-                    if token.upper() in AGGREGATORS:
+                    if safe_get(tokens, i+1) != "(":
+                        yield token
+                        i += 1
+                    elif token.upper() in KNOWN_FUNCTIONS:
                         if len(tokens) < (i + 3):
-                            raise ValueError("Not Enough Tokens")
+                            raise InvalidSqlError("SELECT statement terminated before it was complete.")
                         if tokens[i + 1] == "(" and tokens[i + 3] == ")":
                             yield (token.upper(), tokens[i + 2])
                         else:
-                            raise ValueError(
-                                "Expecting parenthesis, got `{tokens[i+1]}`, `{}`"
+                            raise InvalidSqlError(
+                                f"Expecting parenthesis, got `{tokens[i+1]}`, `{tokens[i+3]}`."
                             )
-                    i += 4
+                        i += 4
+                    else:
+                        raise InvalidSqlError(f"Unrecognised SQL function `{token}`.")
+
 
         aggs = list(inner(aggregators))
-        if len(aggs) == 0:
-            raise InvalidSqlError("SELECT cannot be `*` when using GROUP BY")
-        if not all(isinstance(agg, tuple) for agg in aggs):
-            raise InvalidSqlError(
-                "SELECT must be a set of aggregation functions (e.g. COUNT, SUM) when using GROUP BY"
-            )
 
         return aggs
 
     def _split_statement(self, statement):
 
         reg = re.compile(
-            r"(\bSELECT\b|\bFROM\b|\bJOIN\b|\bWHERE\b|\bGROUP\sBY\b|\bHAVING\b|\bORDER\sBY\b|\bLIMIT\b|\bDESC\b|,|\-\-|\;)",
+            r"(" + r''.join([r"\b" + i + r"\b|" for i in SQL_KEYWORDS]) + ",|\-\-|\;)",
             re.IGNORECASE,
         )
         tokens = []
@@ -136,6 +159,20 @@ class SqlParser:
         return f"< SQL: SELECT ({self.select})\nFROM ({self._from})\nWHERE ({self.where})\nGROUP BY ({self.group_by})\nORDER BY ({self.order_by})\nLIMIT ({self.limit}) >"
 
 
+def apply_functions_on_read_thru(ds, functions, merge=False):
+    for record in ds:
+        if merge:
+            result_record = record
+        else:
+            result_record = {}
+        for function in functions:
+            if isinstance(function, str) and not merge:
+                result_record[function] = record.get(function)
+            else:
+                result_record[f"{function[0]}({function[1]})"] = FUNCTIONS[function[0]](record.get(function[1]))
+        yield result_record
+
+
 class SqlReader:
     def __init__(self, sql_statement: str, **kwargs):
         """
@@ -153,6 +190,9 @@ class SqlReader:
         sql = SqlParser(sql_statement)
         get_logger().debug(sql)
 
+        #if sql._use_threads:
+        #    kwargs["thread_count"] = 4
+
         self.reader = Reader(
             query=sql.where,
             dataset=sql._from,
@@ -164,13 +204,25 @@ class SqlReader:
             for count, r in enumerate(self.reader):
                 pass
             self.reader = DictSet([{"COUNT(*)": count + 1}])
+        elif not sql.group_by and any(isinstance(selector, tuple) for selector in sql.select):
+            print("HERE HERE HERE HERE HERE HERE", sql.select)
+            self.reader = DictSet(apply_functions_on_read_thru(self.reader, sql.select))
         elif sql.select and not sql.group_by and not sql.select == ["*"]:
             self.reader = self.reader.select(sql.select)
         elif sql.group_by:
+            if not all(isinstance(sql.select, tuple) for sql.select in sql.select):
+                raise InvalidSqlError(
+                    "SELECT must be a set of aggregation functions (e.g. COUNT, SUM) when using GROUP BY"
+                )
+
+            if any(isinstance(selector, tuple) for selector in sql.group_by):
+                self.reader = apply_functions_on_read_thru(self.reader, sql.group_by, True)
+                sql.group_by = [ f"{group[0]}({group[1]})" if isinstance(group, tuple) else group for group in sql.group_by]
+            
             groups = GroupBy(self.reader, *sql.group_by).aggregate(sql.select)
             self.reader = DictSet(groups)
         if sql.order_by:
-            take = 5000
+            take = 10000
             if sql.limit:
                 take = sql.limit
             self.reader = DictSet(self.reader.sort_and_take(column=sql.order_by, take=take, descending=sql.order_by_desc))

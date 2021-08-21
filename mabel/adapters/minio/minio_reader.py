@@ -73,7 +73,9 @@ class MinIoReader(BaseInnerReader):
             size = self.get_object_size(bucket, blob_path) - start
             if size == 0:
                 return bytes()
-            stream = self.minio.get_object(bucket, blob_path, offset=start, length=min(buffer_size, size))
+            stream = self.minio.get_object(
+                bucket, blob_path, offset=start, length=min(buffer_size, size)
+            )
             return stream.read()
         finally:
-            pass #stream.close()
+            pass  # stream.close()

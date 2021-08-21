@@ -110,7 +110,9 @@ def test_combined_filters():
     # no conditions
     filter05 = DnfFilters()
     # IN conditions
-    filter06 = DnfFilters(("name", "in", ["Fleur Isabelle Delacour", "Hermione Grainger"]))
+    filter06 = DnfFilters(
+        ("name", "in", ["Fleur Isabelle Delacour", "Hermione Grainger"])
+    )
     # contains conditions - on lists
     filter07 = DnfFilters(("affiliations", "contains", "Griffindor"))
     # contains conditions

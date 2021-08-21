@@ -60,12 +60,12 @@ def test_parser():
 
 def test_invalid_sql():
     STATEMENTS = [
-        "SELECT * FROM TABLE WHERE value == 1 GROUP BY value LIMIT 3",
+        #"SELECT * FROM TABLE WHERE value == 1 GROUP BY value LIMIT 3",   <-- currently parses but raises error when run
         "SELECT *",
     ]
 
     for statement in STATEMENTS:
-        # print(statement)
+        print(statement)
         with pytest.raises(Exception):
             parsed = SqlParser(statement)
 

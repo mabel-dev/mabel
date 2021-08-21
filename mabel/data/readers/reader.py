@@ -234,7 +234,7 @@ def Reader(
     if filters:
         filters = DnfFilters(filters)  # type:ignore
         indexable_fields = get_indexable_filter_columns(
-            filters.predicates # type:ignore
+            filters.predicates  # type:ignore
         )  # type:ignore
 
     """ FEATURES IN DEVELOPMENT """

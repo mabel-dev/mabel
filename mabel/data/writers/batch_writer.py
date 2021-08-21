@@ -12,6 +12,7 @@ class BatchWriter(Writer):
     """
     Extend the functionality of the Writer to better support batch data
     """
+
     def __init__(
         self,
         *,

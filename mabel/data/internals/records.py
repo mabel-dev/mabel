@@ -57,7 +57,9 @@ def set_value(record: dict, field_name: str, setter: Callable) -> dict:
     return copy
 
 
-def flatten(dictionary: MutableMapping[Any, Any], parent_key=False, separator: str = "."):
+def flatten(
+    dictionary: MutableMapping[Any, Any], parent_key=False, separator: str = "."
+):
     """
     Turn a nested dictionary into a flattened dictionary
 

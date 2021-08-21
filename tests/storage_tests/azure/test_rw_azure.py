@@ -17,18 +17,19 @@ BUCKET_NAME = "pytest"
 
 def set_up():
     # Create a container for Azurite for the first run
-    blob_service_client = BlobServiceClient.from_connection_string(os.environ.get("AZURE_STORAGE_CONNECTION_STRING"))
-    
+    blob_service_client = BlobServiceClient.from_connection_string(
+        os.environ.get("AZURE_STORAGE_CONNECTION_STRING")
+    )
+
     try:
         blob_service_client.delete_container(BUCKET_NAME)
     except:
         pass
-    
+
     try:
         blob_service_client.create_container(BUCKET_NAME)
     except ResourceExistsError:
         pass
-
 
 
 def test_azure_binary():
