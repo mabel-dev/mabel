@@ -33,7 +33,7 @@ from typing import Iterator, Union, Dict, Any
 
 # from ....logging import get_logger
 from ...errors import MissingDependencyError, InvalidArgument
-
+from ...utils.ipython import is_running_from_ipython
 
 from .display import html_table, ascii_table
 from .storage_class_disk import StorageClassDisk
@@ -482,9 +482,20 @@ class DictSet(object):
         """
         Creates a consistent hash of the _DictSet_ regardless of the order of
         the items in the _DictSet_.
-
-        703115 = 8 days, 3 hours, 18 minutes, 35 seconds
         """
+        # The seed is the mission duration of the Apollo 11 mission.
+        #   703115 = 8 days, 3 hours, 18 minutes, 35 seconds
         serialized = map(orjson.dumps, self._iterator)
         hashed = map(cityhash.CityHash32, serialized)
         return reduce(lambda x, y: x ^ y, hashed, seed)
+
+
+    def __repr__(self):  # pragma: no cover
+        if is_running_from_ipython():
+            from IPython.display import HTML, display  # type:ignore
+
+            html = html_table(self, 5)
+            display(HTML(html))
+            return ""  # __repr__ must return something
+        else:
+            return ascii_table(self, 5)

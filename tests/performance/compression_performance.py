@@ -1,14 +1,15 @@
 """
-┌──────────────────────┬─────────────────────┐
-│       function       │         time        │
-├──────────────────────┼─────────────────────┤
-│   write_file_clear   │      1.17631384     │
-│   write_file_lzma    │      20.1975742     │
-│ write_file_zstandard │      0.29924092     │
-│   read_file_clear    │ 0.27045020000000003 │
-│    read_file_lzma    │  0.8491690000000001 │
-│ read_file_zstandard  │      0.14227396     │
-└──────────────────────┴─────────────────────┘
+┌──────────────────────┬────────────┐
+│       function       │    time    │
+├──────────────────────┼────────────┤
+│   write_file_clear   │ 1.2371213  │
+│ write_file_zstandard │ 0.41138138 │
+│   read_file_clear    │ 0.25498286 │
+│ read_file_zstandard  │ 0.14555598 │
+└──────────────────────┴────────────┘
+
+Results indicate that if you're IO bound (you almost definitely are) that the
+effort to compress is paid back many times by the effort to IO.
 """
 import os
 import time
