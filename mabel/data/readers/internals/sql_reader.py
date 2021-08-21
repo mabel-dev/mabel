@@ -45,14 +45,14 @@ class SqlParser:
             elif part.upper() == "JOIN":
                 collecting = None
                 raise NotImplementedError("SQL `JOIN` not implemented")
-            elif re.match("GROUP\sBY", part, re.IGNORECASE):
+            elif re.match(r"GROUP\sBY", part, re.IGNORECASE):
                 collecting = "GROUP BY"
                 self.group_by = []
             elif part.upper() == "HAVING":
                 collecting = None
                 self.having = safe_get(self.parts, i + 1, '')
                 raise NotImplementedError("SQL `HAVING` not implemented")
-            elif part.upper() == "ORDER BY":
+            elif re.match(r"ORDER\sBY", part, re.IGNORECASE):
                 collecting = None
                 self.order_by = safe_get(self.parts, i + 1, '')
                 self.order_by_desc = safe_get(self.parts, i + 2, '').upper() == "DESC"

@@ -21,7 +21,7 @@ def test_block_parser():
     )
 
     block = "\n".join(r)
-    assert len(r) == 2
+    assert len(r) == 2, len(r)
     assert len(block.splitlines()) == 50
 
 
@@ -63,7 +63,7 @@ def test_default_parser():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_block_parser()
+   # test_block_parser()
     test_text_parser()
     test_json_parser()
     test_default_parser()

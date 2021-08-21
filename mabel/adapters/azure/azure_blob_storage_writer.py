@@ -3,32 +3,28 @@ from ...data.writers.internals.base_inner_writer import BaseInnerWriter
 from ...errors import MissingDependencyError
 
 try:
-    from google.auth.credentials import AnonymousCredentials  # type:ignore
-    from google.cloud import storage  # type:ignore
+    from azure.storage.blob import BlobServiceClient
 
-    google_cloud_storage_installed = True
+    azure_blob_storage_installed = True
 except ImportError:  # pragma: no cover
-    google_cloud_storage_installed = False
+    azure_blob_storage_installed = False
 
 
 class AzureBlobStorageWriter(BaseInnerWriter):
-    def __init__(self, project: str, **kwargs):
-        if not google_cloud_storage_installed:  # pragma: no cover
+    def __init__(self, **kwargs):
+        if not azure_blob_storage_installed:  # pragma: no cover
             raise MissingDependencyError(
-                "`google-cloud-storage` is missing, please install or include in requirements.txt"
+                "`azure-storage-blob` is missing, please install or include in requirements.txt"
             )
+        try:
+            os.environ['AZURE_STORAGE_CONNECTION_STRING']
+        except KeyError:
+            raise ValueError("Environment Variable `AZURE_STORAGE_CONNECTION_STRING` must be set.")
 
         super().__init__(**kwargs)
 
-        # this means we're testing
-        if os.environ.get("STORAGE_EMULATOR_HOST") is not None:
-            client = storage.Client(
-                credentials=AnonymousCredentials(),
-                project=project,
-            )
-        else:  # pragma: no cover
-            client = storage.Client(project=project)
-        self.gcs_bucket = client.get_bucket(self.bucket)
+        blob_service_client = BlobServiceClient.from_connection_string(os.environ['AZURE_STORAGE_CONNECTION_STRING'])
+        self.container_client = blob_service_client.get_container_client(self.bucket)
         self.filename = self.filename_without_bucket
 
     def commit(self, byte_data, override_blob_name=None):
@@ -40,6 +36,6 @@ class AzureBlobStorageWriter(BaseInnerWriter):
         else:
             blob_name = self._build_path()
 
-        blob = self.gcs_bucket.blob(blob_name)
-        blob.upload_from_string(byte_data, content_type="application/octet-stream")
+        blob_client = self.container_client.get_blob_client(blob_name)
+        blob_client.upload_blob(byte_data, blob_type="BlockBlob")
         return blob_name
