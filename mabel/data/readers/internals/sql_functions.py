@@ -1,42 +1,33 @@
-def get_year(input):
-    import dateutil.parser
-    import datetime
+from ....utils.dates import parse_iso
+import datetime
 
-    if isinstance(input, str):
-        input = dateutil.parser.parse(input)
+def get_year(input):
+    if isinstance(input, str):  
+        input = parse_iso(input)
     if isinstance(input, (datetime.date, datetime.datetime)):
         return input.year
     return None  #
 
 
 def get_month(input):
-    import dateutil.parser
-    import datetime
-
-    if isinstance(input, str):
-        input = dateutil.parser.parse(input)
+    if isinstance(input, str):  
+        input = parse_iso(input)
     if isinstance(input, (datetime.date, datetime.datetime)):
         return input.month
     return None
 
 
 def get_day(input):
-    import dateutil.parser
-    import datetime
-
-    if isinstance(input, str):
-        input = dateutil.parser.parse(input)
+    if isinstance(input, str):  
+        input = parse_iso(input)
     if isinstance(input, (datetime.date, datetime.datetime)):
         return input.day
     return None
 
 
 def get_date(input):
-    import dateutil.parser
-    import datetime
-
-    if isinstance(input, str):
-        input = dateutil.parser.parse(input)
+    if isinstance(input, str):  
+        input = parse_iso(input)
     if isinstance(input, (datetime.date, datetime.datetime)):
         return input.date
     return None
@@ -51,4 +42,7 @@ FUNCTIONS = {
     "LCASE": lambda x: x.lower(),
     "LEN": len,
     "ROUND": round,
+    "TRUNC": int,
+    "INT": int,
+    "FLOAT": float
 }

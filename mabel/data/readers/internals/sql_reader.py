@@ -32,9 +32,22 @@ class InvalidSqlError(Exception):
 def safe_get(arr, index, default=None):
     return arr[index] if index < len(arr) else default
 
+def remove_comments(string):
+    pattern = r"(\".*?\"|\'.*?\')|(/\*.*?\*/|--[^\r\n]*$)"
+    # first group captures quoted strings (double or single)
+    # second group captures comments (//single-line or /* multi-line */)
+    regex = re.compile(pattern, re.MULTILINE|re.DOTALL)
+    def _replacer(match):
+        # if the 2nd group (capturing comments) is not None,
+        # it means we have captured a non-quoted (real) comment string.
+        if match.group(2) is not None:
+            return "" # so we will return empty to remove the comment
+        else: # otherwise, we will return the 1st group
+            return match.group(1) # captured quoted-string
+    return regex.sub(_replacer, string)
+
 class SqlParser:
     def __init__(self, statement):
-        self.statement = statement
 
         self.select = ["*"]
         self._from = None
@@ -47,7 +60,8 @@ class SqlParser:
 
         self._use_threads = False
 
-        self.parts = self._split_statement(statement)
+        self.statement = remove_comments(statement)
+        self.parts = self._split_statement(self.statement)
 
         collecting = None
 
@@ -188,10 +202,10 @@ class SqlReader:
             `query` is taken from SQL WHERE
         """
         sql = SqlParser(sql_statement)
-        get_logger().debug(sql)
+        get_logger().info(repr(sql).replace('\n', ' '))
 
         #if sql._use_threads:
-        #    kwargs["thread_count"] = 4
+        #    kwargs["fork_processes"] = True
 
         self.reader = Reader(
             query=sql.where,

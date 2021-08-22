@@ -9,7 +9,7 @@ from ..utils.ipython import is_running_from_ipython
 
 
 # if we find a key which matches these strings, we hash the contents
-KEYS_TO_SANITIZE = ["password$", "pwd$", ".*_secret$", ".*_key$", "_token$"]
+KEYS_TO_SANITIZE = [r"password$", r"pwd$", r".*_secret$", r".*_key$", r"_token$"]
 COLOR_EXCHANGES = {
     " ALERT    ": "{BOLD_RED} ALERT    {OFF}",
     " ERROR    ": "{RED} ERROR    {OFF}",
@@ -93,8 +93,8 @@ class LogFormatter(logging.Formatter):
                         "{PURPLE}<redacted:" + self.hash_it(str(value)) + ">{OFF}"
                     )
                 else:
-                    value = re.sub("`([^`]*)`", r"`{YELLOW}\1{GREEN}`", f"{value}")
-                    value = re.sub("'([^']*)'", r"'{YELLOW}\1{GREEN}'", f"{value}")
+                    value = re.sub(r"`([^`]*)`", r"`{YELLOW}\1{GREEN}`", f"{value}")
+                    value = re.sub(r"'([^']*)'", r"'{YELLOW}\1{GREEN}'", f"{value}")
                     clean_record["{BLUE}" + key + "{OFF}"] = (
                         "{GREEN}" + f"{value}" + "{OFF}"
                     )
@@ -102,9 +102,9 @@ class LogFormatter(logging.Formatter):
             parts.append(" " + json.dumps(clean_record).decode("UTF8"))
 
         except ValueError:
-            json_part = re.sub("`([^`]*)`", r"`{YELLOW}\1{OFF}`", f"{json_part}")
-            json_part = re.sub("'([^']*)'", r"'{YELLOW}\1{OFF}'", f"{json_part}")
-            json_part = re.sub('"([^"]*)"', r"'{YELLOW}\1{OFF}'", f"{json_part}")
+            json_part = re.sub(r"`([^`]*)`", r"`{YELLOW}\1{OFF}`", f"{json_part}")
+            json_part = re.sub(r"'([^']*)'", r"'{YELLOW}\1{OFF}'", f"{json_part}")
+            json_part = re.sub(r'"([^"]*)"', r"'{YELLOW}\1{OFF}'", f"{json_part}")
             parts.append(" " + json_part.strip() + " *")
 
         record = "|".join(parts)

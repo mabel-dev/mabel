@@ -67,6 +67,7 @@ def Reader(
     select: list = ["*"],
     dataset: str = None,
     filters: Optional[List[Tuple[str, str, object]]] = None,
+    query: Optional[str] = None,
     inner_reader=None,  # type:ignore
     row_format: str = "json",
     persistence: STORAGE_CLASS = STORAGE_CLASS.NO_PERSISTANCE,
@@ -101,7 +102,7 @@ def Reader(
             default is all columns
         dataset: string:
             The path to the data
-        query: stting (optional):
+        query: string (optional):
             An expression which when evaluated for each row, if False the row will
             be removed from the resulant data set, like the WHERE clause of of a SQL
             statement.
@@ -151,8 +152,8 @@ def Reader(
             Cache indexes to speed up secondary access, default is False
             (do not use cache)
 
-    Yields:
-        dictionary (string if data format is 'text')
+    Returns:
+        DictSet
 
     Raises:
         TypeError
@@ -261,7 +262,7 @@ def Reader(
             thread_count,
             fork_processes,
             select,
-            kwargs.get("query"),
+            query,
         ),
         storage_class=persistence,
     )

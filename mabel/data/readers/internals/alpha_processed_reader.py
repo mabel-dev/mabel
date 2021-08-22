@@ -5,6 +5,7 @@ Problems
 - The .limit method causes this reader to never end ()
 """
 import multiprocessing
+from queue import Empty
 from typing import Iterator
 import os
 import time
@@ -40,9 +41,10 @@ def page_dictset(dictset: Iterator[dict], page_size: int) -> Iterator:
 def _inner_process(flag, reader, source_queue, reply_queue, parser):  # pragma: no cover
 
     try:
-        source = source_queue.get(timeout=0.1)
-    except Exception:  # pragma: no cover
-        source = None
+        source = source_queue.get(timeout=5)
+    except Empty:  # pragma: no cover
+        flag.value = TERMINATE_SIGNAL
+        get_logger().debug("Process with not work to do killed off")
 
     while source is not None and flag.value != TERMINATE_SIGNAL:
         data = reader.get_records(source)
@@ -98,10 +100,15 @@ def processed_reader(items_to_read, reader, parser):  # pragma: no cover
         try:
             records = reply_queue.get(timeout=1)
             yield from records
-        except:  # nosec
+        except (GeneratorExit, SystemExit, KeyboardInterrupt):
+            raise
+        except Empty:  # nosec
             if time.time() - process_start_time > MAXIMUM_SECONDS_PROCESSES_CAN_RUN:
                 get_logger().debug(
                     f"Sending TERMINATE to long running multi-processed processes after {MAXIMUM_SECONDS_PROCESSES_CAN_RUN} seconds total run time"
                 )
                 for flag in process_pool:
                     flag.value = TERMINATE_SIGNAL
+        except:
+            for flag in process_pool:
+                flag.value = TERMINATE_SIGNAL

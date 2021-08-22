@@ -38,7 +38,6 @@ class AzureBlobStorageReader(BaseInnerReader):
         )
 
     def get_blob_stream(self, blob_name):
-        print("BLOB", blob_name)
         container, object_path, name, extension = paths.get_parts(blob_name)
         container_client = self.blob_service_client.get_container_client(container)
         blob = container_client.get_blob_client(object_path + name + extension)
@@ -59,5 +58,4 @@ class AzureBlobStorageReader(BaseInnerReader):
         blobs = container_client.list_blobs(name_starts_with=object_path)
 
         blobs = list([container + "/" + b.name for b in blobs])
-        print(blobs)
         yield from blobs

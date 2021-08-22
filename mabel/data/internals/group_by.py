@@ -77,22 +77,20 @@ class GroupBy:
                 existing = collector.get(record[0], {}).get(key)
                 value = record[2]
 
-                # shouldn't be needed but deal with numbers stored as strings
-                try:
-                    value = float(value)
-                    value = int(value)
-                except:  # nosec
-                    pass
 
                 # the aggregation works by performing a simple calculation on
                 # the last known value and the value currently seen. This means
                 # we don't need another copy of the full data in memory.
                 if existing:
-                    value = AGGREGATORS[func](existing, value)
+                    if value or func == "COUNT":
+                        value = AGGREGATORS[func](existing, value)
+                    else:
+                        value = existing
                 elif func == "COUNT":
                     # the COUNT needs seeding with 1, the next cycles are just
                     # adding 1 to the last value.
                     value = 1
+
 
                 # update the collector with the latest value
                 if record[0] not in collector:
