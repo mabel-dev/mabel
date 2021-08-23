@@ -10,7 +10,7 @@ import cityhash
 from typing import Optional, Tuple, List
 
 from .internals.threaded_reader import threaded_reader
-from .internals.alpha_processed_reader import processed_reader
+from .internals.processed_reader import processed_reader
 from .internals.parsers import pass_thru_parser, block_parser, json_parser, xml_parser
 
 from ..internals.dictset import DictSet, STORAGE_CLASS
@@ -45,7 +45,7 @@ RULES = [
     {"name": "end_date", "required": False, "warning": None, "incompatible_with": []},
     {"name": "extension", "required": False, "warning": None, "incompatible_with": []},
     {"name": "filters", "required": False, "warning": None, "incompatible_with": []},
-    {"name": "fork_processes", "required": False, "warning": "Forked Reader is Alpha - it's interface may change and some features may not be supported","incompatible_with": ["thread_count"]},
+    {"name": "fork_processes", "required": False, "warning": "Forked Reader may drop records if not used correctly","incompatible_with": ["thread_count"]},
     {"name": "freshness_limit", "required": False, "warning": None, "incompatible_with": []},
     {"name": "inner_reader", "required": False, "warning": None, "incompatible_with": []},
     {"name": "project", "required": False, "warning": None, "incompatible_with": []},
@@ -138,9 +138,10 @@ def Reader(
             incidates the maximum age of a dataset before it is no longer
             considered fresh. Where the 'time' of a dataset cannot be
             determined, it will be treated as midnight (00:00) for the date.
-        fork_processes: boolean (alpha):
-            **ALPHA**
-            Create parallel processes to read data files
+        fork_processes: boolean (optional):
+            Create parallel processes to read data files. This may loose records if
+            the records are not read from te reader fast enough. Using persistance to
+            read all of the records will prevent this.
         persistence: STORAGE_CLASS (optional)
             How to cache the results, the default is NO_PERSISTANCE which will almost
             always return a generator. MEMORY should only be used where the dataset
@@ -212,6 +213,7 @@ def Reader(
     arg_dict["inner_reader"] = f"{inner_reader.__name__}"  # type:ignore
     arg_dict["row_format"] = f"{row_format}"
     arg_dict["cache_folder"] = cache_folder
+    arg_dict["query"] = query
     get_logger().debug(arg_dict)
 
     # number of days to walk backwards to find records
@@ -238,8 +240,6 @@ def Reader(
             filters.predicates  # type:ignore
         )  # type:ignore
 
-    """ FEATURES IN DEVELOPMENT """
-
     # threaded reader
     thread_count = kwargs.get("thread_count")
     if thread_count:
@@ -252,21 +252,20 @@ def Reader(
 
     return DictSet(
         _LowLevelReader(
-            indexable_fields,
-            cache_folder,
-            reader_class,
-            parser,
-            filters,
-            freshness_limit,
-            cursor,
-            thread_count,
-            fork_processes,
-            select,
-            query,
+            indexable_fields=indexable_fields,
+            cache_folder=cache_folder,
+            reader_class=reader_class,
+            parser=parser,
+            filters=filters,
+            freshness_limit=freshness_limit,
+            cursor=cursor,
+            thread_count=thread_count,
+            fork_processes=fork_processes,
+            select=select,
+            query=query,
         ),
         storage_class=persistence,
     )
-
 
 def _is_system_file(filename):
     if "_SYS." in filename:
@@ -349,16 +348,8 @@ class _LowLevelReader(object):
                 rows += index.search(filter_value)
 
         # read the rows from the file
-        ds = self.reader_class.get_records(blob, rows)
-        # reformat the rows - ignoring blanks
-        ds = self.parser(ds)
-        # filter the rows, either with the filters or `dictset.select_from`
-        if self.filters:
-            yield from self.filters.filter_dictset(ds)
-        if self.query:
-            yield from filter(Expression(self.query).evaluate, ds)
-        else:
-            yield from ds
+        yield from self.reader_class.get_records(blob, rows)
+
 
     def _create_line_reader(self):
         blob_list = self.reader_class.get_list_of_blobs()
@@ -410,7 +401,7 @@ class _LowLevelReader(object):
         if self.thread_count > 0:
             yield from threaded_reader(readable_blobs, blob_list, self)
 
-        elif self.fork_processes:
+        elif self.fork_processes and len(readable_blobs) > 4:
             yield from processed_reader(readable_blobs, self.reader_class, self.parser)
 
         else:
@@ -422,11 +413,11 @@ class _LowLevelReader(object):
                 if offset > 0:
                     for burn in range(offset):
                         next(local_reader, None)
-                    for record_offset, record in enumerate(local_reader):
+                    for record_offset, record in enumerate(self.parser(local_reader)):
                         self.cursor["offset"] = offset + record_offset
                         yield record
                 else:
-                    for self.cursor["offset"], record in enumerate(local_reader):
+                    for self.cursor["offset"], record in enumerate(self.parser(local_reader)):
                         yield record
                 offset = 0
             # when we're done, the cursor shouldn't point anywhere
@@ -437,7 +428,15 @@ class _LowLevelReader(object):
 
     def __next__(self):
         if self._inner_line_reader is None:
-            self._inner_line_reader = self._create_line_reader()
+            line_reader = self._create_line_reader()
+
+            # filter the rows, either with the filters or `dictset.select_from`
+            if self.filters:
+                self._inner_line_reader = self.filters.filter_dictset(line_reader)
+            if self.query:
+                self._inner_line_reader = filter(Expression(self.query).evaluate, line_reader)
+            else:
+                self._inner_line_reader = line_reader
 
         # get the the next line from the reader
         record = self._inner_line_reader.__next__()

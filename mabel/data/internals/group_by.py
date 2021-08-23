@@ -36,11 +36,11 @@ class GroupBy:
         which standardize the format of the data tp be processed and could allow the
         data to be processed in parallel.
         """
-        for index, record in enumerate(self._dictset):
+        for record in self._dictset:
             group_key = ":".join(
                 [str(record.get(column, "")) for column in self._columns]
             )
-            group_key = CityHash32(group_key) % 4294967295
+            group_key = CityHash32(group_key)
             if group_key not in self._group_keys:
                 self._group_keys[group_key] = [
                     (column, record.get(column)) for column in self._columns
@@ -76,7 +76,6 @@ class GroupBy:
 
                 existing = collector.get(record[0], {}).get(key)
                 value = record[2]
-
 
                 # the aggregation works by performing a simple calculation on
                 # the last known value and the value currently seen. This means

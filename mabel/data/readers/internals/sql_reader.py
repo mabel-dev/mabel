@@ -204,8 +204,8 @@ class SqlReader:
         sql = SqlParser(sql_statement)
         get_logger().info(repr(sql).replace('\n', ' '))
 
-        #if sql._use_threads:
-        #    kwargs["fork_processes"] = True
+        if sql._use_threads:
+            kwargs["fork_processes"] = True
 
         self.reader = Reader(
             query=sql.where,
@@ -219,7 +219,6 @@ class SqlReader:
                 pass
             self.reader = DictSet([{"COUNT(*)": count + 1}])
         elif not sql.group_by and any(isinstance(selector, tuple) for selector in sql.select):
-            print("HERE HERE HERE HERE HERE HERE", sql.select)
             self.reader = DictSet(apply_functions_on_read_thru(self.reader, sql.select))
         elif sql.select and not sql.group_by and not sql.select == ["*"]:
             self.reader = self.reader.select(sql.select)
