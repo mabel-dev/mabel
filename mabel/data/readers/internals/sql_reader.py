@@ -204,8 +204,8 @@ class SqlReader:
         sql = SqlParser(sql_statement)
         get_logger().info(repr(sql).replace('\n', ' '))
 
-        if sql._use_threads:
-            kwargs["fork_processes"] = True
+        #if sql._use_threads:
+        #    kwargs["fork_processes"] = True
 
         self.reader = Reader(
             query=sql.where,
