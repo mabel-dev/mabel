@@ -150,7 +150,7 @@ class SqlParser:
     def _split_statement(self, statement):
 
         reg = re.compile(
-            r"(" + r''.join([r"\b" + i + r"\b|" for i in SQL_KEYWORDS]) + ",|\-\-|\;)",
+            r"(" + r''.join([r"\b" + i + r"\b|" for i in SQL_KEYWORDS]) + r",|\-\-|\;)",
             re.IGNORECASE,
         )
         tokens = []
