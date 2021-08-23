@@ -70,6 +70,5 @@ def processed_reader(items_to_read, reader, parser):  # pragma: no cover
     except Empty:  # nosec
         pass
     finally:
-        print("READ")
         pool.terminate()
 
