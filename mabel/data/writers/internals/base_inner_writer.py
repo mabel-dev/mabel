@@ -27,7 +27,7 @@ class BaseInnerWriter(abc.ABC):
             path = ""
 
         self.extension = kwargs.get("extension", ".jsonl")
-        if kwargs.get("format", "") in ["lzma", "zstd", "parquet"]:
+        if kwargs.get("format", "") in ["zstd", "parquet"]:
             self.extension = self.extension + "." + kwargs["format"]
         if kwargs.get("format") == "text":
             self.extension = ".txt"

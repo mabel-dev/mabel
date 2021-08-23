@@ -13,7 +13,7 @@ from ....errors import MissingDependencyError
 
 BLOB_SIZE = 64 * 1024 * 1024  # 64Mb, 16 files per gigabyte
 BUFFER_SIZE = BLOB_SIZE  # buffer in memory
-SUPPORTED_FORMATS_ALGORITHMS = ("jsonl", "lzma", "zstd", "parquet", "text", "flat")
+SUPPORTED_FORMATS_ALGORITHMS = ("jsonl", "zstd", "parquet", "text", "flat")
 
 
 class BlobWriter(object):
@@ -154,10 +154,7 @@ class BlobWriter(object):
     def _open_blob(self):
         self.file_name = self._create_temp_file_name()
         self.file: Any = open(self.file_name, mode="wb", buffering=BUFFER_SIZE)
-        if self.format == "lzma":
-            import lzma
 
-            self.file = lzma.open(self.file, mode="wb")
         if self.format == "zstd":
             import zstandard  # type:ignore
 

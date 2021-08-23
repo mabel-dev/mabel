@@ -56,7 +56,7 @@ TOKEN_OPERATORS = {
 }
 
 SPLITTER = re.compile(
-    r"(\bNONE\b|\bNULL\b|\bIS NOT\b|\bIS\b|\bAND\b|\bOR\b|!=|==|=|\<\>|<=|>=|<|>|\(|\)|\bNOT LIKE\b|\bLIKE\b|\bNOT\b)",
+    r"(\bNONE\b|\bNULL\b|\bIS\sNOT\b|\bIS\b|\bAND\b|\bOR\b|!=|==|=|\<\>|<=|>=|<|>|\(|\)|\bNOT\sLIKE\b|\bLIKE\b|\bNOT\b)",
     re.IGNORECASE,
 )
 
@@ -123,7 +123,6 @@ class ExpressionTokenizer:
                             self.token_types.append(TOKENS["VAR"])
                         else:
                             self.token_types.append(None)
-
 
 class Expression(object):
     tokenizer = None

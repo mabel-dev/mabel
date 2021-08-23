@@ -4,6 +4,7 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.adapters.disk import DiskReader
 from mabel.data.internals.dnf_filters import DnfFilters
+from mabel.data.internals.dictset import STORAGE_CLASS
 from mabel.data import Reader
 from rich import traceback
 
@@ -38,11 +39,9 @@ def test_reader_filters_single_filter():
         dataset="tests/data/tweets/",
         raw_path=True,
         filters=[("username", "==", "NBCNews")],
+        persistence=STORAGE_CLASS.MEMORY
     )
-    index = -1
-    for index, item in enumerate(r):
-        pass
-    assert index == 43, index
+    assert r.count() == 44, r
 
 
 def test_reader_filters_multiple_filter():
@@ -55,10 +54,9 @@ def test_reader_filters_multiple_filter():
             ("username", "==", "NBCNews"),
             ("timestamp", ">=", "2020-01-12T07:11:04"),
         ],
+        persistence=STORAGE_CLASS.MEMORY
     )
-    for index, item in enumerate(r):
-        pass
-    assert index == 33, index
+    assert r.count() == 34, r
 
 
 def test_filters():
