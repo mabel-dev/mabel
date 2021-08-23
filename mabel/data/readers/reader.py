@@ -433,7 +433,7 @@ class _LowLevelReader(object):
             # filter the rows, either with the filters or `dictset.select_from`
             if self.filters:
                 self._inner_line_reader = self.filters.filter_dictset(line_reader)
-            if self.query:
+            elif self.query:
                 self._inner_line_reader = filter(Expression(self.query).evaluate, line_reader)
             else:
                 self._inner_line_reader = line_reader

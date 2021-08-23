@@ -74,22 +74,6 @@ def test_reader_writer():
     assert l == 200000, l
 
 
-def test_reader_writer_format_lzma():
-
-    do_writer_compressed("lzma")
-
-    g = glob.glob("_temp/**/*.lzma", recursive=True)
-    assert len(g) > 0, g
-
-    c = glob.glob("_temp/**/*.complete", recursive=True)
-    len(c) == 0, c
-
-    r = Reader(inner_reader=DiskReader, dataset="_temp")
-    l = len(list(r))
-    shutil.rmtree("_temp", ignore_errors=True)
-    assert l == 200000, l
-
-
 def test_reader_writer_format_zstd():
 
     do_writer_compressed("zstd")
@@ -161,7 +145,6 @@ def get_data():
 
 if __name__ == "__main__":  # pragma: no cover
     test_reader_writer()
-    test_reader_writer_format_lzma()
     test_reader_writer_format_zstd()
     test_reader_writer_format_jsonl()
     test_reader_writer_format_parquet()
