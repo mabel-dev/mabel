@@ -1,5 +1,5 @@
 from typing import Iterable, Tuple
-from cityhash import CityHash32
+from siphashc import siphash
 import operator
 
 AGGREGATORS = {"SUM": operator.add, "MAX": max, "MIN": min, "COUNT": lambda x, y: x + 1}
@@ -40,7 +40,7 @@ class GroupBy:
             group_key = ":".join(
                 [str(record.get(column, "")) for column in self._columns]
             )
-            group_key = CityHash32(group_key)
+            group_key = siphash('*'*16, group_key)
             if group_key not in self._group_keys:
                 self._group_keys[group_key] = [
                     (column, record.get(column)) for column in self._columns

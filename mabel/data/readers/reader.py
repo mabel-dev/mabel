@@ -5,7 +5,7 @@ import atexit
 import orjson
 import os.path
 import datetime
-import cityhash
+from siphashc import siphash
 
 from typing import Optional, Tuple, List
 
@@ -379,7 +379,7 @@ class _LowLevelReader(object):
         if self.cursor.get("partition"):
             skipped = 0
             while len(readable_blobs) > 0:
-                if cityhash.CityHash32(readable_blobs[0]) != self.cursor.get(
+                if siphash('*'*16,readable_blobs[0]) != self.cursor.get(
                     "partition"
                 ):
                     readable_blobs.pop(0)
@@ -407,7 +407,7 @@ class _LowLevelReader(object):
         else:
             offset = self.cursor.get("offset", 0)
             for blob in readable_blobs:
-                self.cursor["partition"] = cityhash.CityHash32(blob)
+                self.cursor["partition"] = siphash('*'*16, blob)
                 self.cursor["offset"] = -1
                 local_reader = self._read_blob(blob, blob_list)
                 if offset > 0:

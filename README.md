@@ -77,7 +77,7 @@ library version. Alpha versions are more likely to have functional issues.
 
 -  **[orjson](https://github.com/ijl/orjson)** is used for JSON handling
 -  **[dateutil](https://dateutil.readthedocs.io/en/stable/)** is used to convert dates received as strings
--  **[cityhash](https://github.com/google/cityhash)** is used for non-cryptographic hashing
+-  **[siphashc]** is used for non-cryptographic hashing
 -  **[pydantic](https://pydantic-docs.helpmanual.io/)** is used to define internal data models  
 -  **[zstandard](https://github.com/indygreg/python-zstandard)** is used for real-time on disk compression
 -  **[LZ4]** is used for real-time in memory compression

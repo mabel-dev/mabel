@@ -3,4 +3,4 @@ python-dateutil
 zstandard
 lz4
 pydantic
-cityhash
+siphashc

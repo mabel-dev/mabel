@@ -112,7 +112,7 @@ def test_group_by_count():
     )
     records = s.reader.collect()
     record_count = len(records)
-    assert record_count == 56526, record_count
+    assert record_count == 56527, record_count
 
     s = SqlReader(
         sql_statement="SELECT COUNT(*) FROM tests.data.index.not GROUP BY user_name, following",

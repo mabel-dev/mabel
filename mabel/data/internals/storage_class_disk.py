@@ -81,3 +81,9 @@ class StorageClassDisk(object):
 
     def __len__(self):
         return self.length
+
+    def __del__(self):
+        try:
+            os.remove(self.file)
+        except: # nosec
+            pass

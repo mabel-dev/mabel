@@ -3,7 +3,7 @@ import struct
 from operator import itemgetter
 from typing import Iterable, Any
 from functools import lru_cache
-from cityhash import CityHash32
+from siphashc import siphash
 
 
 MAX_INDEX = 4294967295  # 2^32 - 1
@@ -31,7 +31,7 @@ CONVERTERS = {
 
 
 def fallback_converter(val):
-    return CityHash32(f"{val}")
+    return siphash('*'*16, f"{val}")
 
 
 def value_to_int(val: Any):
@@ -39,7 +39,7 @@ def value_to_int(val: Any):
     converter = fallback_converter
     if val_type in CONVERTERS:
         converter = CONVERTERS[val_type]
-    return converter(val)
+    return converter(val) % 4294967295
 
 
 class IndexEntry(object):
