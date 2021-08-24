@@ -1,6 +1,7 @@
+import operator
 from typing import Iterable, Tuple
 from siphashc import siphash
-import operator
+from collections import defaultdict
 
 AGGREGATORS = {"SUM": operator.add, "MAX": max, "MIN": min, "COUNT": lambda x, y: x + 1}
 
@@ -37,8 +38,8 @@ class GroupBy:
         data to be processed in parallel.
         """
         for record in self._dictset:
-            group_key = ":".join(
-                [str(record.get(column, "")) for column in self._columns]
+            group_key = "".join(
+                [f"{record.get(column)}" for column in self._columns]
             )
             group_key = siphash('*'*16, group_key)
             if group_key not in self._group_keys:
@@ -63,10 +64,10 @@ class GroupBy:
 
         columns_to_collect = [col for func, col in aggregations]
 
-        collector = {}
+        collector = defaultdict(dict)
         # Iterate through the data in the groups formatted by the mapper. This data
         # is a list of Tuples of (GroupID, Column Name, Value)
-        for index, record in enumerate(self._map(*columns_to_collect)):
+        for record in self._map(*columns_to_collect):
             # For each aggregation, we need to perform the function against the
             # values as they come in - the collector holds the result up to this
             # point in the set.
@@ -74,7 +75,7 @@ class GroupBy:
 
                 key = f"{func}({col})"
 
-                existing = collector.get(record[0], {}).get(key)
+                existing = collector[record[0]].get(key)
                 value = record[2]
 
                 # the aggregation works by performing a simple calculation on
@@ -90,10 +91,7 @@ class GroupBy:
                     # adding 1 to the last value.
                     value = 1
 
-
                 # update the collector with the latest value
-                if record[0] not in collector:
-                    collector[record[0]] = {}
                 collector[record[0]][key] = value
 
         # the order of the resulting data set is the order of the hashes - this
@@ -163,7 +161,7 @@ class GroupBy:
         """
         # COUNT is a little different, it doesn't have any fields to perform the
         # aggregation on.
-        # This implementation could be improved by duplicating parts of the
+        # This implementation could be improved by taking a copy of the
         # aggregate() function and removing the bits that aren't needed to just
         # count the values.
         return self.aggregate(("COUNT", "*"))
