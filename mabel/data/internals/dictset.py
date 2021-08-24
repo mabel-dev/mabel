@@ -23,9 +23,9 @@ limitations under the License.
 
 import os
 import orjson
-import cityhash
 import statistics
 
+from siphashc import siphash
 from operator import itemgetter
 from functools import reduce
 
@@ -37,6 +37,7 @@ from ...utils.ipython import is_running_from_ipython
 
 from .display import html_table, ascii_table
 from .storage_class_disk import StorageClassDisk
+from .storage_class_binary_disk import StorageClassBinaryDisk
 from .storage_class_compressed_memory import StorageClassCompressedMemory
 from .expression import Expression
 from .dnf_filters import DnfFilters
@@ -62,12 +63,15 @@ class STORAGE_CLASS(int, Enum):
       memory but still needs to perform compression on the data so isn't as fast
       as the MEMORY option. Bench marks show you can fit about 2x the data in
       memory but at a cost of 2.5x - your results will vary.
+    - BINARY_DISK = a limited representation of the data, supports only a limited
+      set of field types and truncates string at 255 characters.
     """
 
     NO_PERSISTANCE = 1
     MEMORY = 2
     DISK = 3
     COMPRESSED_MEMORY = 4
+    BINARY_DISK = 5
 
 
 class DictSet(object):
@@ -102,6 +106,9 @@ class DictSet(object):
         if storage_class == STORAGE_CLASS.DISK:
             self._iterator = StorageClassDisk(iterator)
 
+        if storage_class == STORAGE_CLASS.BINARY_DISK:
+            self._iterator = StorageClassBinaryDisk(iterator)
+
         # if we're persisiting to compressed memory, do it
         if storage_class == STORAGE_CLASS.COMPRESSED_MEMORY:
             self._iterator = StorageClassCompressedMemory(iterator)
@@ -121,13 +128,6 @@ class DictSet(object):
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass  # exist needs to exist to be a context manager
 
-    def __del__(self):
-        try:
-            if self._temporary_folder:
-                self._temporary_folder.cleanup()
-        except:  # nosec
-            pass
-
     def persist(self, storage_class=STORAGE_CLASS.MEMORY):
         """
         Persist changes the persistance engine used for the DictSet. The default
@@ -141,9 +141,6 @@ class DictSet(object):
             return False
         if storage_class == STORAGE_CLASS.MEMORY:
             self._iterator == list(self._iterator)
-            if self._temporary_folder:
-                self._temporary_folder.cleanup()
-                self._temporary_folder = None
         if storage_class == STORAGE_CLASS.DISK:
             self._iterator = StorageClassDisk(self._iterator)
         if storage_class == STORAGE_CLASS.COMPRESSED_MEMORY:
@@ -487,10 +484,12 @@ class DictSet(object):
         Creates a consistent hash of the _DictSet_ regardless of the order of
         the items in the _DictSet_.
         """
+        def sip(val):
+            return siphash('*', val)
         # The seed is the mission duration of the Apollo 11 mission.
         #   703115 = 8 days, 3 hours, 18 minutes, 35 seconds
         serialized = map(orjson.dumps, self._iterator)
-        hashed = map(cityhash.CityHash32, serialized)
+        hashed = map(sip, serialized)
         return reduce(lambda x, y: x ^ y, hashed, seed)
 
     def __repr__(self):  # pragma: no cover

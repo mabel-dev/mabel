@@ -1,8 +1,9 @@
 
-## Use of CityHash
+## Use of SipHash
 
-CityHash is used for non-cryptographic hashing primarily due to the
-speed, MurmurHash was originally used.
+CityHash was used for non-cryptographic hashing but failed to install in some
+environments so needed to be replaced. For different reasons others have made
+the same move from CityHash to SipHash.
 
 ## Used of LZ4
 

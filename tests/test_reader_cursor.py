@@ -35,7 +35,7 @@ def test_cursor():
 
     print(cursor)
     assert cursor["offset"] == (lim % 25), cursor["offset"]
-    assert cursor["partition"] == 3412014897
+    assert cursor["partition"] == 6018338569497712008, cursor["partition"]
 
     reader = Reader(
         inner_reader=DiskReader,
@@ -59,7 +59,7 @@ def test_cursor_as_text():
             inner_reader=DiskReader,
             dataset="tests/data/tweets/",
             raw_path=True,
-            cursor='{"partition": 3412014897, "offset": ' + str(offset) + " }",
+            cursor='{"partition": 6018338569497712008, "offset": ' + str(offset) + " }",
         )
         reader = list(reader)
         assert len(reader) == 25 - offset
