@@ -205,7 +205,7 @@ def Reader(
             os.environ["CACHE_FOLDER"] = cache_folder
             os.makedirs(cache_folder, exist_ok=True)
             # delete the cache when the application closes
-            atexit.register(shutil.rmtree, cache_folder, ignore_errors=True)
+            atexit.register(shutil.rmtree, args=(cache_folder), kwargs={"ignore_errors":True})
 
     arg_dict = kwargs.copy()
     arg_dict["select"] = f"{select}"
@@ -232,6 +232,10 @@ def Reader(
         raise InvalidCombinationError(
             "`parquet` extension much be used with the `pass-thru` row_format"
         )
+
+    if query:
+        query = Expression(query)
+        filters = query.to_dnf()
 
     indexable_fields = []
     if filters:
@@ -301,6 +305,7 @@ class _LowLevelReader(object):
         self._inner_line_reader = None
         self.select = select
         self.query = query
+
 
     def _read_blob(self, blob, blob_list):
         """
@@ -431,10 +436,10 @@ class _LowLevelReader(object):
             line_reader = self._create_line_reader()
 
             # filter the rows, either with the filters or `dictset.select_from`
-            if self.filters:
+            if self.query:
+                self._inner_line_reader = filter(self.query.evaluate, line_reader)
+            elif self.filters:
                 self._inner_line_reader = self.filters.filter_dictset(line_reader)
-            elif self.query:
-                self._inner_line_reader = filter(Expression(self.query).evaluate, line_reader)
             else:
                 self._inner_line_reader = line_reader
 

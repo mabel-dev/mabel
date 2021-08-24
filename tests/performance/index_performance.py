@@ -10,6 +10,10 @@ Results (seconds to search for a username in 65,500 rows):
 -------------------------------
 
 """
+import os, sys
+
+sys.path.insert(1, os.path.join(sys.path[0], "../.."))
+from mabel.data.internals.index import Index, IndexBuilder
 import time
 
 
@@ -22,7 +26,7 @@ def time_it(dataset, username):
         filters=("user_name", "==", username),
     )
     res = [r for r in reader]
-    # print(res)
+    print(len(res))
     return (time.perf_counter_ns() - start) / 1e9
 
 
@@ -39,5 +43,14 @@ user_name = "Verizon Support"
 
 print("indexed\t:", time_it("tests/data/index/is", user_name))
 print("not indexed\t:", time_it("tests/data/index/not", user_name))
-print("indexed\t:", time_it("tests/data/index/is", user_name))
-print("not indexed\t:", time_it("tests/data/index/not", user_name))
+print("indexed\t:", time_it("tests/data/index/is", user_name + "bb"))
+print("not indexed\t:", time_it("tests/data/index/not", user_name + "bb"))
+
+
+reader = Reader(
+    inner_reader=DiskReader,
+    dataset="tests/data/index/is",
+    raw_path=True,
+)
+idx = Index.build_index(reader, "user_name")
+idx.dump("tests/data/index/is/index")

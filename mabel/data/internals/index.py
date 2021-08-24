@@ -16,8 +16,8 @@ dataset.
 
 Terminology:
     Entry     : a record in the Index
-    Location  : the position of the entry in the Index
-    Position  : the position of the row in the target file
+    Position  : the position of the entry in the Index
+    Location  : the position of the row in the target file
     Row       : a record in the target file
 """
 
@@ -28,19 +28,6 @@ CONVERTERS = {
     "datetime": lambda x: int.from_bytes(struct.pack("d", x.timestamp()), "big"),
     "float": lambda x: int.from_bytes(struct.pack("d", x), "big"),
 }
-
-
-def fallback_converter(val):
-    return siphash('*'*16, f"{val}")
-
-
-def value_to_int(val: Any):
-    val_type = type(val).__name__
-    converter = fallback_converter
-    if val_type in CONVERTERS:
-        converter = CONVERTERS[val_type]
-    return converter(val) % 4294967295
-
 
 class IndexEntry(object):
     """
@@ -56,19 +43,10 @@ class IndexEntry(object):
         """
         return struct.pack(STRUCT_DEF, self.value, self.location, self.count)
 
-    @staticmethod
-    def from_bin(buffer):
-        """
-        Convert _bytes_ to a model
-        """
-        value, location, count = struct.unpack(STRUCT_DEF, buffer)
-        return IndexEntry(value=value, location=location, count=count)
-
     def __init__(self, value, location, count):
         self.value = value
         self.location = location
         self.count = count
-
 
 class Index:
     def __init__(self, index: io.BytesIO):
@@ -78,13 +56,16 @@ class Index:
         The file format is fixed-length binary, the search algorithm is a
         classic binary search.
         """
+        print("LOADING AN INDEX")
         if isinstance(index, io.BytesIO):
-            self._index = index
             # go to the end of the stream
             index.seek(0, 2)
             # divide the size of the stream by the record size to get the
             # number of entries in the index
             self.size = index.tell() // RECORD_SIZE
+
+            index.seek(0, 0)
+            self._index = memoryview(index.read())
 
     @staticmethod
     def build_index(dictset: Iterable[dict], column_name: str):
@@ -109,13 +90,13 @@ class Index:
         return builder.build()
 
     @lru_cache(8)
-    def _get_entry(self, location: int):
+    def _get_entry(self, position: int):
         """
         get a specific entry from the index
         """
         try:
-            self._index.seek(RECORD_SIZE * location)
-            return IndexEntry.from_bin(self._index.read(RECORD_SIZE))
+            value, loc, count = struct.unpack_from(STRUCT_DEF, self._index[RECORD_SIZE * position:RECORD_SIZE * (position + 1)])
+            return IndexEntry(value, loc, count)
         except Exception:
             return None
 
@@ -126,6 +107,7 @@ class Index:
         left, right = 0, (self.size - 1)
         while left <= right:
             middle = (left + right) >> 1
+
             entry = self._get_entry(middle)
             if entry.value == value:
                 return middle, entry
@@ -137,7 +119,7 @@ class Index:
 
     def _inner_search(self, search_term) -> Iterable:
         # hash the value and make fit in a four byte unsinged int
-        value = value_to_int(search_term) % MAX_INDEX
+        value = siphash('*'*16, f"{search_term}") % MAX_INDEX
 
         # search for an instance of the value in the index
         location, found_entry = self._locate_record(value)
@@ -172,6 +154,10 @@ class Index:
             result[0:0] = self._inner_search(term)
         return set(result)
 
+    def dump(self, file):
+        with open(file, "wb") as f:
+            f.write(self._index[:])
+
 
 class IndexBuilder:
 
@@ -190,7 +176,7 @@ class IndexBuilder:
                 values = [values]
             for value in values:
                 entry = {
-                    "val": value_to_int(value) % MAX_INDEX,
+                    "val": siphash('*'*16, f"{value}") % MAX_INDEX,
                     "pos": position,
                 }
                 ret_val.append(entry)
