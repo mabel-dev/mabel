@@ -50,6 +50,7 @@ class SqlParser:
     def __init__(self, statement):
 
         self.select = ["*"]
+        self.distinct = False
         self._from = None
         self.where = None
         self.group_by = None
@@ -113,6 +114,9 @@ class SqlParser:
             self.group_by = self._get_functions(self.group_by)
         if len(self.select) > 1 and any([f[0].upper() == "COUNT" for f in self.select if isinstance(self.select, tuple)]) and not self.group_by:
             raise InvalidSqlError("`SELECT COUNT(*)` must be the only SELECT statement if COUNT(*) is used without a GROUP BY")
+        if isinstance(self.select[0], str) and self.select[0].upper() == "DISTINCT":
+            self.distinct = True
+            self.select.pop(0)
 
     def _get_functions(self, aggregators):
 
@@ -170,7 +174,7 @@ class SqlParser:
         return tokens
 
     def __repr__(self):
-        return f"< SQL: SELECT ({self.select})\nFROM ({self._from})\nWHERE ({self.where})\nGROUP BY ({self.group_by})\nORDER BY ({self.order_by})\nLIMIT ({self.limit}) >"
+        return f"< SQL: SELECT {'DISTINCT ' if self.distinct else ''}({self.select})\nFROM ({self._from})\nWHERE ({self.where})\nGROUP BY ({self.group_by})\nORDER BY ({self.order_by})\nLIMIT ({self.limit}) >"
 
 
 def apply_functions_on_read_thru(ds, functions, merge=False):
@@ -204,9 +208,6 @@ class SqlReader:
         sql = SqlParser(sql_statement)
         get_logger().info(repr(sql).replace('\n', ' '))
 
-        #if sql._use_threads:
-        #    kwargs["fork_processes"] = True
-
         self.reader = Reader(
             query=sql.where,
             dataset=sql._from,
@@ -234,6 +235,12 @@ class SqlReader:
             
             groups = GroupBy(self.reader, *sql.group_by).aggregate(sql.select)
             self.reader = DictSet(groups)
+        if sql.distinct:
+            self.reader = self.reader.distinct()
+        if sql.having:
+            print(sql.having)
+            print(self.reader.first())
+            self.reader = self.reader.query(sql.having)
         if sql.order_by:
             take = 10000
             if sql.limit:

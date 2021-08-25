@@ -290,8 +290,7 @@ class DictSet(object):
                 hashed_item = hash(orjson.dumps(item))
                 if hashed_item not in hash_list:
                     yield item
-                else:
-                    hash_list[hashed_item] = True
+                hash_list[hashed_item] = True
 
         return DictSet(do_dedupe(self._iterator), storage_class=self.storage_class)
 

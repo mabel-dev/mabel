@@ -404,7 +404,7 @@ class _LowLevelReader(object):
             )
 
         if self.thread_count > 0:
-            yield from threaded_reader(readable_blobs, blob_list, self)
+            yield from self.parser(threaded_reader(readable_blobs, self))
 
         elif self.fork_processes and len(readable_blobs) > 4:
             yield from processed_reader(readable_blobs, self.reader_class, self.parser)
