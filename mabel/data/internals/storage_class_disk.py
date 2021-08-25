@@ -25,7 +25,7 @@ class StorageClassDisk(object):
         self.length = -1
 
         self.file = NamedTemporaryFile(prefix="mabel-dictset").name
-        atexit.register(os.remove, self.file)
+        atexit.register(os.remove, args=(self.file), kwargs={"ignore_errors":True})
 
         buffer = bytearray()
         with open(self.file, "wb") as f:

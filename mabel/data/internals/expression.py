@@ -269,9 +269,13 @@ class Expression(object):
         )
 
     def to_dnf(self):
-        return self.inner_to_dnf(self.root)
+        """
+        Converting SQL to DNF as sometimes it's easier to deal with DNF than an
+        expression tree.
+        """
+        return self._inner_to_dnf(self.root)
 
-    def inner_to_dnf(self, treeNode):
+    def _inner_to_dnf(self, treeNode):
         if treeNode.token_type in (
             TOKENS["NUM"],
             TOKENS["STR"],
@@ -281,14 +285,14 @@ class Expression(object):
         ):
             return treeNode.value
 
-        left = self.inner_to_dnf(treeNode.left)
-        right = self.inner_to_dnf(treeNode.right)
+        left = self._inner_to_dnf(treeNode.left)
+        right = self._inner_to_dnf(treeNode.right)
 
         if treeNode.token_type == TOKENS["AND"]:
             return [left, right]
 
         if treeNode.token_type == TOKENS["OR"]:
-            return [left], [right]
+            return [[left], [right]]
 
         if treeNode.token_type in TOKEN_OPERATORS:
             return (left, treeNode.token_type, right)

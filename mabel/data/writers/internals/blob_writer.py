@@ -123,10 +123,8 @@ class BlobWriter(object):
                         + ".index"
                     )
 
-                    index_stream = index._index
-                    index_stream.seek(0)
                     committed_index_name = self.inner_writer.commit(
-                        byte_data=index_stream.read(), override_blob_name=index_name
+                        byte_data=index.bytes(), override_blob_name=index_name
                     )
 
                 if "BACKOUT" in committed_blob_name:

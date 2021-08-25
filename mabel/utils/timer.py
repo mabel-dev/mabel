@@ -15,7 +15,7 @@ class Timer(object):
         self.name = name
 
     def __enter__(self):
-        self.start = time.perf_counter()
+        self.start = time.time_ns()
 
     def __exit__(self, type, value, traceback):
-        print("{} took {} seconds".format(self.name, time.perf_counter() - self.start))
+        print("{} took {} seconds".format(self.name, (time.time_ns() - self.start) / 1e9))

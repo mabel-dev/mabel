@@ -47,7 +47,7 @@ def zip_reader(stream, rows, all_rows):
     """
     Read ZIP compressed files
     """
-    # zstandard should always be present
+    # zipfile should always be present
     import zipfile
 
     with zipfile.ZipFile(stream, "r") as zip:
@@ -172,14 +172,21 @@ class BaseInnerReader(abc.ABC):
         """
         For larger files not written by mabel but we want to read, we need to
         stream the content in rather than load it all at once.
+
+        Because we're dealing with remote sources - we can't just open the data
+        and readline() it, we download a block, iterate and when exhausted get
+        the next block.
+
+        There is a performance penalty for this approach, it is not as fast as
+        as the binary reader.
         """
         offset = 0
         carry_forward = b""
         chunk = "INITIALIZED"
         while len(chunk) > 0:
-            # we read slightly more than the buffer size to reduce reads for
+            # we read more than the buffer size to reduce reads for
             # slightly oversized files - it's hard to count to 64M.
-            chunk = self.get_blob_chunk(blob_name, offset, BUFFER_SIZE + (1024 * 1024))
+            chunk = self.get_blob_chunk(blob_name, offset, BUFFER_SIZE * 2)
             offset += len(chunk)
             lines = (carry_forward + chunk).split(b"\n")
             carry_forward = lines.pop()
