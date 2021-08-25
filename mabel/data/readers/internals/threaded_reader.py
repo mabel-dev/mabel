@@ -25,7 +25,7 @@ def page_dictset(dictset: Iterator[dict], page_size: int) -> Iterator:
         yield chunk
 
 
-def threaded_reader(items_to_read: list, blob_list, reader):
+def threaded_reader(items_to_read: list, reader):
     """
     Speed up reading sets of files - such as multiple days worth of log-per-day
     files.
@@ -60,7 +60,7 @@ def threaded_reader(items_to_read: list, blob_list, reader):
         except IndexError:
             source = None
         while source:
-            source_reader = reader._read_blob(source, blob_list)
+            source_reader = reader._read_blob(source, items_to_read)
             for chunk in page_dictset(source_reader, 256):
                 reply_queue.put(chunk)  # this will wait until there's a slot
             try:
