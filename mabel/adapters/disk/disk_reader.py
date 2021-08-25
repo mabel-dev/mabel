@@ -1,5 +1,6 @@
 import io
-from ...data.readers.internals.base_inner_reader import BaseInnerReader
+from typing import Iterable
+from ...data.readers.internals.base_inner_reader import BaseInnerReader, BUFFER_SIZE
 
 
 class DiskReader(BaseInnerReader):
@@ -30,7 +31,7 @@ class DiskReader(BaseInnerReader):
 
     def get_blob_chunk(self, blob_name: str, start: int, buffer_size: int) -> bytes:
         """
-        MMAP is by far the fastest way to read files in Python.
+        It's written for compatibility, but we don't use this.
         """
         import mmap
         with open(blob_name, mode="rb") as file_obj:
@@ -39,3 +40,21 @@ class DiskReader(BaseInnerReader):
             ) as mmap_obj:
                 mmap_obj.seek(start, 0)
                 return mmap_obj.read(buffer_size)
+
+    def get_blob_lines(self, blob_name: str) -> Iterable:
+        """
+        For DISK access, we override the get_blob_lines function for speed.
+
+        This is consistently fast at reading large files without exhausting
+        memory resources.
+        """
+        with open(blob_name, 'rb') as file:
+            carry_forward = b""
+            chunk = file.read(BUFFER_SIZE * 2)
+            while len(chunk) > 0:
+                lines = (carry_forward + chunk).split(b"\n")
+                carry_forward = lines.pop()
+                yield from lines
+                chunk = file.read(BUFFER_SIZE * 2)
+            if carry_forward:
+                yield carry_forward

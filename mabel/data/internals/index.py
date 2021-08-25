@@ -21,33 +21,6 @@ Terminology:
     Row       : a record in the target file
 """
 
-# hashing can be slow, avoid if we can just convert to a number without hashing
-CONVERTERS = {
-    "int": lambda x: x,
-    "date": lambda x: (x.year * 1000) + (x.month * 10) + x.day,
-    "datetime": lambda x: int.from_bytes(struct.pack("d", x.timestamp()), "big"),
-    "float": lambda x: int.from_bytes(struct.pack("d", x), "big"),
-}
-
-class IndexEntry(object):
-    """
-    Python friendly representation of index entries.
-    Includes binary translations for reading and writing to the index.
-    """
-
-    __slots__ = ("value", "location", "count")
-
-    def to_bin(self) -> bytes:
-        """
-        Convert a model to _bytes_
-        """
-        return struct.pack(STRUCT_DEF, self.value, self.location, self.count)
-
-    def __init__(self, value, location, count):
-        self.value = value
-        self.location = location
-        self.count = count
-
 class Index:
     def __init__(self, index: io.BytesIO):
         """
@@ -95,10 +68,11 @@ class Index:
         get a specific entry from the index
         """
         try:
-            value, loc, count = struct.unpack_from(STRUCT_DEF, self._index[RECORD_SIZE * position:RECORD_SIZE * (position + 1)])
-            return IndexEntry(value, loc, count)
+            start = RECORD_SIZE * position
+            value, loc, count = struct.unpack_from(STRUCT_DEF, self._index[start:start+RECORD_SIZE])
+            return (value, loc, count)
         except Exception:
-            return None
+            return None, None, None
 
     def _locate_record(self, value):
         """
@@ -107,38 +81,37 @@ class Index:
         left, right = 0, (self.size - 1)
         while left <= right:
             middle = (left + right) >> 1
-
-            entry = self._get_entry(middle)
-            if entry.value == value:
-                return middle, entry
-            elif entry.value > value:
+            v,l,c = self._get_entry(middle)
+            if v == value:
+                return middle, v, l, c
+            elif v > value:
                 right = middle - 1
             else:
                 left = middle + 1
-        return -1, None
+        return -1, None, None, None
 
     def _inner_search(self, search_term) -> Iterable:
         # hash the value and make fit in a four byte unsinged int
         value = siphash('*'*16, f"{search_term}") % MAX_INDEX
 
         # search for an instance of the value in the index
-        location, found_entry = self._locate_record(value)
+        location, v, l, c = self._locate_record(value)
 
         # we didn't find the entry
-        if not found_entry:
+        if location < 0:
             return []
 
         # the found_entry is the fastest record to be found, this could
         # be the first, last or middle of the set. The count field tells
         # us how many rows to go back, but not how many forward
-        start_location = location - found_entry.count + 1
+        start_location = location - c + 1
         end_location = location + 1
-        while end_location < self.size and self._get_entry(end_location).value == value:
+        while end_location < self.size and self._get_entry(end_location)[0] == value:
             end_location += 1
 
         # extract the row numbers in the target dataset
         return [
-            self._get_entry(loc).location
+            self._get_entry(loc)[1]
             for loc in range(start_location, end_location, 1)
         ]
 
@@ -157,6 +130,9 @@ class Index:
     def dump(self, file):
         with open(file, "wb") as f:
             f.write(self._index[:])
+
+    def bytes(self):
+        return self._index[:]
 
 
 class IndexBuilder:
@@ -193,8 +169,6 @@ class IndexBuilder:
                 count += 1
             else:
                 count = 1
-            index += IndexEntry(
-                value=row["val"], location=row["pos"], count=count
-            ).to_bin()
+            index += struct.pack(STRUCT_DEF, row["val"],  row["pos"], count)
             previous_value = row["val"]
         return Index(io.BytesIO(index))
