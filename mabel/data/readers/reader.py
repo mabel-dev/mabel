@@ -277,7 +277,6 @@ def _is_system_file(filename):
         return base.startswith("_SYS.")
     return False
 
-
 class _LowLevelReader(object):
     def __init__(
         self,
@@ -307,7 +306,7 @@ class _LowLevelReader(object):
         self.query = query
 
 
-    def _read_blob(self, blob, blob_list):
+    def _read_blob(self, blob, blob_list=[]):
         """
         This wraps the blob reader, including the filters and indexers
         """
@@ -406,7 +405,7 @@ class _LowLevelReader(object):
         if self.thread_count > 0:
             yield from self.parser(threaded_reader(readable_blobs, self))
 
-        elif self.fork_processes and len(readable_blobs) > 4:
+        elif self.fork_processes:
             yield from processed_reader(readable_blobs, self.reader_class, self.parser)
 
         else:

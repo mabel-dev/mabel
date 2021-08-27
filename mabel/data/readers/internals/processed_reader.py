@@ -50,7 +50,7 @@ def processed_reader(items_to_read, reader, parser):  # pragma: no cover
             "Reader Multi Processing not available on Windows platforms"
         )
 
-    slots = min(4, len(items_to_read), multiprocessing.cpu_count() - 1)
+    slots = min(8, len(items_to_read), multiprocessing.cpu_count() - 1)
     pool = Pool(slots)
     processes = []
     reply_queue = Manager().Queue(4096)

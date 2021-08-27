@@ -61,7 +61,7 @@ def threaded_reader(items_to_read: list, reader):
             source = None
         while source:
             source_reader = reader._read_blob(source, items_to_read)
-            for chunk in page_dictset(source_reader, 256):
+            for chunk in page_dictset(source_reader, 2048):
                 reply_queue.put(chunk)  # this will wait until there's a slot
             try:
                 source = source_queue.pop(0)
@@ -73,7 +73,7 @@ def threaded_reader(items_to_read: list, reader):
     # scale the number of threads, if we have more than the number of files
     # we're reading, will have threads that never complete
     t = min(len(source_queue), reader.thread_count, 8)
-    reply_queue: queue.Queue = queue.Queue(t * 8)
+    reply_queue: queue.Queue = queue.Queue(t * 4)
 
     # start the threads
     for _ in range(t):

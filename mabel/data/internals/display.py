@@ -17,6 +17,18 @@ def html_table(dictset: Iterator[dict], limit: int = 5):
     Returns:
         string (HTML table)
     """
+    def sanitize(htmlstring):
+        if not isinstance(htmlstring, str):
+            return htmlstring
+        escapes = {'\"': '&quot;',
+                '\'': '&#39;',
+                '<': '&lt;',
+                '>': '&gt;'}
+        # This is done first to prevent escaping other escapes.
+        htmlstring = htmlstring.replace('&', '&amp;')
+        for seq, esc in escapes.items():
+            htmlstring = htmlstring.replace(seq, esc)
+        return htmlstring
 
     def _to_html_table(data, columns):
 
@@ -28,12 +40,13 @@ def html_table(dictset: Iterator[dict], limit: int = 5):
                     yield f"<th>{column}<th>\n"
                 yield "</tr></thead><tbody>"
 
-            if (counter % 2) == 0:
-                yield '<tr style="background-color:#F4F4F4">'
-            else:
-                yield "<tr>"
+            #if (counter % 2) == 0:
+            #    yield '<tr style="background-color:#F4F4F4">'
+            #else:
+            yield "<tr>"
             for column in columns:
-                yield f"<td>{record.get(column)}<td>\n"
+                sanitized = sanitize(record.get(column, ''))
+                yield f"<td title='{sanitized}' style='max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;'>{sanitized}<td>\n"
             yield "</tr>"
 
         yield "</tbody></table>"
@@ -51,9 +64,9 @@ def html_table(dictset: Iterator[dict], limit: int = 5):
 
     footer = ""
     if isinstance(dictset, types.GeneratorType):
-        footer = f"\n<p>top {limit} rows x {len(columns)} columns</p>"
+        footer = f"\n<p>top {i} rows x {len(columns)} columns</p>"
         footer += "\nNOTE: the displayed records have been spent"
-    if isinstance(dictset, list):
+    elif hasattr(dictset, "__len__"):
         footer = f"\n<p>{len(dictset)} rows x {len(columns)} columns</p>"
 
     return "".join(_to_html_table(rows, columns)) + footer

@@ -287,6 +287,8 @@ class DictSet(object):
 
         def do_dedupe(data):
             for item in data:
+                # ensure the fields are in the same order
+                item = dict(sorted(item.items()))
                 hashed_item = hash(orjson.dumps(item))
                 if hashed_item not in hash_list:
                     yield item
@@ -487,7 +489,8 @@ class DictSet(object):
             return siphash('*', val)
         # The seed is the mission duration of the Apollo 11 mission.
         #   703115 = 8 days, 3 hours, 18 minutes, 35 seconds
-        serialized = map(orjson.dumps, self._iterator)
+        ordered = map(lambda record: dict(sorted(record.items())), self._iterator)
+        serialized = map(orjson.dumps, ordered)
         hashed = map(sip, serialized)
         return reduce(lambda x, y: x ^ y, hashed, seed)
 
