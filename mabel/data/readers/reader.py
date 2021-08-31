@@ -5,6 +5,7 @@ import datetime
 
 from siphashc import siphash
 from typing import Optional, List
+from multiprocessing import cpu_count
 
 
 from .internals.parallel_reader import ParallelReader, pass_thru
@@ -226,7 +227,7 @@ class _LowLevelReader(object):
         # we have enough files.
 
         # multi processing has a bug
-        if True: #len(readable_blobs) < (2 * cpu_count()) or cpu_count() == 1:
+        if len(readable_blobs) < (cpu_count()) or cpu_count() == 1:
             get_logger().debug("Serial Reader")
             for f in readable_blobs:
                 yield from parallel(f)
