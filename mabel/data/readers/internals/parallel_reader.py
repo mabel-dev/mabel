@@ -162,7 +162,6 @@ class ParallelReader:
 
     def __call__(self, blob_name):
 
-        print(blob_name)
         try:
             if self.override_format:
                 ext = self.override_format
