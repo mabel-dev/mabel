@@ -9,6 +9,7 @@ import os
 from queue import Empty
 import time
 import multiprocessing
+import logging
 
 
 TERMINATE_SIGNAL = -1
@@ -27,7 +28,7 @@ def _inner_process(flag, func, source_queue, reply_queue):  # pragma: no cover
         # have race conditions, but it will apply a simple back-off so we're
         # not exhausting memory when we know we should wait
         while reply_queue.full() and flag.value != TERMINATE_SIGNAL:
-            print('patience')
+            logging.debug('throttle feeder')
             time.sleep(1)
         with multiprocessing.Lock():
             # timeout eventually
@@ -56,9 +57,10 @@ def processed_reader(func, items_to_read):  # pragma: no cover
     reply_queue = multiprocessing.Queue(slots)
 
     send_queue = multiprocessing.Queue()
-    for item_index in range(slots):
-        if item_index < len(items_to_read):
-            send_queue.put(items_to_read[item_index])
+    with multiprocessing.Lock():
+        for item_index in range(slots):
+            if item_index < len(items_to_read):
+                send_queue.put(items_to_read[item_index])
 
     for i in range(slots):
         flag = multiprocessing.Value("i", 1 - TERMINATE_SIGNAL)
@@ -83,20 +85,22 @@ def processed_reader(func, items_to_read):  # pragma: no cover
             yield from records
 
             if item_index < len(items_to_read):
-                send_queue.put_nowait(items_to_read[item_index])
+                with multiprocessing.Lock():
+                    send_queue.put_nowait(items_to_read[item_index])
                 item_index += 1
             else:
-                send_queue.put_nowait(TERMINATE_SIGNAL)
+                with multiprocessing.Lock():
+                    send_queue.put_nowait(TERMINATE_SIGNAL)
 
         except Empty:  # nosec
             if time.time() - process_start_time > MAXIMUM_SECONDS_PROCESSES_CAN_RUN:
-                print(
+                logging.debug(
                     f"Sending TERMINATE to long running multi-processed processes after {MAXIMUM_SECONDS_PROCESSES_CAN_RUN} seconds total run time"
                 )
                 for flag in process_pool:
                     flag.value = TERMINATE_SIGNAL
         except GeneratorExit:
-            print("GENERATOR EXIT")
+            logging.debug("GENERATOR EXIT DETECTED")
             for flag in process_pool:
                 flag.value = TERMINATE_SIGNAL
             raise
