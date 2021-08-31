@@ -5,6 +5,8 @@ from collections import defaultdict
 
 AGGREGATORS = {"SUM": operator.add, "MAX": max, "MIN": min, "COUNT": lambda x, y: x + 1}
 
+class TooManyGroups(Exception):
+    pass
 
 class GroupBy:
     """
@@ -44,6 +46,8 @@ class GroupBy:
                 self._group_keys[group_key] = [
                     (column, record.get(column)) for column in self._columns
                 ]
+                if len(self._group_keys) >= 5000:
+                    raise TooManyGroups(f"Groups are not selective enough and too many Groups have been found ({len(self._group_keys)}).")
 
             for column in collect_columns:
                 yield (group_key, column, record.get(column))

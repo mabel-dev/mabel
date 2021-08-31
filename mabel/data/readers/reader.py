@@ -33,7 +33,8 @@ RULES = [
     {"name": "start_date", "required": False, "warning": None, "incompatible_with": []},
     {"name": "query", "required": False, "warning": "", "incompatible_with": ["filters"]},
     {"name": "persistence", "required": False, "warning": "", "incompatible_with": []},
-    {"name": "project", "required": False, "warning": "", "incompatible_with": []}
+    {"name": "project", "required": False, "warning": "", "incompatible_with": []},
+    {"name": "override_format", "required": False, "warning": "", "incompatible_with": []}
 ]
 # fmt:on
 
@@ -49,6 +50,7 @@ def Reader(
     inner_reader=None,  # type:ignore
     raw_path: bool = False,
     persistence: STORAGE_CLASS = STORAGE_CLASS.NO_PERSISTANCE,
+    override_format: Optional[str] = None,
     **kwargs,
 ) -> DictSet:
     """
@@ -103,6 +105,8 @@ def Reader(
         cursor: dictionary (or string)
             Resume read from a given point (assumes other parameters are the same).
             If a JSON string is provided, it will converted to a dictionary.
+        override_format: string (optional)
+            Override the format detection.
 
     Returns:
         DictSet
@@ -153,6 +157,7 @@ def Reader(
             freshness_limit=freshness_limit,
             select=select,
             query=query,
+            override_format=override_format
         ),
         storage_class=persistence,
     )
@@ -172,11 +177,13 @@ class _LowLevelReader(object):
         freshness_limit,
         select,
         query,
+        override_format,
     ):
         self.reader_class = reader_class
         self.freshness_limit = freshness_limit
         self.select = select
         self.query = query
+        self.override_format = override_format
 
         self._inner_line_reader = None
 
@@ -220,7 +227,7 @@ class _LowLevelReader(object):
         # the reported cursor is the bit array, currnet file and progress
 
         parallel = ParallelReader(
-            reader=self.reader_class, filter=self.query or pass_thru
+            reader=self.reader_class, filter=self.query or pass_thru, override_format=self.override_format
         )
 
         # it takes some effort to set up the multiprocessing, only do it if

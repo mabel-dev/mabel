@@ -58,6 +58,7 @@ class ParallelReader:
         reader,
         filter=no_filter,
         reducer=pass_thru,
+        override_format=None,
         **kwargs
     ):
         """
@@ -84,6 +85,10 @@ class ParallelReader:
 
         # this is aggregation and reducers for the data
         self.reducer = reducer
+
+        self.override_format = override_format.lower()
+        if not self.override_format[0] == '.':
+            self.override_format = '.' + self.InvalidSyntaxError
 
 
     def pre_filter(self):
@@ -156,7 +161,10 @@ class ParallelReader:
 
         print(blob_name)
         try:
-            bucket, path, stem, ext = paths.get_parts(blob_name)
+            if self.override_format:
+                ext = self.override_format
+            else:
+                bucket, path, stem, ext = paths.get_parts(blob_name)
             
             if ext not in VALID_EXTENSIONS:
                 return []
