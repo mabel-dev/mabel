@@ -56,9 +56,10 @@ def processed_reader(func, items_to_read):  # pragma: no cover
     reply_queue = multiprocessing.Queue(slots)
 
     send_queue = multiprocessing.Queue()
-    for item_index in range(slots):
-        if item_index < len(items_to_read):
-            send_queue.put(items_to_read[item_index])
+    with multiprocessing.Lock():
+        for item_index in range(slots):
+            if item_index < len(items_to_read):
+                send_queue.put(items_to_read[item_index])
 
     for i in range(slots):
         flag = multiprocessing.Value("i", 1 - TERMINATE_SIGNAL)
@@ -83,10 +84,12 @@ def processed_reader(func, items_to_read):  # pragma: no cover
             yield from records
 
             if item_index < len(items_to_read):
-                send_queue.put_nowait(items_to_read[item_index])
+                with multiprocessing.Lock():
+                    send_queue.put_nowait(items_to_read[item_index])
                 item_index += 1
             else:
-                send_queue.put_nowait(TERMINATE_SIGNAL)
+                with multiprocessing.Lock():
+                    send_queue.put_nowait(TERMINATE_SIGNAL)
 
         except Empty:  # nosec
             if time.time() - process_start_time > MAXIMUM_SECONDS_PROCESSES_CAN_RUN:
