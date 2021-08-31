@@ -1,8 +1,9 @@
 from ....utils.dates import parse_iso
 import datetime
 
+
 def get_year(input):
-    if isinstance(input, str):  
+    if isinstance(input, str):
         input = parse_iso(input)
     if isinstance(input, (datetime.date, datetime.datetime)):
         return input.year
@@ -10,7 +11,7 @@ def get_year(input):
 
 
 def get_month(input):
-    if isinstance(input, str):  
+    if isinstance(input, str):
         input = parse_iso(input)
     if isinstance(input, (datetime.date, datetime.datetime)):
         return input.month
@@ -18,7 +19,7 @@ def get_month(input):
 
 
 def get_day(input):
-    if isinstance(input, str):  
+    if isinstance(input, str):
         input = parse_iso(input)
     if isinstance(input, (datetime.date, datetime.datetime)):
         return input.day
@@ -26,7 +27,7 @@ def get_day(input):
 
 
 def get_date(input):
-    if isinstance(input, str):  
+    if isinstance(input, str):
         input = parse_iso(input)
     if isinstance(input, (datetime.date, datetime.datetime)):
         return input.date
@@ -44,5 +45,5 @@ FUNCTIONS = {
     "ROUND": round,
     "TRUNC": int,
     "INT": int,
-    "FLOAT": float
+    "FLOAT": float,
 }

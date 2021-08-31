@@ -124,6 +124,7 @@ class ExpressionTokenizer:
                         else:
                             self.token_types.append(None)
 
+
 class Expression(object):
     tokenizer = None
     root = None
@@ -230,6 +231,9 @@ class Expression(object):
         raise InvalidExpression(f"Unexpected token, got `{self.tokenizer.next()}`")
 
     def evaluate(self, variable_dict):
+        return self.evaluate_recursive(self.root, variable_dict)
+
+    def __call__(self, variable_dict):
         return self.evaluate_recursive(self.root, variable_dict)
 
     def evaluate_recursive(self, treeNode, variable_dict):

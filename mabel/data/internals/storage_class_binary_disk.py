@@ -5,6 +5,7 @@ for the BINARY_DISK variation of the STORAGE CLASSES.
 This stores DICTSETs in a binary format - which should be smaller and faster - but only
 supports a subset of field types.
 """
+import ctypes
 import os
 import sys
 import mmap
@@ -14,59 +15,61 @@ import datetime
 from tempfile import NamedTemporaryFile
 from typing import Iterator
 
+
+from ctypes import create_string_buffer
+
 STRING_LENGTH = 32
 
-empty = lambda x: b'\x00'
 
 def date_dumper(var):
     date = parse_iso(var)
     if date:
-        return date.timestamp()
-    return None
+        return int(date.timestamp()).to_bytes(4, "big", signed=False)
+    return b"\x00" * 4
 
-def nullify(var):
-    if var is None:
-        return b'\x00'
-    return var
+
+def date_loader(var):
+    ts = int.from_bytes(var, "big", signed=False)
+    return datetime.datetime.fromtimestamp(ts)
+
 
 def load_float(var):
+    var = struct.unpack("<d", var)[0]
     if var == sys.float_info.min:
         return None
     return var
 
+
 def dump_float(var):
     if var is None:
-        return sys.float_info.min
-    return var
+        var = sys.float_info.min
+    return struct.pack("<d", var).ljust(8, b"\x00")
 
-BUFFER_SIZE = 16 * 1024 * 1024  # 16Mb
 
-ENDIAN = "<"
+def dump_str(var):
+    # return create_string_buffer(var.encode()[:STRING_LENGTH], STRING_LENGTH).raw
+    return str.encode(var.ljust(STRING_LENGTH, "\x00"))[:STRING_LENGTH]
+
+
+def dump_int(var):
+    if var:
+        return var.to_bytes(8, "big")
+    return b"\x00" * 8
+
+
+def load_int(var):
+    return int.from_bytes(var, "big")
+
+
+BUFFER_SIZE = 64 * 1024 * 1024
 
 TYPE_STORAGE = {
-    "int": "q",
-    "float": "d",
-    "str": f"{STRING_LENGTH}s",
-    "datetime": "d",
-    "bool": "?",
-    "spacer": "x"
-}
-
-TYPE_DUMPERS = {
-    "int": lambda x:x,
-    "float": dump_float,
-    "str": lambda x: str(x)[:STRING_LENGTH].encode(),
-    "datetime": date_dumper,
-    "bool": lambda x:x
-}
-
-TYPE_LOADERS = {
-    "int": lambda x:x,
-    "float": load_float,
-    "str": lambda x: str(x).split('\\x00',1)[0],
-    "datetime": lambda x: datetime.datetime.fromtimestamp(x),
-    "bool": lambda x:x,
-    "empty": None
+    "int": (8, dump_int, load_int),
+    "float": (8, dump_float, load_float),
+    "str": (STRING_LENGTH, dump_str, lambda x: x.split(b"\x00", 1)[0]),
+    "datetime": (4, date_dumper, date_loader),
+    "bool": (1, lambda x: b"\x01" if x else b"\x00", lambda x: x == b"\x01"),
+    "spacer": (1, lambda x: b"\x00", lambda x: None),
 }
 
 
@@ -77,16 +80,18 @@ def parse_iso(value):
     # Making that assumption - and accepting the consequences - we can convert upto
     # three times faster than dateutil.
     try:
-        if isinstance(value, (datetime.datetime, datetime.date, datetime.time)):
+        if isinstance(value, (datetime.datetime)):
             return value
         if isinstance(value, str) and len(value) >= 10:
             if not value[4] in DATE_SEPARATORS or not value[7] in DATE_SEPARATORS:
                 return None
             if len(value) == 10:
                 # YYYY-MM-DD
-                return datetime.date(*map(int, [value[:4], value[5:7], value[8:10]]))
+                return datetime.datetime(
+                    *map(int, [value[:4], value[5:7], value[8:10]])
+                )
             if len(value) >= 16:
-                if not value[10] == "T" or not value[13] in DATE_SEPARATORS:
+                if not value[10] in {"T", " "} or not value[13] in DATE_SEPARATORS:
                     return False
                 # YYYY-MM-DDTHH:MM
                 return datetime.datetime(
@@ -105,19 +110,32 @@ def parse_iso(value):
     except (ValueError, TypeError):
         return None
 
+
 class StorageClassBinaryDisk(object):
     """
     This provides the reader for the BINARY_DISK variation of STORAGE.
     """
 
+    ## roughly 25% of the time is serializing
     def serialize(self, record: dict) -> bytes:
-        return self.constructor(*[nullify(TYPE_DUMPERS.get(v, empty)(record.get(k))) for k,v in self.schema_dict.items()])
-#        return struct.pack(self.schema_str, *[nullify(TYPE_DUMPERS.get(v, empty)(record.get(k))) for k,v in self.schema_dict.items()])
+        buffer = bytes()
+        for k, v in self.schema_dict.items():
+            size, dumper, loader = TYPE_STORAGE[v]
+            if k in record:
+                buffer += dumper(record[k])
+            else:
+                buffer += b"\x00" * size
+        return buffer
 
+    # very little execution time
     def deserialize(self, record: bytes) -> dict:
-        #values = struct.unpack(self.schema_str, record)
-        values = self.destructor(record)
-        return { d[0]: TYPE_LOADERS[d[1]](values[i]) for i, d in enumerate(self.schema_dict.items()) }
+        result = {}
+        cursor = 0
+        for k, v in self.schema_dict.items():
+            size, dumper, loader = TYPE_STORAGE[v]
+            result[k] = loader(record[cursor : cursor + size])
+            cursor += size
+        return result
 
     @staticmethod
     def determine_schema(record: dict) -> dict:
@@ -126,20 +144,18 @@ class StorageClassBinaryDisk(object):
             value_type = type(v).__name__
             if value_type == "str" and parse_iso(v):
                 value_type = "datetime"
-            if value_type not in TYPE_STORAGE:
+            elif value_type not in TYPE_STORAGE:
                 value_type = "spacer"
             schema[k] = value_type
         return schema
-
 
     def __init__(self, iterator: Iterator = []):
         try:
             record = next(iterator)
             self.schema_dict = self.determine_schema(record)
-            self.schema_str = ENDIAN + ''.join([TYPE_STORAGE.get(v,'x') for k,v in self.schema_dict.items()])
-            self.schema_size = struct.calcsize(self.schema_str)
-            self.destructor = struct.Struct(self.schema_str).unpack
-            self.constructor = struct.Struct(self.schema_str).pack
+            self.schema_size = sum(
+                [TYPE_STORAGE[v][0] for k, v in self.schema_dict.items()]
+            )
         except:
             raise
 
@@ -147,38 +163,29 @@ class StorageClassBinaryDisk(object):
         self.length = -1
 
         self.file = NamedTemporaryFile(prefix="mabel-dictset").name
-        atexit.register(os.remove, args=(self.file), kwargs={"ignore_errors":True})
+        atexit.register(os.remove, args=(self.file), kwargs={"ignore_errors": True})
 
-        buffer = bytearray()
         with open(self.file, "wb") as f:
+            f.write(self.serialize(record))
             for self.length, row in enumerate(iterator):
-                buffer.extend(self.serialize(row))
-                if len(buffer) > (BUFFER_SIZE):
-                    f.write(buffer)
-                    buffer = bytearray()
-            if len(buffer) > 0:
-                f.write(buffer)
-            f.flush()
+                f.write(self.serialize(row))
 
         self.length += 1
 
     def _read_file(self):
-        """
-        MMAP is by far the fastest way to read files in Python.
-        """
-        index = 0
         with open(self.file, mode="rb") as file_obj:
             with mmap.mmap(
                 file_obj.fileno(), length=0, access=mmap.ACCESS_READ
             ) as mmap_obj:
-                line = mmap_obj.read(self.schema_size)
-                while line:
-                    yield line
-                    line = mmap_obj.read(self.schema_size)
-                index += 1
-
+                cursor = 0
+                file_size = len(mmap_obj)
+                record_size = self.schema_size
+                while cursor < file_size:
+                    yield mmap_obj[cursor : cursor + record_size]
+                    cursor += record_size
 
     def _inner_reader(self, *locations):
+        deserialize = self.deserialize
         if locations:
             max_location = max(locations)
             min_location = min(locations)
@@ -190,12 +197,12 @@ class StorageClassBinaryDisk(object):
 
             for i, line in enumerate(reader, min_location):
                 if i in locations:
-                    yield self.deserialize(line)
+                    yield deserialize(line)
                     if i == max_location:
                         return
         else:
             for line in self._read_file():
-                yield self.deserialize(line)
+                yield deserialize(line)
 
     def __iter__(self):
         return self._inner_reader()
@@ -209,38 +216,5 @@ class StorageClassBinaryDisk(object):
     def __del__(self):
         try:
             os.remove(self.file)
-        except: # nosec
+        except:  # nosec
             pass
-
-
-"""
-
-def unpack_from(fmt, data, offset = 0):
-    (byte_order, fmt, args) = (fmt[0], fmt[1:], ()) if fmt and fmt[0] in ('@', '=', '<', '>', '!') else ('@', fmt, ())
-    fmt = filter(None, re.sub("p", "\tp\t",  fmt).split('\t'))
-    for sub_fmt in fmt:
-        if sub_fmt == 'p':
-            (str_len,) = struct.unpack_from('B', data, offset)
-            sub_fmt = str(str_len + 1) + 'p'
-            sub_size = str_len + 1
-        else:
-            sub_fmt = byte_order + sub_fmt
-            sub_size = struct.calcsize(sub_fmt)
-        args += struct.unpack_from(sub_fmt, data, offset)
-        offset += sub_size
-    return args
-
-
-def pack(fmt, *args):
-    (byte_order, fmt, data) = (fmt[0], fmt[1:], '') if fmt and fmt[0] in ('@', '=', '<', '>', '!') else ('@', fmt, '')
-    fmt = filter(None, re.sub("p", "\tp\t",  fmt).split('\t'))
-    for sub_fmt in fmt:
-        if sub_fmt == 'p':
-            (sub_args, args) = ((args[0],), args[1:]) if len(args) > 1 else ((args[0],), [])
-            sub_fmt = str(len(sub_args[0]) + 1) + 'p'
-        else:
-            (sub_args, args) = (args[:len(sub_fmt)], args[len(sub_fmt):])
-            sub_fmt = byte_order + sub_fmt
-        data += struct.pack(sub_fmt, *sub_args)
-    return data
-"""

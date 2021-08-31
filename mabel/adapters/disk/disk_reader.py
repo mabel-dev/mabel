@@ -17,10 +17,6 @@ class DiskReader(BaseInnerReader):
                 blob.as_posix()
                 for blob in blobs
                 if blob.is_file()
-                and (
-                    blob.suffix in self.VALID_EXTENSIONS
-                    or blob.stem in self.VALID_EXTENSIONS
-                )
             ]
         return []
 
@@ -34,6 +30,7 @@ class DiskReader(BaseInnerReader):
         It's written for compatibility, but we don't use this.
         """
         import mmap
+
         with open(blob_name, mode="rb") as file_obj:
             with mmap.mmap(
                 file_obj.fileno(), length=0, access=mmap.ACCESS_READ
@@ -48,7 +45,7 @@ class DiskReader(BaseInnerReader):
         This is consistently fast at reading large files without exhausting
         memory resources.
         """
-        with open(blob_name, 'rb') as file:
+        with open(blob_name, "rb") as file:
             carry_forward = b""
             chunk = file.read(BUFFER_SIZE * 2)
             while len(chunk) > 0:
