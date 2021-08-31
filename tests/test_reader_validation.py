@@ -24,8 +24,7 @@ def test_reader_all_good():
             select=["a", "b"],
             dataset="",
             start_date=datetime.datetime.now(),
-            end_date=datetime.datetime.now(),
-            row_format="json",
+            end_date=datetime.datetime.now()
         )
     except InvalidReaderConfigError:
         failed = True
@@ -40,24 +39,11 @@ def test_reader_select_not_list():
             select="everything",
             dataset="",
             start_date=datetime.datetime.now(),
-            end_date=datetime.datetime.now(),
-            row_format="json",
+            end_date=datetime.datetime.now()
         )
 
-
-def test_format_not_known():
-    with pytest.raises((TypeError)):
-        reader = Reader(
-            project="",
-            select=["a", "b"],
-            dataset="",
-            start_date=datetime.datetime.now(),
-            end_date=datetime.datetime.now(),
-            row_format="excel",
-        )
 
 
 if __name__ == "__main__":  # pragma: no cover
     test_reader_all_good()
     test_reader_select_not_list()
-    test_format_not_known()

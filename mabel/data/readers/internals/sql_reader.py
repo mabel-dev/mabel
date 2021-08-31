@@ -8,7 +8,7 @@ from .sql_functions import *
 
 # not all are implemented
 SQL_KEYWORDS = [
-    r"SELECT", 
+    r"SELECT",
     r"FROM",
     r"JOIN",
     r"WHERE",
@@ -23,28 +23,34 @@ SQL_KEYWORDS = [
     r"BETWEEN",
     r"DISTINCT",
     r"ASC",
-    r"TOP"
+    r"TOP",
 ]
+
 
 class InvalidSqlError(Exception):
     pass
 
+
 def safe_get(arr, index, default=None):
     return arr[index] if index < len(arr) else default
+
 
 def remove_comments(string):
     pattern = r"(\".*?\"|\'.*?\')|(/\*.*?\*/|--[^\r\n]*$)"
     # first group captures quoted strings (double or single)
     # second group captures comments (//single-line or /* multi-line */)
-    regex = re.compile(pattern, re.MULTILINE|re.DOTALL)
+    regex = re.compile(pattern, re.MULTILINE | re.DOTALL)
+
     def _replacer(match):
         # if the 2nd group (capturing comments) is not None,
         # it means we have captured a non-quoted (real) comment string.
         if match.group(2) is not None:
-            return "" # so we will return empty to remove the comment
-        else: # otherwise, we will return the 1st group
-            return match.group(1) # captured quoted-string
+            return ""  # so we will return empty to remove the comment
+        else:  # otherwise, we will return the 1st group
+            return match.group(1)  # captured quoted-string
+
     return regex.sub(_replacer, string)
+
 
 class SqlParser:
     def __init__(self, statement):
@@ -73,7 +79,7 @@ class SqlParser:
                 self.select = []
             elif part.upper() == "FROM":
                 collecting = None
-                self._from = safe_get(self.parts, i + 1, '').replace(".", "/")
+                self._from = safe_get(self.parts, i + 1, "").replace(".", "/")
             elif part.upper() == "WHERE":
                 collecting = None
                 self.where = self.parts[i + 1]
@@ -85,16 +91,16 @@ class SqlParser:
                 self.group_by = []
             elif part.upper() == "HAVING":
                 collecting = None
-                self.having = safe_get(self.parts, i + 1, '')
+                self.having = safe_get(self.parts, i + 1, "")
                 raise NotImplementedError("SQL `HAVING` not implemented")
             elif re.match(r"ORDER\sBY", part, re.IGNORECASE):
                 collecting = None
-                self.order_by = safe_get(self.parts, i + 1, '')
-                self.order_by_desc = safe_get(self.parts, i + 2, '').upper() == "DESC"
+                self.order_by = safe_get(self.parts, i + 1, "")
+                self.order_by_desc = safe_get(self.parts, i + 2, "").upper() == "DESC"
                 self._use_threads = True
             elif part.upper() == "LIMIT":
                 collecting = None
-                self.limit = int(safe_get(self.parts, i + 1, '100'))
+                self.limit = int(safe_get(self.parts, i + 1, "100"))
 
             elif collecting == "SELECT":
                 self.select.append(part)
@@ -107,13 +113,25 @@ class SqlParser:
 
         if not self._from:
             raise InvalidSqlError("Queries must always have a FROM statement")
-        if self.group_by or "(" in ''.join(self.select):
+        if self.group_by or "(" in "".join(self.select):
             self.select = self._get_functions(self.select)
             self._use_threads = True
-        if "(" in ''.join(self.group_by or []):
+        if "(" in "".join(self.group_by or []):
             self.group_by = self._get_functions(self.group_by)
-        if len(self.select) > 1 and any([f[0].upper() == "COUNT" for f in self.select if isinstance(self.select, tuple)]) and not self.group_by:
-            raise InvalidSqlError("`SELECT COUNT(*)` must be the only SELECT statement if COUNT(*) is used without a GROUP BY")
+        if (
+            len(self.select) > 1
+            and any(
+                [
+                    f[0].upper() == "COUNT"
+                    for f in self.select
+                    if isinstance(self.select, tuple)
+                ]
+            )
+            and not self.group_by
+        ):
+            raise InvalidSqlError(
+                "`SELECT COUNT(*)` must be the only SELECT statement if COUNT(*) is used without a GROUP BY"
+            )
         if isinstance(self.select[0], str) and self.select[0].upper() == "DISTINCT":
             self.distinct = True
             self.select.pop(0)
@@ -130,12 +148,14 @@ class SqlParser:
                 i = 0
                 while i < len(tokens):
                     token = tokens[i]
-                    if safe_get(tokens, i+1) != "(":
+                    if safe_get(tokens, i + 1) != "(":
                         yield token
                         i += 1
                     elif token.upper() in KNOWN_FUNCTIONS:
                         if len(tokens) < (i + 3):
-                            raise InvalidSqlError("SELECT statement terminated before it was complete.")
+                            raise InvalidSqlError(
+                                "SELECT statement terminated before it was complete."
+                            )
                         if tokens[i + 1] == "(" and tokens[i + 3] == ")":
                             yield (token.upper(), tokens[i + 2])
                         else:
@@ -146,7 +166,6 @@ class SqlParser:
                     else:
                         raise InvalidSqlError(f"Unrecognised SQL function `{token}`.")
 
-
         aggs = list(inner(aggregators))
 
         return aggs
@@ -154,7 +173,7 @@ class SqlParser:
     def _split_statement(self, statement):
 
         reg = re.compile(
-            r"(" + r''.join([r"\b" + i + r"\b|" for i in SQL_KEYWORDS]) + r",|\-\-|\;)",
+            r"(" + r"".join([r"\b" + i + r"\b|" for i in SQL_KEYWORDS]) + r",|\-\-|\;)",
             re.IGNORECASE,
         )
         tokens = []
@@ -187,7 +206,9 @@ def apply_functions_on_read_thru(ds, functions, merge=False):
             if isinstance(function, str) and not merge:
                 result_record[function] = record.get(function)
             else:
-                result_record[f"{function[0]}({function[1]})"] = FUNCTIONS[function[0]](record.get(function[1]))
+                result_record[f"{function[0]}({function[1]})"] = FUNCTIONS[function[0]](
+                    record.get(function[1])
+                )
         yield result_record
 
 
@@ -206,7 +227,7 @@ class SqlReader:
             `query` is taken from SQL WHERE
         """
         sql = SqlParser(sql_statement)
-        get_logger().info(repr(sql).replace('\n', ' '))
+        get_logger().info(repr(sql).replace("\n", " "))
 
         self.reader = Reader(
             query=sql.where,
@@ -219,7 +240,9 @@ class SqlReader:
             for count, r in enumerate(self.reader):
                 pass
             self.reader = DictSet([{"COUNT(*)": count + 1}])
-        elif not sql.group_by and any(isinstance(selector, tuple) for selector in sql.select):
+        elif not sql.group_by and any(
+            isinstance(selector, tuple) for selector in sql.select
+        ):
             self.reader = DictSet(apply_functions_on_read_thru(self.reader, sql.select))
         elif sql.select and not sql.group_by and not sql.select == ["*"]:
             self.reader = self.reader.select(sql.select)
@@ -230,9 +253,14 @@ class SqlReader:
                 )
 
             if any(isinstance(selector, tuple) for selector in sql.group_by):
-                self.reader = apply_functions_on_read_thru(self.reader, sql.group_by, True)
-                sql.group_by = [ f"{group[0]}({group[1]})" if isinstance(group, tuple) else group for group in sql.group_by]
-            
+                self.reader = apply_functions_on_read_thru(
+                    self.reader, sql.group_by, True
+                )
+                sql.group_by = [
+                    f"{group[0]}({group[1]})" if isinstance(group, tuple) else group
+                    for group in sql.group_by
+                ]
+
             groups = GroupBy(self.reader, *sql.group_by).aggregate(sql.select)
             self.reader = DictSet(groups)
         if sql.distinct:
@@ -245,7 +273,11 @@ class SqlReader:
             take = 10000
             if sql.limit:
                 take = sql.limit
-            self.reader = DictSet(self.reader.sort_and_take(column=sql.order_by, take=take, descending=sql.order_by_desc))
+            self.reader = DictSet(
+                self.reader.sort_and_take(
+                    column=sql.order_by, take=take, descending=sql.order_by_desc
+                )
+            )
         if sql.limit:
             self.reader = self.reader.take(sql.limit)
 

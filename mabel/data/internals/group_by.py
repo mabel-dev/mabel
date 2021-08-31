@@ -38,10 +38,8 @@ class GroupBy:
         data to be processed in parallel.
         """
         for record in self._dictset:
-            group_key = "".join(
-                [f"{record.get(column)}" for column in self._columns]
-            )
-            group_key = siphash('*'*16, group_key)
+            group_key = "".join([f"{record.get(column)}" for column in self._columns])
+            group_key = siphash("*" * 16, group_key)
             if group_key not in self._group_keys:
                 self._group_keys[group_key] = [
                     (column, record.get(column)) for column in self._columns

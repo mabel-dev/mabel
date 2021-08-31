@@ -1,64 +1,45 @@
-import io
+import multiprocessing
 import sys
-import shutil
-import atexit
 import orjson
 import os.path
 import datetime
+
 from siphashc import siphash
-
 from typing import Optional, Tuple, List
+from multiprocessing import Pool, cpu_count, Barrier
 
-from .internals.threaded_reader import threaded_reader
-from .internals.processed_reader import processed_reader
-from .internals.parsers import pass_thru_parser, block_parser, json_parser, xml_parser
 
-from ..internals.dictset import DictSet, STORAGE_CLASS
-from ..internals.index import Index
-from ..internals.records import select_record_fields
-from ..internals.dnf_filters import DnfFilters, get_indexable_filter_columns
+from .internals.parallel_reader import ParallelReader, pass_thru
+from .internals.multiprocess_wrapper import processed_reader
+
 from ..internals.expression import Expression
+from ..internals.records import select_record_fields
+from ..internals.dictset import DictSet, STORAGE_CLASS
+from ..internals.dnf_filters import DnfFilters, get_indexable_filter_columns
 
-
-from ...errors import InvalidCombinationError, DataNotFoundError
-from ...utils import safe_field_name
-from ...utils.parameter_validator import validate
-from ...utils.paths import get_parts
-from ...utils.dates import parse_delta
 from ...logging import get_logger
+from ...utils.dates import parse_delta
+from ...utils.parameter_validator import validate
+from ...errors import InvalidCombinationError, DataNotFoundError
 
-
-# available parsers
-PARSERS = {
-    "json": json_parser,
-    "text": pass_thru_parser,
-    "block": block_parser,
-    "pass-thru": pass_thru_parser,
-    "xml": xml_parser,
-}
 
 # fmt:off
 RULES = [
-    {"name": "cache_indexes", "required":False, "warning":None, "incompatible_with": []},
-    {"name": "cursor", "required": False, "warning": None, "incompatible_with": ["thread_count", "fork_processes"]},
+    {"name": "cursor", "required": False, "warning": None, "incompatible_with": []},
     {"name": "dataset", "required": True, "warning": None, "incompatible_with": []},
     {"name": "end_date", "required": False, "warning": None, "incompatible_with": []},
-    {"name": "extension", "required": False, "warning": None, "incompatible_with": []},
-    {"name": "filters", "required": False, "warning": None, "incompatible_with": []},
-    {"name": "fork_processes", "required": False, "warning": "Forked Reader may drop records if not used correctly","incompatible_with": ["thread_count"]},
     {"name": "freshness_limit", "required": False, "warning": None, "incompatible_with": []},
     {"name": "inner_reader", "required": False, "warning": None, "incompatible_with": []},
-    {"name": "project", "required": False, "warning": None, "incompatible_with": []},
     {"name": "raw_path", "required": False, "warning": None, "incompatible_with": ["freshness_limit"]},
-    {"name": "row_format", "required": False, "warning": None, "incompatible_with": []},
     {"name": "select", "required": False, "warning": None, "incompatible_with": []},
     {"name": "start_date", "required": False, "warning": None, "incompatible_with": []},
-    {"name": "thread_count", "required": False, "warning": "Threaded Reader is Beta - use in production systems is not recommended", "incompatible_with": []},
     {"name": "query", "required": False, "warning": "", "incompatible_with": ["filters"]},
-    {"name": "persistence", "required": False, "warning": "", "incompatible_with": []}
-
+    {"name": "persistence", "required": False, "warning": "", "incompatible_with": []},
+    {"name": "project", "required": False, "warning": "", "incompatible_with": []}
 ]
 # fmt:on
+
+
 
 
 @validate(RULES)
@@ -66,10 +47,9 @@ def Reader(
     *,  # force all paramters to be keyworded
     select: list = ["*"],
     dataset: str = None,
-    filters: Optional[List[Tuple[str, str, object]]] = None,
     query: Optional[str] = None,
     inner_reader=None,  # type:ignore
-    row_format: str = "json",
+    raw_path: bool = False,
     persistence: STORAGE_CLASS = STORAGE_CLASS.NO_PERSISTANCE,
     **kwargs,
 ) -> DictSet:
@@ -106,42 +86,18 @@ def Reader(
             An expression which when evaluated for each row, if False the row will
             be removed from the resulant data set, like the WHERE clause of of a SQL
             statement.
-        filters: List of tuples (optional):
-            Rows which do not match the filter predicate will be removed from
-            scanned data. Default is no filtering.
-            Each tuple has format: (`key`, `op`, `value`) and compares the key with
-            the value. The supported op are: `=` or `==`, `!=`,  `<`, `>`, `<=`,
-            `>=`, `in`, `!in` (not in), `contains` and `!contains` (doesn't
-            contain) and `like`. If the `op` is `in` or `!in`, the `value` must be
-            a _list_. `like` performs similar to the SQL operator `%` is a
-            multicharacter wildcard and `_` is a single character wildcard.
-            If a field is indexed, it will be used only for '==' and 'in' and
-            'contains' operations.
         inner_reader: BaseReader (optional):
             The reader class to perform the data access Operators, the default is
             GoogleCloudStorageReader
-        row_format: string (optional):
-            Controls how the data is interpretted. 'json' will parse to a
-            dictionary before _select_ or _where_ is applied, 'text' will just
-            return the line that has been read, 'block' will return the content of
-            a file as a record. the default is 'json'.
         start_date: datetime (optional):
             The starting date of the range to read over, default is today
         end_date: datetime (optional):
             The end date of the range to read over, default is today
-        thread_count: integer (optional):
-            **BETA**
-            Use multiple threads to read data files, the default is to not use
-            additional threads, the maximum number of threads is 8
         freshness_limit: string (optional):
             a time delta string (e.g. 6h30m = 6hours and 30 minutes) which
             incidates the maximum age of a dataset before it is no longer
             considered fresh. Where the 'time' of a dataset cannot be
             determined, it will be treated as midnight (00:00) for the date.
-        fork_processes: boolean (optional):
-            Create parallel processes to read data files. This may loose records if
-            the records are not read from te reader fast enough. Using persistance to
-            read all of the records will prevent this.
         persistence: STORAGE_CLASS (optional)
             How to cache the results, the default is NO_PERSISTANCE which will almost
             always return a generator. MEMORY should only be used where the dataset
@@ -149,30 +105,16 @@ def Reader(
         cursor: dictionary (or string)
             Resume read from a given point (assumes other parameters are the same).
             If a JSON string is provided, it will converted to a dictionary.
-        cache_indexes: boolean
-            Cache indexes to speed up secondary access, default is False
-            (do not use cache)
 
     Returns:
         DictSet
 
     Raises:
-        TypeError
-            Reader _select_ parameter must be a list
-        TypeError
-            Data format unsupported
-        InvalidCombinationError
-            Forking and Threading can not be used at the same time
+
     """
+
     if not isinstance(select, list):  # pragma: no cover
         raise TypeError("Reader 'select' parameter must be a list")
-
-    # load the line converter
-    parser = PARSERS.get(row_format.lower())
-    if parser is None:  # pragma: no cover
-        raise TypeError(
-            f"Row format unsupported: {row_format} - valid options are {list(PARSERS.keys())}."
-        )
 
     # lazy loading of dependency
     if inner_reader is None:
@@ -180,39 +122,17 @@ def Reader(
 
         inner_reader = GoogleCloudStorageReader
     # instantiate the injected reader class
-    reader_class = inner_reader(dataset=dataset, **kwargs)  # type:ignore
 
-    cursor = kwargs.get("cursor", None)
-    if isinstance(cursor, str):
-        cursor = orjson.loads(cursor)
-    if not isinstance(cursor, dict):
-        cursor = {}
+    reader_class = inner_reader(
+        dataset=dataset, raw_path=raw_path, **kwargs
+    )  # type:ignore
 
     select = select.copy()
-
-    # index caching
-    cache_folder = None
-    if kwargs.get("cache_indexes", False):
-        # saving in the environment allows us to reuse the cache across readers
-        # in the same execution
-        cache_folder = os.environ.get("CACHE_FOLDER")
-        if not cache_folder:
-            import tempfile
-
-            cache_folder = (
-                tempfile.TemporaryDirectory(prefix="mabel_cache-").name + os.sep
-            )
-            os.environ["CACHE_FOLDER"] = cache_folder
-            os.makedirs(cache_folder, exist_ok=True)
-            # delete the cache when the application closes
-            atexit.register(shutil.rmtree, args=(cache_folder), kwargs={"ignore_errors":True})
 
     arg_dict = kwargs.copy()
     arg_dict["select"] = f"{select}"
     arg_dict["dataset"] = f"{dataset}"
     arg_dict["inner_reader"] = f"{inner_reader.__name__}"  # type:ignore
-    arg_dict["row_format"] = f"{row_format}"
-    arg_dict["cache_folder"] = cache_folder
     arg_dict["query"] = query
     get_logger().debug(arg_dict)
 
@@ -226,50 +146,19 @@ def Reader(
             "freshness_limit can only be used when the start and end dates are the same"
         )
 
-    if (
-        row_format != "pass-thru" and kwargs.get("extension") == ".parquet"
-    ):  # pragma: no cover
-        raise InvalidCombinationError(
-            "`parquet` extension much be used with the `pass-thru` row_format"
-        )
-
     if query:
         query = Expression(query)
-        filters = query.to_dnf()
-
-    indexable_fields = []
-    if filters:
-        filters = DnfFilters(filters)  # type:ignore
-        indexable_fields = get_indexable_filter_columns(
-            filters.predicates  # type:ignore
-        )  # type:ignore
-
-    # threaded reader
-    thread_count = kwargs.get("thread_count")
-    if thread_count:
-        thread_count = int(thread_count)
-    else:
-        thread_count = 0
-
-    # multiprocessed reader
-    fork_processes = bool(kwargs.get("fork_processes", False))
 
     return DictSet(
         _LowLevelReader(
-            indexable_fields=indexable_fields,
-            cache_folder=cache_folder,
             reader_class=reader_class,
-            parser=parser,
-            filters=filters,
             freshness_limit=freshness_limit,
-            cursor=cursor,
-            thread_count=thread_count,
-            fork_processes=fork_processes,
             select=select,
             query=query,
         ),
         storage_class=persistence,
     )
+
 
 def _is_system_file(filename):
     if "_SYS." in filename:
@@ -277,83 +166,21 @@ def _is_system_file(filename):
         return base.startswith("_SYS.")
     return False
 
+
 class _LowLevelReader(object):
     def __init__(
         self,
-        indexable_fields,
-        cache_folder,
         reader_class,
-        parser,
-        filters,
         freshness_limit,
-        cursor,
-        thread_count,
-        fork_processes,
         select,
         query,
     ):
-        self.indexable_fields = indexable_fields
-        self.cache_folder = cache_folder
         self.reader_class = reader_class
-        self.parser = parser
-        self.filters = filters
         self.freshness_limit = freshness_limit
-        self.cursor = cursor
-        self.thread_count = thread_count
-        self.fork_processes = fork_processes
-        self._inner_line_reader = None
         self.select = select
         self.query = query
 
-
-    def _read_blob(self, blob, blob_list=[]):
-        """
-        This wraps the blob reader, including the filters and indexers
-        """
-        # If an index exists, get the rows we're interested in from the index
-        rows = None
-        for field, filter_value in self.indexable_fields:
-            # does an index file for this file and record exist
-
-            bucket, path, stem, ext = get_parts(blob)
-            index_file = f"{bucket}/{path}_SYS.{stem}.{safe_field_name(field)}.index"
-
-            # TODO: index should only be used on all AND filters, no ORs
-
-            if index_file in blob_list:
-                # if we have a cache folder, we're using the cache
-                # we hash the filename to remove any unwanted characters
-                hashed_index_file = abs(hash(index_file))
-                cache_hit = False
-                cache_file = f"{self.cache_folder}{hashed_index_file}.index"
-                if self.cache_folder:
-                    # if the cache file exists, read it
-                    if os.path.exists(cache_file):
-                        with open(cache_file, "rb") as cache:
-                            index_stream = io.BytesIO(cache.read())
-                            cache_hit = True
-                            get_logger().debug(
-                                f"Reading index from `{index_file}` (cache hit)"
-                            )
-                # if we didn't hit the cache, read the file
-                if not cache_hit:
-                    index_stream = self.reader_class.get_blob_stream(index_file)
-                    get_logger().debug(
-                        f"Reading index from `{index_file}` (cache miss)"
-                    )
-                    # if we missed and he have a cache folder, cache the file
-                    if self.cache_folder:
-                        with open(cache_file, "wb") as cache:
-                            cache.write(index_stream.read())
-                        index_stream.seek(0, 2)
-
-                index = Index(index_stream)
-                rows = rows or []
-                rows += index.search(filter_value)
-
-        # read the rows from the file
-        yield from self.reader_class.get_records(blob, rows)
-
+        self._inner_line_reader = None
 
     def _create_line_reader(self):
         blob_list = self.reader_class.get_list_of_blobs()
@@ -379,21 +206,7 @@ class _LowLevelReader(object):
 
         readable_blobs = [b for b in blob_list if not _is_system_file(b)]
 
-        # skip to the blob in the cursor
-        if self.cursor.get("partition"):
-            skipped = 0
-            while len(readable_blobs) > 0:
-                if siphash('*'*16,readable_blobs[0]) != self.cursor.get(
-                    "partition"
-                ):
-                    readable_blobs.pop(0)
-                    skipped += 1
-                else:
-                    get_logger().debug(
-                        f"Reader found {len(readable_blobs)} sources to read data from after {skipped} jumped to get to cursor."
-                    )
-                    break
-        elif len(readable_blobs) == 0:
+        if len(readable_blobs) == 0:
             message = f"Reader found {len(readable_blobs)} sources to read data from in `{self.reader_class.dataset}`."
             get_logger().error(message)
             raise DataNotFoundError(message)
@@ -402,30 +215,28 @@ class _LowLevelReader(object):
                 f"Reader found {len(readable_blobs)} sources to read data from in `{self.reader_class.dataset}`."
             )
 
-        if self.thread_count > 0:
-            yield from self.parser(threaded_reader(readable_blobs, self))
+        get_logger().warning("rewrite the cursor functionality")
+        # sort the files names, a bit in a bit array represents each file
+        # as we read, we turn the bits on
+        # we track the current file, and the progress through that
+        # the reported cursor is the bit array, currnet file and progress
 
-        elif self.fork_processes:
-            yield from processed_reader(readable_blobs, self.reader_class, self.parser)
+        parallel = ParallelReader(
+            reader=self.reader_class, filter=self.query or pass_thru
+        )
 
+        # it takes some effort to set up the multiprocessing, only do it if
+        # we have enough files.
+
+        # multi processing has a bug
+        if True: #len(readable_blobs) < (2 * cpu_count()) or cpu_count() == 1:
+            get_logger().debug("Serial Reader")
+            for f in readable_blobs:
+                yield from parallel(f)
         else:
-            offset = self.cursor.get("offset", 0)
-            for blob in readable_blobs:
-                self.cursor["partition"] = siphash('*'*16, blob)
-                self.cursor["offset"] = -1
-                local_reader = self._read_blob(blob, blob_list)
-                if offset > 0:
-                    for burn in range(offset):
-                        next(local_reader, None)
-                    for record_offset, record in enumerate(self.parser(local_reader)):
-                        self.cursor["offset"] = offset + record_offset
-                        yield record
-                else:
-                    for self.cursor["offset"], record in enumerate(self.parser(local_reader)):
-                        yield record
-                offset = 0
-            # when we're done, the cursor shouldn't point anywhere
-            self.cursor = {}
+            get_logger().debug("Parallel Reader")
+            yield from processed_reader(parallel, readable_blobs)
+
 
     def __iter__(self):
         return self
@@ -433,14 +244,7 @@ class _LowLevelReader(object):
     def __next__(self):
         if self._inner_line_reader is None:
             line_reader = self._create_line_reader()
-
-            # filter the rows, either with the filters or `dictset.select_from`
-            if self.query:
-                self._inner_line_reader = filter(self.query.evaluate, line_reader)
-            elif self.filters:
-                self._inner_line_reader = self.filters.filter_dictset(line_reader)
-            else:
-                self._inner_line_reader = line_reader
+            self._inner_line_reader = line_reader
 
         # get the the next line from the reader
         record = self._inner_line_reader.__next__()

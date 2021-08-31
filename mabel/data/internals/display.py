@@ -17,15 +17,13 @@ def html_table(dictset: Iterator[dict], limit: int = 5):
     Returns:
         string (HTML table)
     """
+
     def sanitize(htmlstring):
         if not isinstance(htmlstring, str):
             return htmlstring
-        escapes = {'\"': '&quot;',
-                '\'': '&#39;',
-                '<': '&lt;',
-                '>': '&gt;'}
+        escapes = {'"': "&quot;", "'": "&#39;", "<": "&lt;", ">": "&gt;"}
         # This is done first to prevent escaping other escapes.
-        htmlstring = htmlstring.replace('&', '&amp;')
+        htmlstring = htmlstring.replace("&", "&amp;")
         for seq, esc in escapes.items():
             htmlstring = htmlstring.replace(seq, esc)
         return htmlstring
@@ -40,12 +38,12 @@ def html_table(dictset: Iterator[dict], limit: int = 5):
                     yield f"<th>{column}<th>\n"
                 yield "</tr></thead><tbody>"
 
-            #if (counter % 2) == 0:
+            # if (counter % 2) == 0:
             #    yield '<tr style="background-color:#F4F4F4">'
-            #else:
+            # else:
             yield "<tr>"
             for column in columns:
-                sanitized = sanitize(record.get(column, ''))
+                sanitized = sanitize(record.get(column, ""))
                 yield f"<td title='{sanitized}' style='max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;'>{sanitized}<td>\n"
             yield "</tr>"
 

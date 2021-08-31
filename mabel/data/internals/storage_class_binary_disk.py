@@ -20,48 +20,56 @@ from ctypes import create_string_buffer
 
 STRING_LENGTH = 32
 
+
 def date_dumper(var):
     date = parse_iso(var)
     if date:
-        return int(date.timestamp()).to_bytes(4, 'big', signed=False)
-    return b'\x00' * 4
+        return int(date.timestamp()).to_bytes(4, "big", signed=False)
+    return b"\x00" * 4
+
 
 def date_loader(var):
-    ts = int.from_bytes(var, 'big', signed=False)
+    ts = int.from_bytes(var, "big", signed=False)
     return datetime.datetime.fromtimestamp(ts)
 
+
 def load_float(var):
-    var = struct.unpack('<d', var)[0]
+    var = struct.unpack("<d", var)[0]
     if var == sys.float_info.min:
         return None
     return var
 
+
 def dump_float(var):
     if var is None:
         var = sys.float_info.min
-    return struct.pack('<d', var).ljust(8, b'\x00')
+    return struct.pack("<d", var).ljust(8, b"\x00")
+
 
 def dump_str(var):
-    #return create_string_buffer(var.encode()[:STRING_LENGTH], STRING_LENGTH).raw
-    return str.encode(var.ljust(STRING_LENGTH, '\x00'))[:STRING_LENGTH]
+    # return create_string_buffer(var.encode()[:STRING_LENGTH], STRING_LENGTH).raw
+    return str.encode(var.ljust(STRING_LENGTH, "\x00"))[:STRING_LENGTH]
+
 
 def dump_int(var):
     if var:
-        return var.to_bytes(8, 'big')
-    return b'\x00' * 8     
+        return var.to_bytes(8, "big")
+    return b"\x00" * 8
+
 
 def load_int(var):
-    return int.from_bytes(var, 'big')
+    return int.from_bytes(var, "big")
+
 
 BUFFER_SIZE = 64 * 1024 * 1024
 
 TYPE_STORAGE = {
     "int": (8, dump_int, load_int),
     "float": (8, dump_float, load_float),
-    "str": (STRING_LENGTH, dump_str, lambda x: x.split(b'\x00',1)[0]),
+    "str": (STRING_LENGTH, dump_str, lambda x: x.split(b"\x00", 1)[0]),
     "datetime": (4, date_dumper, date_loader),
-    "bool": (1, lambda x: b'\x01' if x else b'\x00', lambda x: x == b'\x01'),
-    "spacer": (1, lambda x: b'\x00', lambda x: None)
+    "bool": (1, lambda x: b"\x01" if x else b"\x00", lambda x: x == b"\x01"),
+    "spacer": (1, lambda x: b"\x00", lambda x: None),
 }
 
 
@@ -79,7 +87,9 @@ def parse_iso(value):
                 return None
             if len(value) == 10:
                 # YYYY-MM-DD
-                return datetime.datetime(*map(int, [value[:4], value[5:7], value[8:10]]))
+                return datetime.datetime(
+                    *map(int, [value[:4], value[5:7], value[8:10]])
+                )
             if len(value) >= 16:
                 if not value[10] in {"T", " "} or not value[13] in DATE_SEPARATORS:
                     return False
@@ -100,6 +110,7 @@ def parse_iso(value):
     except (ValueError, TypeError):
         return None
 
+
 class StorageClassBinaryDisk(object):
     """
     This provides the reader for the BINARY_DISK variation of STORAGE.
@@ -108,24 +119,23 @@ class StorageClassBinaryDisk(object):
     ## roughly 25% of the time is serializing
     def serialize(self, record: dict) -> bytes:
         buffer = bytes()
-        for k,v in self.schema_dict.items():
+        for k, v in self.schema_dict.items():
             size, dumper, loader = TYPE_STORAGE[v]
             if k in record:
                 buffer += dumper(record[k])
             else:
-                buffer += b'\x00' * size
+                buffer += b"\x00" * size
         return buffer
 
     # very little execution time
     def deserialize(self, record: bytes) -> dict:
         result = {}
         cursor = 0
-        for k,v in self.schema_dict.items():
+        for k, v in self.schema_dict.items():
             size, dumper, loader = TYPE_STORAGE[v]
-            result[k] = loader(record[cursor:cursor + size])
+            result[k] = loader(record[cursor : cursor + size])
             cursor += size
         return result
-
 
     @staticmethod
     def determine_schema(record: dict) -> dict:
@@ -139,12 +149,13 @@ class StorageClassBinaryDisk(object):
             schema[k] = value_type
         return schema
 
-
     def __init__(self, iterator: Iterator = []):
         try:
             record = next(iterator)
             self.schema_dict = self.determine_schema(record)
-            self.schema_size = sum([TYPE_STORAGE[v][0] for k,v in self.schema_dict.items()])
+            self.schema_size = sum(
+                [TYPE_STORAGE[v][0] for k, v in self.schema_dict.items()]
+            )
         except:
             raise
 
@@ -152,7 +163,7 @@ class StorageClassBinaryDisk(object):
         self.length = -1
 
         self.file = NamedTemporaryFile(prefix="mabel-dictset").name
-        atexit.register(os.remove, args=(self.file), kwargs={"ignore_errors":True})
+        atexit.register(os.remove, args=(self.file), kwargs={"ignore_errors": True})
 
         with open(self.file, "wb") as f:
             f.write(self.serialize(record))
@@ -170,7 +181,7 @@ class StorageClassBinaryDisk(object):
                 file_size = len(mmap_obj)
                 record_size = self.schema_size
                 while cursor < file_size:
-                    yield mmap_obj[cursor:cursor+record_size]
+                    yield mmap_obj[cursor : cursor + record_size]
                     cursor += record_size
 
     def _inner_reader(self, *locations):
@@ -205,5 +216,5 @@ class StorageClassBinaryDisk(object):
     def __del__(self):
         try:
             os.remove(self.file)
-        except: # nosec
+        except:  # nosec
             pass

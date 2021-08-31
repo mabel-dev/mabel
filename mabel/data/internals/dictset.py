@@ -113,10 +113,15 @@ class DictSet(object):
         if storage_class == STORAGE_CLASS.COMPRESSED_MEMORY:
             self._iterator = StorageClassCompressedMemory(iterator)
 
+        if not hasattr(self._iterator, '__iter__'):
+            self._iterator = DumbIterator(self._iterator)
+
     def __iter__(self):
         """
         Wrap the iterator in a Iterable object
         """
+        if hasattr(self._iterator, '__iter__'):
+            return self._iterator
         return DumbIterator(self._iterator)
 
     def __next__(self):
@@ -485,8 +490,10 @@ class DictSet(object):
         Creates a consistent hash of the _DictSet_ regardless of the order of
         the items in the _DictSet_.
         """
+
         def sip(val):
-            return siphash('*', val)
+            return siphash("*", val)
+
         # The seed is the mission duration of the Apollo 11 mission.
         #   703115 = 8 days, 3 hours, 18 minutes, 35 seconds
         ordered = map(lambda record: dict(sorted(record.items())), self._iterator)

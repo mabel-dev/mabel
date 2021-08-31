@@ -55,7 +55,6 @@ def test_reader_writer():
     assert l == 300000, l
 
 
-
 def test_reader_writer_format_zstd():
     do_writer_compressed("zstd")
     g = glob.glob("_temp/**/*.zstd", recursive=True)

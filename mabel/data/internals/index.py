@@ -21,6 +21,7 @@ Terminology:
     Row       : a record in the target file
 """
 
+
 class Index:
     def __init__(self, index: io.BytesIO):
         """
@@ -69,7 +70,9 @@ class Index:
         """
         try:
             start = RECORD_SIZE * position
-            value, loc, count = struct.unpack_from(STRUCT_DEF, self._index[start:start+RECORD_SIZE])
+            value, loc, count = struct.unpack_from(
+                STRUCT_DEF, self._index[start : start + RECORD_SIZE]
+            )
             return (value, loc, count)
         except Exception:
             return None, None, None
@@ -81,7 +84,7 @@ class Index:
         left, right = 0, (self.size - 1)
         while left <= right:
             middle = (left + right) >> 1
-            v,l,c = self._get_entry(middle)
+            v, l, c = self._get_entry(middle)
             if v == value:
                 return middle, v, l, c
             elif v > value:
@@ -92,7 +95,7 @@ class Index:
 
     def _inner_search(self, search_term) -> Iterable:
         # hash the value and make fit in a four byte unsinged int
-        value = siphash('*'*16, f"{search_term}") % MAX_INDEX
+        value = siphash("*" * 16, f"{search_term}") % MAX_INDEX
 
         # search for an instance of the value in the index
         location, v, l, c = self._locate_record(value)
@@ -111,8 +114,7 @@ class Index:
 
         # extract the row numbers in the target dataset
         return [
-            self._get_entry(loc)[1]
-            for loc in range(start_location, end_location, 1)
+            self._get_entry(loc)[1] for loc in range(start_location, end_location, 1)
         ]
 
     def search(self, search_term) -> Iterable:
@@ -152,7 +154,7 @@ class IndexBuilder:
                 values = [values]
             for value in values:
                 entry = {
-                    "val": siphash('*'*16, f"{value}") % MAX_INDEX,
+                    "val": siphash("*" * 16, f"{value}") % MAX_INDEX,
                     "pos": position,
                 }
                 ret_val.append(entry)
@@ -169,6 +171,6 @@ class IndexBuilder:
                 count += 1
             else:
                 count = 1
-            index += struct.pack(STRUCT_DEF, row["val"],  row["pos"], count)
+            index += struct.pack(STRUCT_DEF, row["val"], row["pos"], count)
             previous_value = row["val"]
         return Index(io.BytesIO(index))
