@@ -6,8 +6,9 @@ from: https://stackoverflow.com/a/35804945
 
 import logging
 import atexit
+from typing import Iterable 
 
-logging_seen_warnings = []
+logging_seen_warnings:Iterable[str] = []
 
 
 def report_suppressions(message):
