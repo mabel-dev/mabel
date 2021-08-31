@@ -22,10 +22,20 @@ def _inner_process(flag, func, source_queue, reply_queue):  # pragma: no cover
     except Empty:  # pragma: no cover
         source = None
 
-    while source and source != TERMINATE_SIGNAL:
-        reply_queue.put(func(source))
+    while source and source != TERMINATE_SIGNAL and flag.value != TERMINATE_SIGNAL:
+        # no blocking wait - this isn't thread aware in that it can trivially
+        # have race conditions, but it will apply a simple back-off so we're
+        # not exhausting memory when we know we should wait
+        while reply_queue.full() and flag.value != TERMINATE_SIGNAL:
+            print('patience')
+            time.sleep(1)
+        with multiprocessing.Lock():
+            # timeout eventually
+            if flag.value != TERMINATE_SIGNAL:
+                reply_queue.put(func(source), timeout=60)
         try:
-            source = source_queue.get(timeout=1)
+            if flag.value != TERMINATE_SIGNAL:
+                source = source_queue.get(timeout=1)
         except Empty:  # pragma: no cover
             source = None
 
@@ -43,7 +53,7 @@ def processed_reader(func, items_to_read):  # pragma: no cover
 
     # limit the number of slots
     slots = min(len(items_to_read), multiprocessing.cpu_count() - 1)
-    reply_queue = multiprocessing.Queue()
+    reply_queue = multiprocessing.Queue(slots)
 
     send_queue = multiprocessing.Queue()
     for item_index in range(slots):
@@ -85,3 +95,8 @@ def processed_reader(func, items_to_read):  # pragma: no cover
                 )
                 for flag in process_pool:
                     flag.value = TERMINATE_SIGNAL
+        except GeneratorExit:
+            print("GENERATOR EXIT")
+            for flag in process_pool:
+                flag.value = TERMINATE_SIGNAL
+            raise

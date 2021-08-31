@@ -86,9 +86,12 @@ class ParallelReader:
         # this is aggregation and reducers for the data
         self.reducer = reducer
 
-        self.override_format = override_format.lower()
-        if not self.override_format[0] == '.':
-            self.override_format = '.' + self.InvalidSyntaxError
+        self.override_format = override_format
+
+        if self.override_format:
+            self.override_format = self.override_format.lower()
+            if not self.override_format[0] == '.':
+                self.override_format = '.' + self.override_format
 
 
     def pre_filter(self):
