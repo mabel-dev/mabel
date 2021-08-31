@@ -145,3 +145,4 @@ publish.bat
 SNAPSHOTS/
 .mutmut-cache
 setup.cfg
+tests/data/mass/**
