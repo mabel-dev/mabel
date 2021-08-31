@@ -1,12 +1,10 @@
-import multiprocessing
 import sys
 import orjson
 import os.path
 import datetime
 
 from siphashc import siphash
-from typing import Optional, Tuple, List
-from multiprocessing import Pool, cpu_count, Barrier
+from typing import Optional, List
 
 
 from .internals.parallel_reader import ParallelReader, pass_thru
@@ -15,7 +13,6 @@ from .internals.multiprocess_wrapper import processed_reader
 from ..internals.expression import Expression
 from ..internals.records import select_record_fields
 from ..internals.dictset import DictSet, STORAGE_CLASS
-from ..internals.dnf_filters import DnfFilters, get_indexable_filter_columns
 
 from ...logging import get_logger
 from ...utils.dates import parse_delta
@@ -134,7 +131,7 @@ def Reader(
     arg_dict["dataset"] = f"{dataset}"
     arg_dict["inner_reader"] = f"{inner_reader.__name__}"  # type:ignore
     arg_dict["query"] = query
-    get_logger().debug(arg_dict)
+    get_logger().debug(orjson.dumps(arg_dict))
 
     # number of days to walk backwards to find records
     freshness_limit = parse_delta(kwargs.get("freshness_limit", ""))
