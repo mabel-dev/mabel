@@ -66,3 +66,13 @@ def date_format(path_string: str, date: datetime.date = None):
     path_string = path_string.replace("{date}", f"{year}-{month}-{day}")
 
     return path_string
+
+
+import os, errno
+
+def silent_remove(filename):
+    try:
+        os.remove(filename)
+    except OSError as e: # this would be "except OSError, e:" before Python 2.6
+        if e.errno != errno.ENOENT: # errno.ENOENT = no such file or directory
+            raise # re-raise exception if a different error occurred

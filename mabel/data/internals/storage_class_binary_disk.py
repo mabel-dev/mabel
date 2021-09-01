@@ -14,6 +14,7 @@ import struct
 import datetime
 from tempfile import NamedTemporaryFile
 from typing import Iterator
+from ...utils.paths import silent_remove
 
 
 from ctypes import create_string_buffer
@@ -163,14 +164,15 @@ class StorageClassBinaryDisk(object):
         self.length = -1
 
         self.file = NamedTemporaryFile(prefix="mabel-dictset").name
-        atexit.register(os.remove, args=(self.file), kwargs={"ignore_errors": True})
+        atexit.register(silent_remove, filename=self.file)
 
         with open(self.file, "wb") as f:
             f.write(self.serialize(record))
-            for self.length, row in enumerate(iterator):
+            for self.length, row in enumerate(iterator, start=1):
                 f.write(self.serialize(row))
 
         self.length += 1
+        self.iterator = None
 
     def _read_file(self):
         with open(self.file, mode="rb") as file_obj:
@@ -205,10 +207,13 @@ class StorageClassBinaryDisk(object):
                 yield deserialize(line)
 
     def __iter__(self):
-        return self._inner_reader()
+        self.iterator = iter(self._inner_reader())
+        return self.iterator
 
     def __next__(self):
-        return next(self)
+        if not self.iterator:
+            self.iterator = iter(self._inner_reader())
+        return next(self.iterator)
 
     def __len__(self):
         return self.length
