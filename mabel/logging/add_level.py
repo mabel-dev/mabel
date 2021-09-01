@@ -5,20 +5,21 @@ from: https://stackoverflow.com/a/35804945
 """
 
 import logging
+import orjson
 import atexit
 from typing import Dict
 
-logging_seen_warnings:Dict[int, int] = {}
+logging_seen_warnings: Dict[int, int] = {}
 
 
 def report_suppressions(message):
     import mabel.logging
 
     record = logging_seen_warnings.get(hash(message))
-    
+
     if record:
         mabel.logging.get_logger().warning(
-            f"The following message was suppressed {record} time(s) - \"{message}\""
+            f'The following message was suppressed {record} time(s) - "{message}"'
         )
 
 
@@ -54,9 +55,7 @@ def add_logging_level(level_name, level_num, method_name=None):
     def log_for_level(self, message, *args, **kwargs):
         # if we've added the level,it doesn't format the message as JSON
         if isinstance(message, dict):
-            from ..data.formats import json
-
-            message = json.serialize(message)
+            message = orjson.dumps(message).decode()
         if self.isEnabledFor(level_num):
 
             # supress duplicate warnings

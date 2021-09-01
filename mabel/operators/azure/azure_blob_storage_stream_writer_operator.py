@@ -4,7 +4,7 @@ from ...adapters.azure import AzureBlobStorageWriter
 
 
 class AzureBlobStorageStreamWriterOperator(BaseWriterOperator):
-    def __init__(self, *, **kwargs):
+    def __init__(self, **kwargs):
 
         super().__init__(
             writer=StreamWriter, inner_writer=AzureBlobStorageWriter, **kwargs

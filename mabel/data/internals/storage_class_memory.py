@@ -1,5 +1,4 @@
-
-class StorageClassMemory():
+class StorageClassMemory:
     """
     This provides the reader for the MEMORY variation of STORAGE.
     """

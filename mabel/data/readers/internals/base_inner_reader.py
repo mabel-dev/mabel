@@ -1,26 +1,20 @@
 """
 Base Inner Reader
 """
-import os
 import abc
 import pathlib
 import datetime
 from io import IOBase
-from typing import Iterable, Optional
+from typing import Iterable
 from dateutil import parser
-import orjson
 from ....utils import common, paths
 from ....logging import get_logger
-from ....errors import MissingDependencyError
 
 
 BUFFER_SIZE: int = 64 * 1024 * 1024  # 64Mb
 
 
 class BaseInnerReader(abc.ABC):
-
-
-
     def _extract_date_part(self, value):
         if isinstance(value, str):
             value = parser.parse(value)

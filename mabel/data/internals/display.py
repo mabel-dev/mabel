@@ -1,7 +1,7 @@
-from typing import Iterator, Dict, Any
+from typing import Iterable, Dict, Any
 
 
-def html_table(dictset: Iterator[dict], limit: int = 5):
+def html_table(dictset: Iterable[dict], limit: int = 5):
     """
     Render the dictset as a HTML table.
 
@@ -65,12 +65,12 @@ def html_table(dictset: Iterator[dict], limit: int = 5):
         footer = f"\n<p>top {i} rows x {len(columns)} columns</p>"
         footer += "\nNOTE: the displayed records have been spent"
     elif hasattr(dictset, "__len__"):
-        footer = f"\n<p>{len(dictset)} rows x {len(columns)} columns</p>"
+        footer = f"\n<p>{len(dictset)} rows x {len(columns)} columns</p>"  # type:ignore
 
     return "".join(_to_html_table(rows, columns)) + footer
 
 
-def ascii_table(dictset: Iterator[Dict[Any, Any]], limit: int = 5):
+def ascii_table(dictset: Iterable[Dict[Any, Any]], limit: int = 5):
     """
     Render the dictset as a ASCII table.
 

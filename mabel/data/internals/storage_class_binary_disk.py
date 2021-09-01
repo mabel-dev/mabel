@@ -5,7 +5,6 @@ for the BINARY_DISK variation of the STORAGE CLASSES.
 This stores DICTSETs in a binary format - which should be smaller and faster - but only
 supports a subset of field types.
 """
-import ctypes
 import os
 import sys
 import mmap
@@ -13,7 +12,7 @@ import atexit
 import struct
 import datetime
 from tempfile import NamedTemporaryFile
-from typing import Iterator
+from typing import Iterable, Any, Iterator
 from ...utils.paths import silent_remove
 
 
@@ -150,7 +149,7 @@ class StorageClassBinaryDisk(object):
             schema[k] = value_type
         return schema
 
-    def __init__(self, iterator: Iterator = []):
+    def __init__(self, iterator):
         try:
             record = next(iterator)
             self.schema_dict = self.determine_schema(record)

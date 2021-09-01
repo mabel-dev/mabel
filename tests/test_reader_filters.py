@@ -24,9 +24,7 @@ TEST_DATA = [
 
 def test_reader_filters_no_filter():
     """ensure the reader filter is working as expected"""
-    r = Reader(
-        inner_reader=DiskReader, dataset="tests/data/tweets/", raw_path=True
-    )
+    r = Reader(inner_reader=DiskReader, dataset="tests/data/tweets/", raw_path=True)
     for index, item in enumerate(r):
         pass
     assert index == 49, index
@@ -50,8 +48,7 @@ def test_reader_filters_multiple_filter():
         inner_reader=DiskReader,
         dataset="tests/data/tweets/",
         raw_path=True,
-        query=
-            "username = 'NBCNews' and timestamp >= '2020-01-12T07:11:04'",
+        query="username = 'NBCNews' and timestamp >= '2020-01-12T07:11:04'",
         persistence=STORAGE_CLASS.MEMORY,
     )
     assert r.count() == 34, r

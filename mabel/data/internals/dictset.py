@@ -29,7 +29,7 @@ from siphashc import siphash
 from operator import itemgetter
 from functools import reduce
 
-from typing import Iterator, Union, Dict, Any
+from typing import Iterable, Dict, Any, List, Union
 
 # from ....logging import get_logger
 from ...errors import MissingDependencyError, InvalidArgument
@@ -78,7 +78,7 @@ class STORAGE_CLASS(int, Enum):
 class DictSet(object):
     def __init__(
         self,
-        iterator: Iterator[Dict[Any, Any]],
+        iterator: Iterable[Dict[Any, Any]],
         *,
         storage_class=STORAGE_CLASS.NO_PERSISTANCE,
     ):
@@ -114,14 +114,14 @@ class DictSet(object):
         if storage_class == STORAGE_CLASS.COMPRESSED_MEMORY:
             self._iterator = StorageClassCompressedMemory(iterator)
 
-        if not hasattr(self._iterator, '__iter__'):
+        if not hasattr(self._iterator, "__iter__"):
             self._iterator = DumbIterator(self._iterator)
 
     def __iter__(self):
         """
         Wrap the iterator in a Iterable object
         """
-        if not hasattr(self._iterator, '__iter__'):
+        if not hasattr(self._iterator, "__iter__"):
             self._iterator = DumbIterator(self._iterator)
         return self
 

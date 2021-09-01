@@ -3,6 +3,7 @@ Azure Storage Reader
 """
 import io
 import os
+from typing import List, Dict
 from ...data.readers.internals.base_inner_reader import BaseInnerReader
 from ...errors import MissingDependencyError
 from ...utils import paths
@@ -17,7 +18,7 @@ except ImportError:  # pragma: no cover
 
 class AzureBlobStorageReader(BaseInnerReader):
 
-    RULES = []
+    RULES: List[Dict] = []
 
     def __init__(self, **kwargs):
         if not azure_blob_storage_installed:  # pragma: no cover

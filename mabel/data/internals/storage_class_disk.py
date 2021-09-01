@@ -16,7 +16,7 @@ from ...utils.paths import silent_remove
 BUFFER_SIZE = 16 * 1024 * 1024  # 16Mb
 
 
-class StorageClassDisk():
+class StorageClassDisk:
     """
     This provides the reader for the DISK variation of STORAGE.
     """

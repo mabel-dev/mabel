@@ -39,8 +39,6 @@ RULES = [
 # fmt:on
 
 
-
-
 @validate(RULES)
 def Reader(
     *,  # force all paramters to be keyworded
@@ -149,7 +147,7 @@ def Reader(
         )
 
     if query:
-        query = Expression(query)
+        query = Expression(query)  # type:ignore
 
     return DictSet(
         _LowLevelReader(
@@ -157,7 +155,7 @@ def Reader(
             freshness_limit=freshness_limit,
             select=select,
             query=query,
-            override_format=override_format
+            override_format=override_format,
         ),
         storage_class=persistence,
     )
@@ -227,7 +225,9 @@ class _LowLevelReader(object):
         # the reported cursor is the bit array, currnet file and progress
 
         parallel = ParallelReader(
-            reader=self.reader_class, filter=self.query or pass_thru, override_format=self.override_format
+            reader=self.reader_class,
+            filter=self.query or pass_thru,
+            override_format=self.override_format,
         )
 
         # it takes some effort to set up the multiprocessing, only do it if
@@ -241,7 +241,6 @@ class _LowLevelReader(object):
         else:
             get_logger().debug("Parallel Reader")
             yield from processed_reader(parallel, readable_blobs)
-
 
     def __iter__(self):
         return self

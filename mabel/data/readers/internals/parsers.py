@@ -1,5 +1,5 @@
 import orjson
-from ...internals import xmler as xml
+from ...internals import xmler
 
 
 def json(ds):
@@ -20,5 +20,4 @@ def pass_thru_block(ds):
 
 
 def xml(ds):
-    yield from map(xml.parse, ds)
-
+    yield from map(xmler.parse, ds)
