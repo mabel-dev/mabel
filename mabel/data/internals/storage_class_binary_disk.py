@@ -67,7 +67,7 @@ BUFFER_SIZE = 64 * 1024 * 1024
 TYPE_STORAGE = {
     "int": (8, dump_int, load_int),
     "float": (8, dump_float, load_float),
-    "str": (STRING_LENGTH, dump_str, lambda x: x.split(b"\x00", 1)[0]),
+    "str": (STRING_LENGTH, dump_str, lambda x: x.split(b"\x00", 1)[0].decode()),
     "datetime": (4, date_dumper, date_loader),
     "bool": (1, lambda x: b"\x01" if x else b"\x00", lambda x: x == b"\x01"),
     "spacer": (1, lambda x: b"\x00", lambda x: None),

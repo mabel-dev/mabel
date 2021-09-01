@@ -5,6 +5,9 @@ sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel import Reader, DictSet
 from mabel.data import STORAGE_CLASS
 from mabel.adapters.disk import DiskReader
+from mabel.logging import get_logger
+
+get_logger().setLevel(25)
 
 
 STORAGE_CLASSES = [
@@ -46,10 +49,24 @@ def test_repr():
     for storage_class in STORAGE_CLASSES:
         ds = get_ds(persistence=storage_class)
         rep = repr(ds)
-        assert "├" in rep
+        assert "├" in rep, storage_class
+
+def test_collect():
+    for storage_class in STORAGE_CLASSES:
+        ds = get_ds(persistence=storage_class)
+        collection = ds.collect("username")
+        assert collection.count("NBCNews") == 44, storage_class
+
+def test_keys():
+    for storage_class in STORAGE_CLASSES:
+        ds = get_ds(persistence=storage_class)
+        keys = ds.keys()
+        assert keys == ['userid', 'username', 'user_verified', 'followers', 'tweet', 'location', 'sentiment', 'timestamp'], storage_class
 
 if __name__ == "__main__":
     test_count()
     test_enumeration()
     test_sample()
     test_repr()
+    test_collect()
+    test_keys()
