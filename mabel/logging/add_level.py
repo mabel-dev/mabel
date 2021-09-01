@@ -6,8 +6,9 @@ from: https://stackoverflow.com/a/35804945
 
 import logging
 import atexit
+from typing import Dict
 
-logging_seen_warnings = {}
+logging_seen_warnings:Dict[int, int] = {}
 
 
 def report_suppressions(message):
