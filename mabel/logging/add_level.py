@@ -6,17 +6,19 @@ from: https://stackoverflow.com/a/35804945
 
 import logging
 import atexit
-from typing import Iterable
 
-logging_seen_warnings: Iterable[str] = []
+logging_seen_warnings = {}
 
 
 def report_suppressions(message):
     import mabel.logging
 
-    mabel.logging.get_logger().warning(
-        f"The following message was suppressed being logged {len(logging_seen_warnings)} additional time(s) - ({message})"
-    )
+    record = logging_seen_warnings.get(hash(message))
+    
+    if record:
+        mabel.logging.get_logger().warning(
+            f"The following message was suppressed {record} time(s) - \"{message}\""
+        )
 
 
 def add_logging_level(level_name, level_num, method_name=None):
@@ -58,9 +60,11 @@ def add_logging_level(level_name, level_num, method_name=None):
 
             # supress duplicate warnings
             if level_num == 30:  # warnings
-                if message in logging_seen_warnings:
+                hashed = hash(message)
+                if hashed in logging_seen_warnings:
+                    logging_seen_warnings[hashed] += 1
                     return
-                logging_seen_warnings.append(message)
+                logging_seen_warnings[hashed] = 0
                 atexit.register(report_suppressions, message)
 
             self._log(level_num, message, args, **kwargs)
