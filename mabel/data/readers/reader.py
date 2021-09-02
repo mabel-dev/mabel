@@ -4,12 +4,13 @@ import os.path
 import datetime
 
 from siphashc import siphash
-from typing import Optional, List
+from typing import Optional, List, Dict, Union
 from multiprocessing import cpu_count
 
 
 from .internals.parallel_reader import ParallelReader, pass_thru
 from .internals.multiprocess_wrapper import processed_reader
+from .internals.cursor import Cursor
 
 from ..internals.expression import Expression
 from ..internals.records import select_record_fields
@@ -49,6 +50,7 @@ def Reader(
     raw_path: bool = False,
     persistence: STORAGE_CLASS = STORAGE_CLASS.NO_PERSISTANCE,
     override_format: Optional[str] = None,
+    cursor: Optional[Union[str, Dict]] = None,
     **kwargs,
 ) -> DictSet:
     """
@@ -156,6 +158,7 @@ def Reader(
             select=select,
             query=query,
             override_format=override_format,
+            cursor=cursor
         ),
         storage_class=persistence,
     )
@@ -176,13 +179,14 @@ class _LowLevelReader(object):
         select,
         query,
         override_format,
+        cursor
     ):
         self.reader_class = reader_class
         self.freshness_limit = freshness_limit
         self.select = select
         self.query = query
         self.override_format = override_format
-
+        self.cursor = cursor
         self._inner_line_reader = None
 
     def _create_line_reader(self):
@@ -218,6 +222,8 @@ class _LowLevelReader(object):
                 f"Reader found {len(readable_blobs)} sources to read data from in `{self.reader_class.dataset}`."
             )
 
+
+
         get_logger().warning("rewrite the cursor functionality")
         # sort the files names, a bit in a bit array represents each file
         # as we read, we turn the bits on
@@ -232,9 +238,7 @@ class _LowLevelReader(object):
 
         # it takes some effort to set up the multiprocessing, only do it if
         # we have enough files.
-
-        # multi processing has a bug
-        if len(readable_blobs) < (cpu_count()) or cpu_count() == 1:
+        if self.cursor or len(readable_blobs) < (cpu_count()) or cpu_count() == 1:
             get_logger().debug("Serial Reader")
             for f in readable_blobs:
                 yield from parallel(f)
