@@ -5,22 +5,22 @@ from: https://stackoverflow.com/a/35804945
 """
 
 import logging
+import orjson
 import atexit
+from typing import Dict
 
-logging_seen_warnings = []
+logging_seen_warnings: Dict[int, int] = {}
 
 
 def report_suppressions(message):
-    """
-    We suppress warnings from being repeatedly logged after they have been logged once.
-    But, so users know we've been suppressing logs, before we end, tell the user how
-    many times the log has been suppressed.
-    """
     import mabel.logging
 
-    mabel.logging.get_logger().warning(
-        f"The following message was suppressed being logged {len(logging_seen_warnings)} additional time(s) - ({message})"
-    )
+    record = logging_seen_warnings.get(hash(message))
+
+    if record:
+        mabel.logging.get_logger().warning(
+            f'The following message was suppressed {record} time(s) - "{message}"'
+        )
 
 
 def add_logging_level(level_name, level_num, method_name=None):
@@ -55,16 +55,21 @@ def add_logging_level(level_name, level_num, method_name=None):
     def log_for_level(self, message, *args, **kwargs):
         # if we've added the level,it doesn't format the message as JSON
         if isinstance(message, dict):
-            import orjson as json
-
-            message = json.dumps(message).decode("UTF8")
+            message = orjson.dumps(message)
+        # not just the json decoder outputs in bytes, make it a string
+        if isinstance(message, bytes):
+            message = message.decode()
         if self.isEnabledFor(level_num):
+
             # supress duplicate warnings
             if level_num == 30:  # warnings
-                if message in logging_seen_warnings:
+                hashed = hash(message)
+                if hashed in logging_seen_warnings:
+                    logging_seen_warnings[hashed] += 1
                     return
-                logging_seen_warnings.append(message)
+                logging_seen_warnings[hashed] = 0
                 atexit.register(report_suppressions, message)
+
             self._log(level_num, message, args, **kwargs)
 
     def log_to_root(message, *args, **kwargs):

@@ -24,7 +24,7 @@ def test_reader_all_good():
             select=["a", "b"],
             dataset="",
             start_date=datetime.datetime.now(),
-            end_date=datetime.datetime.now()
+            end_date=datetime.datetime.now(),
         )
     except InvalidReaderConfigError:
         failed = True
@@ -39,9 +39,8 @@ def test_reader_select_not_list():
             select="everything",
             dataset="",
             start_date=datetime.datetime.now(),
-            end_date=datetime.datetime.now()
+            end_date=datetime.datetime.now(),
         )
-
 
 
 if __name__ == "__main__":  # pragma: no cover

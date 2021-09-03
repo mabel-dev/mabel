@@ -10,11 +10,13 @@ import mmap
 import orjson
 import atexit
 from tempfile import NamedTemporaryFile
+from .dumb_iterator import DumbIterator
+from ...utils.paths import silent_remove
 
 BUFFER_SIZE = 16 * 1024 * 1024  # 16Mb
 
 
-class StorageClassDisk(object):
+class StorageClassDisk:
     """
     This provides the reader for the DISK variation of STORAGE.
     """
@@ -25,7 +27,7 @@ class StorageClassDisk(object):
         self.length = -1
 
         self.file = NamedTemporaryFile(prefix="mabel-dictset").name
-        atexit.register(os.remove, args=(self.file), kwargs={"ignore_errors": True})
+        atexit.register(silent_remove, filename=self.file)
 
         buffer = bytearray()
         with open(self.file, "wb") as f:
@@ -39,6 +41,7 @@ class StorageClassDisk(object):
             f.flush()
 
         self.length += 1
+        self.iterator = None
 
     def _read_file(self):
         """
@@ -74,10 +77,13 @@ class StorageClassDisk(object):
                 yield orjson.loads(line)
 
     def __iter__(self):
-        return self._inner_reader()
+        self.iterator = iter(self._inner_reader())
+        return self.iterator
 
     def __next__(self):
-        return next(self)
+        if not self.iterator:
+            self.iterator = iter(self._inner_reader())
+        return next(self.iterator)
 
     def __len__(self):
         return self.length

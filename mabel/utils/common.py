@@ -6,24 +6,6 @@ import orjson
 from ..logging import get_logger
 
 
-def date_range(start_date: Optional[datetime.date], end_date: Optional[datetime.date]):
-    """
-    An interator over a range of dates
-    """
-    # if dates aren't provided, use today
-    if not end_date:
-        end_date = datetime.date.today()
-    if not start_date:
-        start_date = datetime.date.today()
-
-    if end_date < start_date:
-        raise ValueError(
-            "date_range: end_date must be the same or later than the start_date "
-        )
-
-    for n in range(int((end_date - start_date).days) + 1):
-        yield start_date + datetime.timedelta(n)
-
 
 def build_context(**kwargs: dict):
     """

@@ -29,7 +29,7 @@ from siphashc import siphash
 from operator import itemgetter
 from functools import reduce
 
-from typing import Iterator, Union, Dict, Any
+from typing import Iterable, Dict, Any, List, Union
 
 # from ....logging import get_logger
 from ...errors import MissingDependencyError, InvalidArgument
@@ -39,6 +39,7 @@ from .display import html_table, ascii_table
 from .storage_class_disk import StorageClassDisk
 from .storage_class_binary_disk import StorageClassBinaryDisk
 from .storage_class_compressed_memory import StorageClassCompressedMemory
+from .storage_class_memory import StorageClassMemory
 from .expression import Expression
 from .dnf_filters import DnfFilters
 from .dumb_iterator import DumbIterator
@@ -77,7 +78,7 @@ class STORAGE_CLASS(int, Enum):
 class DictSet(object):
     def __init__(
         self,
-        iterator: Iterator[Dict[Any, Any]],
+        iterator: Iterable[Dict[Any, Any]],
         *,
         storage_class=STORAGE_CLASS.NO_PERSISTANCE,
     ):
@@ -100,7 +101,7 @@ class DictSet(object):
 
         # if we're persisting to memory, load into a list
         if storage_class == STORAGE_CLASS.MEMORY:
-            self._iterator = list(iterator)  # type:ignore
+            self._iterator = StorageClassMemory(iterator)  # type:ignore
 
         # if we're persisting to disk, save it
         if storage_class == STORAGE_CLASS.DISK:
@@ -113,16 +114,16 @@ class DictSet(object):
         if storage_class == STORAGE_CLASS.COMPRESSED_MEMORY:
             self._iterator = StorageClassCompressedMemory(iterator)
 
-        if not hasattr(self._iterator, '__iter__'):
+        if not hasattr(self._iterator, "__iter__"):
             self._iterator = DumbIterator(self._iterator)
 
     def __iter__(self):
         """
         Wrap the iterator in a Iterable object
         """
-        if hasattr(self._iterator, '__iter__'):
-            return self._iterator
-        return DumbIterator(self._iterator)
+        if not hasattr(self._iterator, "__iter__"):
+            self._iterator = DumbIterator(self._iterator)
+        return self
 
     def __next__(self):
         return next(self._iterator)
@@ -145,7 +146,7 @@ class DictSet(object):
         if self.storage_class == storage_class:
             return False
         if storage_class == STORAGE_CLASS.MEMORY:
-            self._iterator == list(self._iterator)
+            self._iterator == StorageClassMemory(self._iterator)
         if storage_class == STORAGE_CLASS.DISK:
             self._iterator = StorageClassDisk(self._iterator)
         if storage_class == STORAGE_CLASS.COMPRESSED_MEMORY:
@@ -161,7 +162,6 @@ class DictSet(object):
         NOTE: records are randomly selected so is unlikely to perfectly match the
         fraction.
         """
-
         def inner_sampler(dictset):
             selector = int(1 / fraction)
             for row in dictset:

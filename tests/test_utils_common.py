@@ -5,7 +5,7 @@ import os
 import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
-from mabel.utils.common import date_range
+from mabel.utils.dates import date_range
 import datetime
 from rich import traceback
 

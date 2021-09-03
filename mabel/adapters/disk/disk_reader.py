@@ -13,11 +13,7 @@ class DiskReader(BaseInnerReader):
     def get_blobs_at_path(self, path):
         if path.exists():
             blobs = path.rglob("*")
-            return [
-                blob.as_posix()
-                for blob in blobs
-                if blob.is_file()
-            ]
+            return [blob.as_posix() for blob in blobs if blob.is_file()]
         return []
 
     def get_blob_stream(self, blob_name: str) -> io.IOBase:

@@ -1,6 +1,7 @@
 import re
 import datetime
-
+from typing import Optional, Union
+from dateutil import parser
 
 TIMEDELTA_REGEX = (
     r"((?P<days>-?\d+)d)?"
@@ -9,6 +10,13 @@ TIMEDELTA_REGEX = (
     r"((?P<seconds>-?\d+)s)?"
 )
 TIMEDELTA_PATTERN = re.compile(TIMEDELTA_REGEX, re.IGNORECASE)
+
+def extract_date(value):
+    if isinstance(value, str):
+        value = parser.parse(value)
+    if isinstance(value, (datetime.date, datetime.datetime)):
+        return datetime.date(value.year, value.month, value.day)
+    return datetime.date.today()
 
 # based on:
 # https://gist.github.com/santiagobasulto/698f0ff660968200f873a2f9d1c4113c#file-parse_timedeltas-py
@@ -65,3 +73,20 @@ def parse_iso(value):
         return None
     except (ValueError, TypeError):
         return None
+
+
+def date_range(start_date: Optional[Union[str,datetime.date]], end_date: Optional[Union[str,datetime.date]]):
+    """
+    An interator over a range of dates
+    """
+    # if dates aren't provided, use today
+    end_date = extract_date(end_date)
+    start_date = extract_date(start_date)
+
+    if end_date < start_date:
+        raise ValueError(
+            "date_range: end_date must be the same or later than the start_date "
+        )
+
+    for n in range(int((end_date - start_date).days) + 1):
+        yield start_date + datetime.timedelta(n)

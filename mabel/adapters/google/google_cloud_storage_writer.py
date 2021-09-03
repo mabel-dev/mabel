@@ -17,21 +17,22 @@ class GoogleCloudStorageWriter(BaseInnerWriter):
             raise MissingDependencyError(
                 "`google-cloud-storage` is missing, please install or include in requirements.txt"
             )
-
         super().__init__(**kwargs)
+        self.project = project
+
+
+    def commit(self, byte_data, override_blob_name=None):
 
         # this means we're testing
         if os.environ.get("STORAGE_EMULATOR_HOST") is not None:
             client = storage.Client(
                 credentials=AnonymousCredentials(),
-                project=project,
+                project=self.project,
             )
         else:  # pragma: no cover
-            client = storage.Client(project=project)
+            client = storage.Client(project=self.project)
         self.gcs_bucket = client.get_bucket(self.bucket)
         self.filename = self.filename_without_bucket
-
-    def commit(self, byte_data, override_blob_name=None):
 
         # if we've been given the filename, use that, otherwise get the
         # name from the path builder

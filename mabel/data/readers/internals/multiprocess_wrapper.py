@@ -28,7 +28,7 @@ def _inner_process(flag, func, source_queue, reply_queue):  # pragma: no cover
         # have race conditions, but it will apply a simple back-off so we're
         # not exhausting memory when we know we should wait
         while reply_queue.full() and flag.value != TERMINATE_SIGNAL:
-            logging.debug('throttle feeder')
+            logging.debug("throttle feeder")
             time.sleep(1)
         with multiprocessing.Lock():
             # timeout eventually

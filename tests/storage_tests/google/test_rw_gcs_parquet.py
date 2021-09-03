@@ -1,7 +1,7 @@
 import os
 import sys
 
-sys.path.insert(1, os.path.join(sys.path[0], ".."))
+sys.path.insert(1, os.path.join(sys.path[0], "../../.."))
 from mabel.adapters.google import GoogleCloudStorageWriter, GoogleCloudStorageReader
 from mabel.data import BatchWriter
 from mabel.data import Reader
@@ -39,9 +39,8 @@ def test_gcs_parquet():
         w = BatchWriter(
             inner_writer=GoogleCloudStorageWriter,
             project="testing",
-            partition_size=1024,
-            dataset=f"{BUCKET_NAME}/test/gcs/dataset",
             format="parquet",
+            dataset=f"{BUCKET_NAME}/test/gcs/dataset",
         )
         for i in range(100):
             w.append({"$$": i * 300})
@@ -53,11 +52,9 @@ def test_gcs_parquet():
             inner_reader=GoogleCloudStorageReader,
             project="testing",
             dataset=f"{BUCKET_NAME}/test/gcs/dataset",
-            row_format="pass-thru",
-            extension=".parquet",
         )
         l = list(r)
-
+        assert isinstance(l[0], dict)
         assert len(l) == 100, len(l)
     except Exception as e:  # pragma: no cover
         raise e

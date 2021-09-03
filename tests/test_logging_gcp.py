@@ -8,7 +8,7 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.logging.google_cloud_logger import GoogleLogger
 
-os.environ["IGNORE_STACKDRIVER"] = "true"
+os.environ["PROJECT_NAME"] = "mabel"
 
 
 def test_google_logging():

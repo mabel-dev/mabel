@@ -27,6 +27,7 @@ from ....utils import paths
 def empty_list(x):
     return []
 
+
 VALID_EXTENSIONS = {
     ".txt": (decompressors.block, parsers.pass_thru),
     ".json": (decompressors.block, parsers.json),
@@ -43,11 +44,14 @@ VALID_EXTENSIONS = {
     ".complete": (empty_list, empty_list),
 }
 
+
 def pass_thru(x):
     return x
 
+
 def no_filter(x):
     return True
+
 
 class ParallelReader:
 
@@ -59,7 +63,7 @@ class ParallelReader:
         filter=no_filter,
         reducer=pass_thru,
         override_format=None,
-        **kwargs
+        **kwargs,
     ):
         """
 
@@ -90,9 +94,8 @@ class ParallelReader:
 
         if self.override_format:
             self.override_format = self.override_format.lower()
-            if not self.override_format[0] == '.':
-                self.override_format = '.' + self.override_format
-
+            if not self.override_format[0] == ".":
+                self.override_format = "." + self.override_format
 
     def pre_filter(self):
         """
@@ -167,7 +170,7 @@ class ParallelReader:
                 ext = self.override_format
             else:
                 bucket, path, stem, ext = paths.get_parts(blob_name)
-            
+
             if ext not in VALID_EXTENSIONS:
                 return []
             decompressor, parser = VALID_EXTENSIONS[ext]

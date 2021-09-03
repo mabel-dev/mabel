@@ -1,5 +1,4 @@
 from mabel.errors import MissingDependencyError
-import orjson
 
 
 def zstd(stream):
@@ -32,8 +31,11 @@ def zip(stream):
     import zipfile
 
     with zipfile.ZipFile(stream, "r") as zip:
-        file = zip.read(zipfile.ZipFile.namelist(zip)[0])
-        yield from file.split(b"\n")
+        for file_name in zipfile.ZipFile.namelist(zip):
+            file = zip.read(file_name)
+            for line in file.decode("utf8").splitlines():
+                if line:
+                    yield line
 
 
 def parquet(stream):
@@ -50,9 +52,7 @@ def parquet(stream):
     for batch in table.to_batches():
         dict_batch = batch.to_pydict()
         for index in range(len(batch)):
-            yield orjson.dumps(
-                {k: v[index] for k, v in dict_batch.items()}
-            ).decode()  # type:ignore
+            yield {k: v[index] for k, v in dict_batch.items()}
 
 
 def lines(stream):
@@ -61,6 +61,7 @@ def lines(stream):
     """
     text = stream.read().decode("utf8")  # type:ignore
     yield from text.splitlines()
+
 
 def block(stream):
     yield stream.read().decode("utf8")

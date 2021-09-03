@@ -6,6 +6,8 @@ from mabel.adapters.disk import DiskReader
 from mabel.data.readers.internals.sql_reader import SqlReader
 from rich import traceback
 
+os.environ["PROJECT_NAME"] = ""
+
 traceback.install()
 
 

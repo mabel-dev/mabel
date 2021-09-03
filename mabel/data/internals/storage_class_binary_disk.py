@@ -5,7 +5,7 @@ for the BINARY_DISK variation of the STORAGE CLASSES.
 This stores DICTSETs in a binary format - which should be smaller and faster - but only
 supports a subset of field types.
 """
-import ctypes
+from mabel.errors.data_not_found_error import DataNotFoundError
 import os
 import sys
 import mmap
@@ -13,7 +13,8 @@ import atexit
 import struct
 import datetime
 from tempfile import NamedTemporaryFile
-from typing import Iterator
+from typing import Iterable, Any, Iterator
+from ...utils.paths import silent_remove
 
 
 from ctypes import create_string_buffer
@@ -66,7 +67,7 @@ BUFFER_SIZE = 64 * 1024 * 1024
 TYPE_STORAGE = {
     "int": (8, dump_int, load_int),
     "float": (8, dump_float, load_float),
-    "str": (STRING_LENGTH, dump_str, lambda x: x.split(b"\x00", 1)[0]),
+    "str": (STRING_LENGTH, dump_str, lambda x: x.split(b"\x00", 1)[0].decode()),
     "datetime": (4, date_dumper, date_loader),
     "bool": (1, lambda x: b"\x01" if x else b"\x00", lambda x: x == b"\x01"),
     "spacer": (1, lambda x: b"\x00", lambda x: None),
@@ -149,28 +150,30 @@ class StorageClassBinaryDisk(object):
             schema[k] = value_type
         return schema
 
-    def __init__(self, iterator: Iterator = []):
+    def __init__(self, iterator):
         try:
-            record = next(iterator)
+            # if next fails, we're probably reading an empty set
+            record = next(iterator, {})
             self.schema_dict = self.determine_schema(record)
             self.schema_size = sum(
                 [TYPE_STORAGE[v][0] for k, v in self.schema_dict.items()]
             )
         except:
-            raise
+            raise DataNotFoundError("Unable to retrieve records")
 
         self.inner_reader = None
         self.length = -1
 
         self.file = NamedTemporaryFile(prefix="mabel-dictset").name
-        atexit.register(os.remove, args=(self.file), kwargs={"ignore_errors": True})
+        atexit.register(silent_remove, filename=self.file)
 
         with open(self.file, "wb") as f:
             f.write(self.serialize(record))
-            for self.length, row in enumerate(iterator):
+            for self.length, row in enumerate(iterator, start=1):
                 f.write(self.serialize(row))
 
         self.length += 1
+        self.iterator = None
 
     def _read_file(self):
         with open(self.file, mode="rb") as file_obj:
@@ -205,10 +208,13 @@ class StorageClassBinaryDisk(object):
                 yield deserialize(line)
 
     def __iter__(self):
-        return self._inner_reader()
+        self.iterator = iter(self._inner_reader())
+        return self.iterator
 
     def __next__(self):
-        return next(self)
+        if not self.iterator:
+            self.iterator = iter(self._inner_reader())
+        return next(self.iterator)
 
     def __len__(self):
         return self.length

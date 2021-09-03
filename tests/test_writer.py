@@ -80,7 +80,7 @@ def test_reader_writer_format_parquet():
     do_writer_compressed("parquet")
     g = glob.glob("_temp/**/*.parquet", recursive=True)
     assert len(g) > 0, g
-    r = Reader(inner_reader=DiskReader, row_format="pass-thru", dataset="_temp")
+    r = Reader(inner_reader=DiskReader, dataset="_temp")
     l = len(list(r))
     shutil.rmtree("_temp", ignore_errors=True)
     assert l == 200000, l
@@ -91,10 +91,10 @@ def test_reader_writer_format_text():
     g = glob.glob("_temp/**/*.txt", recursive=True)
     assert len(g) > 0, g
 
-    r = Reader(inner_reader=DiskReader, row_format="pass-thru", dataset="_temp")
+    r = Reader(inner_reader=DiskReader, dataset="_temp")
     l = len(list(r))
     shutil.rmtree("_temp", ignore_errors=True)
-    assert l == 200000, l
+    assert l == 1, l
 
 
 def test_reader_writer_format_default():

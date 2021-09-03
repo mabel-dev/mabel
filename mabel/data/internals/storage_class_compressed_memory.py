@@ -22,12 +22,15 @@ class StorageClassCompressedMemory(object):
         self.batches = []
         self.length = 0
 
+        batch = None
         for batch in zip_longest(*[iterable] * BATCH_SIZE):
             self.length += len(batch)
             self.batches.append(compressor.compress(orjson.dumps(batch)))
 
         # the last batch fills with Nones
-        self.length -= batch.count(None)
+        if batch:
+            self.length -= batch.count(None)
+        self.iterator = None
 
     def _inner_reader(self, *locations):
         decompressor = lz4.frame
@@ -54,10 +57,13 @@ class StorageClassCompressedMemory(object):
                         yield record
 
     def __iter__(self):
-        return self._inner_reader()
+        self.iterator = iter(self._inner_reader())
+        return self.iterator
 
     def __next__(self):
-        return next(self)
+        if not self.iterator:
+            self.iterator = iter(self._inner_reader())
+        return next(self.iterator)
 
     def __len__(self):
         return self.length

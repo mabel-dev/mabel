@@ -4,14 +4,16 @@ import os.path
 import datetime
 
 from siphashc import siphash
-from typing import Optional, List
+from typing import Optional, List, Dict, Union
 from multiprocessing import cpu_count
 
 
 from .internals.parallel_reader import ParallelReader, pass_thru
 from .internals.multiprocess_wrapper import processed_reader
+from .internals.cursor import Cursor
 
 from ..internals.expression import Expression
+from ..internals.dnf_filters import DnfFilters
 from ..internals.records import select_record_fields
 from ..internals.dictset import DictSet, STORAGE_CLASS
 
@@ -39,8 +41,6 @@ RULES = [
 # fmt:on
 
 
-
-
 @validate(RULES)
 def Reader(
     *,  # force all paramters to be keyworded
@@ -51,6 +51,7 @@ def Reader(
     raw_path: bool = False,
     persistence: STORAGE_CLASS = STORAGE_CLASS.NO_PERSISTANCE,
     override_format: Optional[str] = None,
+    cursor: Optional[Union[str, Dict]] = None,
     **kwargs,
 ) -> DictSet:
     """
@@ -136,7 +137,7 @@ def Reader(
     arg_dict["dataset"] = f"{dataset}"
     arg_dict["inner_reader"] = f"{inner_reader.__name__}"  # type:ignore
     arg_dict["query"] = query
-    get_logger().debug(orjson.dumps(arg_dict))
+    get_logger().debug(arg_dict)
 
     # number of days to walk backwards to find records
     freshness_limit = parse_delta(kwargs.get("freshness_limit", ""))
@@ -148,16 +149,14 @@ def Reader(
             "freshness_limit can only be used when the start and end dates are the same"
         )
 
-    if query:
-        query = Expression(query)
-
     return DictSet(
         _LowLevelReader(
             reader_class=reader_class,
             freshness_limit=freshness_limit,
             select=select,
             query=query,
-            override_format=override_format
+            override_format=override_format,
+            cursor=cursor
         ),
         storage_class=persistence,
     )
@@ -178,14 +177,21 @@ class _LowLevelReader(object):
         select,
         query,
         override_format,
+        cursor
     ):
         self.reader_class = reader_class
         self.freshness_limit = freshness_limit
         self.select = select
-        self.query = query
         self.override_format = override_format
-
+        self.cursor = cursor
         self._inner_line_reader = None
+
+        if isinstance(query, str):
+            self.query = Expression(query)
+        elif isinstance(query, (tuple, list)):
+            self.query = DnfFilters(query)
+        else:
+            self.query = None
 
     def _create_line_reader(self):
         blob_list = self.reader_class.get_list_of_blobs()
@@ -220,6 +226,8 @@ class _LowLevelReader(object):
                 f"Reader found {len(readable_blobs)} sources to read data from in `{self.reader_class.dataset}`."
             )
 
+
+
         get_logger().warning("rewrite the cursor functionality")
         # sort the files names, a bit in a bit array represents each file
         # as we read, we turn the bits on
@@ -227,21 +235,20 @@ class _LowLevelReader(object):
         # the reported cursor is the bit array, currnet file and progress
 
         parallel = ParallelReader(
-            reader=self.reader_class, filter=self.query or pass_thru, override_format=self.override_format
+            reader=self.reader_class,
+            filter=self.query or pass_thru,
+            override_format=self.override_format,
         )
 
         # it takes some effort to set up the multiprocessing, only do it if
         # we have enough files.
-
-        # multi processing has a bug
-        if len(readable_blobs) < (cpu_count()) or cpu_count() == 1:
+        if False: # self.cursor or len(readable_blobs) < (cpu_count()) or cpu_count() == 1:
             get_logger().debug("Serial Reader")
             for f in readable_blobs:
                 yield from parallel(f)
         else:
             get_logger().debug("Parallel Reader")
             yield from processed_reader(parallel, readable_blobs)
-
 
     def __iter__(self):
         return self

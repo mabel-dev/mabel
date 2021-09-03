@@ -6,7 +6,6 @@ import glob
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.adapters.disk import DiskReader, DiskWriter
-from mabel.adapters.null import NullWriter
 from mabel.data import BatchWriter
 from mabel.data import Reader
 from rich import traceback
@@ -94,7 +93,7 @@ def test_reader_writer_format_parquet():
     c = glob.glob("_temp/**/*.complete", recursive=True)
     len(c) == 0, c
 
-    r = Reader(inner_reader=DiskReader, row_format="pass-thru", dataset="_temp")
+    r = Reader(inner_reader=DiskReader, dataset="_temp")
     l = len(list(r))
     shutil.rmtree("_temp", ignore_errors=True)
     assert l == 200000, l

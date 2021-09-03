@@ -11,6 +11,8 @@ from rich import traceback
 
 traceback.install()
 
+os.environ["PROJECT_NAME"] = ""
+
 LOG_NAME = "TEST_SCRIPTS"
 set_log_name(LOG_NAME)
 
@@ -49,6 +51,14 @@ def test_smoke_test():
     logger = get_logger()
     logger.setLevel(LEVELS.DEBUG)
     logger.debug("debug")
+    logger.warning("warn")
+    logger.warning("warn")
+    logger.warning("warn")
+    logger.warning("warn")
+    logger.warning("warned")
+    logger.warning("warn")
+    logger.warning("warn")
+    logger.warning("warned")
     logger.warning("warn")
     logger.warning("warn")
     logger.warning("warn")
