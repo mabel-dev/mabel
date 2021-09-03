@@ -12,6 +12,7 @@ from mabel import BaseOperator
 from mabel.operators import EndOperator, NoOpOperator
 from mabel.operators.null import NullBatchWriterOperator
 
+os.environ["PROJECT_NAME"] = ""
 
 class FailOnT800Operator(BaseOperator):
     def execute(self, data: dict, context: dict):

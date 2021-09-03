@@ -137,7 +137,7 @@ def Reader(
     arg_dict["dataset"] = f"{dataset}"
     arg_dict["inner_reader"] = f"{inner_reader.__name__}"  # type:ignore
     arg_dict["query"] = query
-    get_logger().debug(orjson.dumps(arg_dict))
+    get_logger().debug(arg_dict)
 
     # number of days to walk backwards to find records
     freshness_limit = parse_delta(kwargs.get("freshness_limit", ""))

@@ -9,8 +9,12 @@ from .levels import LEVELS, LEVELS_TO_STRING
 from ..utils import is_running_from_ipython
 from .log_formatter import LogFormatter
 
-def log_it(x):
-    payload = json.dumps(x).decode()
+def log_it(payload):
+    print(payload)
+    if isinstance(payload, dict):
+        payload = json.dumps(payload)
+    if isinstance(payload, bytes):
+        payload = payload.decode()
     print(payload, flush=True)
     return payload
 
@@ -31,7 +35,7 @@ class GoogleLogger(object):
     def supported():
         if is_running_from_ipython():
             return False
-        if not os.environ.get("PROJECT_NAME"):
+        if os.environ.get("PROJECT_NAME", "") or "" == "":
             return False
         return True
 
@@ -46,7 +50,7 @@ class GoogleLogger(object):
         from .create_logger import LOG_NAME
 
         structured_log = {"logName": f'projects/{os.environ.get("PROJECT_NAME")}/logs/{os.environ.get("LOG_SINK")}',
-        "severity": str(severity)}
+        "severity": str(severity).split('.')[1]}
         structured_log["logging.googleapis.com/labels"] = {"system": system, "log_name": LOG_NAME}
 
         method, module, line = extract_caller()
@@ -56,10 +60,8 @@ class GoogleLogger(object):
             structured_log["logging.googleapis.com/spanId"] = spanId
 
         if isinstance(message, dict):
-
             formatter = LogFormatter(None)
             message = formatter.clean_record(message, False)
-
             structured_log["jsonPayload"] = message
             return log_it(structured_log)
         else:

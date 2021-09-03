@@ -2,6 +2,7 @@ import os
 import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], "../../.."))
+from mabel.data.internals.dictset import STORAGE_CLASS
 from mabel.adapters.disk import DiskReader
 from mabel.data import Reader
 from rich import traceback
@@ -12,17 +13,13 @@ traceback.install()
 def test_can_read_parquet():
     r = Reader(
         inner_reader=DiskReader,
-        row_format="pass-thru",
         dataset="tests/data/formats/parquet",
         raw_path=True,
+        persistence=STORAGE_CLASS.MEMORY
     )
 
-    i = 0
-    for i, row in enumerate(r):
-        pass
-
-    assert i == 57580, i
-    assert isinstance(row, str)
+    assert r.count() == 57581, r.count()
+    assert isinstance(r.first(), dict)
 
 
 if __name__ == "__main__":  # pragma: no cover

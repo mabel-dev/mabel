@@ -11,6 +11,8 @@ from rich import traceback
 
 traceback.install()
 
+os.environ["PROJECT_NAME"] = ""
+
 LOG_NAME = "TEST_SCRIPTS"
 set_log_name(LOG_NAME)
 
