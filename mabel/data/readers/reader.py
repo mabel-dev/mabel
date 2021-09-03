@@ -242,7 +242,7 @@ class _LowLevelReader(object):
 
         # it takes some effort to set up the multiprocessing, only do it if
         # we have enough files.
-        if self.cursor or len(readable_blobs) < (cpu_count()) or cpu_count() == 1:
+        if False: # self.cursor or len(readable_blobs) < (cpu_count()) or cpu_count() == 1:
             get_logger().debug("Serial Reader")
             for f in readable_blobs:
                 yield from parallel(f)
