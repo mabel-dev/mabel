@@ -34,7 +34,7 @@ def test_reader_can_read_alot():
         if i % 1000000 == 0:
             print(i)
         pass
-    assert i == 106963 or i == 16066287, i
+    assert i == 511999 or i == 16066287, i
 
 
 if __name__ == "__main__":  # pragma: no cover

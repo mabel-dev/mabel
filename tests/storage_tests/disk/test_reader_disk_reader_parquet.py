@@ -1,7 +1,7 @@
 import os
 import sys
 
-sys.path.insert(1, os.path.join(sys.path[0], ".."))
+sys.path.insert(1, os.path.join(sys.path[0], "../../.."))
 from mabel.adapters.disk import DiskReader
 from mabel.data import Reader
 from rich import traceback

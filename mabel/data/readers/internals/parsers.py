@@ -9,15 +9,15 @@ def json(ds):
 
 def pass_thru(ds):
     """just pass it through"""
-    yield from ds
+    return ds
 
 
 def pass_thru_block(ds):
     """each blob is read as a block"""
     if isinstance(ds, str):
         return ds
-    yield "\n".join([r for r in ds])  # pragma: no cover
+    return "\n".join([r for r in ds])  # pragma: no cover
 
 
 def xml(ds):
-    yield from map(xmler.parse, ds)
+    return xmler.parse(ds)

@@ -1,23 +1,18 @@
 # google-cloud-logging
 # pydantic
-from mabel.logging.log_formatter import LogFormatter
+
 import os
 import orjson as json
 import logging
-import datetime
 from typing import Union, Optional
 from .levels import LEVELS, LEVELS_TO_STRING
-from ..utils import is_running_from_ipython, safe_field_name
+from ..utils import is_running_from_ipython
+from .log_formatter import LogFormatter
 
-try:
-    from google.cloud import logging as stackdriver  # type:ignore
-    from google.cloud.logging import DESCENDING  # type:ignore
-except ImportError:
-    stackdriver = None  # type:ignore
-
-
-LOG_SINK = "MABEL"
-
+def log_it(x):
+    payload = json.dumps(x).decode()
+    print(payload, flush=True)
+    return payload
 
 def extract_caller():
     import traceback
@@ -34,14 +29,10 @@ def extract_caller():
 class GoogleLogger(object):
     @staticmethod
     def supported():
-        if not stackdriver:
-            return False
-        if os.environ.get("IGNORE_STACKDRIVER", False):
-            return False
         if is_running_from_ipython():
             return False
-        global LOG_SINK
-        LOG_SINK = os.environ.get("LOG_SINK", LOG_SINK)
+        if not os.environ.get("PROJECT_NAME"):
+            return False
         return True
 
     @staticmethod
@@ -49,49 +40,31 @@ class GoogleLogger(object):
         message: Union[str, dict],
         system: Optional[str] = None,
         severity: Optional[int] = logging.DEBUG,
+        spanId: Optional[str] = None
     ):
 
         from .create_logger import LOG_NAME
 
-        labels = {}
-        if system:
-            labels["system"] = system
+        structured_log = {"logName": f'projects/{os.environ.get("PROJECT_NAME")}/logs/{os.environ.get("LOG_SINK")}',
+        "severity": str(severity)}
+        structured_log["logging.googleapis.com/labels"] = {"system": system, "log_name": LOG_NAME}
+
         method, module, line = extract_caller()
-        labels["method"] = method
-        labels["module"] = module
-        labels["line"] = str(line)
+        structured_log["logging.googleapis.com/sourceLocation"] = {"function": method, "file": module,"line": line}
 
-        payload = message
-        if isinstance(message, dict):
-            payload = json.dumps(message).decode("UTF8")
-
-        log = f"{LOG_NAME} | {LEVELS_TO_STRING.get(severity, 'UNKNOWN')} | {datetime.datetime.now().isoformat()} | {method}() | {module}:{line} | {payload}"  # type:ignore
-        formatter = LogFormatter(None, suppress_color=True)
-        log = formatter.format(log)
-
-        if os.environ.get("DUAL_LOG", False) or os.environ.get("IGNORE_STACKDRIVER"):
-            print(log)
-
-        if os.environ.get("IGNORE_STACKDRIVER"):
-            return log
-
-        client = stackdriver.Client()
-        logger = client.logger(safe_field_name(LOG_SINK))
+        if spanId:
+            structured_log["logging.googleapis.com/spanId"] = spanId
 
         if isinstance(message, dict):
-            logger.log_struct(
-                info=message,
-                severity=LEVELS_TO_STRING.get(severity),  # type:ignore
-                labels=labels,
-            )
+
+            formatter = LogFormatter(None)
+            message = formatter.clean_record(message, False)
+
+            structured_log["jsonPayload"] = message
+            return log_it(structured_log)
         else:
-            logger.log_text(
-                text=f"{message}",
-                severity=LEVELS_TO_STRING.get(severity),  # type:ignore
-                labels=labels,
-            )
-
-        return message
+            structured_log["textPayload"] = message
+            return log_it(structured_log)
 
     def __init__(self):
         # rewrite one of the levels

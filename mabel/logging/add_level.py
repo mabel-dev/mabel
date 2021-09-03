@@ -55,7 +55,10 @@ def add_logging_level(level_name, level_num, method_name=None):
     def log_for_level(self, message, *args, **kwargs):
         # if we've added the level,it doesn't format the message as JSON
         if isinstance(message, dict):
-            message = orjson.dumps(message).decode()
+            message = orjson.dumps(message)
+        # not just the json decoder outputs in bytes, make it a string
+        if isinstance(message, bytes):
+            message = message.decode()
         if self.isEnabledFor(level_num):
 
             # supress duplicate warnings

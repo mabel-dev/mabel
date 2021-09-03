@@ -162,7 +162,6 @@ class DictSet(object):
         NOTE: records are randomly selected so is unlikely to perfectly match the
         fraction.
         """
-
         def inner_sampler(dictset):
             selector = int(1 / fraction)
             for row in dictset:

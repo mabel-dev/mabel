@@ -7,7 +7,6 @@ import os
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.utils import entropy
-import collections
 from rich import traceback
 
 traceback.install()

@@ -72,6 +72,42 @@ class LogFormatter(logging.Formatter):
     def hash_it(self, value_to_hash):
         return hashlib.sha256(value_to_hash.encode()).hexdigest()[:8]
 
+    def clean_record(self, dirty_record, colorize:bool=True):
+        if colorize:
+            BLUE = "{BLUE}"
+            OFF = "{OFF}"
+            PURPLE = "{PURPLE}"
+            YELLOW = "{YELLOW}"
+            GREEN = "{GREEN}"
+        else:
+            BLUE = ""
+            OFF = ""
+            PURPLE = ""
+            YELLOW = ""
+            GREEN = ""
+
+        clean_record = {}
+        for key, value in dirty_record.items():
+            if isinstance(value, dict):
+                value = self.clean_record(value, colorize)
+            elif any(
+                [
+                    True
+                    for expression in KEYS_TO_SANITIZE
+                    if re.match(expression, key, re.IGNORECASE)
+                ]
+            ):
+                clean_record[BLUE + key + OFF] = (
+                    PURPLE + "<redacted:" + self.hash_it(str(value)) + ">" + OFF
+                )
+            else:
+                value = re.sub(r"`([^`]*)`", r"`" + YELLOW + "\1" + GREEN + "`", f"{value}")
+                value = re.sub(r"'([^']*)'", r"'" + YELLOW + "\1" + GREEN + "'", f"{value}")
+                clean_record[BLUE + key + OFF] = (
+                    GREEN + f"{value}" + OFF
+                )
+        return clean_record
+
     def sanitize_record(self, record):
 
         record = self.color_code(record)
@@ -80,25 +116,7 @@ class LogFormatter(logging.Formatter):
 
         try:
             dirty_record = json.loads(json_part.encode("UTF8"))
-            clean_record = {}
-            for key, value in dirty_record.items():
-                if any(
-                    [
-                        True
-                        for expression in KEYS_TO_SANITIZE
-                        if re.match(expression, key, re.IGNORECASE)
-                    ]
-                ):
-                    clean_record["{BLUE}" + key + "{OFF}"] = (
-                        "{PURPLE}<redacted:" + self.hash_it(str(value)) + ">{OFF}"
-                    )
-                else:
-                    value = re.sub(r"`([^`]*)`", r"`{YELLOW}\1{GREEN}`", f"{value}")
-                    value = re.sub(r"'([^']*)'", r"'{YELLOW}\1{GREEN}'", f"{value}")
-                    clean_record["{BLUE}" + key + "{OFF}"] = (
-                        "{GREEN}" + f"{value}" + "{OFF}"
-                    )
-
+            clean_record = self.clean_record(dirty_record)
             parts.append(" " + json.dumps(clean_record).decode("UTF8"))
 
         except ValueError:

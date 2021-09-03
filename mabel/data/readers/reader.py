@@ -13,6 +13,7 @@ from .internals.multiprocess_wrapper import processed_reader
 from .internals.cursor import Cursor
 
 from ..internals.expression import Expression
+from ..internals.dnf_filters import DnfFilters
 from ..internals.records import select_record_fields
 from ..internals.dictset import DictSet, STORAGE_CLASS
 
@@ -148,9 +149,6 @@ def Reader(
             "freshness_limit can only be used when the start and end dates are the same"
         )
 
-    if query:
-        query = Expression(query)  # type:ignore
-
     return DictSet(
         _LowLevelReader(
             reader_class=reader_class,
@@ -184,10 +182,16 @@ class _LowLevelReader(object):
         self.reader_class = reader_class
         self.freshness_limit = freshness_limit
         self.select = select
-        self.query = query
         self.override_format = override_format
         self.cursor = cursor
         self._inner_line_reader = None
+
+        if isinstance(query, str):
+            self.query = Expression(query)
+        elif isinstance(query, (tuple, list)):
+            self.query = DnfFilters(query)
+        else:
+            self.query = None
 
     def _create_line_reader(self):
         blob_list = self.reader_class.get_list_of_blobs()

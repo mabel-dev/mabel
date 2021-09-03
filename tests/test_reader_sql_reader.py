@@ -106,22 +106,22 @@ def test_limit():
 def test_group_by_count():
 
     s = SqlReader(
-        sql_statement="SELECT COUNT(*) FROM tests.data.index.not GROUP BY user_name",
+        sql_statement="SELECT COUNT(*) FROM tests.data.index.not GROUP BY user_verified",
         inner_reader=DiskReader,
         raw_path=True,
     )
     records = s.reader.collect()
     record_count = len(records)
-    assert record_count == 56527, record_count
+    assert record_count == 2, record_count
 
     s = SqlReader(
-        sql_statement="SELECT COUNT(*) FROM tests.data.index.not GROUP BY user_name, following",
+        sql_statement="SELECT COUNT(*) FROM tests.data.index.not GROUP BY hash_tags",
         inner_reader=DiskReader,
         raw_path=True,
     )
     records = s.reader.collect()
     record_count = len(records)
-    assert record_count == 61117, record_count
+    assert record_count == 2370, record_count
 
 
 if __name__ == "__main__":  # pragma: no cover

@@ -5,6 +5,7 @@ for the BINARY_DISK variation of the STORAGE CLASSES.
 This stores DICTSETs in a binary format - which should be smaller and faster - but only
 supports a subset of field types.
 """
+from mabel.errors.data_not_found_error import DataNotFoundError
 import os
 import sys
 import mmap
@@ -151,13 +152,14 @@ class StorageClassBinaryDisk(object):
 
     def __init__(self, iterator):
         try:
-            record = next(iterator)
+            # if next fails, we're probably reading an empty set
+            record = next(iterator, {})
             self.schema_dict = self.determine_schema(record)
             self.schema_size = sum(
                 [TYPE_STORAGE[v][0] for k, v in self.schema_dict.items()]
             )
         except:
-            raise
+            raise DataNotFoundError("Unable to retrieve records")
 
         self.inner_reader = None
         self.length = -1

@@ -6,8 +6,7 @@ import pathlib
 import datetime
 from io import IOBase
 from typing import Iterable
-from dateutil import parser
-from ....utils import common, paths
+from ....utils import paths, dates
 from ....logging import get_logger
 
 
@@ -15,12 +14,6 @@ BUFFER_SIZE: int = 64 * 1024 * 1024  # 64Mb
 
 
 class BaseInnerReader(abc.ABC):
-    def _extract_date_part(self, value):
-        if isinstance(value, str):
-            value = parser.parse(value)
-        if isinstance(value, (datetime.date, datetime.datetime)):
-            return datetime.date(value.year, value.month, value.day)
-        return datetime.date.today()
 
     def _extract_as_at(self, path):
         parts = path.split("/")
@@ -38,8 +31,8 @@ class BaseInnerReader(abc.ABC):
         if "{" not in self.dataset and not kwargs.get("raw_path", False):
             self.dataset += "{datefolders}/"
 
-        self.start_date = self._extract_date_part(kwargs.get("start_date"))
-        self.end_date = self._extract_date_part(kwargs.get("end_date"))
+        self.start_date = dates.extract_date(kwargs.get("start_date"))
+        self.end_date = dates.extract_date(kwargs.get("end_date"))
 
         self.days_stepped_back = 0
 
@@ -72,7 +65,8 @@ class BaseInnerReader(abc.ABC):
     def get_list_of_blobs(self):
 
         blobs = []
-        for cycle_date in common.date_range(self.start_date, self.end_date):
+        # for each day in the range, get the blobs for us to read
+        for cycle_date in dates.date_range(self.start_date, self.end_date):
             # build the path name
             cycle_path = pathlib.Path(
                 paths.build_path(path=self.dataset, date=cycle_date)

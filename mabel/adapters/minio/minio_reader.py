@@ -4,7 +4,7 @@ MinIo Reader - also works with AWS
 from functools import lru_cache
 import io
 from ...data.readers.internals.base_inner_reader import BaseInnerReader
-from ...utils import paths, common
+from ...utils import paths, dates
 from ...errors import MissingDependencyError
 
 try:
@@ -37,7 +37,7 @@ class MinIoReader(BaseInnerReader):
 
     def get_blobs_at_path(self, path):
         bucket, object_path, _, _ = paths.get_parts(path)
-        for cycle_date in common.date_range(self.start_date, self.end_date):
+        for cycle_date in dates.date_range(self.start_date, self.end_date):
             cycle_path = paths.build_path(path=object_path, date=cycle_date)
             blobs = self.minio.list_objects(
                 bucket_name=bucket, prefix=cycle_path, recursive=True

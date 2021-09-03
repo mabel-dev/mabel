@@ -37,22 +37,9 @@ def test_can_read_files():
         """ensure we can read the test files"""
         r = DiskReader(dataset=p, raw_path=True)
         for file in [b for b in r.get_list_of_blobs() if "/_SYS." not in b]:
-            for index, item in enumerate(r.get_records(file)):
+            for index, item in enumerate(r.get_blob_stream(file)):
                 pass
             assert index == 24, index
-
-    _inner("tests/data/tweets/")
-    _inner(os.getcwd() + "/tests/data/tweets/")
-
-
-def test_only_read_selected_rows():
-    def _inner(p):
-        """ensure we can read the test files"""
-        r = DiskReader(dataset=p, raw_path=True)
-        for file in [b for b in r.get_list_of_blobs() if "/_SYS." not in b]:
-            for index, item in enumerate(r.get_records(file, rows=[1, 2, 3])):
-                pass
-            assert index == 2, index
 
     _inner("tests/data/tweets/")
     _inner(os.getcwd() + "/tests/data/tweets/")
@@ -147,7 +134,6 @@ if __name__ == "__main__":  # pragma: no cover
     test_can_find_files()
     test_can_read_files()
     test_step_past()
-    test_only_read_selected_rows()
     test_freshness_limits()
     test_disk_text()
     test_disk_binary()

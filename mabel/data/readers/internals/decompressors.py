@@ -31,8 +31,11 @@ def zip(stream):
     import zipfile
 
     with zipfile.ZipFile(stream, "r") as zip:
-        file = zip.read(zipfile.ZipFile.namelist(zip)[0])
-        yield from file.split(b"\n")
+        for file_name in zipfile.ZipFile.namelist(zip):
+            file = zip.read(file_name)
+            for line in file.decode("utf8").splitlines():
+                if line:
+                    yield line
 
 
 def parquet(stream):

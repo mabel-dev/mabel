@@ -4,7 +4,7 @@ import os
 import sys
 import glob
 
-sys.path.insert(1, os.path.join(sys.path[0], ".."))
+sys.path.insert(1, os.path.join(sys.path[0], "../../.."))
 from mabel.adapters.disk import DiskReader, DiskWriter
 from mabel.adapters.null import NullWriter
 from mabel.data import BatchWriter
