@@ -16,32 +16,27 @@ TERMINATE_SIGNAL = -1
 MAXIMUM_SECONDS_PROCESSES_CAN_RUN = 600
 
 
-def _inner_process(flag, func, source_queue, reply_queue):  # pragma: no cover
+def _inner_process(func, source_queue, reply_queue):  # pragma: no cover
 
     try:
         source = source_queue.get(timeout=1)
     except Empty:  # pragma: no cover
-        source = None
+        source = TERMINATE_SIGNAL
 
-    while source and source != TERMINATE_SIGNAL and flag.value != TERMINATE_SIGNAL:
+    while source != TERMINATE_SIGNAL: # and flag.value != TERMINATE_SIGNAL:
         # no blocking wait - this isn't thread aware in that it can trivially
         # have race conditions, but it will apply a simple back-off so we're
         # not exhausting memory when we know we should wait
-        while reply_queue.full() and flag.value != TERMINATE_SIGNAL:
-            logging.debug("throttle feeder")
+        while reply_queue.full():
             time.sleep(1)
         with multiprocessing.Lock():
-            # timeout eventually
-            if flag.value != TERMINATE_SIGNAL:
-                reply_queue.put(func(source), timeout=60)
-        try:
-            if flag.value != TERMINATE_SIGNAL:
+            reply_queue.put(func(source), timeout=30)
+        source = None
+        while source is None:
+            try:
                 source = source_queue.get(timeout=1)
-        except Empty:  # pragma: no cover
-            source = None
-
-    flag.value = TERMINATE_SIGNAL
-
+            except Empty:  # pragma: no cover
+                source = None
 
 def processed_reader(func, items_to_read):  # pragma: no cover
 
@@ -63,23 +58,18 @@ def processed_reader(func, items_to_read):  # pragma: no cover
                 send_queue.put(items_to_read[item_index])
 
     for i in range(slots):
-        flag = multiprocessing.Value("i", 1 - TERMINATE_SIGNAL)
         process = multiprocessing.Process(
             target=_inner_process,
-            args=(flag, func, send_queue, reply_queue),
+            args=(func, send_queue, reply_queue),
         )
         process.daemon = True
         process.start()
-        process_pool.append(flag)
+        process_pool.append(process)
 
     process_start_time = time.time()
     item_index = slots
 
-    # if we're searching for a rare term, it will go seconds without returning
-    # any results, but we shouldn't wait forever
-    while any({t.value == 1 - TERMINATE_SIGNAL for t in process_pool}) or not (
-        reply_queue.empty()
-    ):
+    while any({p.is_alive() for p in process_pool}) or not reply_queue.empty() or not send_queue.empty():
         try:
             records = reply_queue.get(timeout=1)
             yield from records
@@ -94,13 +84,17 @@ def processed_reader(func, items_to_read):  # pragma: no cover
 
         except Empty:  # nosec
             if time.time() - process_start_time > MAXIMUM_SECONDS_PROCESSES_CAN_RUN:
-                logging.debug(
+                logging.error(
                     f"Sending TERMINATE to long running multi-processed processes after {MAXIMUM_SECONDS_PROCESSES_CAN_RUN} seconds total run time"
                 )
-                for flag in process_pool:
-                    flag.value = TERMINATE_SIGNAL
+                break
         except GeneratorExit:
-            logging.debug("GENERATOR EXIT DETECTED")
-            for flag in process_pool:
-                flag.value = TERMINATE_SIGNAL
-            raise
+            logging.error("GENERATOR EXIT DETECTED")
+            break
+    
+    reply_queue.close()
+    send_queue.close()
+    reply_queue.join_thread()
+    send_queue.join_thread()
+    for process in process_pool:
+        process.join()

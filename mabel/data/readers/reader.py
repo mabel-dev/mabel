@@ -1,3 +1,4 @@
+from lzma import CHECK_ID_MAX
 import sys
 import orjson
 import os.path
@@ -40,6 +41,7 @@ RULES = [
 ]
 # fmt:on
 
+logger = get_logger()
 
 @validate(RULES)
 def Reader(
@@ -206,12 +208,12 @@ class _LowLevelReader(object):
             if self.freshness_limit < datetime.timedelta(
                 days=self.reader_class.days_stepped_back
             ):
-                get_logger().alert(
+                logger.alert(
                     f"No data found in last {self.freshness_limit} - aborting ({self.reader_class.dataset})"
                 )
                 sys.exit(5)
             if self.reader_class.days_stepped_back > 0:
-                get_logger().warning(
+                logger.warning(
                     f"Stepped back {self.reader_class.days_stepped_back} days to {self.reader_class.start_date} to find last data, my limit is {self.freshness_limit} ({self.reader_class.dataset})"
                 )
 
@@ -219,20 +221,12 @@ class _LowLevelReader(object):
 
         if len(readable_blobs) == 0:
             message = f"Reader found {len(readable_blobs)} sources to read data from in `{self.reader_class.dataset}`."
-            get_logger().error(message)
+            logger.error(message)
             raise DataNotFoundError(message)
         else:
-            get_logger().debug(
+            logger.debug(
                 f"Reader found {len(readable_blobs)} sources to read data from in `{self.reader_class.dataset}`."
             )
-
-
-
-        get_logger().warning("rewrite the cursor functionality")
-        # sort the files names, a bit in a bit array represents each file
-        # as we read, we turn the bits on
-        # we track the current file, and the progress through that
-        # the reported cursor is the bit array, currnet file and progress
 
         parallel = ParallelReader(
             reader=self.reader_class,
@@ -241,13 +235,25 @@ class _LowLevelReader(object):
         )
 
         # it takes some effort to set up the multiprocessing, only do it if
-        # we have enough files.
-        if False: # self.cursor or len(readable_blobs) < (cpu_count()) or cpu_count() == 1:
-            get_logger().debug("Serial Reader")
-            for f in readable_blobs:
-                yield from parallel(f)
+        # we have enough files. This branch uses the Cursor to determine which blob to
+        # process next - the cursor allows us to resume reading through the
+        # dataset if we need to stop.
+        if self.cursor or len(readable_blobs) < (cpu_count()) or cpu_count() == 1:
+            logger.debug(f"Serial Reader {self.cursor}")
+            if not isinstance(self.cursor, Cursor):
+                cursor = Cursor(readable_blobs=readable_blobs, cursor=self.cursor)
+                self.cursor = cursor
+
+            blob_to_read = self.cursor.next_blob()
+            while blob_to_read:
+                blob_reader = iter(parallel(blob_to_read))
+                location = self.cursor.skip_to_cursor(blob_reader)
+                for self.cursor.location, record in enumerate(blob_reader, start=location):
+                    yield record
+                blob_to_read = self.cursor.next_blob(blob_to_read)
+
         else:
-            get_logger().debug("Parallel Reader")
+            logger.debug("Parallel Reader")
             yield from processed_reader(parallel, readable_blobs)
 
     def __iter__(self):

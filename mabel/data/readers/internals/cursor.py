@@ -10,6 +10,7 @@ Cursor is made of three parts:
              midway through the blob if required.
 """
 from multiprocessing import Value
+from urllib.parse import non_hierarchical
 from bitarray import bitarray
 from siphashc import siphash
 import orjson
@@ -19,14 +20,20 @@ class InvalidCursor(Exception):
 
 class Cursor():
 
-    def __init__(self, readable_blobs):
+    def __init__(self, readable_blobs, cursor=None):
         # sort the readable blobs so they are in a consistent order
         self.readable_blobs = sorted(readable_blobs)
         self.read_blobs = []
         self.partition = ''
         self.location = -1
 
+        if cursor:
+            self.load_cursor(cursor)
+
     def load_cursor(self, cursor):
+        if cursor is None:
+            return
+
         if isinstance(cursor, str):
             cursor = orjson.loads(cursor)
 
@@ -42,10 +49,19 @@ class Cursor():
         blob_map.frombytes(map_bytes)
         self.read_blobs = [self.readable_blobs[i] for i in range(len(self.readable_blobs)) if blob_map[i]]
 
-    def mark_as_read(self, blob_name):
-        self.read_blobs.append(blob_name)
 
-    def get_next_blob(self):
+    def next_blob(self, previous_blob=None):
+        if previous_blob:
+            self.read_blobs.append(previous_blob)
+            self.partition = ''
+            self.location = -1
+        if self.partition and self.location > 0:
+            if self.partition in self.readable_blobs:
+                return self.partition
+            partition_finder = [blob for blob in self.readable_blobs if siphash('%'*16, blob) == self.partition]
+            if len(partition_finder) != 1:
+                raise ValueError(f"Unable to determine current partition ({self.partition})")
+            return partition_finder[0]
         unread = [blob for blob in self.readable_blobs if blob not in self.read_blobs]
         if len(unread) > 0:
             self.partition = unread[0]
@@ -53,27 +69,30 @@ class Cursor():
             return self.partition
         return None
 
+    def skip_to_cursor(self, iterator):
+        # cycle through the iterator to the cursor location
+        if self.location < 0:
+            return 0
+        for index in range(self.location):
+            next(iterator, None)
+        return self.location
+
     def get(self):
-        blob_map = bitarray(''.join(['1' if blob in self.read_blobs else '0' for blob in self.readable_blobs]))
         return {
-            "map": blob_map.tobytes().hex(),
-            "partition": siphash('%'*16, self.partition),
-            "location": self.location
+            "map": self["map"],
+            "partition": self["partition"],
+            "location": self["location"]
         }
 
-if __name__ == "__main__":
+    def __getitem__(self, item):
+        if item == "map":
+            blob_map = bitarray(''.join(['1' if blob in self.read_blobs else '0' for blob in self.readable_blobs]))
+            return blob_map.tobytes().hex()
+        if item == "partition":
+            return siphash('%'*16, self.partition)
+        if item == "location":
+            return self.location
+        return None
 
-    rb = ["a", "b", "c", "d", "e", "f", "g"]
-    c = Cursor(rb)
-    print(c.get())
-
-    b = c.get_next_blob()
-    while b:
-        print(b)
-        c.mark_as_read(b)
-        print(c.get())
-        nc = Cursor(rb)
-        nc.load_cursor(c.get())
-        print(nc.read_blobs)
-        b = c.get_next_blob()
-
+    def __repr__(self):
+        return orjson.dumps(self.get()).decode("UTF8")

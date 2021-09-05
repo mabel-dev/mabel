@@ -21,7 +21,7 @@ def html_table(dictset: Iterable[dict], limit: int = 5):
     def sanitize(htmlstring):
         if not isinstance(htmlstring, str):
             return htmlstring
-        escapes = {'"': "&quot;", "'": "&#39;", "<": "&lt;", ">": "&gt;"}
+        escapes = {'"': "&quot;", "'": "&#39;", "<": "&lt;", ">": "&gt;", "$": "&#x24;"}
         # This is done first to prevent escaping other escapes.
         htmlstring = htmlstring.replace("&", "&amp;")
         for seq, esc in escapes.items():
@@ -35,12 +35,9 @@ def html_table(dictset: Iterable[dict], limit: int = 5):
             if counter == 0:
                 yield '<thead class="thead-light"><tr>'
                 for column in columns:
-                    yield f"<th>{column}<th>\n"
+                    yield f"<th>{sanitize(column)}<th>\n"
                 yield "</tr></thead><tbody>"
 
-            # if (counter % 2) == 0:
-            #    yield '<tr style="background-color:#F4F4F4">'
-            # else:
             yield "<tr>"
             for column in columns:
                 sanitized = sanitize(record.get(column, ""))

@@ -23,7 +23,7 @@ def lzma(stream):
         yield from file
 
 
-def zip(stream):
+def unzip(stream):
     """
     Read ZIP compressed files
     """
@@ -65,3 +65,9 @@ def lines(stream):
 
 def block(stream):
     yield stream.read().decode("utf8")
+
+
+def csv(stream):
+    import csv
+
+    yield from csv.DictReader(stream.read().decode("utf8").splitlines())
