@@ -75,13 +75,13 @@ library version. Alpha versions are more likely to have functional issues.
 
 ## Dependencies
 
--  **[orjson](https://github.com/ijl/orjson)** is used for JSON handling
--  **[dateutil](https://dateutil.readthedocs.io/en/stable/)** is used to convert dates received as strings
--  **[bitarray](https://github.com/ilanschnell/bitarray)** is used for handling high density boolean data
--  **[siphashc](https://github.com/WeblateOrg/siphashc)** is used for non-cryptographic hashing
--  **[pydantic](https://pydantic-docs.helpmanual.io/)** is used to define internal data models  
--  **[zstandard](https://github.com/indygreg/python-zstandard)** is used for real-time on disk compression
--  **[LZ4](https://github.com/python-lz4/python-lz4)** is used for real-time compression of data stored in memory
+-  **[orjson](https://github.com/ijl/orjson)** for JSON handling
+-  **[dateutil](https://dateutil.readthedocs.io/en/stable/)** to convert dates received as strings
+-  **[bitarray](https://github.com/ilanschnell/bitarray)** for handling high density boolean data
+-  **[siphashc](https://github.com/WeblateOrg/siphashc)** for non-cryptographic hashing
+-  **[pydantic](https://pydantic-docs.helpmanual.io/)** to define internal data models  
+-  **[zstandard](https://github.com/indygreg/python-zstandard)** for real-time on disk compression
+-  **[LZ4](https://github.com/python-lz4/python-lz4)** for real-time in memory compression
 
 
 There are a number of optional dependencies which are usually only required for
@@ -119,7 +119,7 @@ Adapters for other data services can be written.
 
 ## Deployment Recommendations
 
-- at least 1GB per CPU
+- 1GB per CPU for read-intensive usage
 
 ## How Can I Contribute?
 
