@@ -15,7 +15,7 @@ def test_can_read_parquet():
         inner_reader=DiskReader,
         dataset="tests/data/formats/parquet",
         raw_path=True,
-        persistence=STORAGE_CLASS.MEMORY
+        persistence=STORAGE_CLASS.MEMORY,
     )
 
     assert r.count() == 57581, r.count()

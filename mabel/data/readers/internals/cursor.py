@@ -15,16 +15,17 @@ from bitarray import bitarray
 from siphashc import siphash
 import orjson
 
+
 class InvalidCursor(Exception):
     pass
 
-class Cursor():
 
+class Cursor:
     def __init__(self, readable_blobs, cursor=None):
         # sort the readable blobs so they are in a consistent order
         self.readable_blobs = sorted(readable_blobs)
         self.read_blobs = []
-        self.partition = ''
+        self.partition = ""
         self.location = -1
 
         if cursor:
@@ -37,30 +38,47 @@ class Cursor():
         if isinstance(cursor, str):
             cursor = orjson.loads(cursor)
 
-        if not "location" in cursor.keys() or not "map" in cursor.keys() or not "partition" in cursor.keys():
+        if (
+            not "location" in cursor.keys()
+            or not "map" in cursor.keys()
+            or not "partition" in cursor.keys()
+        ):
             raise InvalidCursor(f"Cursor is malformed or corrupted {cursor}")
 
         self.location = cursor["location"]
-        find_partition = [blob for blob in self.readable_blobs if siphash('%'*16, blob) == cursor['partition']]
+        find_partition = [
+            blob
+            for blob in self.readable_blobs
+            if siphash("%" * 16, blob) == cursor["partition"]
+        ]
         if len(find_partition) == 1:
             self.partition = find_partition[0]
         map_bytes = bytes.fromhex(cursor["map"])
         blob_map = bitarray()
         blob_map.frombytes(map_bytes)
-        self.read_blobs = [self.readable_blobs[i] for i in range(len(self.readable_blobs)) if blob_map[i]]
-
+        self.read_blobs = [
+            self.readable_blobs[i]
+            for i in range(len(self.readable_blobs))
+            if blob_map[i]
+        ]
 
     def next_blob(self, previous_blob=None):
         if previous_blob:
             self.read_blobs.append(previous_blob)
-            self.partition = ''
+            self.partition = ""
             self.location = -1
         if self.partition and self.location > 0:
             if self.partition in self.readable_blobs:
                 return self.partition
-            partition_finder = [blob for blob in self.readable_blobs if siphash('%'*16, blob) == self.partition]
+            partition_finder = [
+                blob
+                for blob in self.readable_blobs
+                if siphash("%" * 16, blob) == self.partition
+            ]
             if len(partition_finder) != 1:
-                raise ValueError(f"Unable to determine current partition ({self.partition})")
+                raise ValueError(
+                    f"Unable to determine current partition ({self.partition})"
+                )
             return partition_finder[0]
         unread = [blob for blob in self.readable_blobs if blob not in self.read_blobs]
         if len(unread) > 0:
@@ -81,15 +99,22 @@ class Cursor():
         return {
             "map": self["map"],
             "partition": self["partition"],
-            "location": self["location"]
+            "location": self["location"],
         }
 
     def __getitem__(self, item):
         if item == "map":
-            blob_map = bitarray(''.join(['1' if blob in self.read_blobs else '0' for blob in self.readable_blobs]))
+            blob_map = bitarray(
+                "".join(
+                    [
+                        "1" if blob in self.read_blobs else "0"
+                        for blob in self.readable_blobs
+                    ]
+                )
+            )
             return blob_map.tobytes().hex()
         if item == "partition":
-            return siphash('%'*16, self.partition)
+            return siphash("%" * 16, self.partition)
         if item == "location":
             return self.location
         return None

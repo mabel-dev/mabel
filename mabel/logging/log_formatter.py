@@ -72,7 +72,7 @@ class LogFormatter(logging.Formatter):
     def hash_it(self, value_to_hash):
         return hashlib.sha256(value_to_hash.encode()).hexdigest()[:8]
 
-    def clean_record(self, dirty_record, colorize:bool=True):
+    def clean_record(self, dirty_record, colorize: bool = True):
         if colorize:
             BLUE = "{BLUE}"
             OFF = "{OFF}"
@@ -101,11 +101,13 @@ class LogFormatter(logging.Formatter):
                     PURPLE + "<redacted:" + self.hash_it(str(value)) + ">" + OFF
                 )
             else:
-                value = re.sub(r"`([^`]*)`", r"`" + YELLOW + "\1" + GREEN + "`", f"{value}")
-                value = re.sub(r"'([^']*)'", r"'" + YELLOW + "\1" + GREEN + "'", f"{value}")
-                clean_record[BLUE + key + OFF] = (
-                    GREEN + f"{value}" + OFF
+                value = re.sub(
+                    r"`([^`]*)`", r"`" + YELLOW + "\1" + GREEN + "`", f"{value}"
                 )
+                value = re.sub(
+                    r"'([^']*)'", r"'" + YELLOW + "\1" + GREEN + "'", f"{value}"
+                )
+                clean_record[BLUE + key + OFF] = GREEN + f"{value}" + OFF
         return clean_record
 
     def sanitize_record(self, record):

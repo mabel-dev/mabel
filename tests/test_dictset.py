@@ -43,6 +43,7 @@ def test_enumeration():
             pass
         assert i + 1 == 50, f"{storage_class} {i+1}"
 
+
 def test_sample():
     for storage_class in STORAGE_CLASSES:
         ds = get_ds(persistence=storage_class)

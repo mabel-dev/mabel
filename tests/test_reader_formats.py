@@ -12,8 +12,13 @@ traceback.install()
 
 
 def test_reader_can_read_csv():
-    r = Reader(inner_reader=DiskReader, dataset="tests/data/formats/csv", raw_path=True, persistence=STORAGE_CLASS.MEMORY)
-    
+    r = Reader(
+        inner_reader=DiskReader,
+        dataset="tests/data/formats/csv",
+        raw_path=True,
+        persistence=STORAGE_CLASS.MEMORY,
+    )
+
     # can we read the file into dictionaries
     assert r.count() == 33529, r.count()
     assert isinstance(r.first(), dict)
@@ -22,7 +27,6 @@ def test_reader_can_read_csv():
     keys = r.keys(1)
     for row in r:
         assert keys == r.keys(), r.keys()
-
 
 
 if __name__ == "__main__":  # pragma: no cover

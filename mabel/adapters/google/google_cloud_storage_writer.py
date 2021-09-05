@@ -20,7 +20,6 @@ class GoogleCloudStorageWriter(BaseInnerWriter):
         super().__init__(**kwargs)
         self.project = project
 
-
     def commit(self, byte_data, override_blob_name=None):
 
         # this means we're testing

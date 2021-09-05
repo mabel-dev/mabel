@@ -58,7 +58,9 @@ def test_cursor_as_text():
             inner_reader=DiskReader,
             dataset="tests/data/tweets/",
             raw_path=True,
-            cursor='{"partition": 5122091051124077700, "location": ' + str(offset) + ', "map":"80" }',
+            cursor='{"partition": 5122091051124077700, "location": '
+            + str(offset)
+            + ', "map":"80" }',
         )
         reader = list(reader)
         assert len(reader) == 25 - offset

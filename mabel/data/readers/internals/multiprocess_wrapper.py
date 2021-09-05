@@ -23,7 +23,7 @@ def _inner_process(func, source_queue, reply_queue):  # pragma: no cover
     except Empty:  # pragma: no cover
         source = TERMINATE_SIGNAL
 
-    while source != TERMINATE_SIGNAL: # and flag.value != TERMINATE_SIGNAL:
+    while source != TERMINATE_SIGNAL:  # and flag.value != TERMINATE_SIGNAL:
         # no blocking wait - this isn't thread aware in that it can trivially
         # have race conditions, but it will apply a simple back-off so we're
         # not exhausting memory when we know we should wait
@@ -37,6 +37,7 @@ def _inner_process(func, source_queue, reply_queue):  # pragma: no cover
                 source = source_queue.get(timeout=1)
             except Empty:  # pragma: no cover
                 source = None
+
 
 def processed_reader(func, items_to_read):  # pragma: no cover
 
@@ -69,7 +70,11 @@ def processed_reader(func, items_to_read):  # pragma: no cover
     process_start_time = time.time()
     item_index = slots
 
-    while any({p.is_alive() for p in process_pool}) or not reply_queue.empty() or not send_queue.empty():
+    while (
+        any({p.is_alive() for p in process_pool})
+        or not reply_queue.empty()
+        or not send_queue.empty()
+    ):
         try:
             records = reply_queue.get(timeout=1)
             yield from records
@@ -91,7 +96,7 @@ def processed_reader(func, items_to_read):  # pragma: no cover
         except GeneratorExit:
             logging.error("GENERATOR EXIT DETECTED")
             break
-    
+
     reply_queue.close()
     send_queue.close()
     reply_queue.join_thread()

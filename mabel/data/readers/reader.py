@@ -43,6 +43,7 @@ RULES = [
 
 logger = get_logger()
 
+
 @validate(RULES)
 def Reader(
     *,  # force all paramters to be keyworded
@@ -158,7 +159,7 @@ def Reader(
             select=select,
             query=query,
             override_format=override_format,
-            cursor=cursor
+            cursor=cursor,
         ),
         storage_class=persistence,
     )
@@ -173,13 +174,7 @@ def _is_system_file(filename):
 
 class _LowLevelReader(object):
     def __init__(
-        self,
-        reader_class,
-        freshness_limit,
-        select,
-        query,
-        override_format,
-        cursor
+        self, reader_class, freshness_limit, select, query, override_format, cursor
     ):
         self.reader_class = reader_class
         self.freshness_limit = freshness_limit
@@ -248,7 +243,9 @@ class _LowLevelReader(object):
             while blob_to_read:
                 blob_reader = iter(parallel(blob_to_read))
                 location = self.cursor.skip_to_cursor(blob_reader)
-                for self.cursor.location, record in enumerate(blob_reader, start=location):
+                for self.cursor.location, record in enumerate(
+                    blob_reader, start=location
+                ):
                     yield record
                 blob_to_read = self.cursor.next_blob(blob_to_read)
 
