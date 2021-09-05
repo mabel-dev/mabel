@@ -16,7 +16,6 @@ for deployments to platforms like Kubernetes, GCP Cloud Run, AWS Fargate and Kna
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=joocer_mabel&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=joocer_mabel)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=joocer_mabel&metric=security_rating)](https://sonarcloud.io/dashboard?id=joocer_mabel)
 [![mabel](https://snyk.io/advisor/python/mabel/badge.svg)](https://snyk.io/advisor/python/mabel)
-[![deepcode](https://www.deepcode.ai/api/gh/badge?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybTEiOiJnaCIsIm93bmVyMSI6Impvb2NlciIsInJlcG8xIjoibWFiZWwiLCJpbmNsdWRlTGludCI6ZmFsc2UsImF1dGhvcklkIjoyNTcxMiwiaWF0IjoxNjE5MjUyNzkxfQ.UtjaLJQjVxoQjesfMXuQ-tnbvJBUEzMUSJAC_neucek)](https://www.deepcode.ai/app/gh/mabel-dev/mabel/_/dashboard?utm_content=gh%2Fmabel-dev%2Fmabel)
 [![Downloads](https://pepy.tech/badge/mabel)](https://pepy.tech/project/mabel)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
