@@ -90,7 +90,7 @@ file in the _tests_ folder.
 
 ## Integrations
 
-mabel comes with adapters for the following data platforms:
+mabel comes with adapters for the following data services:
 
 |   | Service |
 |-- |-- |
@@ -100,9 +100,11 @@ mabel comes with adapters for the following data platforms:
 | <img align="centre" alt="Azure" height="48" src="icons/azure.svg" /> | Azure Blob Storage |
 | <img align="centre" alt="Local" height="48" src="icons/local-storage.png" /> | Local Storage |
 
+Mabel is extensible with adapters for other data services as required.
+
 ## Deployment and Execution
 
-mabel supports running on a range of platforms:
+mabel supports running on a range of platforms, including:
 
 |   | Platform |
 |-- |-- |
@@ -110,8 +112,6 @@ mabel supports running on a range of platforms:
 | <img align="centre" alt="Kubernetes" height="48" src="icons/kubernetes-logo.svg" /> | Kubernetes
 | <img align="centre" alt="Windows" height="48" src="icons/windows-logo.png" /> | Windows (<img align="centre" alt="Notice" height="12" src="icons/note.svg" />1)
 | <img align="centre" alt="Linux" height="48" src="icons/linux-logo.jpg" /> | Linux (<img align="centre" alt="Notice" height="12" src="icons/note.svg" />2)
-
-Adapters for other data services can be written. 
 
 <img align="centre" alt="Notice" height="12" src="icons/note.svg" />1 - Some non-core features are not available on Windows.  
 <img align="centre" alt="Notice" height="12" src="icons/note.svg" />2 - Tested on Debian (WSL) and Ubuntu.
