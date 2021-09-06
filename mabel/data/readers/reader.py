@@ -209,7 +209,7 @@ class _LowLevelReader(object):
                 sys.exit(5)
             if self.reader_class.days_stepped_back > 0:
                 logger.warning(
-                    f"Stepped back {self.reader_class.days_stepped_back} days to {self.reader_class.start_date} to find last data, my limit is {self.freshness_limit} ({self.reader_class.dataset})"
+                    f"Read looked back {self.reader_class.days_stepped_back} day(s) to {self.reader_class.start_date}, limit is {self.freshness_limit} ({self.reader_class.dataset})"
                 )
 
         readable_blobs = [b for b in blob_list if not _is_system_file(b)]

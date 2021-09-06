@@ -7,7 +7,7 @@ from mabel.data import STORAGE_CLASS
 from mabel.adapters.disk import DiskReader
 from mabel.logging import get_logger
 
-get_logger().setLevel(25)
+get_logger().setLevel(5)
 
 
 STORAGE_CLASSES = [
@@ -90,3 +90,5 @@ if __name__ == "__main__":
     test_repr()
     test_collect()
     test_keys()
+
+    print("OKAY")
