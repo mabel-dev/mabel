@@ -47,6 +47,9 @@ class GoogleCloudStorageWriter(BaseInnerWriter):
             return blob_name
         except Exception as err:
             import traceback
+
             logger = get_logger()
-            logger.error(f"Error Saving Blob {type(err).__name__} - {err}\n{traceback.format_exc()}")
+            logger.error(
+                f"Error Saving Blob {type(err).__name__} - {err}\n{traceback.format_exc()}"
+            )
             raise err
