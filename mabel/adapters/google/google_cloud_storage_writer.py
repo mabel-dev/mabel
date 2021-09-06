@@ -1,3 +1,4 @@
+from mabel.logging.create_logger import get_logger
 import os
 from ...data.writers.internals.base_inner_writer import BaseInnerWriter
 from ...errors import MissingDependencyError
@@ -40,6 +41,15 @@ class GoogleCloudStorageWriter(BaseInnerWriter):
         else:
             blob_name = self._build_path()
 
-        blob = self.gcs_bucket.blob(blob_name)
-        blob.upload_from_string(byte_data, content_type="application/octet-stream")
-        return blob_name
+        try:
+            blob = self.gcs_bucket.blob(blob_name)
+            blob.upload_from_string(byte_data, content_type="application/octet-stream")
+            return blob_name
+        except Exception as err:
+            import traceback
+
+            logger = get_logger()
+            logger.error(
+                f"Error Saving Blob {type(err).__name__} - {err}\n{traceback.format_exc()}"
+            )
+            raise err
