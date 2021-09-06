@@ -65,9 +65,9 @@ class SqlParser:
         self.order_by_desc = False
         self.limit = None
 
-        self._use_threads = False
-
+        # get rid of comments as early as possible
         self.statement = remove_comments(statement)
+        # split the statement into it's parts
         self.parts = self._split_statement(self.statement)
 
         collecting = None
@@ -97,7 +97,6 @@ class SqlParser:
                 collecting = None
                 self.order_by = safe_get(self.parts, i + 1, "")
                 self.order_by_desc = safe_get(self.parts, i + 2, "").upper() == "DESC"
-                self._use_threads = True
             elif part.upper() == "LIMIT":
                 collecting = None
                 self.limit = int(safe_get(self.parts, i + 1, "100"))
@@ -115,7 +114,6 @@ class SqlParser:
             raise InvalidSqlError("Queries must always have a FROM statement")
         if self.group_by or "(" in "".join(self.select):
             self.select = self._get_functions(self.select)
-            self._use_threads = True
         if "(" in "".join(self.group_by or []):
             self.group_by = self._get_functions(self.group_by)
         if (
@@ -197,6 +195,16 @@ class SqlParser:
 
 
 def apply_functions_on_read_thru(ds, functions, merge=False):
+    """
+    Read-thru the dataset, performing record-level functions such as YEAR.
+
+    Parameters:
+        ds: Iterable of Dicts
+        functions: Iterable of functions
+        merge: Boolean (optional)
+            If True add function results to the record, otherwise the record
+            is just the result of the functions.
+    """
     for record in ds:
         if merge:
             result_record = record
@@ -224,34 +232,38 @@ class SqlReader:
         Note:
             `select` is taken from SQL SELECT
             `dataset` is taken from SQL FROM
-            `query` is taken from SQL WHERE
+            `filters` is taken from SQL WHERE
         """
         sql = SqlParser(sql_statement)
         get_logger().info(repr(sql).replace("\n", " "))
 
         self.reader = Reader(
-            query=sql.where,
+            filters=sql.where,
             dataset=sql._from,
             **kwargs,
         )
 
+        # if the query is COUNT(*) on a SELECT, just do it.
         if sql.select == [("COUNT", "*")] and not sql.group_by:
             count = -1
             for count, r in enumerate(self.reader):
                 pass
             self.reader = DictSet([{"COUNT(*)": count + 1}])
+        # if we're not grouping and we have functions, execute them
         elif not sql.group_by and any(
             isinstance(selector, tuple) for selector in sql.select
         ):
             self.reader = DictSet(apply_functions_on_read_thru(self.reader, sql.select))
+        # if we are selecting columns and we're not a group_by, select the columns
         elif sql.select and not sql.group_by and not sql.select == ["*"]:
             self.reader = self.reader.select(sql.select)
+        # if we're doing a group-by
         elif sql.group_by:
-            if not all(isinstance(sql.select, tuple) for sql.select in sql.select):
+            if not all(isinstance(select, tuple) for select in sql.select):
                 raise InvalidSqlError(
                     "SELECT must be a set of aggregation functions (e.g. COUNT, SUM) when using GROUP BY"
                 )
-
+            # if we're grouping by a function result (like YEAR), calculate that function
             if any(isinstance(selector, tuple) for selector in sql.group_by):
                 self.reader = apply_functions_on_read_thru(
                     self.reader, sql.group_by, True
@@ -266,8 +278,6 @@ class SqlReader:
         if sql.distinct:
             self.reader = self.reader.distinct()
         if sql.having:
-            print(sql.having)
-            print(self.reader.first())
             self.reader = self.reader.query(sql.having)
         if sql.order_by:
             take = 10000

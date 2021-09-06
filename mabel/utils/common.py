@@ -6,7 +6,6 @@ import orjson
 from ..logging import get_logger
 
 
-
 def build_context(**kwargs: dict):
     """
     Build Context takes an arbitrary dictionary and merges with a dictionary

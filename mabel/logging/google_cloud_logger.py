@@ -9,6 +9,7 @@ from .levels import LEVELS, LEVELS_TO_STRING
 from ..utils import is_running_from_ipython
 from .log_formatter import LogFormatter
 
+
 def log_it(payload):
     print(payload)
     if isinstance(payload, dict):
@@ -17,6 +18,7 @@ def log_it(payload):
         payload = payload.decode()
     print(payload, flush=True)
     return payload
+
 
 def extract_caller():
     import traceback
@@ -35,7 +37,7 @@ class GoogleLogger(object):
     def supported():
         if is_running_from_ipython():
             return False
-        if os.environ.get("PROJECT_NAME", "") or "" == "":
+        if os.environ.get("PROJECT_NAME") or "" == "":
             return False
         return True
 
@@ -44,17 +46,26 @@ class GoogleLogger(object):
         message: Union[str, dict],
         system: Optional[str] = None,
         severity: Optional[int] = logging.DEBUG,
-        spanId: Optional[str] = None
+        spanId: Optional[str] = None,
     ):
 
         from .create_logger import LOG_NAME
 
-        structured_log = {"logName": f'projects/{os.environ.get("PROJECT_NAME")}/logs/{os.environ.get("LOG_SINK")}',
-        "severity": str(severity).split('.')[1]}
-        structured_log["logging.googleapis.com/labels"] = {"system": system, "log_name": LOG_NAME}
+        structured_log = {
+            "logName": f'projects/{os.environ.get("PROJECT_NAME")}/logs/{os.environ.get("LOG_SINK")}',
+            "severity": str(severity).split(".")[1],
+        }
+        structured_log["logging.googleapis.com/labels"] = {
+            "system": system,
+            "log_name": LOG_NAME,
+        }
 
         method, module, line = extract_caller()
-        structured_log["logging.googleapis.com/sourceLocation"] = {"function": method, "file": module,"line": line}
+        structured_log["logging.googleapis.com/sourceLocation"] = {
+            "function": method,
+            "file": module,
+            "line": line,
+        }
 
         if spanId:
             structured_log["logging.googleapis.com/spanId"] = spanId

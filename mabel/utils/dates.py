@@ -11,12 +11,14 @@ TIMEDELTA_REGEX = (
 )
 TIMEDELTA_PATTERN = re.compile(TIMEDELTA_REGEX, re.IGNORECASE)
 
+
 def extract_date(value):
     if isinstance(value, str):
         value = parser.parse(value)
     if isinstance(value, (datetime.date, datetime.datetime)):
         return datetime.date(value.year, value.month, value.day)
     return datetime.date.today()
+
 
 # based on:
 # https://gist.github.com/santiagobasulto/698f0ff660968200f873a2f9d1c4113c#file-parse_timedeltas-py
@@ -75,7 +77,10 @@ def parse_iso(value):
         return None
 
 
-def date_range(start_date: Optional[Union[str,datetime.date]], end_date: Optional[Union[str,datetime.date]]):
+def date_range(
+    start_date: Optional[Union[str, datetime.date]],
+    end_date: Optional[Union[str, datetime.date]],
+):
     """
     An interator over a range of dates
     """

@@ -7,6 +7,7 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.adapters.disk import DiskReader
 from mabel.data import Reader
+from mabel.data.readers.internals.cursor import Cursor
 from rich import traceback
 
 traceback.install()
@@ -31,11 +32,9 @@ def test_cursor():
         test_counter += 1
     cursor = reader.cursor()
 
-    assert isinstance(cursor, dict)
-
     print(cursor)
-    assert cursor["offset"] == (lim % 25), cursor["offset"]
-    assert cursor["partition"] == 6018338569497712008, cursor["partition"]
+    assert cursor["location"] == (lim % 25), cursor["location"]
+    assert cursor["partition"] == 5122091051124077700, cursor["partition"]
 
     reader = Reader(
         inner_reader=DiskReader,
@@ -47,7 +46,7 @@ def test_cursor():
     for i, row in enumerate(reader):
         test_counter += 1
 
-    assert number_of_records == test_counter
+    assert number_of_records == test_counter, f"{number_of_records} - {test_counter}"
 
 
 def test_cursor_as_text():
@@ -59,7 +58,9 @@ def test_cursor_as_text():
             inner_reader=DiskReader,
             dataset="tests/data/tweets/",
             raw_path=True,
-            cursor='{"partition": 6018338569497712008, "offset": ' + str(offset) + " }",
+            cursor='{"partition": 5122091051124077700, "location": '
+            + str(offset)
+            + ', "map":"80" }',
         )
         reader = list(reader)
         assert len(reader) == 25 - offset

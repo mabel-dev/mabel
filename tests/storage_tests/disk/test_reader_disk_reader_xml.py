@@ -15,7 +15,7 @@ def test_can_read_lxml():
         inner_reader=DiskReader,
         dataset="tests/data/formats/lxml",
         raw_path=True,
-        persistence=STORAGE_CLASS.MEMORY
+        persistence=STORAGE_CLASS.MEMORY,
     )
 
     assert r.count() == 5, r.count()
@@ -27,7 +27,7 @@ def test_can_read_xml():
         inner_reader=DiskReader,
         dataset="tests/data/formats/xml",
         raw_path=True,
-        persistence=STORAGE_CLASS.MEMORY
+        persistence=STORAGE_CLASS.MEMORY,
     )
 
     assert r.count() == 1, r.count()

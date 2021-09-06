@@ -30,7 +30,7 @@ def test_reader_timeout():
             time.sleep(0.1)
     except TimeExceeded as te:
         cursor = orjson.loads(str(te))
-        assert (i + 1) == cursor["offset"]
+        assert (i + 1) == cursor["location"]
         failed = True
     assert failed
 

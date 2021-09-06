@@ -42,7 +42,7 @@ class ReaderOperator(BaseOperator):
         for row in self.reader:
             if time.time() > self.time_out:
                 signal = self.signal_format.replace(
-                    "{cursor}", orjson.dumps(self.reader.cursor()).decode()
+                    "{cursor}", repr(self.reader.cursor())
                 )
                 raise TimeExceeded(signal)
             yield row, context

@@ -7,7 +7,7 @@ from mabel.data import STORAGE_CLASS
 from mabel.adapters.disk import DiskReader
 from mabel.logging import get_logger
 
-get_logger().setLevel(25)
+get_logger().setLevel(5)
 
 
 STORAGE_CLASSES = [
@@ -42,6 +42,7 @@ def test_enumeration():
         for i, r in enumerate(ds):
             pass
         assert i + 1 == 50, f"{storage_class} {i+1}"
+
 
 def test_sample():
     for storage_class in STORAGE_CLASSES:
@@ -89,3 +90,5 @@ if __name__ == "__main__":
     test_repr()
     test_collect()
     test_keys()
+
+    print("OKAY")

@@ -15,7 +15,7 @@ def test_can_read_zip():
         inner_reader=DiskReader,
         dataset="tests/data/formats/zip",
         raw_path=True,
-        persistence=STORAGE_CLASS.MEMORY
+        persistence=STORAGE_CLASS.MEMORY,
     )
 
     assert r.count() == 100000, r.count()

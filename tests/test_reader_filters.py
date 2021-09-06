@@ -36,7 +36,7 @@ def test_reader_filters_single_filter():
         inner_reader=DiskReader,
         dataset="tests/data/tweets/",
         raw_path=True,
-        query="username == 'NBCNews'",
+        filters="username == 'NBCNews'",
         persistence=STORAGE_CLASS.MEMORY,
     )
     assert r.count() == 44, r.count()
@@ -48,7 +48,7 @@ def test_reader_filters_multiple_filter():
         inner_reader=DiskReader,
         dataset="tests/data/tweets/",
         raw_path=True,
-        query="username = 'NBCNews' and timestamp >= '2020-01-12T07:11:04'",
+        filters="username = 'NBCNews' and timestamp >= '2020-01-12T07:11:04'",
         persistence=STORAGE_CLASS.MEMORY,
     )
     assert r.count() == 34, r

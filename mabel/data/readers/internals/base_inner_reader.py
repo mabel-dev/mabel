@@ -14,7 +14,6 @@ BUFFER_SIZE: int = 64 * 1024 * 1024  # 64Mb
 
 
 class BaseInnerReader(abc.ABC):
-
     def _extract_as_at(self, path):
         parts = path.split("/")
         for part in parts:
