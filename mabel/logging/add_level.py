@@ -8,17 +8,17 @@ import logging
 import atexit
 from typing import Dict
 
-logging_seen_warnings:Dict[int, int] = {}
+logging_seen_warnings: Dict[int, int] = {}
 
 
 def report_suppressions(message):
     import mabel.logging
 
     record = logging_seen_warnings.get(hash(message))
-    
+
     if record:
         mabel.logging.get_logger().warning(
-            f"The following message was suppressed {record} time(s) - \"{message}\""
+            f'The following message was suppressed {record} time(s) - "{message}"'
         )
 
 
