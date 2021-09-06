@@ -42,7 +42,7 @@ def test_index():
     ri = Reader(
         inner_reader=DiskReader,
         dataset="_temp/data/tweets",
-        query="username = 'BBCNews'",
+        filters="username = 'BBCNews'",
     )
     ri = list(ri)
 

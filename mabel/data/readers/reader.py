@@ -1,13 +1,9 @@
-from lzma import CHECK_ID_MAX
 import sys
-import orjson
 import os.path
 import datetime
 
-from siphashc import siphash
-from typing import Optional, List, Dict, Union
+from typing import Optional, Dict, Union
 from multiprocessing import cpu_count
-
 
 from .internals.parallel_reader import ParallelReader, pass_thru
 from .internals.multiprocess_wrapper import processed_reader
@@ -34,7 +30,7 @@ RULES = [
     {"name": "raw_path", "required": False, "warning": None, "incompatible_with": ["freshness_limit"]},
     {"name": "select", "required": False, "warning": None, "incompatible_with": []},
     {"name": "start_date", "required": False, "warning": None, "incompatible_with": []},
-    {"name": "query", "required": False, "warning": "", "incompatible_with": ["filters"]},
+    {"name": "filters", "required": False, "warning": "", "incompatible_with": []},
     {"name": "persistence", "required": False, "warning": "", "incompatible_with": []},
     {"name": "project", "required": False, "warning": "", "incompatible_with": []},
     {"name": "override_format", "required": False, "warning": "", "incompatible_with": []}
@@ -49,7 +45,7 @@ def Reader(
     *,  # force all paramters to be keyworded
     select: list = ["*"],
     dataset: str = None,
-    query: Optional[str] = None,
+    filters: Optional[str] = None,
     inner_reader=None,  # type:ignore
     raw_path: bool = False,
     persistence: STORAGE_CLASS = STORAGE_CLASS.NO_PERSISTANCE,
@@ -86,10 +82,13 @@ def Reader(
             default is all columns
         dataset: string:
             The path to the data
-        query: string (optional):
+        filters: string or list/tuple (optional):
+            STRING:
             An expression which when evaluated for each row, if False the row will
             be removed from the resulant data set, like the WHERE clause of of a SQL
             statement.
+            LIST/TUPLE:
+            Filter expressed as DNF.
         inner_reader: BaseReader (optional):
             The reader class to perform the data access Operators, the default is
             GoogleCloudStorageReader
@@ -122,13 +121,14 @@ def Reader(
     if not isinstance(select, list):  # pragma: no cover
         raise TypeError("Reader 'select' parameter must be a list")
 
-    # lazy loading of dependency
+    # lazy loading of dependency - in this case the Google GCS Reader
+    # eager loading will cause failures when we try to load the google-cloud
+    # libraries and they aren't installed.
     if inner_reader is None:
         from ...adapters.google import GoogleCloudStorageReader
-
         inner_reader = GoogleCloudStorageReader
-    # instantiate the injected reader class
 
+    # instantiate the injected reader class
     reader_class = inner_reader(
         dataset=dataset, raw_path=raw_path, **kwargs
     )  # type:ignore
@@ -139,7 +139,7 @@ def Reader(
     arg_dict["select"] = f"{select}"
     arg_dict["dataset"] = f"{dataset}"
     arg_dict["inner_reader"] = f"{inner_reader.__name__}"  # type:ignore
-    arg_dict["query"] = query
+    arg_dict["filters"] = filters
     get_logger().debug(arg_dict)
 
     # number of days to walk backwards to find records
@@ -157,7 +157,7 @@ def Reader(
             reader_class=reader_class,
             freshness_limit=freshness_limit,
             select=select,
-            query=query,
+            filters=filters,
             override_format=override_format,
             cursor=cursor,
         ),
@@ -174,7 +174,7 @@ def _is_system_file(filename):
 
 class _LowLevelReader(object):
     def __init__(
-        self, reader_class, freshness_limit, select, query, override_format, cursor
+        self, reader_class, freshness_limit, select, filters, override_format, cursor
     ):
         self.reader_class = reader_class
         self.freshness_limit = freshness_limit
@@ -183,12 +183,12 @@ class _LowLevelReader(object):
         self.cursor = cursor
         self._inner_line_reader = None
 
-        if isinstance(query, str):
-            self.query = Expression(query)
-        elif isinstance(query, (tuple, list)):
-            self.query = DnfFilters(query)
+        if isinstance(filters, str):
+            self.filters = Expression(filters)
+        elif isinstance(filters, (tuple, list)):
+            self.filters = DnfFilters(filters)
         else:
-            self.query = None
+            self.filters = None
 
     def _create_line_reader(self):
         blob_list = self.reader_class.get_list_of_blobs()
@@ -225,7 +225,7 @@ class _LowLevelReader(object):
 
         parallel = ParallelReader(
             reader=self.reader_class,
-            filter=self.query or pass_thru,
+            filters=self.filters or pass_thru,
             override_format=self.override_format,
         )
 

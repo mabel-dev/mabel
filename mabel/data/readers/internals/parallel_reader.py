@@ -60,7 +60,7 @@ class ParallelReader:
     def __init__(
         self,
         reader,
-        filter=no_filter,
+        filters=no_filter,
         reducer=pass_thru,
         override_format=None,
         **kwargs,
@@ -69,7 +69,7 @@ class ParallelReader:
 
         Parameters:
             reader: callable
-            filter: callable
+            filters: callable
             reducer: callable
             **kwargs: kwargs
         """
@@ -85,7 +85,7 @@ class ParallelReader:
 
         # this is the filter of the collected data, this can be used
         # against more operators
-        self.filter = filter
+        self.filters = filters
 
         # this is aggregation and reducers for the data
         self.reducer = reducer
@@ -188,7 +188,7 @@ class ParallelReader:
             # Parse
             record_iterator = map(parser, record_iterator)
             # Filter
-            record_iterator = filter(self.filter, record_iterator)
+            record_iterator = filter(self.filters, record_iterator)
             # Reduce
             record_iterator = self.reducer(record_iterator)
             # Yield

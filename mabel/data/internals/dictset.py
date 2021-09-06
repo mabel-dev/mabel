@@ -170,7 +170,7 @@ class DictSet(object):
                 if random_value % selector == 0:
                     yield row
 
-        return DictSet(inner_sampler(self._iterator), storage_class=self.storage_class)
+        return DictSet(inner_sampler(iter(self._iterator)), storage_class=self.storage_class)
 
     def collect(self, key: str = None) -> Union[list, map]:
         """
@@ -178,8 +178,8 @@ class DictSet(object):
         a specific column.
         """
         if not key:
-            return list(self._iterator)
-        return list(map(itemgetter(key), self._iterator))
+            return list(iter(self._iterator))
+        return list(map(itemgetter(key), iter(self._iterator)))
 
     def keys(self, number_of_rows: int = 0):
         """
@@ -192,7 +192,7 @@ class DictSet(object):
                 lambda x, y: x + [a for a in y.keys() if a not in x], rows, []
             )
         return reduce(
-            lambda x, y: x + [a for a in y.keys() if a not in x], self._iterator, []
+            lambda x, y: x + [a for a in y.keys() if a not in x], iter(self._iterator), []
         )
 
     def max(self, key: str):
@@ -276,8 +276,6 @@ class DictSet(object):
         """
         Count the number of items in the _DictSet_.
         """
-        # we use `reduce` so we don't need to load all of the items into a list
-        # in order to count them.
         if hasattr(self._iterator, "__len__"):
             return len(self._iterator)
         else:
@@ -300,13 +298,13 @@ class DictSet(object):
                     yield item
                 hash_list[hashed_item] = True
 
-        return DictSet(do_dedupe(self._iterator), storage_class=self.storage_class)
+        return DictSet(do_dedupe(iter(self._iterator)), storage_class=self.storage_class)
 
     def group_by(self, *group_by_column):
         """
         Group a dictset by a column or group of columns. Returns a GroupBy object.
         """
-        return GroupBy(self, *group_by_column)
+        return GroupBy(iter(self), *group_by_column)
 
     def get_items(self, *locations):
         """
@@ -329,7 +327,7 @@ class DictSet(object):
             return
 
         if self.storage_class == STORAGE_CLASS.NO_PERSISTANCE:
-            for i, r in self._iterator:
+            for i, r in iter(self._iterator):
                 if i in locations:
                     yield r
 
@@ -340,7 +338,7 @@ class DictSet(object):
         Returns:
             Table encoded in a string
         """
-        return ascii_table(self._iterator, limit)
+        return ascii_table(iter(self._iterator), limit)
 
     def to_html_table(self, limit: int = 5):
         """
@@ -349,7 +347,7 @@ class DictSet(object):
         Returns:
             HTML Table encoded in a string
         """
-        return html_table(self._iterator, limit)
+        return html_table(iter(self._iterator), limit)
 
     def to_pandas(self):
         """
@@ -364,7 +362,7 @@ class DictSet(object):
             raise MissingDependencyError(
                 "`pandas` is missing, please install or include in requirements.txt"
             )
-        return pandas.DataFrame(self)
+        return pandas.DataFrame(iter(self))
 
     def first(self):
         """
@@ -385,7 +383,7 @@ class DictSet(object):
 
         This returns a generator.
         """
-        for count, item in enumerate(self._iterator):
+        for count, item in enumerate(iter(self._iterator)):
             if count == items:
                 return
             yield item
@@ -406,7 +404,7 @@ class DictSet(object):
                     yield item
 
         return DictSet(
-            inner_filter(predicate, self._iterator), storage_class=self.storage_class
+            inner_filter(predicate, iter(self._iterator)), storage_class=self.storage_class
         )
 
     def dnf_filter(self, dnf_filters):
@@ -419,7 +417,7 @@ class DictSet(object):
         """
         filter_set = DnfFilters(dnf_filters)
         return DictSet(
-            DnfFilters.filter_dictset(filter_set, self._iterator),
+            DnfFilters.filter_dictset(filter_set, iter(self._iterator)),
             storage_class=self.storage_class,
         )
 
@@ -438,7 +436,7 @@ class DictSet(object):
                 if q.evaluate(record):
                     yield record
 
-        return DictSet(_inner(self._iterator), storage_class=self.storage_class)
+        return DictSet(_inner(iter(self._iterator)), storage_class=self.storage_class)
 
     def cursor(self):
         """
@@ -460,7 +458,7 @@ class DictSet(object):
             for record in it:
                 yield {k: record.get(k, None) for k in columns}
 
-        return DictSet(inner_select(self._iterator), storage_class=self.storage_class)
+        return DictSet(inner_select(iter(self._iterator)), storage_class=self.storage_class)
 
     def sort_and_take(self, column, take: int = 5000, descending: bool = False):
 
@@ -470,9 +468,14 @@ class DictSet(object):
             )[:take]
 
         else:
+            # In a low-memory environment we probably can't store all of the records
+            # into memory, but if we're only interested in, say the top 10, then we
+            # only need to store about that many in memory at any one time. This 
+            # implementation stores double and one records in memory as it collects
+            # and sorts them.
             double_cache = max(take * 2, 1) + 1
             cache = []
-            for record in self:
+            for record in iter(self):
                 cache.append(record)
                 if len(cache) > double_cache:
                     cache.sort(key=itemgetter(column), reverse=descending)
@@ -497,7 +500,7 @@ class DictSet(object):
 
         # The seed is the mission duration of the Apollo 11 mission.
         #   703115 = 8 days, 3 hours, 18 minutes, 35 seconds
-        ordered = map(lambda record: dict(sorted(record.items())), self._iterator)
+        ordered = map(lambda record: dict(sorted(record.items())), iter(self._iterator))
         serialized = map(orjson.dumps, ordered)
         hashed = map(sip, serialized)
         return reduce(lambda x, y: x ^ y, hashed, seed)
