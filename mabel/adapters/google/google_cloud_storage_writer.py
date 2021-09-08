@@ -1,5 +1,5 @@
 import os
-from urllib3.exceptions import ProtocolError
+from urllib3.exceptions import ProtocolError  # type:ignore
 from mabel.logging.create_logger import get_logger
 from mabel.data.writers.internals.base_inner_writer import BaseInnerWriter
 from mabel.errors import MissingDependencyError
@@ -7,8 +7,8 @@ from mabel.errors import MissingDependencyError
 try:
     from google.auth.credentials import AnonymousCredentials  # type:ignore
     from google.cloud import storage  # type:ignore
-    from google.api_core import retry
-    from google.api_core.exceptions import InternalServerError, TooManyRequests
+    from google.api_core import retry  # type:ignore
+    from google.api_core.exceptions import InternalServerError, TooManyRequests  # type:ignore
 
     google_cloud_storage_installed = True
 except ImportError:  # pragma: no cover
