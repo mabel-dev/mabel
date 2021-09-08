@@ -55,7 +55,7 @@ def parse_iso(value):
                 return None
             if len(value) == 10:
                 # YYYY-MM-DD
-                return datetime.date(*map(int, [value[:4], value[5:7], value[8:10]]))
+                return datetime.datetime(*map(int, [value[:4], value[5:7], value[8:10]]))
             if len(value) >= 16:
                 if not value[10] == "T" or not value[13] in DATE_SEPARATORS:
                     return False

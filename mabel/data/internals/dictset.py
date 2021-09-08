@@ -304,7 +304,7 @@ class DictSet(object):
         """
         Group a dictset by a column or group of columns. Returns a GroupBy object.
         """
-        return GroupBy(iter(self), *group_by_column)
+        return GroupBy(iter(self._iterator), *group_by_column)
 
     def get_items(self, *locations):
         """
@@ -347,7 +347,7 @@ class DictSet(object):
         Returns:
             HTML Table encoded in a string
         """
-        return html_table(iter(self._iterator), limit)
+        return html_table(DumbIterator(self._iterator), limit)
 
     def to_pandas(self):
         """
@@ -362,7 +362,7 @@ class DictSet(object):
             raise MissingDependencyError(
                 "`pandas` is missing, please install or include in requirements.txt"
             )
-        return pandas.DataFrame(iter(self))
+        return pandas.DataFrame(iter(self._iterator))
 
     def first(self):
         """
@@ -388,7 +388,7 @@ class DictSet(object):
                 return
             yield item
 
-    def filter(self, predicate):
+    def filter(self, filters):
         """
         Filter a _DictSet_ returning only the items that match the predicate.
 
@@ -397,46 +397,37 @@ class DictSet(object):
                 A function that takes a record as a parameter and should return
                 False for items to be filtered
         """
+        # Where clause filtering
+        if isinstance(filters, str):
 
-        def inner_filter(func, dictset):
-            for item in dictset:
-                if func(item):
-                    yield item
+            def inner_filter_where(dictset):
+                for record in dictset:
+                    if q.evaluate(record):
+                        yield record
 
-        return DictSet(
-            inner_filter(predicate, iter(self._iterator)), storage_class=self.storage_class
-        )
+            q = Expression(filters)
+            return DictSet(inner_filter_where(iter(self._iterator)), storage_class=self.storage_class)
 
-    def dnf_filter(self, dnf_filters):
-        """
-        Filter a _DictSet_ returning only the items that match the predicates.
+        # DNF filtering
+        if isinstance(filters, (tuple, list)):
+            filter_set = DnfFilters(filters)
+            return DictSet(
+                DnfFilters.filter_dictset(filter_set, iter(self._iterator)),
+                storage_class=self.storage_class,
+            )
 
-        Parameters:
-            dnf_filters: tuple or list
-                DNF constructed predicates
-        """
-        filter_set = DnfFilters(dnf_filters)
-        return DictSet(
-            DnfFilters.filter_dictset(filter_set, iter(self._iterator)),
-            storage_class=self.storage_class,
-        )
+        # function filtering
+        if hasattr(filters, "__call__"):
 
-    def query(self, expression):
-        """
-        Query a _DictSet_ returning only the items that match the expression.
+            def inner_filter_callable(func, dictset):
+                for item in dictset:
+                    if func(item):
+                        yield item
 
-        Parameters:
-            expression: string
-                Query expression (e.g. _name == 'mabel'_)
-        """
-        q = Expression(expression)
+            return DictSet(
+                inner_filter_callable(filters, iter(self._iterator)), storage_class=self.storage_class
+            )
 
-        def _inner(dictset):
-            for record in dictset:
-                if q.evaluate(record):
-                    yield record
-
-        return DictSet(_inner(iter(self._iterator)), storage_class=self.storage_class)
 
     def cursor(self):
         """
@@ -475,7 +466,7 @@ class DictSet(object):
             # and sorts them.
             double_cache = max(take * 2, 1) + 1
             cache = []
-            for record in iter(self):
+            for record in iter(self._iterator):
                 cache.append(record)
                 if len(cache) > double_cache:
                     cache.sort(key=itemgetter(column), reverse=descending)
@@ -509,8 +500,8 @@ class DictSet(object):
         if is_running_from_ipython():
             from IPython.display import HTML, display  # type:ignore
 
-            html = html_table(self, 5)
+            html = html_table(iter(self._iterator), 5)
             display(HTML(html))
             return ""  # __repr__ must return something
         else:
-            return ascii_table(self, 5)
+            return ascii_table(iter(self._iterator), 5)

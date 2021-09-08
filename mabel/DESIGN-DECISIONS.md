@@ -16,7 +16,7 @@ The compression needs to balance compression speed with compression performance,
 weighted toward speed - there is no benefit to doing this if it's quicker to save
 the results to disk.
 
-Zstandard compresses anout twice as much but in benchmarks was about 1.5x the time
+Zstandard compresses about twice as much but in benchmarks was about 1.5x the time
 to run.
 
 A large chunk of the time is serialization and deserialization of the data - so
@@ -26,7 +26,7 @@ the performance difference between the algo is much greater than that.
 
 zStandard is used for on-disk compression.
 
-zStandard was chosen over LZMA which gives better compression and LZ4 which is faster
+zStandard was chosen over LZMA which gives better compression and LZ4 which is faster,
 to provide balanced performance.
 
 LZMA is orders of magnitude slower and not feasible as a realtime compression

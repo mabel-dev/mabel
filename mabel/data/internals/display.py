@@ -48,7 +48,7 @@ def html_table(dictset: Iterable[dict], limit: int = 5):
 
     rows = []
     columns = []  # type:ignore
-    for i, row in enumerate(dictset):
+    for i, row in enumerate(iter(dictset)):
         rows.append(row)
         columns = columns + list(row.keys())
         if (i + 1) == limit:

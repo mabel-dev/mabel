@@ -9,6 +9,7 @@ Derived from: https://gist.github.com/leehsueh/1290686
 """
 
 from ...utils.text import like, not_like
+from ...utils.dates import parse_iso
 import re
 import operator
 
@@ -22,6 +23,7 @@ TOKENS = {
     "STR": "<Literal>",
     "VAR": "<Variable>",
     "BOOL": "<Boolean>",
+    "DATE": "<Date>",
     "NULL": "<Null>",
     "NOT": "NOT",
     ">": ">",
@@ -111,18 +113,19 @@ class ExpressionTokenizer:
                 elif str(t).lower() in ("null", "none"):
                     self.token_types.append(TOKENS["NULL"])
                 elif t[0] == t[-1] == '"' or t[0] == t[-1] == "'":
-                    self.token_types.append(TOKENS["STR"])
+                    if parse_iso(t[1:-1]):
+                        self.token_types.append(TOKENS["DATE"])
+                    else:
+                        self.token_types.append(TOKENS["STR"])
+                elif str(t).isdecimal() or str(t).isnumeric():
+                    self.token_types.append(TOKENS["NUM"])
                 else:
-                    try:
-                        number = float(t)
-                        self.token_types.append(TOKENS["NUM"])
-                    except:
-                        # starts with a letter, is made up of letters, numbers,
-                        # hyphens, underscores and dots
-                        if re.search(r"^[^\d\W][\w\-\.]*", t):
-                            self.token_types.append(TOKENS["VAR"])
-                        else:
-                            self.token_types.append(None)
+                    # starts with a letter, is made up of letters, numbers,
+                    # hyphens, underscores and dots
+                    if re.search(r"^[^\d\W][\w\-\.]*", t):
+                        self.token_types.append(TOKENS["VAR"])
+                    else:
+                        self.token_types.append(None)
 
 
 class Expression(object):
@@ -227,6 +230,10 @@ class Expression(object):
                 n = TreeNode(token_type)
                 n.value = None
                 return n
+            if token_type == TOKENS["DATE"]:
+                n = TreeNode(token_type)
+                n.value = parse_iso(self.tokenizer.next())
+                return n
 
         raise InvalidExpression(f"Unexpected token, got `{self.tokenizer.next()}`")
 
@@ -242,13 +249,16 @@ class Expression(object):
             TOKENS["STR"],
             TOKENS["BOOL"],
             TOKENS["NULL"],
+            TOKENS["DATE"]
         ):
             return treeNode.value
         if treeNode.token_type == TOKENS["VAR"]:
             if treeNode.value in variable_dict:
                 value = variable_dict[treeNode.value]
-                if isinstance(value, int):
+                if value.isdecimal() or value.isnumeric():
                     return float(value)
+                if isinstance(value, str) and parse_iso(value):
+                    return parse_iso(value)
                 if value in ("True", "False"):
                     return value.lower() == "true"
                 return value
@@ -262,6 +272,14 @@ class Expression(object):
         right = self.evaluate_recursive(treeNode.right, variable_dict)
 
         if treeNode.token_type in TOKEN_OPERATORS:
+
+            # GET THE TYPE OF THE FIRST NODE, READING LEFT TO RIGHT, WITH
+            # A FIXED TYPE, IF NONE, DEFAULT TO STRING
+            #
+            # CONVERT BOTH SIDES TO THAT TYPE
+            # 
+            # DO THE OPERATION
+
             return TOKEN_OPERATORS[treeNode.token_type](left, right)
         if treeNode.token_type == TOKENS["AND"]:
             return left and right
@@ -286,6 +304,7 @@ class Expression(object):
             TOKENS["VAR"],
             TOKENS["BOOL"],
             TOKENS["NULL"],
+            TOKENS["DATE"]
         ):
             return treeNode.value
 
