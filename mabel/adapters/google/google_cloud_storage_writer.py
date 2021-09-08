@@ -25,7 +25,9 @@ class GoogleCloudStorageWriter(BaseInnerWriter):
         super().__init__(**kwargs)
         self.project = project
 
-        predicate = retry.if_exception_type(ConnectionResetError, ProtocolError, InternalServerError, TooManyRequests)
+        predicate = retry.if_exception_type(
+            ConnectionResetError, ProtocolError, InternalServerError, TooManyRequests
+        )
         self.retry = retry.Retry(predicate)
 
     def commit(self, byte_data, override_blob_name=None):
@@ -50,7 +52,9 @@ class GoogleCloudStorageWriter(BaseInnerWriter):
 
         try:
             blob = self.gcs_bucket.blob(blob_name)
-            self.retry(blob.upload_from_string)(byte_data, content_type="application/octet-stream")
+            self.retry(blob.upload_from_string)(
+                byte_data, content_type="application/octet-stream"
+            )
             return blob_name
         except Exception as err:
             import traceback
