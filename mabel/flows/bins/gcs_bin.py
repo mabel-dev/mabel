@@ -4,12 +4,17 @@ Google Cloud Storage Bin Writer
 import os
 import time
 from .base_bin import BaseBin
-from ...errors import MissingDependencyError
+from mabel.errors import MissingDependencyError
+from urllib3.exceptions import ProtocolError  # type:ignore
 
 try:
     from google.cloud import storage  # type:ignore
     from google.auth.credentials import AnonymousCredentials  # type:ignore
-
+    from google.api_core import retry  # type:ignore
+    from google.api_core.exceptions import (
+        InternalServerError,
+        TooManyRequests,
+    )  # type:ignore
     google_cloud_storage_installed = True
 except ImportError:  # pragma: no cover
     google_cloud_storage_installed = False
@@ -41,7 +46,14 @@ class GoogleCloudStorageBin(BaseBin):
 
     def __call__(self, record: str, id_: str = ""):
 
+        predicate = retry.if_exception_type(
+            ConnectionResetError, ProtocolError, InternalServerError, TooManyRequests
+        )
+        self.retry = retry.Retry(predicate)
+
         filename = f"{self.path}/{self._date_part()}/{id_}{time.time_ns()}.txt"
         blob = self.bucket.blob(filename)
-        blob.upload_from_string(str(record).encode("utf-8"))
+        self.retry(blob.upload_from_string)(
+            str(record).encode("utf-8"), content_type="application/octet-stream"
+        )
         return filename
