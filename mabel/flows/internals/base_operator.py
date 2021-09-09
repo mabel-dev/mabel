@@ -160,6 +160,30 @@ class BaseOperator(abc.ABC):
             except TimeExceeded as te:
                 raise te
             except Exception as err:
+                error_log_reference = ""
+                error_reference = err
+                try:
+                    error_payload = (
+                        f"timestamp  : {datetime.datetime.today().isoformat()}\n"
+                        f"operator   : {self.name}\n"
+                        f"error type : {type(err).__name__}\n"
+                        f"details    : {err}\n"
+                        "========================================================================================================================\n"
+                        f"{wrap_text(render_error_stack(), 120)}\n"
+                        "=======================================================  context  ======================================================\n"
+                        f"{wrap_text(str(context), 120)}\n"
+                        "========================================================  data  ========================================================\n"
+                        f"{wrap_text(str(data), 120)}\n"
+                        "========================================================================================================================\n"
+                    )
+                    error_log_reference = self.error_writer(
+                        error_payload
+                    )  # type:ignore
+                except Exception as err_sub:
+                    self.logger.error(
+                        f"Problem writing to the error bin, a record has been lost. `{self.name}`, {type(err_sub).__name__} - {err_sub} - {context.get('run_id')} {error_log_reference}"
+                    )
+
                 self.errors += 1
                 attempts_to_go -= 1
                 if attempts_to_go:
@@ -167,36 +191,12 @@ class BaseOperator(abc.ABC):
                         f"`{self.name}` - {type(err).__name__} - {err} - retry in {self.retry_wait} seconds ({context.get('run_id')})"
                     )
                     time.sleep(self.retry_wait)
+
                 else:
-                    error_log_reference = ""
-                    error_reference = err
-                    try:
-                        error_payload = (
-                            f"timestamp  : {datetime.datetime.today().isoformat()}\n"
-                            f"operator   : {self.name}\n"
-                            f"error type : {type(err).__name__}\n"
-                            f"details    : {err}\n"
-                            "========================================================================================================================\n"
-                            f"{wrap_text(render_error_stack(), 120)}\n"
-                            "=======================================================  context  ======================================================\n"
-                            f"{wrap_text(str(context), 120)}\n"
-                            "========================================================  data  ========================================================\n"
-                            f"{wrap_text(str(data), 120)}\n"
-                            "========================================================================================================================\n"
-                        )
-                        error_log_reference = self.error_writer(
-                            error_payload
-                        )  # type:ignore
-                    except Exception as err:
-                        self.logger.error(
-                            f"Problem writing to the error bin, a record has been lost. `{self.name}`, {type(err).__name__} - {err} - {context.get('run_id')}"
-                        )
-                    finally:
-                        # finally blocks are called following a try/except block regardless of the outcome
-                        self.logger.alert(
-                            f"`{self.name}` - {type(error_reference).__name__} - {error_reference} - tried {self.retry_count} times before aborting ({context.get('run_id')}) {error_log_reference}"
-                        )
-                        sys.exit(1)
+                    self.logger.alert(
+                        f"`{self.name}` - {type(error_reference).__name__} - {error_reference} - tried {self.retry_count} times before aborting ({context.get('run_id')}) {error_log_reference}"
+                    )
+                    sys.exit(1)
 
                 outcome = None
                 # add a failure to the last_few_results list
