@@ -192,7 +192,8 @@ class ParallelReader:
             # Reduce
             record_iterator = self.reducer(record_iterator)
             # Yield
-            return list(record_iterator)
+            yield from record_iterator
         except Exception as e:
-            print(f"{blob_name} had an error - {e}")
+            import traceback
+            print(f"{blob_name} had an error - {e}\n{traceback.format_exc()}")
             return []

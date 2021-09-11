@@ -47,5 +47,6 @@ FUNCTIONS = {
     "TRUNC": int,
     "INT": int,
     "FLOAT": float,
-    "BOOLEAN": lambda x: x.upper() != "FALSE"
+    "BOOLEAN": lambda x: x.upper() != "FALSE",
+    "ISNONE": lambda x: x is None
 }

@@ -145,5 +145,4 @@ publish.bat
 SNAPSHOTS/
 .mutmut-cache
 setup.cfg
-tests/data/nvd/**
 tests/data/mass/**

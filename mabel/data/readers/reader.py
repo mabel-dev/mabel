@@ -233,7 +233,7 @@ class _LowLevelReader(object):
         # we have enough files. This branch uses the Cursor to determine which blob to
         # process next - the cursor allows us to resume reading through the
         # dataset if we need to stop.
-        if self.cursor or len(readable_blobs) < (cpu_count()) or cpu_count() == 1:
+        if True: #self.cursor or len(readable_blobs) < (cpu_count() * 2) or cpu_count() == 1:
             logger.debug(f"Serial Reader {self.cursor}")
             if not isinstance(self.cursor, Cursor):
                 cursor = Cursor(readable_blobs=readable_blobs, cursor=self.cursor)
@@ -241,7 +241,7 @@ class _LowLevelReader(object):
 
             blob_to_read = self.cursor.next_blob()
             while blob_to_read:
-                blob_reader = iter(parallel(blob_to_read))
+                blob_reader = parallel(blob_to_read)
                 location = self.cursor.skip_to_cursor(blob_reader)
                 for self.cursor.location, record in enumerate(
                     blob_reader, start=location
