@@ -8,8 +8,8 @@ The implementation is as an expression tree,
 Derived from: https://gist.github.com/leehsueh/1290686
 """
 
-from ...utils.text import like, not_like
-from ...utils.dates import parse_iso
+from mabel.utils.text import like, not_like
+from mabel.utils.dates import parse_iso
 import re
 import operator
 import fastnumbers
@@ -17,10 +17,6 @@ import fastnumbers
 
 class InvalidExpression(BaseException):
     pass
-
-def it_will_float(val):
-    return re.match(r"^\d+\.\d+$", val)
-
 
 TOKENS = {
     "NUM": "<Number>",
