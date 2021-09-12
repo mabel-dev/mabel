@@ -41,11 +41,12 @@ def unzip(stream):
             # get the extention of the file(s) in the ZIP and put them
             # through a secondary decompressor and parser
             ext = '.' + file_name.split('.')[-1]
-            
+            print("EXT", ext)
             if ext in KNOWN_EXTENSIONS:
                 decompressor, parser = KNOWN_EXTENSIONS[ext]
-                decompressed = decompressor(io.BytesIO(file))
-                yield from parser(decompressed)
+                print(decompressor, parser)
+                for line in decompressor(io.BytesIO(file)):
+                    yield parser(line)
 
 def parquet(stream):
     """
