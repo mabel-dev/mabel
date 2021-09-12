@@ -195,3 +195,6 @@ class DnfFilters:
             for record in dictset:
                 if evaluate(self.predicates, record):
                     yield record
+
+    def __call__(self, record) -> bool:
+        return evaluate(self.predicates, record)

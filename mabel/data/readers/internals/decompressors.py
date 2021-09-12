@@ -1,4 +1,7 @@
+from zstandard import decompress
+from mabel.errors.invalid_data_set_error import InvalidDataSetError
 from mabel.errors import MissingDependencyError
+from mabel.utils import paths
 
 
 def zstd(stream):
@@ -29,14 +32,20 @@ def unzip(stream):
     """
     # zipfile should always be present
     import zipfile
+    import io
+    from .parallel_reader import KNOWN_EXTENSIONS
 
     with zipfile.ZipFile(stream, "r") as zip:
         for file_name in zipfile.ZipFile.namelist(zip):
             file = zip.read(file_name)
-            for line in file.decode("utf8").splitlines():
-                if line:
-                    yield line
-
+            # get the extention of the file(s) in the ZIP and put them
+            # through a secondary decompressor and parser
+            ext = '.' + file_name.split('.')[-1]
+            
+            if ext in KNOWN_EXTENSIONS:
+                decompressor, parser = KNOWN_EXTENSIONS[ext]
+                decompressed = decompressor(io.BytesIO(file))
+                yield from parser(decompressed)
 
 def parquet(stream):
     """

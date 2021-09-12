@@ -27,13 +27,12 @@ from ....utils import paths
 def empty_list(x):
     return []
 
-
-VALID_EXTENSIONS = {
+KNOWN_EXTENSIONS = {
     ".txt": (decompressors.block, parsers.pass_thru),
     ".json": (decompressors.block, parsers.json),
     ".zstd": (decompressors.zstd, parsers.json),
     ".lzma": (decompressors.lzma, parsers.json),
-    ".zip": (decompressors.unzip, parsers.json),
+    ".zip": (decompressors.unzip, parsers.pass_thru),
     ".jsonl": (decompressors.lines, parsers.json),
     ".xml": (decompressors.block, parsers.xml),
     ".lxml": (decompressors.lines, parsers.xml),
@@ -171,12 +170,12 @@ class ParallelReader:
             else:
                 bucket, path, stem, ext = paths.get_parts(blob_name)
 
-            if ext not in VALID_EXTENSIONS:
+            if ext not in KNOWN_EXTENSIONS:
                 return []
-            decompressor, parser = VALID_EXTENSIONS[ext]
+            decompressor, parser = KNOWN_EXTENSIONS[ext]
 
             # Pre-Filter
-            # (row_selector, rows) = self.pre_filter(self.dnf_filters)
+            #(row_selector, selected_rows) = self.pre_filter(self.dnf_filters)
             row_selector = False
             # Read
             record_iterator = self.reader.get_blob_stream(blob_name)
@@ -184,7 +183,7 @@ class ParallelReader:
             record_iterator = decompressor(record_iterator)
             ### bypass rows which aren't selected
             if row_selector:
-                record_iterator = record_iterator
+                record_iterator = [record for index, record in enumerate(record_iterator) if index in selected_rows]
             # Parse
             record_iterator = map(parser, record_iterator)
             # Filter
