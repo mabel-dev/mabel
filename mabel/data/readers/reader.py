@@ -5,7 +5,7 @@ import datetime
 from typing import Optional, Dict, Union
 from multiprocessing import cpu_count
 
-from .internals.parallel_reader import ParallelReader, pass_thru
+from .internals.parallel_reader import ParallelReader, pass_thru, EXTENSION_TYPE, KNOWN_EXTENSIONS
 from .internals.multiprocess_wrapper import processed_reader
 from .internals.cursor import Cursor
 
@@ -165,13 +165,6 @@ def Reader(
     )
 
 
-def _is_system_file(filename):
-    if "_SYS." in filename:
-        base = os.path.basename(filename)
-        return base.startswith("_SYS.")
-    return False
-
-
 class _LowLevelReader(object):
     def __init__(
         self, reader_class, freshness_limit, select, filters, override_format, cursor
@@ -212,7 +205,9 @@ class _LowLevelReader(object):
                     f"Read looked back {self.reader_class.days_stepped_back} day(s) to {self.reader_class.start_date}, limit is {self.freshness_limit} ({self.reader_class.dataset})"
                 )
 
-        readable_blobs = [b for b in blob_list if not _is_system_file(b)]
+        # filter the list to items we know what to do with
+        supported_blobs = [b for b in blob_list if f".{b.split('.')[-1]}" in KNOWN_EXTENSIONS]
+        readable_blobs = [b for b in supported_blobs if KNOWN_EXTENSIONS[f".{b.split('.')[-1]}"][2] == EXTENSION_TYPE.DATA]
 
         if len(readable_blobs) == 0:
             message = f"Reader found {len(readable_blobs)} sources to read data from in `{self.reader_class.dataset}`."
@@ -229,11 +224,16 @@ class _LowLevelReader(object):
             override_format=self.override_format,
         )
 
-        # it takes some effort to set up the multiprocessing, only do it if
-        # we have enough files. This branch uses the Cursor to determine which blob to
+        # it takes some effort to set up the multiprocessing, only do it if we have
+        # enough files. This branch uses the Cursor to determine which blob to
         # process next - the cursor allows us to resume reading through the
         # dataset if we need to stop.
-        if True: #self.cursor or len(readable_blobs) < (cpu_count() * 2) or cpu_count() == 1:
+        # It's hard to predict when the parallel reader will be faster than the
+        # serial reader, filters benefit the parallel reader (who a large part of
+        # the effort for is marshalling the data back and forth, filtering reduces
+        # the amount sent) and it's expected that aggregations will benefit the 
+        # parallel reader as they will likely push the work towards being CPU bound. 
+        if self.cursor or len(readable_blobs) < (cpu_count() * 2) or cpu_count() == 1:
             logger.debug(f"Serial Reader {self.cursor}")
             if not isinstance(self.cursor, Cursor):
                 cursor = Cursor(readable_blobs=readable_blobs, cursor=self.cursor)
@@ -241,7 +241,7 @@ class _LowLevelReader(object):
 
             blob_to_read = self.cursor.next_blob()
             while blob_to_read:
-                blob_reader = parallel(blob_to_read)
+                blob_reader = parallel(blob_to_read, [idx for idx in supported_blobs if blob_to_read in idx and idx.endswith(".idx")])
                 location = self.cursor.skip_to_cursor(blob_reader)
                 for self.cursor.location, record in enumerate(
                     blob_reader, start=location

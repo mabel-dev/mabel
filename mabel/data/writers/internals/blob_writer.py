@@ -118,17 +118,7 @@ class BlobWriter(object):
                     index = self.index_builders[column].build()
 
                     bucket, path, stem, suffix = get_parts(committed_blob_name)
-                    index_name = (
-                        bucket
-                        + "/"
-                        + path
-                        + "_SYS."
-                        + stem
-                        + "."
-                        + safe_field_name(column)
-                        + ".index"
-                    )
-
+                    index_name = f"{bucket}/{path}{stem}.{safe_field_name(column)}.idx"
                     committed_index_name = self.inner_writer.commit(
                         byte_data=index.bytes(), override_blob_name=index_name
                     )
