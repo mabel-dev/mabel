@@ -23,14 +23,14 @@ def _inner_process(func, source_queue, reply_queue):  # pragma: no cover
     except Empty:  # pragma: no cover
         source = TERMINATE_SIGNAL
 
-    while source != TERMINATE_SIGNAL:  # and flag.value != TERMINATE_SIGNAL:
-        # no blocking wait - this isn't thread aware in that it can trivially
+    while source != TERMINATE_SIGNAL: 
+        # non blocking wait - this isn't thread aware in that it can trivially
         # have race conditions, but it will apply a simple back-off so we're
         # not exhausting memory when we know we should wait
         while reply_queue.full():
             time.sleep(1)
         with multiprocessing.Lock():
-            reply_queue.put([*func(source)], timeout=30)
+            reply_queue.put([*func(source, [])], timeout=30)
         source = None
         while source is None:
             try:
