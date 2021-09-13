@@ -195,6 +195,18 @@ class DictSet(object):
             lambda x, y: x + [a for a in y.keys() if a not in x], iter(self._iterator), []
         )
 
+    def describe(self, number_of_rows: int = 25):
+        top = self.take(number_of_rows)
+        keys = reduce(lambda x, y: x + [a for a in y.keys() if a not in x], top, [])
+        response = {}
+        for key in keys:
+            key_type = { type(row.get(key)) for row in top if row.get(key) != None }
+            if len(key_type) == 1:
+                response[key] = key_type[0]
+            else:
+                response[key] = "mixed"
+        return response                    
+
     def max(self, key: str):
         """
         Find the maximum in a column of this _DictSet_.
