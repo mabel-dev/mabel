@@ -43,7 +43,7 @@ def unzip(stream):
             ext = '.' + file_name.split('.')[-1]
             print("EXT", ext)
             if ext in KNOWN_EXTENSIONS:
-                decompressor, parser = KNOWN_EXTENSIONS[ext]
+                decompressor, parser, file_type = KNOWN_EXTENSIONS[ext]
                 print(decompressor, parser)
                 for line in decompressor(io.BytesIO(file)):
                     yield parser(line)

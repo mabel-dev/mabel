@@ -89,7 +89,7 @@ class ParallelReader:
         if isinstance(filters, DnfFilters):
             self.dnf_filter = filters
         elif isinstance(filters, Expression):
-            self.dnf_filter = filters.to_dnf()
+            self.dnf_filter = DnfFilters(filters.to_dnf())
         else:
             self.dnf_filter = None
 
