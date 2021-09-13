@@ -1,13 +1,15 @@
 # google-cloud-logging
 # pydantic
-from mabel.logging.log_formatter import LogFormatter
+
 import os
-import ujson as json
+import atexit
 import logging
 import datetime
-from typing import Union, Optional
-from .levels import LEVELS, LEVELS_TO_STRING
-from ..utils import is_running_from_ipython, safe_field_name
+import orjson as json
+from typing import Union, Optional, Dict
+from mabel.logging.levels import LEVELS, LEVELS_TO_STRING
+from mabel.utils import is_running_from_ipython, safe_field_name
+from mabel.logging.log_formatter import LogFormatter
 
 try:
     from google.cloud import logging as stackdriver  # type:ignore
@@ -17,6 +19,16 @@ except ImportError:
 
 
 LOG_SINK = "MABEL"
+logging_seen_warnings: Dict[int, int] = {}
+
+
+def report_suppressions(message):
+    import mabel.logging
+    record = logging_seen_warnings.get(hash(message))
+    if record:
+        mabel.logging.get_logger().warning(
+            f'The following message was suppressed {record} time(s) - "{message}"'
+        )
 
 
 def extract_caller():
@@ -63,7 +75,16 @@ class GoogleLogger(object):
 
         payload = message
         if isinstance(message, dict):
-            payload = json.dumps(message)
+            payload = json.dumps(message).decode("UTF8")
+
+        # supress duplicate warnings
+        if severity == LEVELS.WARNING:  # warnings
+            hashed = hash(payload)
+            if hashed in logging_seen_warnings:
+                logging_seen_warnings[hashed] += 1
+                return "suppressed"
+            logging_seen_warnings[hashed] = 0
+            atexit.register(report_suppressions, payload)
 
         log = f"{LOG_NAME} | {LEVELS_TO_STRING.get(severity, 'UNKNOWN')} | {datetime.datetime.now().isoformat()} | {method}() | {module}:{line} | {payload}"  # type:ignore
         formatter = LogFormatter(None, suppress_color=True)
