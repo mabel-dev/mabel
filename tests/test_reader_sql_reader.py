@@ -25,14 +25,14 @@ def test_where():
 
     shutil.rmtree("_temp", ignore_errors=True)
     do_writer()
-    s = SqlReader("SELECT * FROM _temp.twitter", inner_reader=DiskReader, raw_path=True)
-    findings = list(s.reader)
-    assert len(findings) == 50, len(findings)
+    s = SqlReader("SELECT * FROM _temp.twitter", inner_reader=DiskReader, raw_path=True, persistence=STORAGE_CLASS.MEMORY)
+    assert s.count() == 50, s.count()
     shutil.rmtree("_temp", ignore_errors=True)
 
 
 # fmt:off
 SQL_TESTS = [
+    {"statement":"SELECT * FROM tests.data.index.is", "result":65499},
     {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = 'Verizon Support'", "result":2},
     {"statement":"select * from tests.data.index.is  where user_name = 'Verizon Support'", "result":2},
     {"statement":"SELECT * FROM tests.data.index.not WHERE user_name = 'Verizon Support'", "result":2},
@@ -56,11 +56,12 @@ def test_sql():
             test.get("statement"),
             inner_reader=DiskReader,
             raw_path=True,
+            persistence=STORAGE_CLASS.MEMORY
         )
-        findings = list(s.reader)
-        assert len(findings) == test.get(
+        print(s)
+        assert s.count() == test.get(
             "result"
-        ), f"{test.get('statement')} == {len(findings)}"
+        ), f"{test.get('statement')} == {s.count()}"
 
 
 def test_sql_to_dictset():
@@ -71,11 +72,11 @@ def test_sql_to_dictset():
         raw_path=True,
         persistence=STORAGE_CLASS.MEMORY,
     )
-    keys = s.reader.keys()
+    keys = s.keys()
     assert "tweet_id" in keys, keys
     assert "text" in keys, keys
     assert "followers" in keys, keys
-    assert len(s.reader.take(10).collect()) == 10
+    assert len(s.take(10).collect()) == 10
 
 
 def test_select():
@@ -85,7 +86,7 @@ def test_select():
         inner_reader=DiskReader,
         raw_path=True,
     )
-    first = s.reader.first()
+    first = s.first()
     assert first.get("tweet_id") is not None
     assert first.get("user_name") is not None
     assert first.get("timestamp") is None, first.get("timestamp")
@@ -99,7 +100,7 @@ def test_limit():
         raw_path=True,
         persistence=STORAGE_CLASS.MEMORY,
     )
-    record_count = s.reader.count()
+    record_count = s.count()
     assert record_count == 12, record_count
 
 
@@ -110,7 +111,7 @@ def test_group_by_count():
         inner_reader=DiskReader,
         raw_path=True,
     )
-    records = s.reader.collect()
+    records = s.collect()
     record_count = len(records)
     assert record_count == 2, record_count
 
@@ -119,7 +120,7 @@ def test_group_by_count():
         inner_reader=DiskReader,
         raw_path=True,
     )
-    records = s.reader.collect()
+    records = s.collect()
     record_count = len(records)
     assert record_count == 2370, record_count
 

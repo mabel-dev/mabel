@@ -38,6 +38,7 @@ class Index:
             # number of entries in the index
             self.size = index.tell() // RECORD_SIZE
 
+            # create a view of the index for look ups
             index.seek(0, 0)
             self._index = memoryview(index.read())
 
@@ -63,7 +64,6 @@ class Index:
             builder.add(position, row)
         return builder.build()
 
-    @lru_cache(8)
     def _get_entry(self, position: int):
         """
         get a specific entry from the index

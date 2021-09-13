@@ -1,8 +1,7 @@
-import os
 import threading
-import tempfile
 from typing import Any
 from orjson import dumps
+import zstandard
 from ...internals.index import IndexBuilder
 from ...internals.records import flatten
 from ....logging import get_logger
@@ -12,7 +11,6 @@ from ....errors import MissingDependencyError
 
 
 BLOB_SIZE = 64 * 1024 * 1024  # 64Mb, 16 files per gigabyte
-BUFFER_SIZE = BLOB_SIZE  # buffer in memory
 SUPPORTED_FORMATS_ALGORITHMS = ("jsonl", "zstd", "parquet", "text", "flat")
 
 
@@ -20,7 +18,7 @@ class BlobWriter(object):
 
     # in som failure scenarios commit is called before __init__, so we need to define
     # this variable outside the __init__.
-    bytes_in_blob = 0
+    buffer = bytearray()
 
     def __init__(
         self,
@@ -44,7 +42,7 @@ class BlobWriter(object):
         kwargs["format"] = format
         self.inner_writer = inner_writer(**kwargs)  # type:ignore
 
-        self._open_blob()
+        self.open_buffer()
 
     def append(self, record: dict = {}):
         # serialize the record
@@ -57,131 +55,99 @@ class BlobWriter(object):
 
         # add the columns to the index
         for column in self.indexes:
-            self.index_builders[column].add(self.records_in_blob, record)
+            self.index_builders[column].add(self.records_in_buffer, record)
 
         # the newline isn't counted so add 1 to get the actual length
         # if this write would exceed the blob size, close it so another
         # blob will be created
-        self.bytes_in_blob += len(serialized) + 1
-        if self.bytes_in_blob > self.maximum_blob_size and self.records_in_blob > 0:
-            self.bytes_in_blob -= len(serialized) + 1
+        if len(self.buffer) > self.maximum_blob_size and self.records_in_buffer > 0:
             self.commit()
-            self._open_blob()
+            self.open_buffer()
 
         # write the record to the file
-        self.file.write(serialized)
-        self.records_in_blob += 1
+        self.buffer.extend(serialized)
+        self.records_in_buffer += 1
 
-        return self.records_in_blob
+        return self.records_in_buffer
 
     def commit(self):
 
         committed_blob_name = ""
 
-        if self.bytes_in_blob > 0:
+        if len(self.buffer) > 0:
+
             with threading.Lock():
-                try:
-                    self.file.flush()
-                    self.file.close()
-                except ValueError:
-                    pass
 
                 if self.format == "parquet":
                     try:
-                        from pyarrow import json as js  # type:ignore
+                        import pyarrow.json
                         import pyarrow.parquet as pq  # type:ignore
                     except ImportError as err:  # pragma: no cover
                         raise MissingDependencyError(
                             "`pyarrow` is missing, please install or includein requirements.txt"
                         )
 
-                    table = js.read_json(self.file_name)
-                    pq.write_table(
-                        table, self.file_name + ".parquet", compression="ZSTD"
-                    )
-                    self.file_name += ".parquet"
+                    # pyarrow is opinionated to dealing with files - so we use files
+                    # to load into and read from pyarrow
+                    # first, we load the buffer into a file and then into pyarrow
+                    import tempfile
+                    buffer_temp_file = tempfile.TemporaryFile()
+                    buffer_temp_file.write(self.buffer)
+                    buffer_temp_file.seek(0, 0)
+                    in_pyarrow_buffer = pyarrow.json.read_json(buffer_temp_file)
+                    buffer_temp_file.close()
 
-                with open(self.file_name, "rb") as f:
-                    byte_data = f.read()
+                    # then we save from pyarrow into another file which we read
+                    pq_temp_file = tempfile.TemporaryFile()
+                    pq.write_table(
+                        in_pyarrow_buffer, pq_temp_file, compression="ZSTD"
+                    )
+                    pq_temp_file.seek(0, 0)
+                    self.buffer = pq_temp_file.read()
+                    pq_temp_file.close()
+
+                if self.format == "zstd":
+                    # zstandard is an non-optional installed dependency
+                    self.buffer = zstandard.compress(self.buffer)
 
                 committed_blob_name = self.inner_writer.commit(
-                    byte_data=byte_data, override_blob_name=None
+                    byte_data=bytes(self.buffer), override_blob_name=None
                 )
 
                 for column in self.indexes:
                     index = self.index_builders[column].build()
 
                     bucket, path, stem, suffix = get_parts(committed_blob_name)
-                    index_name = (
-                        bucket
-                        + "/"
-                        + path
-                        + "_SYS."
-                        + stem
-                        + "."
-                        + safe_field_name(column)
-                        + ".index"
-                    )
-
+                    index_name = f"{bucket}/{path}{stem}.{safe_field_name(column)}.idx"
                     committed_index_name = self.inner_writer.commit(
                         byte_data=index.bytes(), override_blob_name=index_name
                     )
 
                 if "BACKOUT" in committed_blob_name:
                     get_logger().warning(
-                        f"{self.records_in_blob:n} failed records written to BACKOUT partition `{committed_blob_name}`"
+                        f"{self.records_in_buffer:n} failed records written to BACKOUT partition `{committed_blob_name}`"
                     )
                 get_logger().debug(
                     {
                         "committed_blob": committed_blob_name,
-                        "records": self.records_in_blob,
-                        "raw_bytes": self.bytes_in_blob,
-                        "committed_bytes": len(byte_data),
+                        "records": self.records_in_buffer,
+                        "bytes": len(self.buffer)
                     }
                 )
-                try:
-                    os.remove(self.file_name)
-                except ValueError:
-                    pass
 
-                self.bytes_in_blob = 0
-                self.file_name = None
-
+        self.buffer = bytearray()
         return committed_blob_name
 
-    def _open_blob(self):
-        self.file_name = self._create_temp_file_name()
-        self.file: Any = open(self.file_name, mode="wb", buffering=BUFFER_SIZE)
-
-        if self.format == "zstd":
-            import zstandard  # type:ignore
-
-            self.file = zstandard.open(self.file_name, mode="wb")
+    def open_buffer(self):
+        self.buffer = bytearray()
 
         # create index builders
         self.index_builders = {}
         for column in self.indexes:
             self.index_builders[column] = IndexBuilder(column)
 
-        self.bytes_in_blob = 0
-        self.records_in_blob = 0
+        self.records_in_buffer = 0
 
     def __del__(self):
         # this should never be relied on to save data
         self.commit()
-
-    def _create_temp_file_name(self):
-        """
-        Create a tempfile, get the name and then deletes the tempfile.
-
-        The behaviour of tempfiles is inconsistent between operating systems,
-        this helps to ensure consistent behaviour.
-        """
-        file = tempfile.NamedTemporaryFile(prefix="mabel-", delete=True)
-        file_name = file.name
-        file.close()
-        try:
-            os.remove(file_name)
-        except OSError:
-            pass
-        return file_name

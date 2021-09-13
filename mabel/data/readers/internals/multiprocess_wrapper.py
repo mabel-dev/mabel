@@ -6,8 +6,8 @@ is added as a piece is read off the queue - meaning each process only has one
 file to load at a time.
 """
 import os
-from queue import Empty
 import time
+from queue import Empty
 import multiprocessing
 import logging
 
@@ -30,7 +30,7 @@ def _inner_process(func, source_queue, reply_queue):  # pragma: no cover
         while reply_queue.full():
             time.sleep(1)
         with multiprocessing.Lock():
-            reply_queue.put(func(source), timeout=30)
+            reply_queue.put([*func(source)], timeout=30)
         source = None
         while source is None:
             try:
@@ -49,7 +49,7 @@ def processed_reader(func, items_to_read):  # pragma: no cover
     process_pool = []
 
     # limit the number of slots
-    slots = min(len(items_to_read), multiprocessing.cpu_count() - 1)
+    slots = min(len(items_to_read), multiprocessing.cpu_count() - 1, 4)
     reply_queue = multiprocessing.Queue(slots)
 
     send_queue = multiprocessing.Queue()

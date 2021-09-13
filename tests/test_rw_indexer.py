@@ -26,7 +26,7 @@ def test_index():
     for item in r:
         w.append(item)
     w.finalize()
-    index = glob.glob("_temp/data/tweets/**/*username.index", recursive=True)
+    index = glob.glob("_temp/data/tweets/**/*username.idx", recursive=True)
     assert len(index) == 1, index
 
     with open(index[0], "rb") as f:

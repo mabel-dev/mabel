@@ -1,13 +1,24 @@
-# google-cloud-logging
-# pydantic
-
 import os
-import orjson as json
+import atexit
 import logging
-from typing import Union, Optional
-from .levels import LEVELS, LEVELS_TO_STRING
-from ..utils import is_running_from_ipython
-from .log_formatter import LogFormatter
+import datetime
+import orjson as json
+from typing import Union, Optional, Dict
+from mabel.logging.levels import LEVELS, LEVELS_TO_STRING
+from mabel.utils import is_running_from_ipython, safe_field_name
+from mabel.logging.log_formatter import LogFormatter
+
+
+logging_seen_warnings: Dict[int, int] = {}
+
+
+def report_suppressions(message):
+    import mabel.logging
+    record = logging_seen_warnings.get(hash(message))
+    if record:
+        mabel.logging.get_logger().warning(
+            f'The following message was suppressed {record} time(s) - "{message}"'
+        )
 
 
 def log_it(payload):
@@ -48,6 +59,17 @@ class GoogleLogger(object):
         severity: Optional[int] = logging.DEBUG,
         spanId: Optional[str] = None,
     ):
+
+
+        # supress duplicate warnings
+        if severity == LEVELS.WARNING:  # warnings
+            hashed = hash(str(message))
+            if hashed in logging_seen_warnings:
+                logging_seen_warnings[hashed] += 1
+                return "suppressed"
+            logging_seen_warnings[hashed] = 0
+            atexit.register(report_suppressions, str(message))
+
 
         from .create_logger import LOG_NAME
 

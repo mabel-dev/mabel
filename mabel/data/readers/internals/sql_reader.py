@@ -220,76 +220,74 @@ def apply_functions_on_read_thru(ds, functions, merge=False):
         yield result_record
 
 
-class SqlReader:
-    def __init__(self, sql_statement: str, **kwargs):
-        """
-        Use basic SQL queries to filter Reader.
+def SqlReader(sql_statement: str, **kwargs):
+    """
+    Use basic SQL queries to filter Reader.
 
-        Parameters:
-            sql_statement: string
-            kwargs: parameters to pass to the Reader
+    Parameters:
+        sql_statement: string
+        kwargs: parameters to pass to the Reader
 
-        Note:
-            `select` is taken from SQL SELECT
-            `dataset` is taken from SQL FROM
-            `filters` is taken from SQL WHERE
-        """
-        sql = SqlParser(sql_statement)
-        get_logger().info(repr(sql).replace("\n", " "))
+    Note:
+        `select` is taken from SQL SELECT
+        `dataset` is taken from SQL FROM
+        `filters` is taken from SQL WHERE
+    """
+    sql = SqlParser(sql_statement)
+    get_logger().info(repr(sql).replace("\n", " "))
 
-        self.reader = Reader(
-            filters=sql.where,
-            dataset=sql._from,
-            **kwargs,
-        )
+    reader = Reader(
+        filters=sql.where,
+        dataset=sql._from,
+        **kwargs,
+    )
 
-        # if the query is COUNT(*) on a SELECT, just do it.
-        if sql.select == [("COUNT", "*")] and not sql.group_by:
-            count = -1
-            for count, r in enumerate(self.reader):
-                pass
-            self.reader = DictSet([{"COUNT(*)": count + 1}])
-        # if we're not grouping and we have functions, execute them
-        elif not sql.group_by and any(
-            isinstance(selector, tuple) for selector in sql.select
-        ):
-            self.reader = DictSet(apply_functions_on_read_thru(self.reader, sql.select))
-        # if we are selecting columns and we're not a group_by, select the columns
-        elif sql.select and not sql.group_by and not sql.select == ["*"]:
-            self.reader = self.reader.select(sql.select)
-        # if we're doing a group-by
-        elif sql.group_by:
-            if not all(isinstance(select, tuple) for select in sql.select):
-                raise InvalidSqlError(
-                    "SELECT must be a set of aggregation functions (e.g. COUNT, SUM) when using GROUP BY"
-                )
-            # if we're grouping by a function result (like YEAR), calculate that function
-            if any(isinstance(selector, tuple) for selector in sql.group_by):
-                self.reader = apply_functions_on_read_thru(
-                    self.reader, sql.group_by, True
-                )
-                sql.group_by = [
-                    f"{group[0]}({group[1]})" if isinstance(group, tuple) else group
-                    for group in sql.group_by
-                ]
-
-            groups = GroupBy(self.reader, *sql.group_by).aggregate(sql.select)
-            self.reader = DictSet(groups)
-        if sql.distinct:
-            self.reader = self.reader.distinct()
-        if sql.having:
-            self.reader = self.reader.query(sql.having)
-        if sql.order_by:
-            take = 10000
-            if sql.limit:
-                take = sql.limit
-            self.reader = DictSet(
-                self.reader.sort_and_take(
-                    column=sql.order_by, take=take, descending=sql.order_by_desc
-                )
+    # if the query is COUNT(*) on a SELECT, just do it.
+    if sql.select == [("COUNT", "*")] and not sql.group_by:
+        count = -1
+        for count, r in enumerate(self.reader):
+            pass
+        reader = DictSet([{"COUNT(*)": count + 1}])
+    # if we're not grouping and we have functions, execute them
+    elif not sql.group_by and any(
+        isinstance(selector, tuple) for selector in sql.select
+    ):
+        reader = DictSet(apply_functions_on_read_thru(reader, sql.select))
+    # if we are selecting columns and we're not a group_by, select the columns
+    elif sql.select and not sql.group_by and not sql.select == ["*"]:
+        reader = reader.select(sql.select)
+    # if we're doing a group-by
+    elif sql.group_by:
+        if not all(isinstance(select, tuple) for select in sql.select):
+            raise InvalidSqlError(
+                "SELECT must be a set of aggregation functions (e.g. COUNT, SUM) when using GROUP BY"
             )
-        if sql.limit:
-            self.reader = self.reader.take(sql.limit)
+        # if we're grouping by a function result (like YEAR), calculate that function
+        if any(isinstance(selector, tuple) for selector in sql.group_by):
+            reader = apply_functions_on_read_thru(
+                reader, sql.group_by, True
+            )
+            sql.group_by = [
+                f"{group[0]}({group[1]})" if isinstance(group, tuple) else group
+                for group in sql.group_by
+            ]
 
-    def __iter__(self):
-        return self.reader._iterator
+        groups = GroupBy(reader, *sql.group_by).aggregate(sql.select)
+        reader = DictSet(groups)
+    if sql.distinct:
+        reader = reader.distinct()
+    if sql.having:
+        reader = reader.query(sql.having)
+    if sql.order_by:
+        take = 10000
+        if sql.limit:
+            take = sql.limit
+        reader = DictSet(
+            reader.sort_and_take(
+                column=sql.order_by, take=take, descending=sql.order_by_desc
+            )
+        )
+    if sql.limit:
+        reader = reader.take(sql.limit)
+
+    return reader

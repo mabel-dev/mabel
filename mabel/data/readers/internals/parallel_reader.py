@@ -20,28 +20,37 @@ dataset:
 │ Reduce     │ Aggregate                                                  │
 └────────────┴────────────────────────────────────────────────────────────┘
 """
+from enum import Enum
 from . import decompressors, parsers
-from ....utils import paths
+from mabel.utils import paths
+from mabel.data.internals.index import Index
+from mabel.data.internals.expression import Expression
+from mabel.data.internals.dnf_filters import DnfFilters
 
 
 def empty_list(x):
     return []
 
+class EXTENSION_TYPE(str, Enum):
+    # labels for the file extentions
+    DATA = "DATA"
+    CONTROL = "CONTROL"
+    INDEX = "INDEX"
 
-VALID_EXTENSIONS = {
-    ".txt": (decompressors.block, parsers.pass_thru),
-    ".json": (decompressors.block, parsers.json),
-    ".zstd": (decompressors.zstd, parsers.json),
-    ".lzma": (decompressors.lzma, parsers.json),
-    ".zip": (decompressors.unzip, parsers.json),
-    ".jsonl": (decompressors.lines, parsers.json),
-    ".xml": (decompressors.block, parsers.xml),
-    ".lxml": (decompressors.lines, parsers.xml),
-    ".parquet": (decompressors.parquet, parsers.pass_thru),
-    ".csv": (decompressors.csv, parsers.pass_thru),
-    ".ignore": (empty_list, empty_list),
-    ".idx": (empty_list, empty_list),
-    ".complete": (empty_list, empty_list),
+KNOWN_EXTENSIONS = {
+    ".txt": (decompressors.block, parsers.pass_thru, EXTENSION_TYPE.DATA),
+    ".json": (decompressors.block, parsers.json, EXTENSION_TYPE.DATA),
+    ".zstd": (decompressors.zstd, parsers.json, EXTENSION_TYPE.DATA),
+    ".lzma": (decompressors.lzma, parsers.json, EXTENSION_TYPE.DATA),
+    ".zip": (decompressors.unzip, parsers.pass_thru, EXTENSION_TYPE.DATA),
+    ".jsonl": (decompressors.lines, parsers.json, EXTENSION_TYPE.DATA),
+    ".xml": (decompressors.block, parsers.xml, EXTENSION_TYPE.DATA),
+    ".lxml": (decompressors.lines, parsers.xml, EXTENSION_TYPE.DATA),
+    ".parquet": (decompressors.parquet, parsers.pass_thru, EXTENSION_TYPE.DATA),
+    ".csv": (decompressors.csv, parsers.pass_thru, EXTENSION_TYPE.DATA),
+    ".ignore": (empty_list, empty_list, EXTENSION_TYPE.CONTROL),
+    ".complete": (empty_list, empty_list, EXTENSION_TYPE.CONTROL),
+    ".idx": (empty_list, empty_list, EXTENSION_TYPE.INDEX),
 }
 
 
@@ -55,7 +64,7 @@ def no_filter(x):
 
 class ParallelReader:
 
-    NOT_INDEXED = 1
+    NOT_INDEXED = ""
 
     def __init__(
         self,
@@ -74,10 +83,15 @@ class ParallelReader:
             **kwargs: kwargs
         """
 
-        # this is the representation of the filters in a which makes it
-        # easier to use indexes - but can only really be used against
-        # a subset of the operators
-        # self.dnf_filter
+        # DNF form is a representation of logical expressions which it is easiest
+        # to apply any indicies to - we can convert Expressions to DNF but we can't
+        # convert functions to DNF.
+        if isinstance(filters, DnfFilters):
+            self.dnf_filter = filters
+        elif isinstance(filters, Expression):
+            self.dnf_filter = DnfFilters(filters.to_dnf())
+        else:
+            self.dnf_filter = None
 
         # the reader gets the data from the storage platform e.g. read the file from
         # disk or download the file
@@ -97,7 +111,7 @@ class ParallelReader:
             if not self.override_format[0] == ".":
                 self.override_format = "." + self.override_format
 
-    def pre_filter(self):
+    def pre_filter(self, blob_name, index_files):
         """
         Select rows from the file based on the filters and indexes, this filters
         the data before we've even seen it. This is usually faster as it avoids
@@ -119,11 +133,11 @@ class ParallelReader:
             # If we have a tuple extract out the key, operator and value and do the evaluation
             if isinstance(predicate, tuple):
                 key, operator, value = predicate
-
                 if operator in PRE_FILTERABLE_OPERATORS:
                     # do I have an index for this field?
-                    if key in []:
-                        pass
+                    for index_file in [index_file for index_file in index_files if f".{key}." in index_file]:
+                        print("I HAVE", index_file)
+                        index = Index(self.reader.get_blob_stream(index_file))
                 return self.NOT_INDEXED
 
             if isinstance(predicate, list):
@@ -142,28 +156,13 @@ class ParallelReader:
                         pass
 
                 # if we're here the structure of the filter is wrong
-                raise InvalidSyntaxError(
-                    "Unable to evaluate Filter"
-                )  # pragma: no cover
+                return self.NOT_INDEXED
+            return self.NOT_INDEXED
 
-            raise InvalidSyntaxError("Unable to evaluate Filter")  # pragma: no cover
+        print(_inner_prefilter(self.dnf_filter.predicates))
+        return False, []
 
-        return _inner_prefilter(self.dnf_fiter)
-
-    def select_rows(self, records, rows):
-        """
-        Apply the prefilter
-        """
-        for index, record in records:
-            if index in rows:
-                yield record
-
-    def pass_thru_print(self, records):
-        for record in records:
-            print(record)
-            yield record
-
-    def __call__(self, blob_name):
+    def __call__(self, blob_name, index_files):
 
         try:
             if self.override_format:
@@ -171,20 +170,23 @@ class ParallelReader:
             else:
                 bucket, path, stem, ext = paths.get_parts(blob_name)
 
-            if ext not in VALID_EXTENSIONS:
+            if ext not in KNOWN_EXTENSIONS:
                 return []
-            decompressor, parser = VALID_EXTENSIONS[ext]
+            decompressor, parser, file_type = KNOWN_EXTENSIONS[ext]
 
             # Pre-Filter
-            # (row_selector, rows) = self.pre_filter(self.dnf_filters)
-            row_selector = False
+            if self.dnf_filter and len(index_files):
+                (row_selector, selected_rows) = self.pre_filter(blob_name, index_files)
+            else:
+                row_selector = False
+                selected_rows = []
             # Read
             record_iterator = self.reader.get_blob_stream(blob_name)
             # Decompress
             record_iterator = decompressor(record_iterator)
             ### bypass rows which aren't selected
             if row_selector:
-                record_iterator = record_iterator
+                record_iterator = [record for index, record in enumerate(record_iterator) if index in selected_rows]
             # Parse
             record_iterator = map(parser, record_iterator)
             # Filter
@@ -192,7 +194,8 @@ class ParallelReader:
             # Reduce
             record_iterator = self.reducer(record_iterator)
             # Yield
-            return list(record_iterator)
+            yield from record_iterator
         except Exception as e:
-            print(f"{blob_name} had an error - {e}")
+            import traceback
+            print(f"{blob_name} had an error - {e}\n{traceback.format_exc()}")
             return []
