@@ -76,14 +76,13 @@ library version. Alpha versions are more likely to have functional issues.
 
 ## Dependencies
 
--  **[orjson](https://github.com/ijl/orjson)** for JSON handling
--  **[dateutil](https://dateutil.readthedocs.io/en/stable/)** to convert dates received as strings
+-  **[orjson](https://github.com/ijl/orjson)** for JSON (de)serialization
 -  **[bitarray](https://github.com/ilanschnell/bitarray)** for handling high density boolean data
 -  **[siphashc](https://github.com/WeblateOrg/siphashc)** for non-cryptographic hashing
 -  **[pydantic](https://pydantic-docs.helpmanual.io/)** to define internal data models  
 -  **[zstandard](https://github.com/indygreg/python-zstandard)** for real-time on disk compression
 -  **[LZ4](https://github.com/python-lz4/python-lz4)** for real-time in memory compression
--  fastnumbers
+-  **[fastnumbers](https://github.com/SethMMorton/fastnumbers)** for fast parsing of numeric values
 
 
 There are a number of optional dependencies which are usually only required for
@@ -118,10 +117,6 @@ mabel supports running on a range of platforms, including:
 
 <img align="centre" alt="Notice" height="12" src="icons/note.svg" />1 - Some non-core features are not available on Windows.  
 <img align="centre" alt="Notice" height="12" src="icons/note.svg" />2 - Tested on Debian (WSL) and Ubuntu.
-
-## Deployment Recommendations
-
-- 1GB per CPU for read-intensive usage
 
 ## How Can I Contribute?
 

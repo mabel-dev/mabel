@@ -2,10 +2,9 @@ import orjson
 import datetime
 from pydantic import BaseModel  # type:ignore
 from typing import Any, Optional, Union, List
-from dateutil import parser
 from .internals.blob_writer import BlobWriter
 from ..validator import Schema
-from ...utils import paths
+from ...utils import paths, dates
 from ...errors import ValidationError, InvalidDataSetError, MissingDependencyError
 from ...logging import get_logger
 
@@ -17,7 +16,7 @@ class Writer:
         if isinstance(date, datetime.date):
             batch_date = date  # type:ignore
         if isinstance(date, str):
-            batch_date = parser.parse(date)
+            batch_date = dates.parse_iso(date)
         return batch_date
 
     def __init__(

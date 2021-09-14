@@ -1,5 +1,4 @@
 orjson
-python-dateutil
 bitarray
 zstandard
 lz4

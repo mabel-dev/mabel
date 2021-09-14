@@ -2,7 +2,6 @@ import re
 import datetime
 from fastnumbers import fast_int
 from typing import Optional, Union
-from dateutil import parser
 from string import Formatter
 
 TIMEDELTA_REGEX = (
@@ -63,7 +62,7 @@ def parse_iso(value):
             if len(value) >= 16:
                 if not value[10] == "T" or not value[13] in DATE_SEPARATORS:
                     return False
-                # YYYY-MM-DDTHH:MM
+                # YYYY-MM-DDTHH:MM:SS
                 return datetime.datetime(
                     *map(  # type:ignore
                         fast_int,
@@ -73,6 +72,7 @@ def parse_iso(value):
                             value[8:10],
                             value[11:13],
                             value[14:16],
+                            value[17:19]
                         ],
                     )
                 )

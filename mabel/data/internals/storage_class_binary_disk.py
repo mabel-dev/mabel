@@ -5,7 +5,7 @@ for the BINARY_DISK variation of the STORAGE CLASSES.
 This stores DICTSETs in a binary format - which should be smaller and faster - but only
 supports a subset of field types.
 """
-from mabel.errors.data_not_found_error import DataNotFoundError
+
 import os
 import sys
 import mmap
@@ -13,8 +13,9 @@ import atexit
 import struct
 import datetime
 from tempfile import NamedTemporaryFile
-from typing import Iterable, Any, Iterator
 from ...utils.paths import silent_remove
+from mabel.utils.dates import parse_iso
+from mabel.errors.data_not_found_error import DataNotFoundError
 
 
 from ctypes import create_string_buffer
@@ -73,43 +74,6 @@ TYPE_STORAGE = {
     "spacer": (1, lambda x: b"\x00", lambda x: None),
 }
 
-
-def parse_iso(value):
-    DATE_SEPARATORS = {"-", ":"}
-    # date validation at speed is hard, dateutil is great but really slow, this is fast
-    # but error-prone. It assumes it is a date or it really nothing like a date.
-    # Making that assumption - and accepting the consequences - we can convert upto
-    # three times faster than dateutil.
-    try:
-        if isinstance(value, (datetime.datetime)):
-            return value
-        if isinstance(value, str) and len(value) >= 10:
-            if not value[4] in DATE_SEPARATORS or not value[7] in DATE_SEPARATORS:
-                return None
-            if len(value) == 10:
-                # YYYY-MM-DD
-                return datetime.datetime(
-                    *map(int, [value[:4], value[5:7], value[8:10]])
-                )
-            if len(value) >= 16:
-                if not value[10] in {"T", " "} or not value[13] in DATE_SEPARATORS:
-                    return False
-                # YYYY-MM-DDTHH:MM
-                return datetime.datetime(
-                    *map(  # type:ignore
-                        int,
-                        [
-                            value[:4],
-                            value[5:7],
-                            value[8:10],
-                            value[11:13],
-                            value[14:16],
-                        ],
-                    )
-                )
-        return None
-    except (ValueError, TypeError):
-        return None
 
 
 class StorageClassBinaryDisk(object):
