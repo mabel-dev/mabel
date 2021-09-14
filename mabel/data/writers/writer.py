@@ -128,9 +128,9 @@ class Writer:
         self.records += 1
 
     def __del__(self):
-        if hasattr(self, "finalized") and not self.finalized:
+        if hasattr(self, "finalized") and not self.finalized and self.records > 0:
             get_logger().error(
-                f"{type(self).__name__} has not been finalized - data may be lost, make sure you call .finalize()"
+                f"{type(self).__name__} has not been finalized - {self.records} may have been lost, use `.finalize()` to finalize writers."
             )
 
     def finalize(self):

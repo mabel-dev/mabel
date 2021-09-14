@@ -195,14 +195,13 @@ class DictSet(object):
             lambda x, y: x + [a for a in y.keys() if a not in x], iter(self._iterator), []
         )
 
-    def describe(self, number_of_rows: int = 25):
+    def types(self, number_of_rows: int = 100):
         top = self.take(number_of_rows)
-        keys = reduce(lambda x, y: x + [a for a in y.keys() if a not in x], top, [])
         response = {}
-        for key in keys:
-            key_type = { type(row.get(key)) for row in top if row.get(key) != None }
+        for key in top.keys():
+            key_type = { type(val).__name__ for val in top.collect(key) if val != None }
             if len(key_type) == 1:
-                response[key] = key_type[0]
+                response[key] = key_type.pop()
             else:
                 response[key] = "mixed"
         return response                    
