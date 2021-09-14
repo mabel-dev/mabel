@@ -76,19 +76,17 @@ library version. Alpha versions are more likely to have functional issues.
 
 ## Dependencies
 
--  **[orjson](https://github.com/ijl/orjson)** for JSON (de)serialization
--  **[bitarray](https://github.com/ilanschnell/bitarray)** for handling high density boolean data
--  **[siphashc](https://github.com/WeblateOrg/siphashc)** for non-cryptographic hashing
--  **[pydantic](https://pydantic-docs.helpmanual.io/)** to define internal data models  
--  **[zstandard](https://github.com/indygreg/python-zstandard)** for real-time on disk compression
--  **[LZ4](https://github.com/python-lz4/python-lz4)** for real-time in memory compression
--  **[fastnumbers](https://github.com/SethMMorton/fastnumbers)** for fast parsing of numeric values
+>-  **[orjson](https://github.com/ijl/orjson)** for JSON (de)serialization
+>-  **[bitarray](https://github.com/ilanschnell/bitarray)** for handling high density boolean data
+>-  **[siphashc](https://github.com/WeblateOrg/siphashc)** for non-cryptographic hashing
+>-  **[pydantic](https://pydantic-docs.helpmanual.io/)** to define internal data models  
+>-  **[zstandard](https://github.com/indygreg/python-zstandard)** for real-time on disk compression
+>-  **[LZ4](https://github.com/python-lz4/python-lz4)** for real-time in memory compression
+>-  **[fastnumbers](https://github.com/SethMMorton/fastnumbers)** for fast parsing of numeric values
 
 
 There are a number of optional dependencies which are usually only required for
-specific features and functionality. These are listed in the
-[requirements.txt](https://github.com/mabel-dev/mabel/blob/main/tests/requirements.txt)
-file in the _tests_ folder.
+specific features and functionality. These are listed in **tests/[requirements.txt](https://github.com/mabel-dev/mabel/blob/main/tests/requirements.txt)**.
 
 ## Integrations
 
