@@ -8,8 +8,7 @@ Results (seconds to search for a username in 65,500 rows):
  no      |    yes     |   0.357 
  no      |    no      |   0.332
 -------------------------------
-
-""" 
+"""
 import os, sys
 
 sys.path.insert(1, os.path.join(sys.path[0], "../.."))

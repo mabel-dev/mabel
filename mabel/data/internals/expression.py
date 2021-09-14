@@ -18,6 +18,7 @@ import fastnumbers
 class InvalidExpression(BaseException):
     pass
 
+
 TOKENS = {
     "NUM": "<Number>",
     "STR": "<Literal>",
@@ -247,7 +248,7 @@ class Expression(object):
             TOKENS["STR"],
             TOKENS["BOOL"],
             TOKENS["NULL"],
-            TOKENS["DATE"]
+            TOKENS["DATE"],
         ):
             return treeNode.value
         if treeNode.token_type == TOKENS["VAR"]:
@@ -294,7 +295,7 @@ class Expression(object):
             TOKENS["VAR"],
             TOKENS["BOOL"],
             TOKENS["NULL"],
-            TOKENS["DATE"]
+            TOKENS["DATE"],
         ):
             return treeNode.value
 

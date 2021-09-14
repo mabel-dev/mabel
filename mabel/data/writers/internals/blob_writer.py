@@ -91,6 +91,7 @@ class BlobWriter(object):
                     # to load into and read from pyarrow
                     # first, we load the buffer into a file and then into pyarrow
                     import tempfile
+
                     buffer_temp_file = tempfile.TemporaryFile()
                     buffer_temp_file.write(self.buffer)
                     buffer_temp_file.seek(0, 0)
@@ -99,9 +100,7 @@ class BlobWriter(object):
 
                     # then we save from pyarrow into another file which we read
                     pq_temp_file = tempfile.TemporaryFile()
-                    pq.write_table(
-                        in_pyarrow_buffer, pq_temp_file, compression="ZSTD"
-                    )
+                    pq.write_table(in_pyarrow_buffer, pq_temp_file, compression="ZSTD")
                     pq_temp_file.seek(0, 0)
                     self.buffer = pq_temp_file.read()
                     pq_temp_file.close()
@@ -131,7 +130,7 @@ class BlobWriter(object):
                     {
                         "committed_blob": committed_blob_name,
                         "records": self.records_in_buffer,
-                        "bytes": len(self.buffer)
+                        "bytes": len(self.buffer),
                     }
                 )
 

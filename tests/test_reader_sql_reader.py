@@ -25,7 +25,12 @@ def test_where():
 
     shutil.rmtree("_temp", ignore_errors=True)
     do_writer()
-    s = SqlReader("SELECT * FROM _temp.twitter", inner_reader=DiskReader, raw_path=True, persistence=STORAGE_CLASS.MEMORY)
+    s = SqlReader(
+        "SELECT * FROM _temp.twitter",
+        inner_reader=DiskReader,
+        raw_path=True,
+        persistence=STORAGE_CLASS.MEMORY,
+    )
     assert s.count() == 50, s.count()
     shutil.rmtree("_temp", ignore_errors=True)
 
@@ -56,7 +61,7 @@ def test_sql():
             test.get("statement"),
             inner_reader=DiskReader,
             raw_path=True,
-            persistence=STORAGE_CLASS.MEMORY
+            persistence=STORAGE_CLASS.MEMORY,
         )
         print(s)
         assert s.count() == test.get(

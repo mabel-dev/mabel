@@ -39,7 +39,7 @@ FUNCTIONS = {
     "MONTH": get_month,
     "DAY": get_day,
     "DATE": get_date,
-    "DATETIME": lambda x: x/0, ## not implemented
+    "DATETIME": lambda x: x / 0,  ## not implemented
     "UCASE": lambda x: x.upper(),
     "LCASE": lambda x: x.lower(),
     "LEN": len,
@@ -48,5 +48,5 @@ FUNCTIONS = {
     "INT": int,
     "FLOAT": float,
     "BOOLEAN": lambda x: x.upper() != "FALSE",
-    "ISNONE": lambda x: x is None
+    "ISNONE": lambda x: x is None,
 }

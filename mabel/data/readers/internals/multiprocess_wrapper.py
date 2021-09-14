@@ -23,7 +23,7 @@ def _inner_process(func, source_queue, reply_queue):  # pragma: no cover
     except Empty:  # pragma: no cover
         source = TERMINATE_SIGNAL
 
-    while source != TERMINATE_SIGNAL: 
+    while source != TERMINATE_SIGNAL:
         # non blocking wait - this isn't thread aware in that it can trivially
         # have race conditions, but it will apply a simple back-off so we're
         # not exhausting memory when we know we should wait
@@ -40,7 +40,7 @@ def _inner_process(func, source_queue, reply_queue):  # pragma: no cover
                 source = None
 
 
-def processed_reader(func, items_to_read):  # pragma: no cover
+def processed_reader(func, items_to_read, support_files):  # pragma: no cover
 
     if os.name == "nt":  # pragma: no cover
         raise NotImplementedError(

@@ -15,6 +15,7 @@ try:
         InternalServerError,
         TooManyRequests,
     )  # type:ignore
+
     google_cloud_storage_installed = True
 except ImportError:  # pragma: no cover
     google_cloud_storage_installed = False

@@ -170,7 +170,9 @@ class DictSet(object):
                 if random_value % selector == 0:
                     yield row
 
-        return DictSet(inner_sampler(iter(self._iterator)), storage_class=self.storage_class)
+        return DictSet(
+            inner_sampler(iter(self._iterator)), storage_class=self.storage_class
+        )
 
     def collect(self, key: str = None) -> Union[list, map]:
         """
@@ -192,19 +194,21 @@ class DictSet(object):
                 lambda x, y: x + [a for a in y.keys() if a not in x], rows, []
             )
         return reduce(
-            lambda x, y: x + [a for a in y.keys() if a not in x], iter(self._iterator), []
+            lambda x, y: x + [a for a in y.keys() if a not in x],
+            iter(self._iterator),
+            [],
         )
 
     def types(self, number_of_rows: int = 100):
         top = self.take(number_of_rows)
         response = {}
         for key in top.keys():
-            key_type = { type(val).__name__ for val in top.collect(key) if val != None }
+            key_type = {type(val).__name__ for val in top.collect(key) if val != None}
             if len(key_type) == 1:
                 response[key] = key_type.pop()
             else:
                 response[key] = "mixed"
-        return response                    
+        return response
 
     def max(self, key: str):
         """
@@ -309,7 +313,9 @@ class DictSet(object):
                     yield item
                 hash_list[hashed_item] = True
 
-        return DictSet(do_dedupe(iter(self._iterator)), storage_class=self.storage_class)
+        return DictSet(
+            do_dedupe(iter(self._iterator)), storage_class=self.storage_class
+        )
 
     def group_by(self, *group_by_column):
         """
@@ -417,7 +423,10 @@ class DictSet(object):
                         yield record
 
             q = Expression(filters)
-            return DictSet(inner_filter_where(iter(self._iterator)), storage_class=self.storage_class)
+            return DictSet(
+                inner_filter_where(iter(self._iterator)),
+                storage_class=self.storage_class,
+            )
 
         # DNF filtering
         if isinstance(filters, (tuple, list)):
@@ -436,9 +445,9 @@ class DictSet(object):
                         yield item
 
             return DictSet(
-                inner_filter_callable(filters, iter(self._iterator)), storage_class=self.storage_class
+                inner_filter_callable(filters, iter(self._iterator)),
+                storage_class=self.storage_class,
             )
-
 
     def cursor(self):
         """
@@ -460,7 +469,9 @@ class DictSet(object):
             for record in it:
                 yield {k: record.get(k, None) for k in columns}
 
-        return DictSet(inner_select(iter(self._iterator)), storage_class=self.storage_class)
+        return DictSet(
+            inner_select(iter(self._iterator)), storage_class=self.storage_class
+        )
 
     def sort_and_take(self, column, take: int = 5000, descending: bool = False):
 
@@ -472,7 +483,7 @@ class DictSet(object):
         else:
             # In a low-memory environment we probably can't store all of the records
             # into memory, but if we're only interested in, say the top 10, then we
-            # only need to store about that many in memory at any one time. This 
+            # only need to store about that many in memory at any one time. This
             # implementation stores double and one records in memory as it collects
             # and sorts them.
             double_cache = max(take * 2, 1) + 1

@@ -28,7 +28,6 @@ def test_reader_can_read_csv():
         assert keys == r.keys(), r.keys()
 
 
-
 def test_reader_can_read_zipped_csv():
     r = Reader(
         inner_reader=DiskReader,

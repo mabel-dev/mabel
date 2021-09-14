@@ -31,11 +31,13 @@ from mabel.data.internals.dnf_filters import DnfFilters
 def empty_list(x):
     return []
 
+
 class EXTENSION_TYPE(str, Enum):
     # labels for the file extentions
     DATA = "DATA"
     CONTROL = "CONTROL"
     INDEX = "INDEX"
+
 
 KNOWN_EXTENSIONS = {
     ".txt": (decompressors.block, parsers.pass_thru, EXTENSION_TYPE.DATA),
@@ -83,7 +85,7 @@ class ParallelReader:
             **kwargs: kwargs
         """
 
-        # DNF form is a representation of logical expressions which it is easiest
+        # DNF form is a representation of logical expressions which it is easier
         # to apply any indicies to - we can convert Expressions to DNF but we can't
         # convert functions to DNF.
         if isinstance(filters, DnfFilters):
@@ -104,6 +106,7 @@ class ParallelReader:
         # this is aggregation and reducers for the data
         self.reducer = reducer
 
+        # sometimes the user knows better
         self.override_format = override_format
 
         if self.override_format:
@@ -130,14 +133,31 @@ class ParallelReader:
             if predicate is None:  # pragma: no cover
                 return None
 
-            # If we have a tuple extract out the key, operator and value and do the evaluation
+            # If we have a tuple, this is the inner most representation of our filter.
+            # Extract out the key, operator and value and look them up against the
+            # index - if we can.
             if isinstance(predicate, tuple):
-                key, operator, value = predicate
+                key, operator, values = predicate
                 if operator in PRE_FILTERABLE_OPERATORS:
                     # do I have an index for this field?
-                    for index_file in [index_file for index_file in index_files if f".{key}." in index_file]:
+                    for index_file in [
+                        index_file
+                        for index_file in index_files
+                        if f".{key}." in index_file
+                    ]:
                         print("I HAVE", index_file)
+                        rows = []
+
+                        # load the index
                         index = Index(self.reader.get_blob_stream(index_file))
+                        if not isinstance(values, (list, tuple, set)):
+                            values = [values]
+                        # get the matching rows
+                        for value in values:
+                            rows = rows + list(index.search(value))
+                        # deduplicate the resultant row numbers
+                        return set(rows)
+
                 return self.NOT_INDEXED
 
             if isinstance(predicate, list):
@@ -186,7 +206,11 @@ class ParallelReader:
             record_iterator = decompressor(record_iterator)
             ### bypass rows which aren't selected
             if row_selector:
-                record_iterator = [record for index, record in enumerate(record_iterator) if index in selected_rows]
+                record_iterator = [
+                    record
+                    for index, record in enumerate(record_iterator)
+                    if index in selected_rows
+                ]
             # Parse
             record_iterator = map(parser, record_iterator)
             # Filter
@@ -197,5 +221,6 @@ class ParallelReader:
             yield from record_iterator
         except Exception as e:
             import traceback
+
             print(f"{blob_name} had an error - {e}\n{traceback.format_exc()}")
             return []
