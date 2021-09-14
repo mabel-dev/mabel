@@ -15,7 +15,7 @@ TIMEDELTA_PATTERN = re.compile(TIMEDELTA_REGEX, re.IGNORECASE)
 
 def extract_date(value):
     if isinstance(value, str):
-        value = parser.parse(value)
+        value = parse_iso(value)
     if isinstance(value, (datetime.date, datetime.datetime)):
         return datetime.date(value.year, value.month, value.day)
     return datetime.date.today()

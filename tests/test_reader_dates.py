@@ -3,7 +3,6 @@ Written following a bug discovered in how the Reader determines the data range.
 """
 import datetime
 import os
-from re import sub
 import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))

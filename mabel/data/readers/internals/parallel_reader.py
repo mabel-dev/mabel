@@ -20,8 +20,9 @@ dataset:
 │ Reduce     │ Aggregate                                                  │
 └────────────┴────────────────────────────────────────────────────────────┘
 """
-from enum import Enum
 from . import decompressors, parsers
+from enum import Enum
+from functools import reduce
 from mabel.utils import paths
 from mabel.data.internals.index import Index
 from mabel.data.internals.expression import Expression
@@ -162,8 +163,13 @@ class ParallelReader:
 
             if isinstance(predicate, list):
                 # Are all of the entries tuples? These are ANDed together.
+                rows = []
                 if all([isinstance(p, tuple) for p in predicate]):
-                    evaluations = [_inner_prefilter(p) for p in predicate]
+                    for index, row in enumerate(predicate):
+                        if index == 0:
+                            rows = _inner_prefilter(row)
+                        else:
+                            rows = [p for p in predicate if p in rows]
 
                 # Are all of the entries lists? These are ORed together.
                 # All of the elements in an OR need to be indexable for use to be
@@ -173,14 +179,22 @@ class ParallelReader:
                     if not all([e == self.NOT_INDEXED for e in evaluations]):
                         return self.NOT_INDEXED
                     else:
-                        pass
+                        # join the data sets together by adding them
+                        rows = reduce(lambda x, y: x + _inner_prefilter(y), predicate, [])
 
                 # if we're here the structure of the filter is wrong
                 return self.NOT_INDEXED
             return self.NOT_INDEXED
 
-        print(_inner_prefilter(self.dnf_filter.predicates))
+        index_filters = _inner_prefilter(self.dnf_filter.predicates)
+        if index_filters != self.NOT_INDEXED:
+            return True, set(index_filters)
         return False, []
+
+    def _select(self, data_set, selector):
+        for index, record in enumerate(data_set):
+            if index in selector:
+                yield record
 
     def __call__(self, blob_name, index_files):
 
@@ -200,17 +214,18 @@ class ParallelReader:
             else:
                 row_selector = False
                 selected_rows = []
+
+            # if the value isn't in the set, abort early
+            if row_selector and len(selected_rows) == 0:
+                return None
+
             # Read
             record_iterator = self.reader.get_blob_stream(blob_name)
             # Decompress
             record_iterator = decompressor(record_iterator)
             ### bypass rows which aren't selected
             if row_selector:
-                record_iterator = [
-                    record
-                    for index, record in enumerate(record_iterator)
-                    if index in selected_rows
-                ]
+                record_iterator = self._select(record_iterator, selected_rows)
             # Parse
             record_iterator = map(parser, record_iterator)
             # Filter

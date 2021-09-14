@@ -86,7 +86,7 @@ library version. Alpha versions are more likely to have functional issues.
 
 
 There are a number of optional dependencies which are usually only required for
-specific features and functionality. These are listed in **tests/[requirements.txt](https://github.com/mabel-dev/mabel/blob/main/tests/requirements.txt)**.
+specific features and functionality. These are listed in [tests/requirements.txt](https://github.com/mabel-dev/mabel/blob/main/tests/requirements.txt).
 
 ## Integrations
 
