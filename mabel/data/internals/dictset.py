@@ -206,6 +206,8 @@ class DictSet(object):
             key_type = {type(val).__name__ for val in top.collect(key) if val != None}
             if len(key_type) == 1:
                 response[key] = key_type.pop()
+            elif sorted(key_type) == ['float','int']:
+                response[key] = "numeric"
             else:
                 response[key] = "mixed"
         return response
@@ -297,10 +299,13 @@ class DictSet(object):
             # we can't count the items in an non persisted DictSet
             return -1
 
-    def distinct(self):
+    def distinct(self, *columns):
         """
         Remove duplicates from a _DictSet_. This creates a list of the items
         already added to the result, so is not suitable for huge _DictSets_.
+
+        Optionally accepts a list of columns, which we extract out and just
+        'distinct' on these, ignoring differences in any of the other columns.
         """
         hash_list = {}
 
@@ -308,7 +313,10 @@ class DictSet(object):
             for item in data:
                 # ensure the fields are in the same order
                 item = dict(sorted(item.items()))
-                hashed_item = hash(orjson.dumps(item))
+                if columns:
+                    hashed_item = hash(''.join([str(item.get(c, "$$")) for c in columns]))
+                else:
+                    hashed_item = hash(orjson.dumps(item))
                 if hashed_item not in hash_list:
                     yield item
                 hash_list[hashed_item] = True

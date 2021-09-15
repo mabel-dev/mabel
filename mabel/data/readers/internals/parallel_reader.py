@@ -169,7 +169,8 @@ class ParallelReader:
                         if index == 0:
                             rows = _inner_prefilter(row)
                         else:
-                            rows = [p for p in predicate if p in rows]
+                            rows = [p for p in _inner_prefilter(row) if p in rows]
+                    return set(rows)
 
                 # Are all of the entries lists? These are ORed together.
                 # All of the elements in an OR need to be indexable for use to be
@@ -181,6 +182,7 @@ class ParallelReader:
                     else:
                         # join the data sets together by adding them
                         rows = reduce(lambda x, y: x + _inner_prefilter(y), predicate, [])
+                    return set(rows)
 
                 # if we're here the structure of the filter is wrong
                 return self.NOT_INDEXED

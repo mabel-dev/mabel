@@ -82,6 +82,15 @@ def test_keys():
             "timestamp",
         ], storage_class
 
+def test_distinct():
+    for storage_class in STORAGE_CLASSES:
+        if storage_class != STORAGE_CLASS.NO_PERSISTANCE:
+            ds = get_ds(persistence=storage_class)
+            assert ds.distinct().count() == 50, storage_class
+            assert ds.distinct("username").count() == 2, storage_class
+            assert ds.distinct("username", "location").count() == 2, storage_class    
+            assert ds.distinct("sentiment").count() == 36, storage_class      
+
 
 if __name__ == "__main__":
     test_count()
@@ -90,5 +99,6 @@ if __name__ == "__main__":
     test_repr()
     test_collect()
     test_keys()
+    test_distinct()
 
     print("OKAY")
