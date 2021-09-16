@@ -14,6 +14,7 @@ logging_seen_warnings: Dict[int, int] = {}
 
 def report_suppressions(message):
     import mabel.logging
+
     record = logging_seen_warnings.get(hash(message))
     if record:
         mabel.logging.get_logger().warning(
@@ -60,7 +61,6 @@ class GoogleLogger(object):
         spanId: Optional[str] = None,
     ):
 
-
         # supress duplicate warnings
         if severity == LEVELS.WARNING:  # warnings
             hashed = hash(str(message))
@@ -69,7 +69,6 @@ class GoogleLogger(object):
                 return "suppressed"
             logging_seen_warnings[hashed] = 0
             atexit.register(report_suppressions, str(message))
-
 
         from .create_logger import LOG_NAME
 

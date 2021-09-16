@@ -170,7 +170,9 @@ class DictSet(object):
                 if random_value % selector == 0:
                     yield row
 
-        return DictSet(inner_sampler(iter(self._iterator)), storage_class=self.storage_class)
+        return DictSet(
+            inner_sampler(iter(self._iterator)), storage_class=self.storage_class
+        )
 
     def collect(self, key: str = None) -> Union[list, map]:
         """
@@ -192,20 +194,23 @@ class DictSet(object):
                 lambda x, y: x + [a for a in y.keys() if a not in x], rows, []
             )
         return reduce(
-            lambda x, y: x + [a for a in y.keys() if a not in x], iter(self._iterator), []
+            lambda x, y: x + [a for a in y.keys() if a not in x],
+            iter(self._iterator),
+            [],
         )
 
-    def describe(self, number_of_rows: int = 25):
+    def types(self, number_of_rows: int = 100):
         top = self.take(number_of_rows)
-        keys = reduce(lambda x, y: x + [a for a in y.keys() if a not in x], top, [])
         response = {}
-        for key in keys:
-            key_type = { type(row.get(key)) for row in top if row.get(key) != None }
+        for key in top.keys():
+            key_type = {type(val).__name__ for val in top.collect(key) if val != None}
             if len(key_type) == 1:
-                response[key] = key_type[0]
+                response[key] = key_type.pop()
+            elif sorted(key_type) == ['float','int']:
+                response[key] = "numeric"
             else:
                 response[key] = "mixed"
-        return response                    
+        return response
 
     def max(self, key: str):
         """
@@ -294,10 +299,13 @@ class DictSet(object):
             # we can't count the items in an non persisted DictSet
             return -1
 
-    def distinct(self):
+    def distinct(self, *columns):
         """
         Remove duplicates from a _DictSet_. This creates a list of the items
         already added to the result, so is not suitable for huge _DictSets_.
+
+        Optionally accepts a list of columns, which we extract out and just
+        'distinct' on these, ignoring differences in any of the other columns.
         """
         hash_list = {}
 
@@ -305,12 +313,17 @@ class DictSet(object):
             for item in data:
                 # ensure the fields are in the same order
                 item = dict(sorted(item.items()))
-                hashed_item = hash(orjson.dumps(item))
+                if columns:
+                    hashed_item = hash(''.join([str(item.get(c, "$$")) for c in columns]))
+                else:
+                    hashed_item = hash(orjson.dumps(item))
                 if hashed_item not in hash_list:
                     yield item
                 hash_list[hashed_item] = True
 
-        return DictSet(do_dedupe(iter(self._iterator)), storage_class=self.storage_class)
+        return DictSet(
+            do_dedupe(iter(self._iterator)), storage_class=self.storage_class
+        )
 
     def group_by(self, *group_by_column):
         """
@@ -418,7 +431,10 @@ class DictSet(object):
                         yield record
 
             q = Expression(filters)
-            return DictSet(inner_filter_where(iter(self._iterator)), storage_class=self.storage_class)
+            return DictSet(
+                inner_filter_where(iter(self._iterator)),
+                storage_class=self.storage_class,
+            )
 
         # DNF filtering
         if isinstance(filters, (tuple, list)):
@@ -437,9 +453,9 @@ class DictSet(object):
                         yield item
 
             return DictSet(
-                inner_filter_callable(filters, iter(self._iterator)), storage_class=self.storage_class
+                inner_filter_callable(filters, iter(self._iterator)),
+                storage_class=self.storage_class,
             )
-
 
     def cursor(self):
         """
@@ -461,7 +477,9 @@ class DictSet(object):
             for record in it:
                 yield {k: record.get(k, None) for k in columns}
 
-        return DictSet(inner_select(iter(self._iterator)), storage_class=self.storage_class)
+        return DictSet(
+            inner_select(iter(self._iterator)), storage_class=self.storage_class
+        )
 
     def sort_and_take(self, column, take: int = 5000, descending: bool = False):
 
@@ -473,7 +491,7 @@ class DictSet(object):
         else:
             # In a low-memory environment we probably can't store all of the records
             # into memory, but if we're only interested in, say the top 10, then we
-            # only need to store about that many in memory at any one time. This 
+            # only need to store about that many in memory at any one time. This
             # implementation stores double and one records in memory as it collects
             # and sorts them.
             double_cache = max(take * 2, 1) + 1

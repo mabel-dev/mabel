@@ -2,7 +2,7 @@ import operator
 from siphashc import siphash
 from collections import defaultdict
 
-AGGREGATORS = {"SUM": operator.add, "MAX": max, "MIN": min, "COUNT": lambda x, y: x + 1}
+AGGREGATORS = {"SUM": operator.add, "MAX": max, "MIN": min, "COUNT": lambda x, y: x + 1, "AVG": lambda x, y: 1}
 
 
 class TooManyGroups(Exception):
@@ -41,19 +41,20 @@ class GroupBy:
         data to be processed in parallel.
         """
         for record in self._dictset:
-            group_key = "".join([f"{record.get(column)}" for column in self._columns])
+            group_key = "//".join([f"{record.get(column)}" for column in self._columns])
             group_key = siphash("*" * 16, group_key)
             if group_key not in self._group_keys:
                 self._group_keys[group_key] = [
                     (column, record.get(column)) for column in self._columns
                 ]
-                if len(self._group_keys) >= 100000:
+                if len(self._group_keys) >= 249999:
                     raise TooManyGroups(
                         f"Groups are not selective enough and too many Groups have been found (stopped at {len(self._group_keys)})."
                     )
 
             for column in collect_columns:
-                yield (group_key, column, record.get(column))
+                if record.get(column):
+                    yield (group_key, column, record[column])
 
     def aggregate(self, aggregations):
         """
@@ -67,7 +68,14 @@ class GroupBy:
         if not all(isinstance(agg, tuple) for agg in aggregations):
             raise ValueError("`aggregate` expects a list of Tuples")
 
-        columns_to_collect = [col for func, col in aggregations]
+        requested_aggs = aggregations.copy()
+
+        # averages need the sum and the count
+        for func, col in aggregations:
+            if func == "AVG":
+                aggregations += [("SUM", col), ("COUNT", col)]
+ 
+        columns_to_collect = {col for func, col in aggregations}
 
         collector = defaultdict(dict)
         # Iterate through the data in the groups formatted by the mapper. This data
@@ -106,6 +114,13 @@ class GroupBy:
 
         # We now need to expand out the hashed column names
         for group, results in collector.items():
+
+            for func, col in requested_aggs:
+                if func == "AVG":
+                    results[f"AVG({col})"] = results[f"SUM({col})"] / results[f"COUNT({col})"]
+
+            results = {f"{func}({col})":results[f"{func}({col})"] for func, col in requested_aggs}
+
             keys = self._group_keys[group]
             for key in keys:
                 results[key[0]] = key[1]
@@ -170,3 +185,9 @@ class GroupBy:
         # aggregate() function and removing the bits that aren't needed to just
         # count the values.
         return self.aggregate(("COUNT", "*"))
+
+    def average(self, columns):
+
+        if not isinstance(columns, (tuple, list, set)):
+            columns = [columns]
+        return self.aggregate([("AVG", column) for column in columns])

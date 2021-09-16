@@ -20,22 +20,27 @@ dataset:
 │ Reduce     │ Aggregate                                                  │
 └────────────┴────────────────────────────────────────────────────────────┘
 """
-from enum import Enum
+from mabel import logging
 from . import decompressors, parsers
+from enum import Enum
+from functools import reduce
 from mabel.utils import paths
 from mabel.data.internals.index import Index
 from mabel.data.internals.expression import Expression
 from mabel.data.internals.dnf_filters import DnfFilters
 
+logger = logging.get_logger()
 
 def empty_list(x):
     return []
+
 
 class EXTENSION_TYPE(str, Enum):
     # labels for the file extentions
     DATA = "DATA"
     CONTROL = "CONTROL"
     INDEX = "INDEX"
+
 
 KNOWN_EXTENSIONS = {
     ".txt": (decompressors.block, parsers.pass_thru, EXTENSION_TYPE.DATA),
@@ -64,7 +69,7 @@ def no_filter(x):
 
 class ParallelReader:
 
-    NOT_INDEXED = ""
+    NOT_INDEXED = {-1}
 
     def __init__(
         self,
@@ -83,7 +88,7 @@ class ParallelReader:
             **kwargs: kwargs
         """
 
-        # DNF form is a representation of logical expressions which it is easiest
+        # DNF form is a representation of logical expressions which it is easier
         # to apply any indicies to - we can convert Expressions to DNF but we can't
         # convert functions to DNF.
         if isinstance(filters, DnfFilters):
@@ -104,6 +109,7 @@ class ParallelReader:
         # this is aggregation and reducers for the data
         self.reducer = reducer
 
+        # sometimes the user knows better
         self.override_format = override_format
 
         if self.override_format:
@@ -130,20 +136,42 @@ class ParallelReader:
             if predicate is None:  # pragma: no cover
                 return None
 
-            # If we have a tuple extract out the key, operator and value and do the evaluation
+            # If we have a tuple, this is the inner most representation of our filter.
+            # Extract out the key, operator and value and look them up against the
+            # index - if we can.
             if isinstance(predicate, tuple):
-                key, operator, value = predicate
+                key, operator, values = predicate
                 if operator in PRE_FILTERABLE_OPERATORS:
                     # do I have an index for this field?
-                    for index_file in [index_file for index_file in index_files if f".{key}." in index_file]:
-                        print("I HAVE", index_file)
+                    for index_file in [
+                        index_file
+                        for index_file in index_files
+                        if f".{key}." in index_file
+                    ]:
+                        rows = []
+
+                        # load the index
                         index = Index(self.reader.get_blob_stream(index_file))
+                        if not isinstance(values, (list, tuple, set)):
+                            values = [values]
+                        # get the matching rows
+                        for value in values:
+                            rows = rows + list(index.search(value))
+                        # deduplicate the resultant row numbers
+                        return set(rows)
+
                 return self.NOT_INDEXED
 
             if isinstance(predicate, list):
                 # Are all of the entries tuples? These are ANDed together.
+                rows = []
                 if all([isinstance(p, tuple) for p in predicate]):
-                    evaluations = [_inner_prefilter(p) for p in predicate]
+                    for index, row in enumerate(predicate):
+                        if index == 0:
+                            rows = _inner_prefilter(row)
+                        else:
+                            rows = [p for p in _inner_prefilter(row) if p in rows]
+                    return set(rows)
 
                 # Are all of the entries lists? These are ORed together.
                 # All of the elements in an OR need to be indexable for use to be
@@ -153,14 +181,23 @@ class ParallelReader:
                     if not all([e == self.NOT_INDEXED for e in evaluations]):
                         return self.NOT_INDEXED
                     else:
-                        pass
+                        # join the data sets together by adding them
+                        rows = reduce(lambda x, y: x + _inner_prefilter(y), predicate, [])
+                    return set(rows)
 
                 # if we're here the structure of the filter is wrong
                 return self.NOT_INDEXED
             return self.NOT_INDEXED
 
-        print(_inner_prefilter(self.dnf_filter.predicates))
+        index_filters = _inner_prefilter(self.dnf_filter.predicates)
+        if index_filters != self.NOT_INDEXED:
+            return True, set(index_filters)
         return False, []
+
+    def _select(self, data_set, selector):
+        for index, record in enumerate(data_set):
+            if index in selector:
+                yield record
 
     def __call__(self, blob_name, index_files):
 
@@ -180,13 +217,18 @@ class ParallelReader:
             else:
                 row_selector = False
                 selected_rows = []
+
+            # if the value isn't in the set, abort early
+            if row_selector and len(selected_rows) == 0:
+                return None
+
             # Read
             record_iterator = self.reader.get_blob_stream(blob_name)
             # Decompress
             record_iterator = decompressor(record_iterator)
             ### bypass rows which aren't selected
             if row_selector:
-                record_iterator = [record for index, record in enumerate(record_iterator) if index in selected_rows]
+                record_iterator = self._select(record_iterator, selected_rows)
             # Parse
             record_iterator = map(parser, record_iterator)
             # Filter
@@ -197,5 +239,6 @@ class ParallelReader:
             yield from record_iterator
         except Exception as e:
             import traceback
-            print(f"{blob_name} had an error - {e}\n{traceback.format_exc()}")
+
+            logging.error(f"{blob_name} had an error - {e}\n{traceback.format_exc()}")
             return []

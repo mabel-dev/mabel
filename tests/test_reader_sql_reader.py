@@ -25,7 +25,12 @@ def test_where():
 
     shutil.rmtree("_temp", ignore_errors=True)
     do_writer()
-    s = SqlReader("SELECT * FROM _temp.twitter", inner_reader=DiskReader, raw_path=True, persistence=STORAGE_CLASS.MEMORY)
+    s = SqlReader(
+        "SELECT * FROM _temp.twitter",
+        inner_reader=DiskReader,
+        raw_path=True,
+        persistence=STORAGE_CLASS.MEMORY,
+    )
     assert s.count() == 50, s.count()
     shutil.rmtree("_temp", ignore_errors=True)
 
@@ -42,9 +47,13 @@ SQL_TESTS = [
     {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = 'Verizon Support'", "result":2},
     {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id = 1346604539923853313", "result":1}, 
     {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id = 1346604539923853313 AND user_id = 4832862820", "result":1},
+    {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id IN (1346604539923853313, 1346604544134885378)", "result":2},
+    {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id BETWEEN 1346604539923853313 AND 1346604544134885378", "result":2},
     {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id = 1346604539923853313 OR user_id = 2147860407", "result":2},
     {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id = 1346604539923853313 OR user_verified = True", "result":453},
     {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = 'Dave Jamieson' AND user_verified = True", "result":1},
+    {"statement":"SELECT COUNT(*) FROM tests.data.index.is  WHERE user_name = 'Dave Jamieson' AND user_verified = True", "result":1},
+    {"statement":"SELECT COUNT(*) FROM tests.data.index.is GROUP BY user_verified", "result":1},
 ]
 # fmt:on
 
@@ -56,9 +65,9 @@ def test_sql():
             test.get("statement"),
             inner_reader=DiskReader,
             raw_path=True,
-            persistence=STORAGE_CLASS.MEMORY
+            persistence=STORAGE_CLASS.MEMORY,
         )
-        print(s)
+        #print(s)
         assert s.count() == test.get(
             "result"
         ), f"{test.get('statement')} == {s.count()}"

@@ -245,7 +245,7 @@ def SqlReader(sql_statement: str, **kwargs):
     # if the query is COUNT(*) on a SELECT, just do it.
     if sql.select == [("COUNT", "*")] and not sql.group_by:
         count = -1
-        for count, r in enumerate(self.reader):
+        for count, r in enumerate(reader):
             pass
         reader = DictSet([{"COUNT(*)": count + 1}])
     # if we're not grouping and we have functions, execute them
@@ -264,9 +264,7 @@ def SqlReader(sql_statement: str, **kwargs):
             )
         # if we're grouping by a function result (like YEAR), calculate that function
         if any(isinstance(selector, tuple) for selector in sql.group_by):
-            reader = apply_functions_on_read_thru(
-                reader, sql.group_by, True
-            )
+            reader = apply_functions_on_read_thru(reader, sql.group_by, True)
             sql.group_by = [
                 f"{group[0]}({group[1]})" if isinstance(group, tuple) else group
                 for group in sql.group_by

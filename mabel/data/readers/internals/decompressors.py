@@ -40,13 +40,14 @@ def unzip(stream):
             file = zip.read(file_name)
             # get the extention of the file(s) in the ZIP and put them
             # through a secondary decompressor and parser
-            ext = '.' + file_name.split('.')[-1]
+            ext = "." + file_name.split(".")[-1]
             print("EXT", ext)
             if ext in KNOWN_EXTENSIONS:
                 decompressor, parser, file_type = KNOWN_EXTENSIONS[ext]
                 print(decompressor, parser)
                 for line in decompressor(io.BytesIO(file)):
                     yield parser(line)
+
 
 def parquet(stream):
     """

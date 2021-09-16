@@ -23,6 +23,7 @@ Terminology:
 
 
 class Index:
+
     def __init__(self, index: io.BytesIO):
         """
         A data index which speeds up reading data files.

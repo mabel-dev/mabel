@@ -50,7 +50,7 @@ def is_date(**kwargs):
                         return False
                     if not value[13] in DATE_SEPARATORS:
                         return False
-                    # YYYY-MM-DDTHH:MM
+                    # YYYY-MM-DDTHH:MM....
                     datetime.datetime(
                         *map(  # type:ignore
                             int,

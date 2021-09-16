@@ -23,13 +23,14 @@ def _inner_process(func, source_queue, reply_queue):  # pragma: no cover
     except Empty:  # pragma: no cover
         source = TERMINATE_SIGNAL
 
-    while source != TERMINATE_SIGNAL: 
+    while source != TERMINATE_SIGNAL:
         # non blocking wait - this isn't thread aware in that it can trivially
         # have race conditions, but it will apply a simple back-off so we're
         # not exhausting memory when we know we should wait
         while reply_queue.full():
             time.sleep(1)
         with multiprocessing.Lock():
+            # the empty list here is where the list of indicies should go
             reply_queue.put([*func(source, [])], timeout=30)
         source = None
         while source is None:
@@ -39,7 +40,7 @@ def _inner_process(func, source_queue, reply_queue):  # pragma: no cover
                 source = None
 
 
-def processed_reader(func, items_to_read):  # pragma: no cover
+def processed_reader(func, items_to_read, support_files):  # pragma: no cover
 
     if os.name == "nt":  # pragma: no cover
         raise NotImplementedError(
@@ -48,8 +49,10 @@ def processed_reader(func, items_to_read):  # pragma: no cover
 
     process_pool = []
 
-    # limit the number of slots
-    slots = min(len(items_to_read), multiprocessing.cpu_count() - 1, 4)
+    # determin the number of CPUs we're going to use:
+    # - less than or equal to the number of files to read
+    # - half of the CPUs, unless there's 2, then use both
+    slots = max(min(len(items_to_read), multiprocessing.cpu_count() // 2), 2)
     reply_queue = multiprocessing.Queue(slots)
 
     send_queue = multiprocessing.Queue()
