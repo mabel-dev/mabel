@@ -79,14 +79,14 @@ class GoogleLogger(object):
         structured_log["logging.googleapis.com/labels"] = {
             "system": system,
             "log_name": LOG_NAME,
-        }
+        } # type:ignore
 
         method, module, line = extract_caller()
         structured_log["logging.googleapis.com/sourceLocation"] = {
             "function": method,
             "file": module,
             "line": line,
-        }
+        } # type:ignore
 
         if spanId:
             structured_log["logging.googleapis.com/spanId"] = spanId
@@ -94,7 +94,7 @@ class GoogleLogger(object):
         if isinstance(message, dict):
             formatter = LogFormatter(None)
             message = formatter.clean_record(message, False)
-            structured_log["jsonPayload"] = message
+            structured_log["jsonPayload"] = message # type:ignore
             return log_it(structured_log)
         else:
             structured_log["textPayload"] = message
