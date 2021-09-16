@@ -245,7 +245,7 @@ def SqlReader(sql_statement: str, **kwargs):
     # if the query is COUNT(*) on a SELECT, just do it.
     if sql.select == [("COUNT", "*")] and not sql.group_by:
         count = -1
-        for count, r in enumerate(self.reader):
+        for count, r in enumerate(reader):
             pass
         reader = DictSet([{"COUNT(*)": count + 1}])
     # if we're not grouping and we have functions, execute them

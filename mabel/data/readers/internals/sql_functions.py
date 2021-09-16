@@ -1,4 +1,4 @@
-from ....utils.dates import parse_iso
+from mabel.utils.dates import parse_iso
 import datetime
 
 
@@ -33,13 +33,20 @@ def get_date(input):
         return input.date
     return None
 
+def get_quarter(input):
+    if isinstance(input, str):
+        input = parse_iso(input)
+    if isinstance(input, (datetime.date, datetime.datetime)):
+        return ((input.month - 1) // 3) + 1
+    return None
+
 
 FUNCTIONS = {
     "YEAR": get_year,
     "MONTH": get_month,
     "DAY": get_day,
     "DATE": get_date,
-    "DATETIME": lambda x: x / 0,  ## not implemented
+    "QUARTER": get_quarter,
     "UCASE": lambda x: x.upper(),
     "LCASE": lambda x: x.lower(),
     "LEN": len,
