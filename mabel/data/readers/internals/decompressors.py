@@ -1,7 +1,7 @@
 from zstandard import decompress
-from mabel.errors.invalid_data_set_error import InvalidDataSetError
-from mabel.errors import MissingDependencyError
-from mabel.utils import paths
+from ....errors.invalid_data_set_error import InvalidDataSetError
+from ....errors import MissingDependencyError
+from ....utils import paths
 
 
 def zstd(stream):

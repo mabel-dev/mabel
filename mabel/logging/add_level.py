@@ -13,12 +13,12 @@ logging_seen_warnings: Dict[int, int] = {}
 
 
 def report_suppressions(message):
-    import mabel.logging
+    from .. import logging as ml
 
     record = logging_seen_warnings.get(hash(message))
 
     if record:
-        mabel.logging.get_logger().warning(
+        ml.get_logger().warning(
             f'The following message was suppressed {record} time(s) - "{message}"'
         )
 

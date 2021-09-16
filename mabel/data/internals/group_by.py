@@ -40,6 +40,9 @@ class GroupBy:
         which standardize the format of the data tp be processed and could allow the
         data to be processed in parallel.
         """
+
+        print(*collect_columns)
+
         for record in self._dictset:
             group_key = "//".join([f"{record.get(column)}" for column in self._columns])
             group_key = siphash("*" * 16, group_key)
@@ -53,6 +56,8 @@ class GroupBy:
                     )
 
             for column in collect_columns:
+                if column == '*':
+                    yield (group_key, column, '*')
                 if record.get(column):
                     yield (group_key, column, record[column])
 
@@ -63,6 +68,7 @@ class GroupBy:
         We work out with group to to map the result to and then REDUCE the resulant
         value from the set.
         """
+
         if not isinstance(aggregations, list):
             aggregations = [aggregations]
         if not all(isinstance(agg, tuple) for agg in aggregations):

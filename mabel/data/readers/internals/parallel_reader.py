@@ -24,10 +24,10 @@ from mabel import logging
 from . import decompressors, parsers
 from enum import Enum
 from functools import reduce
-from mabel.utils import paths
-from mabel.data.internals.index import Index
-from mabel.data.internals.expression import Expression
-from mabel.data.internals.dnf_filters import DnfFilters
+from ....utils import paths
+from ....data.internals.index import Index
+from ....data.internals.expression import Expression
+from ....data.internals.dnf_filters import DnfFilters
 
 logger = logging.get_logger()
 
