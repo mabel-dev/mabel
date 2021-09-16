@@ -8,8 +8,8 @@ The implementation is as an expression tree,
 Derived from: https://gist.github.com/leehsueh/1290686
 """
 
-from mabel.utils.text import like, not_like
-from mabel.utils.dates import parse_iso
+from ...utils.text import like, not_like
+from ...utils.dates import parse_iso
 import re
 import operator
 import fastnumbers

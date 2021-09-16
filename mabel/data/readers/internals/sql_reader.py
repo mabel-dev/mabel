@@ -1,6 +1,7 @@
 # no-maintain-checks
+from ....data.internals.dictset import STORAGE_CLASS
 import re
-from mabel.data.internals.group_by import GroupBy, AGGREGATORS
+from ....data.internals.group_by import GroupBy, AGGREGATORS
 from mabel import DictSet
 from ..reader import Reader
 from ....logging import get_logger

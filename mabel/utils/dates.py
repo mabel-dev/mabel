@@ -62,20 +62,35 @@ def parse_iso(value):
             if len(value) >= 16:
                 if not value[10] == "T" or not value[13] in DATE_SEPARATORS:
                     return False
-                # YYYY-MM-DDTHH:MM:SS
-                return datetime.datetime(
-                    *map(  # type:ignore
-                        fast_int,
-                        [
-                            value[:4],
-                            value[5:7],
-                            value[8:10],
-                            value[11:13],
-                            value[14:16],
-                            value[17:19]
-                        ],
+                if value[16] in DATE_SEPARATORS:
+                    # YYYY-MM-DDTHH:MM:SS
+                    return datetime.datetime(
+                        *map(  # type:ignore
+                            fast_int,
+                            [
+                                value[:4],
+                                value[5:7],
+                                value[8:10],
+                                value[11:13],
+                                value[14:16],
+                                value[17:19]
+                            ],
+                        )
                     )
-                )
+                else:
+                    # YYYY-MM-DDTHH:MM
+                    return datetime.datetime(
+                        *map(  # type:ignore
+                            fast_int,
+                            [
+                                value[:4],
+                                value[5:7],
+                                value[8:10],
+                                value[11:13],
+                                value[14:16]
+                            ],
+                        )
+                    )
         return None
     except (ValueError, TypeError):
         return None

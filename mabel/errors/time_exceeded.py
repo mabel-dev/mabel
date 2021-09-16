@@ -1,4 +1,4 @@
-from mabel.errors.base_exception import BaseException
+from ..errors.base_exception import BaseException
 
 
 class TimeExceeded(BaseException):

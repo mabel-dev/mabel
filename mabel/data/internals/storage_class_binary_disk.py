@@ -14,8 +14,8 @@ import struct
 import datetime
 from tempfile import NamedTemporaryFile
 from ...utils.paths import silent_remove
-from mabel.utils.dates import parse_iso
-from mabel.errors.data_not_found_error import DataNotFoundError
+from ...utils.dates import parse_iso
+from ...errors.data_not_found_error import DataNotFoundError
 
 
 from ctypes import create_string_buffer
