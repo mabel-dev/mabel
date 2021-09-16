@@ -20,6 +20,7 @@ dataset:
 │ Reduce     │ Aggregate                                                  │
 └────────────┴────────────────────────────────────────────────────────────┘
 """
+from mabel import logging
 from . import decompressors, parsers
 from enum import Enum
 from functools import reduce
@@ -28,6 +29,7 @@ from mabel.data.internals.index import Index
 from mabel.data.internals.expression import Expression
 from mabel.data.internals.dnf_filters import DnfFilters
 
+logger = logging.get_logger()
 
 def empty_list(x):
     return []
@@ -67,7 +69,7 @@ def no_filter(x):
 
 class ParallelReader:
 
-    NOT_INDEXED = ""
+    NOT_INDEXED = {-1}
 
     def __init__(
         self,
@@ -146,7 +148,6 @@ class ParallelReader:
                         for index_file in index_files
                         if f".{key}." in index_file
                     ]:
-                        print("I HAVE", index_file)
                         rows = []
 
                         # load the index
@@ -239,5 +240,5 @@ class ParallelReader:
         except Exception as e:
             import traceback
 
-            print(f"{blob_name} had an error - {e}\n{traceback.format_exc()}")
+            logging.error(f"{blob_name} had an error - {e}\n{traceback.format_exc()}")
             return []

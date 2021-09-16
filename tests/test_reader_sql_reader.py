@@ -52,6 +52,8 @@ SQL_TESTS = [
     {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id = 1346604539923853313 OR user_id = 2147860407", "result":2},
     {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id = 1346604539923853313 OR user_verified = True", "result":453},
     {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = 'Dave Jamieson' AND user_verified = True", "result":1},
+    {"statement":"SELECT COUNT(*) FROM tests.data.index.is  WHERE user_name = 'Dave Jamieson' AND user_verified = True", "result":1},
+    {"statement":"SELECT COUNT(*) FROM tests.data.index.is GROUP BY user_verified", "result":1},
 ]
 # fmt:on
 
@@ -65,7 +67,7 @@ def test_sql():
             raw_path=True,
             persistence=STORAGE_CLASS.MEMORY,
         )
-        print(s)
+        #print(s)
         assert s.count() == test.get(
             "result"
         ), f"{test.get('statement')} == {s.count()}"
