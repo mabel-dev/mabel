@@ -30,7 +30,7 @@ def get_date(input):
     if isinstance(input, str):
         input = parse_iso(input)
     if isinstance(input, (datetime.date, datetime.datetime)):
-        return input.date
+        return input.date()
     return None
 
 def get_quarter(input):
