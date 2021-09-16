@@ -92,13 +92,13 @@ def date_range(
     end_date = extract_date(end_date)
     start_date = extract_date(start_date)
 
-    if end_date < start_date:
+    if end_date < start_date:  # type:ignore
         raise ValueError(
             "date_range: end_date must be the same or later than the start_date "
         )
 
-    for n in range(int((end_date - start_date).days) + 1):
-        yield start_date + datetime.timedelta(n)
+    for n in range(int((end_date - start_date).days) + 1):  # type:ignore
+        yield start_date + datetime.timedelta(n)   # type:ignore
 
 
 # https://stackoverflow.com/questions/538666/format-timedelta-to-string/42320260#42320260

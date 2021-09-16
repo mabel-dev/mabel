@@ -270,7 +270,7 @@ class _LowLevelReader(object):
 
         else:
             logger.debug("Parallel Reader")
-            yield from processed_reader(parallel, readable_blobs)
+            yield from processed_reader(parallel, readable_blobs, supported_blobs)
 
     def __iter__(self):
         return self
