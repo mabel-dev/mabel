@@ -10,13 +10,14 @@ import mmap
 import orjson
 import atexit
 from tempfile import NamedTemporaryFile
-from .dumb_iterator import DumbIterator
-from ...utils.paths import silent_remove
+from ..dumb_iterator import DumbIterator
+from ....utils.paths import silent_remove
+from . import BaseStorageClass
 
 BUFFER_SIZE = 16 * 1024 * 1024  # 16Mb
 
 
-class StorageClassDisk:
+class StorageClassDisk(BaseStorageClass):
     """
     This provides the reader for the DISK variation of STORAGE.
     """

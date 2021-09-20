@@ -1,4 +1,7 @@
-class StorageClassMemory:
+from . import BaseStorageClass
+
+
+class StorageClassMemory(BaseStorageClass):
     """
     This provides the reader for the MEMORY variation of STORAGE.
     """

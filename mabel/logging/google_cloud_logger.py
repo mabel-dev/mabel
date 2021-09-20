@@ -49,7 +49,7 @@ class GoogleLogger(object):
     def supported():
         if is_running_from_ipython():
             return False
-        if os.environ.get("PROJECT_NAME") or "" == "":
+        if os.environ.get("PROJECT_NAME", "") or "" == "":
             return False
         return True
 
@@ -79,14 +79,14 @@ class GoogleLogger(object):
         structured_log["logging.googleapis.com/labels"] = {
             "system": system,
             "log_name": LOG_NAME,
-        } # type:ignore
+        }  # type:ignore
 
         method, module, line = extract_caller()
         structured_log["logging.googleapis.com/sourceLocation"] = {
             "function": method,
             "file": module,
             "line": line,
-        } # type:ignore
+        }  # type:ignore
 
         if spanId:
             structured_log["logging.googleapis.com/spanId"] = spanId
@@ -94,7 +94,7 @@ class GoogleLogger(object):
         if isinstance(message, dict):
             formatter = LogFormatter(None)
             message = formatter.clean_record(message, False)
-            structured_log["jsonPayload"] = message # type:ignore
+            structured_log["jsonPayload"] = message  # type:ignore
             return log_it(structured_log)
         else:
             structured_log["textPayload"] = message

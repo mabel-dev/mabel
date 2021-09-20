@@ -11,11 +11,12 @@ storage is fast, this isn't a good option.
 import orjson
 import lz4.frame
 from itertools import zip_longest
+from . import BaseStorageClass
 
 BATCH_SIZE = 500
 
 
-class StorageClassCompressedMemory(object):
+class StorageClassCompressedMemory(BaseStorageClass):
     def __init__(self, iterable):
         compressor = lz4.frame
 

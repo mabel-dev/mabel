@@ -67,7 +67,7 @@ def test_sql():
             raw_path=True,
             persistence=STORAGE_CLASS.MEMORY,
         )
-        #print(s)
+        # print(s)
         assert s.count() == test.get(
             "result"
         ), f"{test.get('statement')} == {s.count()}"

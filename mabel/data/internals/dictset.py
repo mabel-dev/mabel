@@ -36,10 +36,12 @@ from ...errors import MissingDependencyError, InvalidArgument
 from ...utils.ipython import is_running_from_ipython
 
 from .display import html_table, ascii_table
-from .storage_class_disk import StorageClassDisk
-from .storage_class_binary_disk import StorageClassBinaryDisk
-from .storage_class_compressed_memory import StorageClassCompressedMemory
-from .storage_class_memory import StorageClassMemory
+from .storage_classes import (
+    StorageClassMemory,
+    StorageClassDisk,
+    StorageClassCompressedMemory,
+    StorageClassBinaryDisk,
+)
 from .expression import Expression
 from .dnf_filters import DnfFilters
 from .dumb_iterator import DumbIterator
@@ -206,7 +208,7 @@ class DictSet(object):
             key_type = {type(val).__name__ for val in top.collect(key) if val != None}
             if len(key_type) == 1:
                 response[key] = key_type.pop()
-            elif sorted(key_type) == ['float','int']:
+            elif sorted(key_type) == ["float", "int"]:
                 response[key] = "numeric"
             else:
                 response[key] = "mixed"
@@ -314,7 +316,9 @@ class DictSet(object):
                 # ensure the fields are in the same order
                 item = dict(sorted(item.items()))
                 if columns:
-                    hashed_item = hash(''.join([str(item.get(c, "$$")) for c in columns]))
+                    hashed_item = hash(
+                        "".join([str(item.get(c, "$$")) for c in columns])
+                    )
                 else:
                     hashed_item = hash(orjson.dumps(item))
                 if hashed_item not in hash_list:

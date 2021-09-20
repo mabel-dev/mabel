@@ -2,7 +2,13 @@ import operator
 from siphashc import siphash
 from collections import defaultdict
 
-AGGREGATORS = {"SUM": operator.add, "MAX": max, "MIN": min, "COUNT": lambda x, y: x + 1, "AVG": lambda x, y: 1}
+AGGREGATORS = {
+    "SUM": operator.add,
+    "MAX": max,
+    "MIN": min,
+    "COUNT": lambda x, y: x + 1,
+    "AVG": lambda x, y: 1,
+}
 
 
 class TooManyGroups(Exception):
@@ -56,8 +62,8 @@ class GroupBy:
                     )
 
             for column in collect_columns:
-                if column == '*':
-                    yield (group_key, column, '*')
+                if column == "*":
+                    yield (group_key, column, "*")
                 if record.get(column):
                     yield (group_key, column, record[column])
 
@@ -80,7 +86,7 @@ class GroupBy:
         for func, col in aggregations:
             if func == "AVG":
                 aggregations += [("SUM", col), ("COUNT", col)]
- 
+
         columns_to_collect = {col for func, col in aggregations}
 
         collector = defaultdict(dict)
@@ -123,9 +129,14 @@ class GroupBy:
 
             for func, col in requested_aggs:
                 if func == "AVG":
-                    results[f"AVG({col})"] = results[f"SUM({col})"] / results[f"COUNT({col})"]
+                    results[f"AVG({col})"] = (
+                        results[f"SUM({col})"] / results[f"COUNT({col})"]
+                    )
 
-            results = {f"{func}({col})":results[f"{func}({col})"] for func, col in requested_aggs}
+            results = {
+                f"{func}({col})": results[f"{func}({col})"]
+                for func, col in requested_aggs
+            }
 
             keys = self._group_keys[group]
             for key in keys:

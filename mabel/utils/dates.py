@@ -48,6 +48,13 @@ def parse_iso(value):
     # but error-prone. It assumes it is a date or it really nothing like a date.
     # Making that assumption - and accepting the consequences - we can convert upto
     # three times faster than dateutil.
+
+    # valid formats:
+    # YYYY-MM-DD
+    # YYYY-MM-DD HH:MM
+    # YYYY-MM-DDTHH:MM
+    # YYYY-MM-DD HH:MM:SS
+    # YYYY-MM-DDTHH:MM:SS
     try:
         if isinstance(value, (datetime.datetime, datetime.date, datetime.time)):
             return value
@@ -60,7 +67,7 @@ def parse_iso(value):
                     *map(fast_int, [value[:4], value[5:7], value[8:10]])
                 )
             if len(value) >= 16:
-                if not value[10] == "T" or not value[13] in DATE_SEPARATORS:
+                if not value[10] in ("T", " ") or not value[13] in DATE_SEPARATORS:
                     return False
                 if value[16] in DATE_SEPARATORS:
                     # YYYY-MM-DDTHH:MM:SS
@@ -73,7 +80,7 @@ def parse_iso(value):
                                 value[8:10],
                                 value[11:13],
                                 value[14:16],
-                                value[17:19]
+                                value[17:19],
                             ],
                         )
                     )
@@ -87,7 +94,7 @@ def parse_iso(value):
                                 value[5:7],
                                 value[8:10],
                                 value[11:13],
-                                value[14:16]
+                                value[14:16],
                             ],
                         )
                     )
@@ -113,7 +120,7 @@ def date_range(
         )
 
     for n in range(int((end_date - start_date).days) + 1):  # type:ignore
-        yield start_date + datetime.timedelta(n)   # type:ignore
+        yield start_date + datetime.timedelta(n)  # type:ignore
 
 
 # https://stackoverflow.com/questions/538666/format-timedelta-to-string/42320260#42320260

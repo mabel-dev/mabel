@@ -13,9 +13,10 @@ import atexit
 import struct
 import datetime
 from tempfile import NamedTemporaryFile
-from ...utils.paths import silent_remove
-from ...utils.dates import parse_iso
-from ...errors.data_not_found_error import DataNotFoundError
+from . import BaseStorageClass
+from ....utils.paths import silent_remove
+from ....utils.dates import parse_iso
+from ....errors.data_not_found_error import DataNotFoundError
 
 
 from ctypes import create_string_buffer
@@ -75,8 +76,7 @@ TYPE_STORAGE = {
 }
 
 
-
-class StorageClassBinaryDisk(object):
+class StorageClassBinaryDisk(BaseStorageClass):
     """
     This provides the reader for the BINARY_DISK variation of STORAGE.
     """
