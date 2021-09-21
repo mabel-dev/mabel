@@ -1,4 +1,5 @@
 import threading
+import simdjson
 from typing import Any
 from orjson import dumps
 import zstandard
@@ -50,6 +51,8 @@ class BlobWriter(object):
             serialized = str(record).encode() + b"\n"
         elif self.format == "flat":
             serialized = dumps(flatten(record)) + b"\n"  # type:ignore
+        elif isinstance(record, simdjson.Object):
+            serialized = record.mini + b"\n"
         else:
             serialized = dumps(record) + b"\n"  # type:ignore
 

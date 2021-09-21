@@ -1,7 +1,4 @@
-from zstandard import decompress
-from ....errors.invalid_data_set_error import InvalidDataSetError
 from ....errors import MissingDependencyError
-from ....utils import paths
 
 
 def zstd(stream):
@@ -11,8 +8,8 @@ def zstd(stream):
     # zstandard should always be present
     import zstandard  # type:ignore
 
-    with zstandard.open(stream, "r", encoding="utf8") as file:  # type:ignore
-        yield from file
+    with zstandard.open(stream, "rb") as file:  # type:ignore
+        yield from file.read().splitlines()
 
 
 def lzma(stream):
@@ -44,7 +41,6 @@ def unzip(stream):
             print("EXT", ext)
             if ext in KNOWN_EXTENSIONS:
                 decompressor, parser, file_type = KNOWN_EXTENSIONS[ext]
-                print(decompressor, parser)
                 for line in decompressor(io.BytesIO(file)):
                     yield parser(line)
 
@@ -70,12 +66,12 @@ def lines(stream):
     """
     Default reader, assumes text format
     """
-    text = stream.read().decode("utf8")  # type:ignore
+    text = stream.read()  # type:ignore
     yield from text.splitlines()
 
 
 def block(stream):
-    yield stream.read().decode("utf8")
+    yield stream.read()
 
 
 def csv(stream):

@@ -10,9 +10,11 @@ import mmap
 import orjson
 import atexit
 from tempfile import NamedTemporaryFile
-from ..dumb_iterator import DumbIterator
 from ....utils.paths import silent_remove
 from . import BaseStorageClass
+
+import simdjson
+
 
 BUFFER_SIZE = 16 * 1024 * 1024  # 16Mb
 
@@ -33,7 +35,11 @@ class StorageClassDisk(BaseStorageClass):
         buffer = bytearray()
         with open(self.file, "wb") as f:
             for self.length, row in enumerate(iterator):
-                buffer.extend(orjson.dumps(row) + b"\n")
+                # there is a penalty for using this object
+                if isinstance(row, simdjson.Object):
+                    buffer.extend(row.mini + b"\n")
+                else:
+                    buffer.extend(orjson.dumps(row) + b"\n")
                 if len(buffer) > (BUFFER_SIZE):
                     f.write(buffer)
                     buffer = bytearray()
@@ -69,13 +75,12 @@ class StorageClassDisk(BaseStorageClass):
 
             for i, line in enumerate(reader, min_location):
                 if i in locations:
-                    yield orjson.loads(line)
+                    yield simdjson.Parser().parse(line)
                     if i == max_location:
                         return
         else:
             for line in self._read_file():
-                # this is about 50% of the time
-                yield orjson.loads(line)
+                yield simdjson.Parser().parse(line)
 
     def __iter__(self):
         self.iterator = iter(self._inner_reader())

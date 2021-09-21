@@ -3,13 +3,14 @@ JSON parsing and serialization performance tests so a decision on
 which library(s) to use can be made - previously the selection was
 inconsistent.
 
-Results (seconds to process 250,000 rows):
+Results (seconds to process 10m rows):
 
  library | parsing | serialize  
 -------------------------------
- json    |    1.08 |      1.74 
- ujson   |    0.52 |      0.86
- orjson  |    0.40 |      0.66   <- lower is better
+ json    |    36.6 |      1.74 
+ ujson   |    16.5 |      0.86
+ orjson  |    10.4 |      0.66   <- lower is better
+ simd    |     2.8 |       N/A   <- lower is better
 -------------------------------
 
 """
@@ -17,16 +18,16 @@ import time
 
 
 def _inner_file_reader(
-    file_name: str, chunk_size: int = 32 * 1024 * 1024, delimiter: str = "\n"
+    file_name: str, chunk_size: int = 32 * 1024 * 1024, delimiter: str = b"\n"
 ):
     """
     This is the guts of the reader - it opens a file and reads through it
     chunk by chunk. This allows huge files to be processed as only a chunk
     at a time is in memory.
     """
-    with open(file_name, "r", encoding="utf8") as f:
-        carry_forward = ""
-        chunk = "INITIALIZED"
+    with open(file_name, "rb") as f:
+        carry_forward = b""
+        chunk = b"INITIALIZED"
         while len(chunk) > 0:
             chunk = f.read(chunk_size)
             augmented_chunk = carry_forward + chunk
@@ -37,7 +38,7 @@ def _inner_file_reader(
             yield carry_forward
 
 
-reader = list(_inner_file_reader("tests/data/tweets/tweets-0000.jsonl")) * 10000
+reader = list(_inner_file_reader("tests/data/tweets/tweets-0000.jsonl")) * 100000
 print(len(reader))
 
 
@@ -49,6 +50,11 @@ def test_parser(parser):
 def test_serializer(serializer):
     for item in reader:
         dic = orjson.loads(item)
+        serializer(dic)
+
+def test_simd_serializer(serializer):
+    for item in reader:
+        dic = sparser.parse(item)
         serializer(dic)
 
 
@@ -81,16 +87,25 @@ def time_it_4():
 import json
 import ujson
 import orjson
+#import cysimdjson
+import simdjson
 import os
 import sys
 
-sys.path.insert(1, os.path.join(sys.path[0], "../.."))
-import mabel.data.formats.json
+#parser = cysimdjson.JSONParser()
+sparser = simdjson.Parser()
 
+def simd_dump(o):
+    o.mini
+
+#sys.path.insert(1, os.path.join(sys.path[0], "../.."))
+
+#print("cysimd parse:", time_it(test_parser, parser.parse))
+print("pysimd parse:", time_it(test_parser, sparser.parse))
 print("json parse  :", time_it(test_parser, json.loads))
 print("ujson parse :", time_it(test_parser, ujson.loads))
 print("orjson parse:", time_it(test_parser, orjson.loads))  # <- fastest
-print("mabel parse:", time_it(test_parser, mabel.data.formats.json.parse))
+
 print("map", time_it_2())
 print("comp", time_it_3())
 print("for", time_it_4())
@@ -98,4 +113,4 @@ print("for", time_it_4())
 print("json serialize   :", time_it(test_serializer, json.dumps))
 print("ujson serializer :", time_it(test_serializer, ujson.dumps))
 print("orjson serializer:", time_it(test_serializer, orjson.dumps))  # <- fastest
-print("mabel serializer:", time_it(test_serializer, mabel.data.formats.json.serialize))
+print("pysimd serializer:", time_it(test_simd_serializer, simd_dump))

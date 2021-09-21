@@ -19,6 +19,7 @@ def test_reader_can_read_csv():
     )
 
     # can we read the file into dictionaries
+    print(r.first())
     assert r.count() == 33529, r.count()
     assert isinstance(r.first(), dict)
 

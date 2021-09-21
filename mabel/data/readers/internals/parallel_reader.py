@@ -243,5 +243,5 @@ class ParallelReader:
         except Exception as e:
             import traceback
 
-            logging.error(f"{blob_name} had an error - {e}\n{traceback.format_exc()}")
+            logger.error(f"{blob_name} had an error - {e}\n{traceback.format_exc()}")
             return []
