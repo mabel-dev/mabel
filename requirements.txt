@@ -5,3 +5,4 @@ lz4
 pydantic
 siphashc
 fastnumbers
+pysimdjson

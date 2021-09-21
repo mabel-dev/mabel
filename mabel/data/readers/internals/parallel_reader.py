@@ -31,6 +31,7 @@ from ....data.internals.dnf_filters import DnfFilters
 
 logger = logging.get_logger()
 
+
 def empty_list(x):
     return []
 
@@ -182,7 +183,9 @@ class ParallelReader:
                         return self.NOT_INDEXED
                     else:
                         # join the data sets together by adding them
-                        rows = reduce(lambda x, y: x + _inner_prefilter(y), predicate, [])
+                        rows = reduce(
+                            lambda x, y: x + _inner_prefilter(y), predicate, []
+                        )
                     return set(rows)
 
                 # if we're here the structure of the filter is wrong
@@ -240,5 +243,5 @@ class ParallelReader:
         except Exception as e:
             import traceback
 
-            logging.error(f"{blob_name} had an error - {e}\n{traceback.format_exc()}")
+            logger.error(f"{blob_name} had an error - {e}\n{traceback.format_exc()}")
             return []

@@ -83,6 +83,7 @@ library version. Alpha versions are more likely to have functional issues.
 >-  **[zstandard](https://github.com/indygreg/python-zstandard)** for real-time on disk compression
 >-  **[LZ4](https://github.com/python-lz4/python-lz4)** for real-time in memory compression
 >-  **[fastnumbers](https://github.com/SethMMorton/fastnumbers)** for fast parsing of numeric values
+>-  **[simdjson](https://pysimdjson.tkte.ch/index.html)** for fast JSON deserialization
 
 
 There are a number of optional dependencies which are usually only required for

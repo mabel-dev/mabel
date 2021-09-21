@@ -10,12 +10,14 @@ storage is fast, this isn't a good option.
 """
 import orjson
 import lz4.frame
+import simdjson
 from itertools import zip_longest
+from . import BaseStorageClass
 
 BATCH_SIZE = 500
 
 
-class StorageClassCompressedMemory(object):
+class StorageClassCompressedMemory(BaseStorageClass):
     def __init__(self, iterable):
         compressor = lz4.frame
 
@@ -25,8 +27,13 @@ class StorageClassCompressedMemory(object):
         batch = None
         for batch in zip_longest(*[iterable] * BATCH_SIZE):
             self.length += len(batch)
-            self.batches.append(compressor.compress(orjson.dumps(batch)))
-
+            # pay for fast deserialization here:
+            if isinstance(batch[0], simdjson.Object):
+                json_batch = b'[' + b','.join([item.mini for item in batch if not item is None]) + b']'
+                self.batches.append(compressor.compress(json_batch))
+            else:
+                self.batches.append(compressor.compress(orjson.dumps(batch)))
+            
         # the last batch fills with Nones
         if batch:
             self.length -= batch.count(None)
@@ -44,14 +51,14 @@ class StorageClassCompressedMemory(object):
             for i in ordered_location:
                 requested_batch = i % BATCH_SIZE
                 if requested_batch != batch_number:
-                    batch = orjson.loads(
+                    batch = simdjson.Parser().parse(
                         decompressor.decompress(self.batches[requested_batch])
                     )
                 yield batch[i - i % BATCH_SIZE]
 
         else:
             for batch in self.batches:
-                records = orjson.loads(decompressor.decompress(batch))
+                records = simdjson.Parser().parse(decompressor.decompress(batch))
                 for record in records:
                     if record:
                         yield record

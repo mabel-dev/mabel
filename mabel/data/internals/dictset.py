@@ -25,6 +25,8 @@ import os
 import orjson
 import statistics
 
+import simdjson
+
 from siphashc import siphash
 from operator import itemgetter
 from functools import reduce
@@ -36,10 +38,11 @@ from ...errors import MissingDependencyError, InvalidArgument
 from ...utils.ipython import is_running_from_ipython
 
 from .display import html_table, ascii_table
-from .storage_class_disk import StorageClassDisk
-from .storage_class_binary_disk import StorageClassBinaryDisk
-from .storage_class_compressed_memory import StorageClassCompressedMemory
-from .storage_class_memory import StorageClassMemory
+from .storage_classes import (
+    StorageClassMemory,
+    StorageClassDisk,
+    StorageClassCompressedMemory
+)
 from .expression import Expression
 from .dnf_filters import DnfFilters
 from .dumb_iterator import DumbIterator
@@ -64,15 +67,12 @@ class STORAGE_CLASS(int, Enum):
       memory but still needs to perform compression on the data so isn't as fast
       as the MEMORY option. Bench marks show you can fit about 2x the data in
       memory but at a cost of 2.5x - your results will vary.
-    - BINARY_DISK = a limited representation of the data, supports only a limited
-      set of field types and truncates string at 255 characters.
     """
 
     NO_PERSISTANCE = 1
     MEMORY = 2
     DISK = 3
     COMPRESSED_MEMORY = 4
-    BINARY_DISK = 5
 
 
 class DictSet(object):
@@ -106,9 +106,6 @@ class DictSet(object):
         # if we're persisting to disk, save it
         if storage_class == STORAGE_CLASS.DISK:
             self._iterator = StorageClassDisk(iterator)
-
-        if storage_class == STORAGE_CLASS.BINARY_DISK:
-            self._iterator = StorageClassBinaryDisk(iterator)
 
         # if we're persisiting to compressed memory, do it
         if storage_class == STORAGE_CLASS.COMPRESSED_MEMORY:
@@ -206,7 +203,7 @@ class DictSet(object):
             key_type = {type(val).__name__ for val in top.collect(key) if val != None}
             if len(key_type) == 1:
                 response[key] = key_type.pop()
-            elif sorted(key_type) == ['float','int']:
+            elif sorted(key_type) == ["float", "int"]:
                 response[key] = "numeric"
             else:
                 response[key] = "mixed"
@@ -311,12 +308,14 @@ class DictSet(object):
 
         def do_dedupe(data):
             for item in data:
-                # ensure the fields are in the same order
-                item = dict(sorted(item.items()))
                 if columns:
-                    hashed_item = hash(''.join([str(item.get(c, "$$")) for c in columns]))
+                    hashed_item = hash(
+                        "".join([str(item.get(c, "$$")) for c in columns])
+                    )
                 else:
-                    hashed_item = hash(orjson.dumps(item))
+                    # ensure the fields are in the same order
+                    # this is quicker than dealing with dictionaries
+                    hashed_item = hash('/'.join([f"{k}:{item.get(k)}" for k in sorted(item.keys())]))
                 if hashed_item not in hash_list:
                     yield item
                 hash_list[hashed_item] = True

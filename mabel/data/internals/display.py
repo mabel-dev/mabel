@@ -48,6 +48,7 @@ def html_table(dictset: Iterable[dict], limit: int = 5):
 
     rows = []
     columns = []  # type:ignore
+    i = -1
     for i, row in enumerate(iter(dictset)):
         rows.append(row)
         columns = columns + list(row.keys())
@@ -59,8 +60,8 @@ def html_table(dictset: Iterable[dict], limit: int = 5):
 
     footer = ""
     if isinstance(dictset, types.GeneratorType):
-        footer = f"\n<p>top {i} rows x {len(columns)} columns</p>"
-        footer += "\nNOTE: the displayed records have been spent"
+        footer = f"\n<p>top {i+1} rows x {len(columns)} columns</p>"
+        footer += "\nNOTE: the displayed records may have been spent"
     elif hasattr(dictset, "__len__"):
         footer = f"\n<p>{len(dictset)} rows x {len(columns)} columns</p>"  # type:ignore
 
