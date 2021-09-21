@@ -249,6 +249,7 @@ class _LowLevelReader(object):
 
         use_multiprocess = all(
             [
+                False, # disable multi-processing
                 self.filters,  # we must have filters
                 not self.cursor,  # we must not have a cursor
                 cpu_count() > 1,  # we must have more than one CPU
