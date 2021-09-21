@@ -29,11 +29,15 @@ class StorageClassCompressedMemory(BaseStorageClass):
             self.length += len(batch)
             # pay for fast deserialization here:
             if isinstance(batch[0], simdjson.Object):
-                json_batch = b'[' + b','.join([item.mini for item in batch if not item is None]) + b']'
+                json_batch = (
+                    b"["
+                    + b",".join([item.mini for item in batch if not item is None])
+                    + b"]"
+                )
                 self.batches.append(compressor.compress(json_batch))
             else:
                 self.batches.append(compressor.compress(orjson.dumps(batch)))
-            
+
         # the last batch fills with Nones
         if batch:
             self.length -= batch.count(None)

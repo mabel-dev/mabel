@@ -41,7 +41,7 @@ from .display import html_table, ascii_table
 from .storage_classes import (
     StorageClassMemory,
     StorageClassDisk,
-    StorageClassCompressedMemory
+    StorageClassCompressedMemory,
 )
 from .expression import Expression
 from .dnf_filters import DnfFilters
@@ -315,7 +315,9 @@ class DictSet(object):
                 else:
                     # ensure the fields are in the same order
                     # this is quicker than dealing with dictionaries
-                    hashed_item = hash('/'.join([f"{k}:{item.get(k)}" for k in sorted(item.keys())]))
+                    hashed_item = hash(
+                        "/".join([f"{k}:{item.get(k)}" for k in sorted(item.keys())])
+                    )
                 if hashed_item not in hash_list:
                     yield item
                 hash_list[hashed_item] = True

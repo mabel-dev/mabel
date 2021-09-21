@@ -23,6 +23,7 @@ from ...logging import get_logger
 from ...utils.dates import parse_delta
 from ...utils.parameter_validator import validate
 from ...errors import InvalidCombinationError, DataNotFoundError
+from mabel.data.readers.internals import cursor
 
 
 # fmt:off
@@ -245,7 +246,17 @@ class _LowLevelReader(object):
         # the effort for is marshalling the data back and forth, filtering reduces
         # the amount sent) and it's expected that aggregations will benefit the
         # parallel reader as they will likely push the work towards being CPU bound.
-        if True: # self.cursor or len(readable_blobs) < (cpu_count() * 2) or cpu_count() == 1:
+
+        use_multiprocess = all(
+            [
+                self.filters,  # we must have filters
+                not self.cursor,  # we must not have a cursor
+                cpu_count() > 1,  # we must have more than one CPU
+                len(readable_blobs) > (cpu_count() * 2),  # we must enough files to read
+            ]
+        )
+
+        if not use_multiprocess:
             logger.debug(f"Serial Reader {self.cursor}")
             if not isinstance(self.cursor, Cursor):
                 cursor = Cursor(readable_blobs=readable_blobs, cursor=self.cursor)

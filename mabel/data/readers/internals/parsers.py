@@ -4,8 +4,10 @@ from ...internals import xmler
 def json(ds):
     """parse each line in the file to a dictionary"""
     import simdjson
+
     json_parser = simdjson.Parser()
     return json_parser.parse(ds)
+
 
 def pass_thru(ds):
     """just pass it through"""

@@ -52,6 +52,7 @@ def test_serializer(serializer):
         dic = orjson.loads(item)
         serializer(dic)
 
+
 def test_simd_serializer(serializer):
     for item in reader:
         dic = sparser.parse(item)
@@ -87,20 +88,23 @@ def time_it_4():
 import json
 import ujson
 import orjson
-#import cysimdjson
+
+# import cysimdjson
 import simdjson
 import os
 import sys
 
-#parser = cysimdjson.JSONParser()
+# parser = cysimdjson.JSONParser()
 sparser = simdjson.Parser()
+
 
 def simd_dump(o):
     o.mini
 
-#sys.path.insert(1, os.path.join(sys.path[0], "../.."))
 
-#print("cysimd parse:", time_it(test_parser, parser.parse))
+# sys.path.insert(1, os.path.join(sys.path[0], "../.."))
+
+# print("cysimd parse:", time_it(test_parser, parser.parse))
 print("pysimd parse:", time_it(test_parser, sparser.parse))
 print("json parse  :", time_it(test_parser, json.loads))
 print("ujson parse :", time_it(test_parser, ujson.loads))
