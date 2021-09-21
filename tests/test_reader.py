@@ -38,8 +38,8 @@ def test_reader_can_read_alot():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    # test_reader_can_read()
-    # test_reader_to_pandas()
+    test_reader_can_read()
+    test_reader_to_pandas()
     test_reader_can_read_alot()
 
     print("okay")
