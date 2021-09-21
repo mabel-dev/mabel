@@ -245,7 +245,7 @@ class _LowLevelReader(object):
         # the effort for is marshalling the data back and forth, filtering reduces
         # the amount sent) and it's expected that aggregations will benefit the
         # parallel reader as they will likely push the work towards being CPU bound.
-        if self.cursor or len(readable_blobs) < (cpu_count() * 2) or cpu_count() == 1:
+        if True: # self.cursor or len(readable_blobs) < (cpu_count() * 2) or cpu_count() == 1:
             logger.debug(f"Serial Reader {self.cursor}")
             if not isinstance(self.cursor, Cursor):
                 cursor = Cursor(readable_blobs=readable_blobs, cursor=self.cursor)

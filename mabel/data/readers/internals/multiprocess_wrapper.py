@@ -31,7 +31,7 @@ def _inner_process(func, source_queue, reply_queue):  # pragma: no cover
             time.sleep(1)
         with multiprocessing.Lock():
             # the empty list here is where the list of indicies should go
-            reply_queue.put([*func(source, [])], timeout=30)
+            reply_queue.put([d.as_dict() for d in [*func(source, [])]], timeout=30)
         source = None
         while source is None:
             try:
