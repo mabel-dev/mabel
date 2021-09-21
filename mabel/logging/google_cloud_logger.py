@@ -49,7 +49,7 @@ class GoogleLogger(object):
     def supported():
         if is_running_from_ipython():
             return False
-        if os.environ.get("PROJECT_NAME", "") or "" == "":
+        if os.environ.get("K_SERVICE", "") or "" == "":
             return False
         return True
 

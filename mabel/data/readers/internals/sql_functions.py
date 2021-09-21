@@ -68,5 +68,5 @@ FUNCTIONS = {
     "FLOAT": fastnumbers.fast_float,
     "BOOLEAN": lambda x: x.upper() != "FALSE",
     "ISNONE": lambda x: x is None,
-    "LEFT": lambda x, y: x[:y]
+    "LEFT": lambda x, y: x[:y],
 }
