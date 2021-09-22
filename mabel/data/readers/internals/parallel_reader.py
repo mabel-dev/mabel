@@ -149,17 +149,8 @@ class ParallelReader:
                         for index_file in index_files
                         if f".{key}." in index_file
                     ]:
-                        rows = []
-
-                        # load the index
                         index = Index(self.reader.get_blob_stream(index_file))
-                        if not isinstance(values, (list, tuple, set)):
-                            values = [values]
-                        # get the matching rows
-                        for value in values:
-                            rows = rows + list(index.search(value))
-                        # deduplicate the resultant row numbers
-                        return set(rows)
+                        return index.search(values)
 
                 return self.NOT_INDEXED
 
@@ -172,7 +163,7 @@ class ParallelReader:
                             rows = _inner_prefilter(row)
                         else:
                             rows = [p for p in _inner_prefilter(row) if p in rows]
-                    return set(rows)
+                    return rows
 
                 # Are all of the entries lists? These are ORed together.
                 # All of the elements in an OR need to be indexable for use to be
@@ -186,7 +177,7 @@ class ParallelReader:
                         rows = reduce(
                             lambda x, y: x + _inner_prefilter(y), predicate, []
                         )
-                    return set(rows)
+                    return rows
 
                 # if we're here the structure of the filter is wrong
                 return self.NOT_INDEXED
@@ -194,7 +185,7 @@ class ParallelReader:
 
         index_filters = _inner_prefilter(self.dnf_filter.predicates)
         if index_filters != self.NOT_INDEXED:
-            return True, set(index_filters)
+            return True, index_filters
         return False, []
 
     def _select(self, data_set, selector):

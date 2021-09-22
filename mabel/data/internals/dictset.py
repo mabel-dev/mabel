@@ -318,6 +318,7 @@ class DictSet(object):
                     hashed_item = hash(
                         "/".join([f"{k}:{item.get(k)}" for k in sorted(item.keys())])
                     )
+                    print(hashed_item)
                 if hashed_item not in hash_list:
                     yield item
                 hash_list[hashed_item] = True
@@ -390,11 +391,14 @@ class DictSet(object):
             )
         return pandas.DataFrame(iter(self._iterator))
 
-    def first(self):
+    def first(self) -> dict:
         """
         Retun the first item in the DictSet
         """
-        return next(iter(self._iterator), None)
+        f = next(iter(self._iterator), None)
+        if isinstance(f, simdjson.Object):
+            return f.as_dict()
+        return f
 
     def take(self, items: int):
         """

@@ -1,10 +1,9 @@
 from ...internals import xmler
+import simdjson
 
 
 def json(ds):
     """parse each line in the file to a dictionary"""
-    import simdjson
-
     json_parser = simdjson.Parser()
     return json_parser.parse(ds)
 
