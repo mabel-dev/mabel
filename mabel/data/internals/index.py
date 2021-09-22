@@ -61,7 +61,7 @@ class Index:
             search_term = [search_term]
         result: list = []
         for term in search_term:
-            result[0:0] = self._index[hex(siphash(SEED, f"{term}") % MAX_INDEX)]
+            result[0:0] = self._index[format(siphash(SEED, f"{term}") % MAX_INDEX, 'x')]
         return result
 
     def dump(self, file):
@@ -91,7 +91,7 @@ class IndexBuilder:
             if not isinstance(values, list):
                 values = [values]
             for value in values:
-                entry = (hex(siphash(SEED, f"{value}") % MAX_INDEX), position)
+                entry = (format(siphash(SEED, f"{value}") % MAX_INDEX, 'x'), position)
                 ret_val.append(entry)
         self.temporary_index += ret_val
         return ret_val
