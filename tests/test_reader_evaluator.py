@@ -30,11 +30,17 @@ def test_simple_functions():
 def test_concat():
     pf = "CONCAT(name,' ',name,' table')"
     res = Evaluator(pf).evaluate(TEST_DATA)
+    assert res == {"CONCAT(name,' ',name,' table')": 'Sirius Black Sirius Black table'}
+
+def test_as():
+    pf = "UPPER(name) as upper_name"
+    res = Evaluator(pf).evaluate(TEST_DATA)
     print(res)
 
 if __name__ == "__main__":  # pragma: no cover
     test_simple_fields()
     test_simple_functions()
     test_concat()
+    test_as()
 
     print("okay")

@@ -14,6 +14,7 @@ def test_parser():
     # fmt:off
     STATEMENTS = [
         {"SQL": "SELECT * FROM TABLE", "select": ["*"], "from": "TABLE"},
+        {"SQL": "SELECT DATE(dob) FROM TABLE", "select": [("DATE", "dob")], "from": "TABLE"},
         {"SQL": "SELECT * --everything \n FROM TABLE", "select": ["*"], "from": "TABLE"},
         {"SQL": "/*this\nis\na\ncomment*/SELECT * --everything \n FROM TABLE", "select": ["*"], "from": "TABLE"},
         {"SQL": "SELECT * \n FROM TABLE \n/* 2 this\nis\na\ncomment */", "select": ["*"], "from": "TABLE"},

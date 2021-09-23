@@ -3,6 +3,7 @@ from ....data.internals.group_by import GroupBy, AGGREGATORS
 from ..reader import Reader
 from ....logging import get_logger
 from .sql_functions import *
+from .evaluator import Evaluator
 
 # not all are implemented
 SQL_KEYWORDS = [

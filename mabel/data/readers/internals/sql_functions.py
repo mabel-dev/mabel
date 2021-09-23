@@ -34,6 +34,12 @@ def get_date(input):
         return input.date()
     return None
 
+def get_time(input):
+    if isinstance(input, str):
+        input = parse_iso(input)
+    if isinstance(input, (datetime.date, datetime.datetime)):
+        return input.time()
+    return None
 
 def get_quarter(input):
     if isinstance(input, str):
@@ -42,6 +48,27 @@ def get_quarter(input):
         return ((input.month - 1) // 3) + 1
     return None
 
+
+def get_hour(input):
+    if isinstance(input, str):
+        input = parse_iso(input)
+    if isinstance(input, (datetime.date, datetime.datetime)):
+        return input.hour
+    return None
+
+def get_minute(input):
+    if isinstance(input, str):
+        input = parse_iso(input)
+    if isinstance(input, (datetime.date, datetime.datetime)):
+        return input.minute
+    return None
+
+def get_second(input):
+    if isinstance(input, str):
+        input = parse_iso(input)
+    if isinstance(input, (datetime.date, datetime.datetime)):
+        return input.second
+    return None
 
 def get_week(input):
     if isinstance(input, str):
@@ -61,20 +88,27 @@ FUNCTIONS = {
     "DATE": get_date,
     "QUARTER": get_quarter,
     "WEEK": get_week,
+    "HOUR": get_hour,
+    "MINUTE": get_minute,
+    "SECOND": get_second,
+
     "UCASE": lambda x: str(x).upper(),
     "UPPER": lambda x: str(x).upper(),
     "LCASE": lambda x: str(x).lower(),
     "LOWER": lambda x: str(x).lower(),
     "TRIM": lambda x: str(x).strip(),
     "LEN": len,
+    "LEFT": lambda x, y: str(x)[:int(y)],
+    "RIGHT": lambda x, y: str(x)[-int(y):],
+    "MID": lambda x, y, z: str(x)[int(y):][:int(z)],
+    "CONCAT": concat,
+
     "ROUND": round,
     "TRUNC": fastnumbers.fast_int,
     "INT": fastnumbers.fast_int,
     "FLOAT": fastnumbers.fast_float,
+
     "BOOLEAN": lambda x: x.upper() != "FALSE",
-    "ISNONE": lambda x: x is None,
-    "LEFT": lambda x, y: str(x)[:int(y)],
-    "RIGHT": lambda x, y: str(x)[-int(y):],
-    "MID": lambda x, y, z: str(x)[int(y):][:int(z)],
-    "CONCAT": concat
+    "ISNONE": lambda x: x is None
+
 }

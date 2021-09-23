@@ -35,6 +35,7 @@ class TOKENS(str, Enum):
     RIGHTPARENTHESES = "<RightParentheses>"
     COMMA = "<Comma>"
     FUNCTION = "<Function>"
+    AS = "<As>"
     UNKNOWN = "<?>"
 
 
@@ -67,6 +68,9 @@ def get_token_type(token):
     if fastnumbers.isfloat(token):
         # if we can parse to a float, it's a number
         return TOKENS.FLOAT
+    if token.upper() == "AS":
+        # AS looks like a variable but us a keyword
+        return TOKENS.AS
     if re.search(r"^[^\d\W][\w\-\.]*", token):
         # tokens starting with a letter, is made up of letters, numbers,
         # hyphens, underscores and dots are probably variables
@@ -113,8 +117,20 @@ def build(tokens):
 
             token["parameters"] = build(collector)
 
+        if not ts.finished() and ts.token()["type"] == TOKENS.AS:
+            ts.step()
+            if ts.finished():
+                raise InvalidEvaluator("Incomplete statement after AS")
+            token["as"] = ts.token()["value"]
+            ts.step()
         response.append(token)
     return response
+
+def if_as(token, name):
+    if token.get("as") is None:
+        return name
+    return token["as"]
+
 
 def evaluate_field(dict, token):
     """
@@ -123,7 +139,8 @@ def evaluate_field(dict, token):
     if token["type"] == TOKENS.VARIABLE:
         return (token["value"], dict.get(token["value"]),)
     if token["type"] == TOKENS.FUNCTION:
-        return (f"{token['value'].upper()}({','.join([t['value'] for t in token['parameters']])})" , FUNCTIONS[token["value"]](*[evaluate_field(dict, t)[1] for t in token["parameters"]]),)
+        function_name = f"{token['value'].upper()}({','.join([t['value'] for t in token['parameters']])})"
+        return (if_as(token, function_name) , FUNCTIONS[token["value"]](*[evaluate_field(dict, t)[1] for t in token["parameters"]]),)
     if token["type"] == TOKENS.FLOAT:
         return (token["value"], fastnumbers.fast_float(token["value"]),)
     if token["type"] == TOKENS.INTEGER:
@@ -151,18 +168,26 @@ class TokenSet(list):
         return {
             "value": token,
             "type": get_token_type(token),
-            "parameters": []
+            "parameters": [],
+            "as": None
         }
     def step(self):
         if self._index < self._max:
             self._index += 1
+    def next(self):
+        self._index += 1
+        ret = {"type":None}
+        if self._index < self._max:
+            ret = self.token()
+        self._index -= 1
+        return ret
     def finished(self):
         return self._index == self._max
 
 class Evaluator():
 
     def __init__(self, proforma):
-        reg = re.compile(r"(\(|\)|,)")
+        reg = re.compile(r"(\(|\)|,|\bAS\b)", re.IGNORECASE)
         tokens = [t.strip() for t in reg.split(proforma) if t.strip() not in ("", ",")]
         self._expression = build(tokens)
 
