@@ -50,6 +50,9 @@ def get_week(input):
         return input.strftime("%V")
     return None
 
+def concat(*items):
+    return ''.join(items)
+
 
 FUNCTIONS = {
     "YEAR": get_year,
@@ -59,7 +62,9 @@ FUNCTIONS = {
     "QUARTER": get_quarter,
     "WEEK": get_week,
     "UCASE": lambda x: str(x).upper(),
+    "UPPER": lambda x: str(x).upper(),
     "LCASE": lambda x: str(x).lower(),
+    "LOWER": lambda x: str(x).lower(),
     "TRIM": lambda x: str(x).strip(),
     "LEN": len,
     "ROUND": round,
@@ -68,5 +73,8 @@ FUNCTIONS = {
     "FLOAT": fastnumbers.fast_float,
     "BOOLEAN": lambda x: x.upper() != "FALSE",
     "ISNONE": lambda x: x is None,
-    "LEFT": lambda x, y: x[:y],
+    "LEFT": lambda x, y: str(x)[:int(y)],
+    "RIGHT": lambda x, y: str(x)[-int(y):],
+    "MID": lambda x, y, z: str(x)[int(y):][:int(z)],
+    "CONCAT": concat
 }
