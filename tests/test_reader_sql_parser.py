@@ -10,7 +10,7 @@ traceback.install()
 
 
 def test_parser():
-
+    
     # fmt:off
     STATEMENTS = [
         {"SQL": "SELECT * FROM TABLE", "select": ["*"], "from": "TABLE"},

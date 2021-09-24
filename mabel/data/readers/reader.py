@@ -23,7 +23,6 @@ from ...logging import get_logger
 from ...utils.dates import parse_delta
 from ...utils.parameter_validator import validate
 from ...errors import InvalidCombinationError, DataNotFoundError
-from mabel.data.readers.internals import cursor
 
 
 # fmt:off
@@ -39,7 +38,8 @@ RULES = [
     {"name": "filters", "required": False, "warning": "", "incompatible_with": []},
     {"name": "persistence", "required": False, "warning": "", "incompatible_with": []},
     {"name": "project", "required": False, "warning": "", "incompatible_with": []},
-    {"name": "override_format", "required": False, "warning": "", "incompatible_with": []}
+    {"name": "override_format", "required": False, "warning": "", "incompatible_with": []},
+    {"name": "multiprocess", "required": False, "warning": "", "incompatible_with": ["cursor"]}
 ]
 # fmt:on
 
@@ -56,6 +56,7 @@ def Reader(
     raw_path: bool = False,
     persistence: STORAGE_CLASS = STORAGE_CLASS.NO_PERSISTANCE,
     override_format: Optional[str] = None,
+    multiprocess: bool = False,
     cursor: Optional[Union[str, Dict]] = None,
     **kwargs,
 ) -> DictSet:
@@ -115,7 +116,11 @@ def Reader(
             Resume read from a given point (assumes other parameters are the same).
             If a JSON string is provided, it will converted to a dictionary.
         override_format: string (optional)
-            Override the format detection.
+            Override the format detection - sometimes users know better.
+        multiprocess: boolean (optional)
+            Split the task over multiple CPUs to improve throughput. Note that there
+            are conditions that must be met for the multiprocessor to be safe which
+            may mean even though this is set, data is accessed serially.
 
     Returns:
         DictSet
@@ -167,6 +172,7 @@ def Reader(
             filters=filters,
             override_format=override_format,
             cursor=cursor,
+            multiprocess=multiprocess,
         ),
         storage_class=persistence,
     )
@@ -174,7 +180,14 @@ def Reader(
 
 class _LowLevelReader(object):
     def __init__(
-        self, reader_class, freshness_limit, select, filters, override_format, cursor
+        self,
+        reader_class,
+        freshness_limit,
+        select,
+        filters,
+        override_format,
+        cursor,
+        multiprocess,
     ):
         self.reader_class = reader_class
         self.freshness_limit = freshness_limit
@@ -182,6 +195,7 @@ class _LowLevelReader(object):
         self.override_format = override_format
         self.cursor = cursor
         self._inner_line_reader = None
+        self.multiprocess = multiprocess
 
         if isinstance(filters, str):
             self.filters = Expression(filters)
@@ -237,20 +251,9 @@ class _LowLevelReader(object):
             override_format=self.override_format,
         )
 
-        # it takes some effort to set up the multiprocessing, only do it if we have
-        # enough files. This branch uses the Cursor to determine which blob to
-        # process next - the cursor allows us to resume reading through the
-        # dataset if we need to stop.
-        # It's hard to predict when the parallel reader will be faster than the
-        # serial reader, filters benefit the parallel reader (who a large part of
-        # the effort for is marshalling the data back and forth, filtering reduces
-        # the amount sent) and it's expected that aggregations will benefit the
-        # parallel reader as they will likely push the work towards being CPU bound.
-
         use_multiprocess = all(
             [
-                False, # disable multi-processing
-                self.filters,  # we must have filters
+                self.multiprocess,  # the user must have asked for it
                 not self.cursor,  # we must not have a cursor
                 cpu_count() > 1,  # we must have more than one CPU
                 len(readable_blobs) > (cpu_count() * 2),  # we must enough files to read

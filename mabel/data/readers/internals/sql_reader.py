@@ -1,11 +1,13 @@
 import re
+
+import simdjson
 from ....data.internals.group_by import GroupBy, AGGREGATORS
 from ..reader import Reader
 from ....logging import get_logger
-from .sql_functions import *
-from .evaluator import Evaluator
+from .inline_functions import *
+from .inline_evaluator import Evaluator
 
-# not all are implemented
+# not all are implemented, but we split by reserved words anyway
 SQL_KEYWORDS = [
     r"SELECT",
     r"FROM",
@@ -59,7 +61,6 @@ class SqlParser:
         self._from = None
         self.where = None
         self.group_by = None
-        self.having = None
         self.order_by = None
         self.order_by_desc = False
         self.limit = None
@@ -82,16 +83,9 @@ class SqlParser:
             elif part.upper() == "WHERE":
                 collecting = None
                 self.where = self.parts[i + 1]
-            elif part.upper() == "JOIN":
-                collecting = None
-                raise NotImplementedError("SQL `JOIN` not supported")
             elif re.match(r"GROUP\sBY", part, re.IGNORECASE):
                 collecting = "GROUP BY"
                 self.group_by = []
-            elif part.upper() == "HAVING":
-                collecting = None
-                self.having = safe_get(self.parts, i + 1, "")
-                raise NotImplementedError("SQL `HAVING` not supported")
             elif re.match(r"ORDER\sBY", part, re.IGNORECASE):
                 collecting = None
                 self.order_by = safe_get(self.parts, i + 1, "")
@@ -206,6 +200,8 @@ def apply_functions_on_read_thru(ds, functions, merge=False):
     """
     for record in ds:
         if merge:
+            if isinstance(record, simdjson.Object):
+                record = record.as_dict()
             result_record = record
         else:
             result_record = {}

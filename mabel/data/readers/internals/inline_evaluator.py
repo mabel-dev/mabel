@@ -15,13 +15,15 @@ from the dict
 import re
 import fastnumbers
 from enum import Enum
-from .sql_functions import FUNCTIONS
+from .inline_functions import FUNCTIONS
 from ....utils.dates import parse_iso
 
 
 class InvalidEvaluator(Exception):
-    """ custom error"""
+    """custom error"""
+
     pass
+
 
 class TOKENS(str, Enum):
     INTEGER = "<Integer>"
@@ -44,7 +46,7 @@ def get_token_type(token):
     Guess the token type - tokens must have no spaces.
     """
     token = str(token)
-    if token[0] == token[-1] == '`':
+    if token[0] == token[-1] == "`":
         # tokens in ` quotes are variables, this is how we supersede all other
         # checks, i.e. if it looks like a number but is a variable.
         return TOKENS.VARIABLE
@@ -126,6 +128,7 @@ def build(tokens):
         response.append(token)
     return response
 
+
 def if_as(token, name):
     if token.get("as") is None:
         return name
@@ -137,23 +140,52 @@ def evaluate_field(dict, token):
     Evaluate a single field
     """
     if token["type"] == TOKENS.VARIABLE:
-        return (token["value"], dict.get(token["value"]),)
+        return (
+            token["value"],
+            dict.get(token["value"]),
+        )
     if token["type"] == TOKENS.FUNCTION:
         function_name = f"{token['value'].upper()}({','.join([t['value'] for t in token['parameters']])})"
-        return (if_as(token, function_name) , FUNCTIONS[token["value"]](*[evaluate_field(dict, t)[1] for t in token["parameters"]]),)
+        return (
+            if_as(token, function_name),
+            FUNCTIONS[token["value"]](
+                *[evaluate_field(dict, t)[1] for t in token["parameters"]]
+            ),
+        )
     if token["type"] == TOKENS.FLOAT:
-        return (token["value"], fastnumbers.fast_float(token["value"]),)
+        return (
+            token["value"],
+            fastnumbers.fast_float(token["value"]),
+        )
     if token["type"] == TOKENS.INTEGER:
-        return (token["value"], fastnumbers.fast_int(token["value"]),)
+        return (
+            token["value"],
+            fastnumbers.fast_int(token["value"]),
+        )
     if token["type"] == TOKENS.LITERAL:
-        return (token["value"], str(token["value"])[1:-1],)
+        return (
+            token["value"],
+            str(token["value"])[1:-1],
+        )
     if token["type"] == TOKENS.DATE:
-        return (token["value"], parse_iso(token["value"][1:-1]),)
+        return (
+            token["value"],
+            parse_iso(token["value"][1:-1]),
+        )
     if token["type"] == TOKENS.BOOLEAN:
-        return (token["value"], str(token["value"]).upper() == "TRUE",)
+        return (
+            token["value"],
+            str(token["value"]).upper() == "TRUE",
+        )
     if token["type"] == TOKENS.NULL:
-        return (token["value"], None,)
-    return (token["value"], None,)
+        return (
+            token["value"],
+            None,
+        )
+    return (
+        token["value"],
+        None,
+    )
 
 
 class TokenSet(list):
@@ -161,6 +193,7 @@ class TokenSet(list):
         self._tokens = tokens
         self._index = 0
         self._max = len(tokens)
+
     def token(self):
         token = self._tokens[self._index]
         if isinstance(token, dict):
@@ -169,23 +202,26 @@ class TokenSet(list):
             "value": token,
             "type": get_token_type(token),
             "parameters": [],
-            "as": None
+            "as": None,
         }
+
     def step(self):
         if self._index < self._max:
             self._index += 1
+
     def next(self):
         self._index += 1
-        ret = {"type":None}
+        ret = {"type": None}
         if self._index < self._max:
             ret = self.token()
         self._index -= 1
         return ret
+
     def finished(self):
         return self._index == self._max
 
-class Evaluator():
 
+class Evaluator:
     def __init__(self, proforma):
         reg = re.compile(r"(\(|\)|,|\bAS\b)", re.IGNORECASE)
         tokens = [t.strip() for t in reg.split(proforma) if t.strip() not in ("", ",")]
@@ -195,4 +231,4 @@ class Evaluator():
         ret = []
         for field in self._expression:
             ret.append(evaluate_field(dict, field))
-        return {k:v for k,v in ret}
+        return {k: v for k, v in ret}

@@ -10,7 +10,7 @@ from typing import Iterable
 from siphashc import siphash
 
 MAX_INDEX = 4294967295  # 2^32 - 1
-SEED = "eschatologically" # needs to be 16 characters long
+SEED = "eschatologically"  # needs to be 16 characters long
 
 """
 There are overlapping terms because we're traversing a dataset so we can traverse a
@@ -22,6 +22,7 @@ Terminology:
     Location  : the position of the row in the target file
     Row       : a record in the target file
 """
+
 
 class Index:
     def __init__(self, index: bytes):
@@ -51,7 +52,6 @@ class Index:
             builder.add(position, row)
         return builder.build()
 
-
     def search(self, search_term) -> Iterable:
         """
         Search the index for a value. Returns a list of row numbers, if the value is
@@ -61,7 +61,9 @@ class Index:
             search_term = [search_term]
         result: list = []
         for term in search_term:
-            result[0:0] = self._index[format(siphash(SEED, f"{term}") % MAX_INDEX, 'x')]
+            key = format(siphash(SEED, f"{term}") % MAX_INDEX, "x")
+            if key in self._index:
+                result[0:0] = self._index[key]
         return result
 
     def dump(self, file):
@@ -72,6 +74,7 @@ class Index:
         if isinstance(self._index, simdjson.Object):
             return self._index.mini
         import orjson
+
         return orjson.dumps(self._index)
 
 
@@ -91,7 +94,7 @@ class IndexBuilder:
             if not isinstance(values, list):
                 values = [values]
             for value in values:
-                entry = (format(siphash(SEED, f"{value}") % MAX_INDEX, 'x'), position)
+                entry = (format(siphash(SEED, f"{value}") % MAX_INDEX, "x"), position)
                 ret_val.append(entry)
         self.temporary_index += ret_val
         return ret_val
@@ -106,4 +109,5 @@ class IndexBuilder:
                 poses.append(pos)
                 temp_index[val] = poses
         import orjson
+
         return Index(orjson.dumps(temp_index))
