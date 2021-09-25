@@ -89,6 +89,7 @@ def get_week(input):
     return None
 
 
+
 def concat(*items):
     return "".join(items)
 
@@ -103,6 +104,7 @@ FUNCTIONS = {
     "HOUR": get_hour,
     "MINUTE": get_minute,
     "SECOND": get_second,
+    "TIME": get_time,
     "UCASE": lambda x: str(x).upper(),
     "UPPER": lambda x: str(x).upper(),
     "LCASE": lambda x: str(x).lower(),

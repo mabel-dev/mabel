@@ -244,7 +244,7 @@ def SqlReader(sql_statement: str, **kwargs):
         count = -1
         for count, r in enumerate(reader):
             pass
-        reader = DictSet([{"COUNT(*)": count + 1}])
+        reader = DictSet(iter([{"COUNT(*)": count + 1}]))
     # if we're not grouping and we have functions, execute them
     elif not sql.group_by and any(
         isinstance(selector, tuple) for selector in sql.select
