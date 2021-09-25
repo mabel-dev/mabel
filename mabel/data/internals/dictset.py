@@ -175,10 +175,13 @@ class DictSet(object):
         """
         Convert a _DictSet_ to a list, optionally, but probably usually, just extract
         a specific column.
+
+        Return None if the value in the field is None, if the field doesn't exist in
+        the record, don't return anything.
         """
         if not key:
             return list(iter(self._iterator))
-        return list(map(itemgetter(key), iter(self._iterator)))
+        return [record[key] for record in iter(self._iterator) if key in record]
 
     def keys(self, number_of_rows: int = 0):
         """

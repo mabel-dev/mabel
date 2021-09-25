@@ -271,8 +271,6 @@ def SqlReader(sql_statement: str, **kwargs):
         reader = DictSet(groups)
     if sql.distinct:
         reader = reader.distinct()
-    if sql.having:
-        reader = reader.query(sql.having)
     if sql.order_by:
         take = 10000
         if sql.limit:

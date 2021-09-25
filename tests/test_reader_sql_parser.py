@@ -36,7 +36,6 @@ def test_parser():
         assert parsed._from == statement.get("from"), f"FROM: {parsed}"
         assert parsed.where == statement.get("where"), f"WHERE: {parsed}"
         assert parsed.group_by == statement.get("group_by"), f"GROUP BY: {parsed}"
-        assert parsed.having == statement.get("having"), f"HAVING: {parsed}"
         assert parsed.limit == statement.get("limit"), f"LIMIT: {parsed}"
 
 
