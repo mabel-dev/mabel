@@ -1,9 +1,9 @@
 """
-The naive solution for using multiprocessing loads the entire dataset into memory,
-this is okay for small datasets, but quickly causes halts and crashes. This helper
-routine gets around this by throttling the worker processes - a new piece of work 
-is added as a piece is read off the queue - meaning each process only has one
-file to load at a time.
+Multiprocessing is not faster in benchmarks, this is being retained but will need
+to be manually enabled.
+
+When a reliable use case for multiprocessing is identified it may be included into the
+automatic running of the data accesses.
 """
 import os
 import time

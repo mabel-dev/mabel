@@ -52,4 +52,4 @@ reader = Reader(
     raw_path=True,
 )
 idx = Index.build_index(reader, "user_name")
-idx.dump("tests/data/index/is/index")
+idx.dump("tests/data/index/is/tweets.jsonl.user_name.idx")

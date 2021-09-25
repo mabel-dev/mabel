@@ -6,7 +6,6 @@ from mabel.data.internals.dictset import STORAGE_CLASS
 from mabel.adapters.disk import DiskReader
 from mabel.data import Reader
 from rich import traceback
-import simdjson
 
 traceback.install()
 
@@ -20,7 +19,7 @@ def test_can_read_zip():
     )
 
     assert r.count() == 100000, r.count()
-    assert isinstance(r.first(), simdjson.Object), r.first()
+    assert isinstance(r.first(), dict), r.first()
 
 
 if __name__ == "__main__":  # pragma: no cover

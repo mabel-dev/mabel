@@ -175,10 +175,13 @@ class DictSet(object):
         """
         Convert a _DictSet_ to a list, optionally, but probably usually, just extract
         a specific column.
+
+        Return None if the value in the field is None, if the field doesn't exist in
+        the record, don't return anything.
         """
         if not key:
             return list(iter(self._iterator))
-        return list(map(itemgetter(key), iter(self._iterator)))
+        return [record[key] for record in iter(self._iterator) if key in record]
 
     def keys(self, number_of_rows: int = 0):
         """
@@ -390,11 +393,14 @@ class DictSet(object):
             )
         return pandas.DataFrame(iter(self._iterator))
 
-    def first(self):
+    def first(self) -> dict:
         """
         Retun the first item in the DictSet
         """
-        return next(iter(self._iterator), None)
+        f = next(iter(self._iterator), None)
+        if isinstance(f, simdjson.Object):
+            return f.as_dict()
+        return f
 
     def take(self, items: int):
         """

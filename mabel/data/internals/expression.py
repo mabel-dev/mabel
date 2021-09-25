@@ -7,12 +7,12 @@ The implementation is as an expression tree,
 
 Derived from: https://gist.github.com/leehsueh/1290686
 """
-
-from ...utils.text import like, not_like
-from ...utils.dates import parse_iso
 import re
 import operator
 import fastnumbers
+from ..readers.internals.inline_evaluator import *
+from ...utils.text import like, not_like
+from ...utils.dates import parse_iso
 
 
 class InvalidExpression(BaseException):

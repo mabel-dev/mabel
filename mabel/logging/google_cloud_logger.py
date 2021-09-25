@@ -49,9 +49,10 @@ class GoogleLogger(object):
     def supported():
         if is_running_from_ipython():
             return False
-        if os.environ.get("K_SERVICE", "") or "" == "":
-            return False
-        return True
+        if os.environ.get("K_SERVICE", "") or "" != "":
+            print("DETECTED I'M RUNNING IN KUBERNETES")
+            return True
+        return False
 
     @staticmethod
     def write_event(

@@ -34,9 +34,8 @@ def test_index():
 
     # test the recently created index outside the reader
     i = Index(io.BytesIO(idx))
-    assert i.size == 50
-    assert i.search("SwiftOnSecurity") == set()
-    assert i.search("BBCNews") == {1, 2, 4, 44, 24, 25}
+    assert i.search("SwiftOnSecurity") == []
+    assert i.search("BBCNews") == [1, 2, 4, 24, 25, 44], i.search("BBCNews")
 
     # test the filter with an index
     ri = Reader(
