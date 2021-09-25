@@ -23,7 +23,6 @@ def report_suppressions(message):
 
 
 def log_it(payload):
-    print(payload)
     if isinstance(payload, dict):
         payload = json.dumps(payload)
     if isinstance(payload, bytes):
