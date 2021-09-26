@@ -76,6 +76,7 @@ class ParallelReader:
         self,
         reader,
         filters=no_filter,
+        columns="*",
         reducer=pass_thru,
         override_format=None,
         **kwargs,
@@ -84,6 +85,7 @@ class ParallelReader:
 
         Parameters:
             reader: callable
+            columns: callable
             filters: callable
             reducer: callable
             **kwargs: kwargs
@@ -102,6 +104,8 @@ class ParallelReader:
         # the reader gets the data from the storage platform e.g. read the file from
         # disk or download the file
         self.reader = reader
+
+        self.columns = columns
 
         # this is the filter of the collected data, this can be used
         # against more operators
@@ -225,6 +229,8 @@ class ParallelReader:
                 record_iterator = self._select(record_iterator, selected_rows)
             # Parse
             record_iterator = map(parser, record_iterator)
+            # Transform
+            record_iterator = map(self.columns, record_iterator)
             # Filter
             record_iterator = filter(self.filters, record_iterator)
             # Reduce

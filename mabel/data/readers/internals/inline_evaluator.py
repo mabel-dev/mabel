@@ -39,6 +39,7 @@ class TOKENS(str, Enum):
     FUNCTION = "<Function>"
     AS = "<As>"
     UNKNOWN = "<?>"
+    EVERYTHING = "<*>"
 
 
 def get_token_type(token):
@@ -50,6 +51,8 @@ def get_token_type(token):
         # tokens in ` quotes are variables, this is how we supersede all other
         # checks, i.e. if it looks like a number but is a variable.
         return TOKENS.VARIABLE
+    if token == "*":
+        return TOKENS.EVERYTHING
     if token.upper() in FUNCTIONS:
         # if it matches a function call, it is
         return TOKENS.FUNCTION
@@ -133,6 +136,7 @@ def if_as(token, name):
     if token.get("as") is None:
         return name
     return token["as"]
+
 
 
 def evaluate_field(dict, token):
@@ -225,10 +229,19 @@ class Evaluator:
     def __init__(self, proforma):
         reg = re.compile(r"(\(|\)|,|\bAS\b)", re.IGNORECASE)
         tokens = [t.strip() for t in reg.split(proforma) if t.strip() not in ("", ",")]
-        self._expression = build(tokens)
+        self.tokens = build(tokens)
+        self._iter = None
 
-    def evaluate(self, dict):
+    def __call__(self, dict):
         ret = []
-        for field in self._expression:
+        for field in self.tokens:
             ret.append(evaluate_field(dict, field))
         return {k: v for k, v in ret}
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if not self._iter:
+            self._iter = iter(self.tokens)
+        return next(self._iter) 

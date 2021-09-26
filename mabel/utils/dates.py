@@ -55,6 +55,8 @@ def parse_iso(value):
     # YYYY-MM-DDTHH:MM
     # YYYY-MM-DD HH:MM:SS
     # YYYY-MM-DDTHH:MM:SS
+    # YYYY-MM-DDTHH:MM:SS
+    # 01234567890123456789
     try:
         if isinstance(value, (datetime.datetime, datetime.date, datetime.time)):
             return value
@@ -75,12 +77,12 @@ def parse_iso(value):
                         *map(  # type:ignore
                             fast_int,
                             [
-                                value[:4],
-                                value[5:7],
-                                value[8:10],
-                                value[11:13],
-                                value[14:16],
-                                value[17:19],
+                                value[:4],       # YYYY
+                                value[5:7],      # MM
+                                value[8:10],     # DD
+                                value[11:13],    # HH
+                                value[14:16],    # MM
+                                value[17:19],    # SS
                             ],
                         )
                     )
