@@ -10,6 +10,9 @@ import fastnumbers
 
 
 def get_year(input):
+    """
+    Convert input to a datetime object and extract the Year part
+    """
     if isinstance(input, str):
         input = parse_iso(input)
     if isinstance(input, (datetime.date, datetime.datetime)):
@@ -18,6 +21,9 @@ def get_year(input):
 
 
 def get_month(input):
+    """
+    Convert input to a datetime object and extract the Month part
+    """
     if isinstance(input, str):
         input = parse_iso(input)
     if isinstance(input, (datetime.date, datetime.datetime)):
@@ -26,6 +32,9 @@ def get_month(input):
 
 
 def get_day(input):
+    """
+    Convert input to a datetime object and extract the Day part
+    """
     if isinstance(input, str):
         input = parse_iso(input)
     if isinstance(input, (datetime.date, datetime.datetime)):
@@ -34,6 +43,9 @@ def get_day(input):
 
 
 def get_date(input):
+    """
+    Convert input to a datetime object and extract the Date part
+    """
     if isinstance(input, str):
         input = parse_iso(input)
     if isinstance(input, (datetime.date, datetime.datetime)):
@@ -42,6 +54,9 @@ def get_date(input):
 
 
 def get_time(input):
+    """
+    Convert input to a datetime object and extract the Time part
+    """
     if isinstance(input, str):
         input = parse_iso(input)
     if isinstance(input, (datetime.date, datetime.datetime)):
@@ -50,6 +65,9 @@ def get_time(input):
 
 
 def get_quarter(input):
+    """
+    Convert input to a datetime object and calculate the Quarter of the Year
+    """
     if isinstance(input, str):
         input = parse_iso(input)
     if isinstance(input, (datetime.date, datetime.datetime)):
@@ -58,6 +76,9 @@ def get_quarter(input):
 
 
 def get_hour(input):
+    """
+    Convert input to a datetime object and extract the Hour part
+    """
     if isinstance(input, str):
         input = parse_iso(input)
     if isinstance(input, (datetime.date, datetime.datetime)):
@@ -66,6 +87,9 @@ def get_hour(input):
 
 
 def get_minute(input):
+    """
+    Convert input to a datetime object and extract the Minute part
+    """
     if isinstance(input, str):
         input = parse_iso(input)
     if isinstance(input, (datetime.date, datetime.datetime)):
@@ -74,6 +98,9 @@ def get_minute(input):
 
 
 def get_second(input):
+    """
+    Convert input to a datetime object and extract the Seconds part
+    """
     if isinstance(input, str):
         input = parse_iso(input)
     if isinstance(input, (datetime.date, datetime.datetime)):
@@ -82,6 +109,9 @@ def get_second(input):
 
 
 def get_week(input):
+    """
+    Convert input to a datetime object and extract the ISO8601 Week
+    """
     if isinstance(input, str):
         input = parse_iso(input)
     if isinstance(input, (datetime.date, datetime.datetime)):
@@ -91,7 +121,10 @@ def get_week(input):
 
 
 def concat(*items):
-    return "".join(items)
+    """
+    Turn each item to a string and concatenate the strings together
+    """
+    return "".join(map(str, items))
 
 
 FUNCTIONS = {
@@ -111,6 +144,7 @@ FUNCTIONS = {
     "LOWER": lambda x: str(x).lower(),
     "TRIM": lambda x: str(x).strip(),
     "LEN": len,
+    "STRING": str,
     "LEFT": lambda x, y: str(x)[: int(y)],
     "RIGHT": lambda x, y: str(x)[-int(y) :],
     "MID": lambda x, y, z: str(x)[int(y) :][: int(z)],
