@@ -51,6 +51,8 @@ except ImportError:  # pragma: no cover
             """
             if isinstance(dt, (datetime.date, datetime.datetime)):
                 return dt.isoformat()
+            if isinstance(dt, dict):
+                return fix_fields(dt)
             return dt
 
         if isinstance(obj, dict):

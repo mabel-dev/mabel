@@ -43,6 +43,18 @@ def extract_caller():
     return frame.name, tail, frame.lineno
 
 
+def fix_dict(obj: dict) -> dict:
+
+    def fix_fields(dt) -> str:
+        if isinstance(dt, (datetime.date, datetime.datetime)):
+            return dt.isoformat()
+        if isinstance(dt, dict):
+            return fix_fields(dt)
+        return dt
+
+    return {k: fix_fields(v) for k, v in obj.items()}
+    
+
 class GoogleLogger(object):
     @staticmethod
     def supported():
@@ -101,7 +113,7 @@ class GoogleLogger(object):
 
         if isinstance(message, dict):
             logger.log_struct(
-                info=json.dumps(message),
+                info=fix_dict(message),
                 severity=LEVELS_TO_STRING.get(severity),  # type:ignore
                 labels=labels,
             )
