@@ -11,9 +11,9 @@ try:
     from google.cloud import storage  # type:ignore
     from google.auth.credentials import AnonymousCredentials  # type:ignore
     from google.api_core import retry  # type:ignore
-    from google.api_core.exceptions import (
-        InternalServerError,
-        TooManyRequests,
+    from google.api_core.exceptions import (   # type:ignore
+        InternalServerError,   # type:ignore
+        TooManyRequests,   # type:ignore
     )  # type:ignore
     google_cloud_storage_installed = True
 except ImportError:  # pragma: no cover

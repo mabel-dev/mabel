@@ -101,7 +101,7 @@ class GoogleLogger(object):
 
         if isinstance(message, dict):
             logger.log_struct(
-                info=message,
+                info=json.dumps(message),
                 severity=LEVELS_TO_STRING.get(severity),  # type:ignore
                 labels=labels,
             )
