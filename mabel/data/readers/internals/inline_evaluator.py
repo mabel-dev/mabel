@@ -133,6 +133,9 @@ def build(tokens):
 
 
 def if_as(token, name):
+    """
+    Deal with AS directives
+    """
     if token.get("as") is None:
         return name
     return token["as"]
@@ -152,7 +155,7 @@ def evaluate_field(dict, token):
         function_name = f"{token['value'].upper()}({','.join([t['value'] for t in token['parameters']])})"
         return (
             if_as(token, function_name),
-            FUNCTIONS[token["value"]](
+            FUNCTIONS[token["value"].upper()](
                 *[evaluate_field(dict, t)[1] for t in token["parameters"]]
             ),
         )
