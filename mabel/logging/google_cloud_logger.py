@@ -1,11 +1,13 @@
+"""
+https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry
+"""
 import os
 import atexit
 import logging
-import datetime
 import orjson as json
 from typing import Union, Optional, Dict
 from ..logging.levels import LEVELS, LEVELS_TO_STRING
-from ..utils import is_running_from_ipython, safe_field_name
+from ..utils import is_running_from_ipython
 from ..logging.log_formatter import LogFormatter
 
 
@@ -75,11 +77,11 @@ class GoogleLogger(object):
         structured_log = {
             "logName": f'projects/{os.environ.get("PROJECT_NAME")}/logs/{os.environ.get("LOG_SINK")}',
             "severity": str(severity).split(".")[1],
+            "logging.googleapis.com/labels": {
+                "system": system,
+                "log_name": LOG_NAME,
+            }
         }
-        structured_log["logging.googleapis.com/labels"] = {
-            "system": system,
-            "log_name": LOG_NAME,
-        }  # type:ignore
 
         method, module, line = extract_caller()
         structured_log["logging.googleapis.com/sourceLocation"] = {

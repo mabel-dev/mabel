@@ -26,7 +26,7 @@ TEST_DATA = {
 
 def test_simple_fields():
     pf = "name, age, alive, dob, gender"
-    res = Evaluator(pf).evaluate(TEST_DATA)
+    res = Evaluator(pf)(TEST_DATA)
     assert res == {
         "name": "Sirius Black",
         "age": 40,
@@ -38,7 +38,7 @@ def test_simple_fields():
 
 def test_simple_functions():
     pf = "UPPER(name), YEAR(dob), LEFT(gender,2), RIGHT(gender,2), MID(name,5,3)"
-    res = Evaluator(pf).evaluate(TEST_DATA)
+    res = Evaluator(pf)(TEST_DATA)
     assert res == {
         "UPPER(name)": "SIRIUS BLACK",
         "YEAR(dob)": 1970,
@@ -50,13 +50,13 @@ def test_simple_functions():
 
 def test_concat():
     pf = "CONCAT(name,' ',name,' table')"
-    res = Evaluator(pf).evaluate(TEST_DATA)
+    res = Evaluator(pf)(TEST_DATA)
     assert res == {"CONCAT(name,' ',name,' table')": "Sirius Black Sirius Black table"}
 
 
 def test_as():
     pf = "UPPER(name) as upper_name"
-    res = Evaluator(pf).evaluate(TEST_DATA)
+    res = Evaluator(pf)(TEST_DATA)
     print(res)
 
 

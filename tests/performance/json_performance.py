@@ -38,7 +38,7 @@ def _inner_file_reader(
             yield carry_forward
 
 
-reader = list(_inner_file_reader("tests/data/tweets/tweets-0000.jsonl")) * 100000
+reader = list(_inner_file_reader("tests/data/tweets/tweets-0000.jsonl")) * 200000
 print(len(reader))
 
 
@@ -55,7 +55,10 @@ def test_serializer(serializer):
 
 def test_simd_serializer(serializer):
     for item in reader:
-        dic = sparser.parse(item)
+        s = sparser(item)
+        dic = s.as_dict()
+        dic.mini = s.mini
+        setattr(dic, "mini", s.mini)
         serializer(dic)
 
 
@@ -94,8 +97,10 @@ import simdjson
 import os
 import sys
 
-# parser = cysimdjson.JSONParser()
-sparser = simdjson.Parser()
+simparser = simdjson.Parser()
+
+def sparser(o):
+    return simparser.parse(o)
 
 
 def simd_dump(o):
@@ -105,16 +110,16 @@ def simd_dump(o):
 # sys.path.insert(1, os.path.join(sys.path[0], "../.."))
 
 # print("cysimd parse:", time_it(test_parser, parser.parse))
-print("pysimd parse:", time_it(test_parser, sparser.parse))
-print("json parse  :", time_it(test_parser, json.loads))
+print("pysimd parse:", time_it(test_parser, test_simd_serializer))
+#print("json parse  :", time_it(test_parser, json.loads))
 print("ujson parse :", time_it(test_parser, ujson.loads))
 print("orjson parse:", time_it(test_parser, orjson.loads))  # <- fastest
 
-print("map", time_it_2())
-print("comp", time_it_3())
-print("for", time_it_4())
+#print("map", time_it_2())
+#print("comp", time_it_3())
+#print("for", time_it_4())
 
-print("json serialize   :", time_it(test_serializer, json.dumps))
+#print("json serialize   :", time_it(test_serializer, json.dumps))
 print("ujson serializer :", time_it(test_serializer, ujson.dumps))
 print("orjson serializer:", time_it(test_serializer, orjson.dumps))  # <- fastest
-print("pysimd serializer:", time_it(test_simd_serializer, simd_dump))
+print("pysimd serializer:", time_it(test_simd_serializer, orjson.dumps))

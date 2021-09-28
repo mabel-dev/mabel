@@ -1,3 +1,4 @@
+from mabel.data.readers.internals.inline_evaluator import Evaluator
 import sys
 import os.path
 import datetime
@@ -49,7 +50,7 @@ logger = get_logger()
 @validate(RULES)
 def Reader(
     *,  # force all paramters to be keyworded
-    select: list = ["*"],
+    select: str = "*",
     dataset: str = None,
     filters: Optional[str] = None,
     inner_reader=None,  # type:ignore
@@ -84,11 +85,12 @@ def Reader(
         class has a decorator which helps to ensure it is called correctly.
 
     Parameters:
-        select: list of strings (optional):
-            A list of the names of the columns to return from the dataset, the
-            default is all columns
+        select: string (optional):
+            A select expression, this is usually a comma separated list of field names
+            although can include predefined functions. Default is "*" which presents
+            all of the fields in the dataset.
         dataset: string:
-            The path to the data
+            The path to the data source (exact syntax differs per inner_reader)
         filters: string or list/tuple (optional):
             STRING:
             An expression which when evaluated for each row, if False the row will
@@ -111,7 +113,8 @@ def Reader(
         persistence: STORAGE_CLASS (optional)
             How to cache the results, the default is NO_PERSISTANCE which will almost
             always return a generator. MEMORY should only be used where the dataset
-            isn't huge and DISK is many times slower than MEMORY.
+            isn't huge and DISK is many times slower than MEMORY. COMPRESSED_MEMORY
+            fits in between, usually faster than DISK but slower than MEMORY.
         cursor: dictionary (or string)
             Resume read from a given point (assumes other parameters are the same).
             If a JSON string is provided, it will converted to a dictionary.
@@ -128,10 +131,6 @@ def Reader(
     Raises:
 
     """
-
-    if not isinstance(select, list):  # pragma: no cover
-        raise TypeError("Reader 'select' parameter must be a list")
-
     # lazy loading of dependency - in this case the Google GCS Reader
     # eager loading will cause failures when we try to load the google-cloud
     # libraries and they aren't installed.
@@ -144,8 +143,6 @@ def Reader(
     reader_class = inner_reader(
         dataset=dataset, raw_path=raw_path, **kwargs
     )  # type:ignore
-
-    select = select.copy()
 
     arg_dict = kwargs.copy()
     arg_dict["select"] = f"{select}"
@@ -204,6 +201,11 @@ class _LowLevelReader(object):
         else:
             self.filters = None
 
+        if select != "*":
+            self.select = Evaluator(select)
+        else:
+            self.select = pass_thru
+
     def _create_line_reader(self):
         blob_list = self.reader_class.get_list_of_blobs()
 
@@ -247,6 +249,7 @@ class _LowLevelReader(object):
 
         parallel = ParallelReader(
             reader=self.reader_class,
+            columns=self.select,
             filters=self.filters or pass_thru,
             override_format=self.override_format,
         )
@@ -296,7 +299,4 @@ class _LowLevelReader(object):
             self._inner_line_reader = line_reader
 
         # get the the next line from the reader
-        record = self._inner_line_reader.__next__()
-        if self.select != ["*"]:
-            record = select_record_fields(record, self.select)
-        return record
+        return self._inner_line_reader.__next__()

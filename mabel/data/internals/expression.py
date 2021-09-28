@@ -18,9 +18,12 @@ from ...utils.dates import parse_iso
 class InvalidExpression(BaseException):
     pass
 
+def function_in(x, y):
+    return x in y
 
 TOKENS = {
-    "NUM": "<Number>",
+    "INTEGER": "<Integer>",
+    "FLOAT": "<Float>",
     "STR": "<Literal>",
     "VAR": "<Variable>",
     "BOOL": "<Boolean>",
@@ -43,6 +46,8 @@ TOKENS = {
     "OR": "OR",
     "LIKE": "LIKE",
     "NOT LIKE": "NOT LIKE",
+    "IN": "IN",
+    "BETWEEN": "BETWEEN"
 }
 
 TOKEN_OPERATORS = {
@@ -56,6 +61,8 @@ TOKEN_OPERATORS = {
     "IS NOT": operator.is_not,
     "LIKE": like,
     "NOT LIKE": not_like,
+    "IN": function_in
+    ## BETWEEN
 }
 
 SPLITTER = re.compile(
@@ -72,6 +79,8 @@ class TreeNode:
         self.value = value
         self.left = None
         self.right = None
+
+
 
 
 class ExpressionTokenizer:
@@ -105,32 +114,37 @@ class ExpressionTokenizer:
         self.tokens = [t.strip() for t in self.tokens if t.strip() != ""]
 
         self.token_types = []
-        for t in self.tokens:
-            if t.upper() in TOKENS:
-                self.token_types.append(TOKENS[t.upper()])
-            else:
-                # we need to determine the type of the tokens in the statement
-                if str(t).lower() in ("true", "false"):
-                    # 'true' and 'false' without quotes are booleans
-                    self.token_types.append(TOKENS["BOOL"])
-                elif str(t).lower() in ("null", "none"):
-                    # 'null' or 'none' without quotes are nulls
-                    self.token_types.append(TOKENS["NULL"])
-                elif t[0] == t[-1] == '"' or t[0] == t[-1] == "'":
-                    # tokens in quotes are either dates or string literals
-                    if parse_iso(t[1:-1]):
-                        self.token_types.append(TOKENS["DATE"])
-                    else:
-                        self.token_types.append(TOKENS["STR"])
-                elif fastnumbers.isfloat(t):
-                    self.token_types.append(TOKENS["NUM"])
-                elif re.search(r"^[^\d\W][\w\-\.]*", t):
-                    # tokens starting with a letter, is made up of letters, numbers,
-                    # hyphens, underscores and dots are probably variables
-                    self.token_types.append(TOKENS["VAR"])
+        for token in self.tokens:
+
+            token = str(token)
+
+            if token.upper() in TOKENS:
+                self.token_types.append(TOKENS[token.upper()])
+            elif token[0] == token[-1] == "`":
+                self.token_types.append(TOKENS["VAR"])
+            elif token.lower() in ("true", "false"):
+                # 'true' and 'false' without quotes are booleans
+                self.token_types.append(TOKENS["BOOL"])
+            elif token.lower() in ("null", "none"):
+                # 'null' or 'none' without quotes are nulls
+                self.token_types.append(TOKENS["NULL"])
+            elif token[0] == token[-1] == '"' or token[0] == token[-1] == "'":
+                # tokens in quotes are either dates or string literals
+                if parse_iso(token[1:-1]):
+                    self.token_types.append(TOKENS["DATE"])
                 else:
-                    # don't know what this is
-                    self.token_types.append(None)
+                    self.token_types.append(TOKENS["STR"])
+            elif fastnumbers.isint(token):
+                self.token_types.append(TOKENS["INTEGER"])
+            elif fastnumbers.isfloat(token):
+                self.token_types.append(TOKENS["FLOAT"])
+            elif re.search(r"^[^\d\W][\w\-\.]*", token):
+                # tokens starting with a letter, is made up of letters, numbers,
+                # hyphens, underscores and dots are probably variables
+                self.token_types.append(TOKENS["VAR"])
+            else:
+                # don't know what this is
+                self.token_types.append(None)
 
 
 class Expression(object):
@@ -215,7 +229,10 @@ class Expression(object):
     def parse_terminal(self):
         if self.tokenizer.has_next():
             token_type = self.tokenizer.next_token_type()
-            if token_type == TOKENS["NUM"]:
+            if token_type == TOKENS["INTEGER"]:
+                n = TreeNode(token_type, fastnumbers.fast_int(self.tokenizer.next()))
+                return n
+            if token_type == TOKENS["FLOAT"]:
                 n = TreeNode(token_type, fastnumbers.fast_float(self.tokenizer.next()))
                 return n
             if token_type in (TOKENS["VAR"], TOKENS["NOT"]):
@@ -244,7 +261,8 @@ class Expression(object):
 
     def evaluate_recursive(self, treeNode, variable_dict):
         if treeNode.token_type in (
-            TOKENS["NUM"],
+            TOKENS["INTEGER"],
+            TOKENS["FLOAT"],
             TOKENS["STR"],
             TOKENS["BOOL"],
             TOKENS["NULL"],
@@ -290,7 +308,8 @@ class Expression(object):
 
     def _inner_to_dnf(self, treeNode):
         if treeNode.token_type in (
-            TOKENS["NUM"],
+            TOKENS["INTEGER"],
+            TOKENS["FLOAT"],
             TOKENS["STR"],
             TOKENS["VAR"],
             TOKENS["BOOL"],

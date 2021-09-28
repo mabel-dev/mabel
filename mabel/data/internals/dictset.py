@@ -537,8 +537,8 @@ class DictSet(object):
         if is_running_from_ipython():
             from IPython.display import HTML, display  # type:ignore
 
-            html = html_table(iter(self._iterator), 5)
+            html = html_table(iter(self._iterator), 10)
             display(HTML(html))
             return ""  # __repr__ must return something
         else:
-            return ascii_table(iter(self._iterator), 5)
+            return ascii_table(iter(self._iterator), 10)
