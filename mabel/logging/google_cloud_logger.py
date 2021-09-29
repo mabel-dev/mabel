@@ -49,9 +49,11 @@ def fix_dict(obj: dict) -> dict:
         if isinstance(dt, (datetime.date, datetime.datetime)):
             return dt.isoformat()
         if isinstance(dt, dict):
-            return fix_fields(dt)
+            return {k: fix_fields(v) for k, v in dt.items()}
         return dt
 
+    if not isinstance(obj, dict):
+        return obj
     return {k: fix_fields(v) for k, v in obj.items()}
 
 
