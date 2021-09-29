@@ -53,7 +53,7 @@ def fix_dict(obj: dict) -> dict:
         return dt
 
     if not isinstance(obj, dict):
-        return obj
+        return obj  # type:ignore
     return {k: fix_fields(v) for k, v in obj.items()}
 
 
