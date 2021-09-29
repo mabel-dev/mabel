@@ -24,6 +24,7 @@ logging_seen_warnings: Dict[int, int] = {}
 
 def report_suppressions(message):
     import mabel.logging
+
     record = logging_seen_warnings.get(hash(message))
     if record:
         mabel.logging.get_logger().warning(
@@ -44,16 +45,17 @@ def extract_caller():
 
 
 def fix_dict(obj: dict) -> dict:
-
-    def fix_fields(dt) -> str:
+    def fix_fields(dt):
         if isinstance(dt, (datetime.date, datetime.datetime)):
             return dt.isoformat()
         if isinstance(dt, dict):
-            return fix_fields(dt)
+            return {k: fix_fields(v) for k, v in dt.items()}
         return dt
 
+    if not isinstance(obj, dict):
+        return obj  # type:ignore
     return {k: fix_fields(v) for k, v in obj.items()}
-    
+
 
 class GoogleLogger(object):
     @staticmethod

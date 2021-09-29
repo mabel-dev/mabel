@@ -15,6 +15,7 @@ def test_google_logging():
     """
     This doesn't save to StackDriver - we're mainly ensuring that the redaction and suppression works
     """
+    assert "loop" in GoogleLogger().warning({"outer": {"inner": "loop"}})
     assert "Noooooo" in GoogleLogger().warning("Noooooo")
     assert "suppressed" == GoogleLogger().warning("Noooooo")
     assert "Yess!!" in GoogleLogger().warning("Yess!!")
