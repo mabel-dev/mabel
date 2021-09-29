@@ -45,7 +45,7 @@ def extract_caller():
 
 
 def fix_dict(obj: dict) -> dict:
-    def fix_fields(dt) -> str:
+    def fix_fields(dt):
         if isinstance(dt, (datetime.date, datetime.datetime)):
             return dt.isoformat()
         if isinstance(dt, dict):
