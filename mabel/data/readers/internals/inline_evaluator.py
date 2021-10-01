@@ -42,6 +42,8 @@ class TOKENS(str, Enum):
     UNKNOWN = "<?>"
     EVERYTHING = "<*>"
     OPERATOR = "<Operator>"
+    AND = "<And>"
+    OR = "<Or>"
 
 
 def get_token_type(token):
@@ -64,6 +66,10 @@ def get_token_type(token):
     if token.lower() in ("null", "none"):
         # 'null' or 'none' without quotes are nulls
         return TOKENS.NULL
+    if token.lower() == "and":
+        return TOKENS.AND
+    if token.lower() == "or":
+        return TOKENS.OR
     if token[0] == token[-1] == '"' or token[0] == token[-1] == "'":
         # tokens in quotes are either dates or string literals
         if parse_iso(token[1:-1]):
