@@ -51,7 +51,6 @@ class GoogleLogger(object):
         if is_running_from_ipython():
             return False
         if os.environ.get("K_SERVICE", "") or "" != "":
-            print("DETECTED I'M RUNNING IN KUBERNETES")
             return True
         return False
 
@@ -92,7 +91,7 @@ class GoogleLogger(object):
         if spanId:
             structured_log["logging.googleapis.com/spanId"] = spanId
 
-        structured_log["entries"] = structured_log
+        structured_log["entries"] = {**structured_log}
         structured_log["logName"] = f'projects/{os.environ.get("PROJECT_NAME")}/logs/{os.environ.get("LOG_SINK")}',
 
         if isinstance(message, dict):

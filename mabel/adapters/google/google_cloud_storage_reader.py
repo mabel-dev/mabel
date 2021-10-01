@@ -9,6 +9,15 @@ from ...utils import paths
 
 class GoogleStorageReadError(Exception): pass
 
+def url_encoder(url):
+    result_url = ""
+    for character in url:
+        if not character.isalnum() and character not in ("-", "."):
+            result_url += "%" + hex(ord(character))[2:]
+        else:
+            result_url += character
+    return result_url
+
 class GoogleCloudStorageReader(BaseInnerReader):
 
     RULES = [
@@ -61,7 +70,7 @@ class GoogleCloudStorageReader(BaseInnerReader):
 
         # get the data
         payload = requests.get(
-            url=f"{domain}storage/v1/b/{bucket}/o?prefix={object_path}",
+            url=f"{domain}storage/v1/b/{url_encoder(bucket)}/o?prefix={object_path}",
             headers=headers,
             timeout=30
         )
