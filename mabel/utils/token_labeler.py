@@ -22,7 +22,7 @@ class TokenLabeler:
         """
         What is the next Token, without changing the focus
         """
-        if not self.fin():
+        if (self.index + 1) < self.token_count:
             return self.tokens[self.index + 1]
 
     def item(self) -> Any:
