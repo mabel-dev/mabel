@@ -50,7 +50,7 @@ class GoogleLogger(object):
     def supported():
         if is_running_from_ipython():
             return False
-        if os.environ.get("K_SERVICE", "") or "" != "":
+        if os.environ.get("K_SERVICE", "") or "" != "":  # nosemgrep
             return True
         return False
 

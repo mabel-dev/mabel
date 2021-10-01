@@ -1,3 +1,4 @@
+# no-maintain-checks
 """
 This class performs functions on individual rows. There is a set of functions in
 the sql_functions module.
@@ -52,7 +53,7 @@ def get_token_type(token):
         # tokens in ` quotes are variables, this is how we supersede all other
         # checks, e.g. if it looks like a number but is a variable.
         return TOKENS.VARIABLE
-    if token == "*":
+    if token == "*":  # nosec - not a password
         return TOKENS.EVERYTHING
     if token.upper() in FUNCTIONS:
         # if it matches a function call, it is

@@ -153,7 +153,7 @@ def add_days(start_date, day_count):
 def get_md5(item):
     import hashlib
 
-    return hashlib.md5(str(item).encode()).hexdigest()
+    return hashlib.md5(str(item).encode()).hexdigest()  # nosec - meant to be MD5
 
 
 FUNCTIONS = {
