@@ -77,12 +77,12 @@ def parse_iso(value):
                         *map(  # type:ignore
                             fast_int,
                             [
-                                value[:4],       # YYYY
-                                value[5:7],      # MM
-                                value[8:10],     # DD
-                                value[11:13],    # HH
-                                value[14:16],    # MM
-                                value[17:19],    # SS
+                                value[:4],  # YYYY
+                                value[5:7],  # MM
+                                value[8:10],  # DD
+                                value[11:13],  # HH
+                                value[14:16],  # MM
+                                value[17:19],  # SS
                             ],
                         )
                     )

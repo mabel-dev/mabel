@@ -319,11 +319,11 @@ class DictSet(object):
                     # ensure the fields are in the same order
                     # this is quicker than dealing with dictionaries
                     hashed_item = hash(
-                        "/".join([f"{k}:{item.get(k)}" for k in sorted(item.keys())])
+                        "".join([f"{k}:{item[k]}" for k in sorted(item.keys())])
                     )
                 if hashed_item not in hash_list:
                     yield item
-                hash_list[hashed_item] = True
+                    hash_list[hashed_item] = True
 
         return DictSet(
             do_dedupe(iter(self._iterator)), storage_class=self.storage_class

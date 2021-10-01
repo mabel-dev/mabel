@@ -80,7 +80,7 @@ class GoogleLogger(object):
             "logging.googleapis.com/labels": {
                 "system": system,
                 "log_name": LOG_NAME,
-            }
+            },
         }
 
         method, module, line = extract_caller()

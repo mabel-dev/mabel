@@ -4,30 +4,22 @@ Google Cloud Storage Reader
 import io
 import os
 from ...data.readers.internals.base_inner_reader import BaseInnerReader
-from ...errors import MissingDependencyError
 from ...utils import paths
 
-try:
-    from google.auth.credentials import AnonymousCredentials  # type:ignore
-    from google.cloud import storage  # type:ignore
 
-    google_cloud_storage_installed = True
-except ImportError:  # pragma: no cover
-    google_cloud_storage_installed = False
-
+class GoogleStorageReadError(Exception): pass
 
 class GoogleCloudStorageReader(BaseInnerReader):
 
-    RULES = [{"name": "project", "required": False}]
+    RULES = [
+        {"name": "project", "required": False},
+        {"name": "credentials", "required": False},
+    ]
 
-    def __init__(self, project: str, **kwargs):
-        if not google_cloud_storage_installed:  # pragma: no cover
-            raise MissingDependencyError(
-                "`google-cloud-storage` is missing, please install or include in requirements.txt"
-            )
-
+    def __init__(self, project: str, credentials=None, **kwargs):
         super().__init__(**kwargs)
         self.project = project
+        self.credentials = credentials
 
     def get_blob_stream(self, blob_name):
         bucket, object_path, name, extension = paths.get_parts(blob_name)
@@ -35,10 +27,9 @@ class GoogleCloudStorageReader(BaseInnerReader):
             project=self.project,
             bucket=bucket,
             blob_name=object_path + name + extension,
+            credentials=self.credentials,
         )
-        stream = blob.download_as_bytes()
-        io_stream = io.BytesIO(stream)
-        return io_stream
+        return blob
 
     def get_blob_chunk(self, blob_name: str, start: int, buffer_size: int) -> bytes:
         bucket, object_path, name, extension = paths.get_parts(blob_name)
@@ -46,6 +37,7 @@ class GoogleCloudStorageReader(BaseInnerReader):
             project=self.project,
             bucket=bucket,
             blob_name=object_path + name + extension,
+            credentials=self.credentials,
         )
         stream = blob.download_as_bytes(
             start=start, end=min(blob.size, start + buffer_size - 1)
@@ -55,34 +47,55 @@ class GoogleCloudStorageReader(BaseInnerReader):
     def get_blobs_at_path(self, path):
         bucket, object_path, name, extension = paths.get_parts(path)
 
-        # this means we're testing
-        if os.environ.get("STORAGE_EMULATOR_HOST") is not None:
-            client = storage.Client(
-                credentials=AnonymousCredentials(),
-                project=self.project,
-            )
-        else:  # pragma: no cover
-            client = storage.Client(project=self.project)
+        import requests
 
-        gcs_bucket = client.get_bucket(bucket)
-        blobs = list(client.list_blobs(bucket_or_name=gcs_bucket, prefix=object_path))
+        # determin the domain
+        domain = os.environ.get("STORAGE_EMULATOR_HOST", "https://storage.googleapis.com")
+        if domain[-1] != "/":
+            domain += "/"
+
+        # add the headers if needed
+        headers = {}
+        if self.credentials:
+            headers["Authorization"] = f"Bearer {self.credentials}"
+
+        # get the data
+        payload = requests.get(
+            url=f"{domain}storage/v1/b/{bucket}/o?prefix={object_path}",
+            headers=headers,
+            timeout=30
+        )
+
+        if payload.status_code // 100 != 2:
+            return []
 
         yield from [
-            bucket + "/" + blob.name for blob in blobs if not blob.name.endswith("/")
+            bucket + "/" + blob["name"] for blob in payload.json()["items"] if not blob["name"].endswith("/")
         ]
 
 
-def get_blob(project: str, bucket: str, blob_name: str):
+def get_blob(project: str, bucket: str, blob_name: str, credentials=None):
 
-    # this means we're testing
-    if os.environ.get("STORAGE_EMULATOR_HOST") is not None:
-        client = storage.Client(
-            credentials=AnonymousCredentials(),
-            project=project,
-        )
-    else:  # pragma: no cover
-        client = storage.Client(project=project)
+    import requests
 
-    gcs_bucket = client.get_bucket(bucket)
-    blob = gcs_bucket.get_blob(blob_name)
-    return blob
+    # determin the domain
+    domain = os.environ.get("STORAGE_EMULATOR_HOST", "https://storage.googleapis.com")
+    if domain[-1] != "/":
+        domain += "/"
+
+    # add the headers if needed
+    headers = {}
+    if credentials:
+        headers["Authorization"] = f"Bearer {credentials}"
+
+    # get the data
+    payload = requests.get(
+        url=f"{domain}storage/v1/b/{bucket}/o/{blob_name}?alt=media",
+        headers=headers,
+        timeout=30
+    )
+
+    if payload.status_code // 100 != 2:
+        raise GoogleStorageReadError(payload)
+
+    return io.BytesIO(payload.content)

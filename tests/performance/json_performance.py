@@ -99,6 +99,7 @@ import sys
 
 simparser = simdjson.Parser()
 
+
 def sparser(o):
     return simparser.parse(o)
 
@@ -111,15 +112,15 @@ def simd_dump(o):
 
 # print("cysimd parse:", time_it(test_parser, parser.parse))
 print("pysimd parse:", time_it(test_parser, test_simd_serializer))
-#print("json parse  :", time_it(test_parser, json.loads))
+# print("json parse  :", time_it(test_parser, json.loads))
 print("ujson parse :", time_it(test_parser, ujson.loads))
 print("orjson parse:", time_it(test_parser, orjson.loads))  # <- fastest
 
-#print("map", time_it_2())
-#print("comp", time_it_3())
-#print("for", time_it_4())
+# print("map", time_it_2())
+# print("comp", time_it_3())
+# print("for", time_it_4())
 
-#print("json serialize   :", time_it(test_serializer, json.dumps))
+# print("json serialize   :", time_it(test_serializer, json.dumps))
 print("ujson serializer :", time_it(test_serializer, ujson.dumps))
 print("orjson serializer:", time_it(test_serializer, orjson.dumps))  # <- fastest
 print("pysimd serializer:", time_it(test_simd_serializer, orjson.dumps))
