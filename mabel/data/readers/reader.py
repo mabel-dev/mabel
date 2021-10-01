@@ -40,7 +40,8 @@ RULES = [
     {"name": "persistence", "required": False, "warning": "", "incompatible_with": []},
     {"name": "project", "required": False, "warning": "", "incompatible_with": []},
     {"name": "override_format", "required": False, "warning": "", "incompatible_with": []},
-    {"name": "multiprocess", "required": False, "warning": "", "incompatible_with": ["cursor"]}
+    {"name": "multiprocess", "required": False, "warning": "", "incompatible_with": ["cursor"]},
+    {"name": "credentials", "required": False},
 ]
 # fmt:on
 
