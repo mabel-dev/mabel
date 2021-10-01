@@ -1,3 +1,4 @@
+# no-maintain-checks
 import re
 
 import simdjson
