@@ -18,8 +18,10 @@ from ...utils.dates import parse_iso
 class InvalidExpression(BaseException):
     pass
 
+
 def function_in(x, y):
     return x in y
+
 
 TOKENS = {
     "INTEGER": "<Integer>",
@@ -47,7 +49,7 @@ TOKENS = {
     "LIKE": "LIKE",
     "NOT LIKE": "NOT LIKE",
     "IN": "IN",
-    "BETWEEN": "BETWEEN"
+    "BETWEEN": "BETWEEN",
 }
 
 TOKEN_OPERATORS = {
@@ -79,8 +81,6 @@ class TreeNode:
         self.value = value
         self.left = None
         self.right = None
-
-
 
 
 class ExpressionTokenizer:

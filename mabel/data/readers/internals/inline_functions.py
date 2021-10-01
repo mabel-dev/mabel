@@ -13,6 +13,7 @@ from functools import lru_cache
 from ....utils.dates import parse_iso
 from ....data.internals.records import flatten
 
+
 def get_year(input):
     """
     Convert input to a datetime object and extract the Year part
@@ -122,18 +123,23 @@ def get_week(input):
         return input.strftime("%V")
     return None
 
+
 def do_join(lst, separator=","):
     return separator.join(map(str, list))
 
+
 def get_random():
     from ....utils.entropy import random_range
-    return random_range(0,999) / 1000
+
+    return random_range(0, 999) / 1000
+
 
 def concat(*items):
     """
     Turn each item to a string and concatenate the strings together
     """
     return "".join(map(str, items))
+
 
 def add_days(start_date, day_count):
     if isinstance(start_date, str):
@@ -142,9 +148,11 @@ def add_days(start_date, day_count):
         return start_date + datetime.timedelta(days=day_count)
     return None
 
+
 @lru_cache(8)
 def get_md5(item):
     import hashlib
+
     return hashlib.md5(str(item).encode()).hexdigest()
 
 
@@ -162,7 +170,6 @@ FUNCTIONS = {
     "TIME": get_time,
     "NOW": datetime.datetime.now,
     "ADDDAYS": add_days,
-    
     # STRINGS
     "UCASE": lambda x: str(x).upper(),
     "UPPER": lambda x: str(x).upper(),
@@ -175,21 +182,17 @@ FUNCTIONS = {
     "RIGHT": lambda x, y: str(x)[-int(y) :],
     "MID": lambda x, y, z: str(x)[int(y) :][: int(z)],
     "CONCAT": concat,
-
     # NUMBERS
     "ROUND": round,
     "TRUNC": fastnumbers.fast_int,
     "INT": fastnumbers.fast_int,
     "FLOAT": fastnumbers.fast_float,
-
     # COMPLEX TYPES
     "FLATTEN": flatten,  # flatten(dictionary, separator)
     "JOIN": do_join,
-
     # BOOLEAN
     "BOOLEAN": lambda x: x.upper() != "FALSE",
     "ISNONE": lambda x: x is None,
-    
     # HASHING & ENCODING
     "HASH": lambda x: hex(siphash("INCOMPREHENSIBLE", str(x))),  # needs 16 characters
     "MD5": get_md5,

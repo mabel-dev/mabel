@@ -19,7 +19,7 @@ except ImportError:  # pragma: no cover
 
 
 class GoogleCloudStorageWriter(BaseInnerWriter):
-    def __init__(self, project: str, **kwargs):
+    def __init__(self, project: str, credentials=None, **kwargs):
         if not google_cloud_storage_installed:  # pragma: no cover
             raise MissingDependencyError(
                 "`google-cloud-storage` is missing, please install or include in requirements.txt"
@@ -27,6 +27,7 @@ class GoogleCloudStorageWriter(BaseInnerWriter):
 
         super().__init__(**kwargs)
         self.project = project
+        self.credentials = credentials
 
         predicate = retry.if_exception_type(
             ConnectionResetError, ProtocolError, InternalServerError, TooManyRequests
@@ -42,7 +43,7 @@ class GoogleCloudStorageWriter(BaseInnerWriter):
                 project=self.project,
             )
         else:  # pragma: no cover
-            client = storage.Client(project=self.project)
+            client = storage.Client(project=self.project, credentials=self.credentials)
         self.gcs_bucket = client.get_bucket(self.bucket)
         self.filename = self.filename_without_bucket
 

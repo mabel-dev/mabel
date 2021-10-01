@@ -18,9 +18,12 @@ except ImportError:  # pragma: no cover
 
 class GoogleCloudStorageReader(BaseInnerReader):
 
-    RULES = [{"name": "project", "required": False}]
+    RULES = [
+        {"name": "project", "required": False},
+        {"name": "credentials", "required": False},
+    ]
 
-    def __init__(self, project: str, **kwargs):
+    def __init__(self, project: str, credentials=None, **kwargs):
         if not google_cloud_storage_installed:  # pragma: no cover
             raise MissingDependencyError(
                 "`google-cloud-storage` is missing, please install or include in requirements.txt"
@@ -28,6 +31,7 @@ class GoogleCloudStorageReader(BaseInnerReader):
 
         super().__init__(**kwargs)
         self.project = project
+        self.credentials = credentials
 
     def get_blob_stream(self, blob_name):
         bucket, object_path, name, extension = paths.get_parts(blob_name)
@@ -35,6 +39,7 @@ class GoogleCloudStorageReader(BaseInnerReader):
             project=self.project,
             bucket=bucket,
             blob_name=object_path + name + extension,
+            credentials=self.credentials,
         )
         stream = blob.download_as_bytes()
         io_stream = io.BytesIO(stream)
@@ -46,6 +51,7 @@ class GoogleCloudStorageReader(BaseInnerReader):
             project=self.project,
             bucket=bucket,
             blob_name=object_path + name + extension,
+            credentials=self.credentials,
         )
         stream = blob.download_as_bytes(
             start=start, end=min(blob.size, start + buffer_size - 1)
@@ -62,7 +68,7 @@ class GoogleCloudStorageReader(BaseInnerReader):
                 project=self.project,
             )
         else:  # pragma: no cover
-            client = storage.Client(project=self.project)
+            client = storage.Client(project=self.project, credentials=self.credentials)
 
         gcs_bucket = client.get_bucket(bucket)
         blobs = list(client.list_blobs(bucket_or_name=gcs_bucket, prefix=object_path))
@@ -72,7 +78,7 @@ class GoogleCloudStorageReader(BaseInnerReader):
         ]
 
 
-def get_blob(project: str, bucket: str, blob_name: str):
+def get_blob(project: str, bucket: str, blob_name: str, credentials=None):
 
     # this means we're testing
     if os.environ.get("STORAGE_EMULATOR_HOST") is not None:
@@ -81,7 +87,7 @@ def get_blob(project: str, bucket: str, blob_name: str):
             project=project,
         )
     else:  # pragma: no cover
-        client = storage.Client(project=project)
+        client = storage.Client(project=project, credentials=credentials)
 
     gcs_bucket = client.get_bucket(bucket)
     blob = gcs_bucket.get_blob(blob_name)

@@ -40,6 +40,7 @@ class TOKENS(str, Enum):
     AS = "<As>"
     UNKNOWN = "<?>"
     EVERYTHING = "<*>"
+    OPERATOR = "<Operator>"
 
 
 def get_token_type(token):
@@ -49,7 +50,7 @@ def get_token_type(token):
     token = str(token)
     if token[0] == token[-1] == "`":
         # tokens in ` quotes are variables, this is how we supersede all other
-        # checks, i.e. if it looks like a number but is a variable.
+        # checks, e.g. if it looks like a number but is a variable.
         return TOKENS.VARIABLE
     if token == "*":
         return TOKENS.EVERYTHING
@@ -69,9 +70,10 @@ def get_token_type(token):
         else:
             return TOKENS.LITERAL
     if fastnumbers.isint(token):
+        # if we can parse to an int, it's an int
         return TOKENS.INTEGER
     if fastnumbers.isfloat(token):
-        # if we can parse to a float, it's a number
+        # if we can parse to a float, it's a float
         return TOKENS.FLOAT
     if token.upper() == "AS":
         # AS looks like a variable but us a keyword
@@ -139,7 +141,6 @@ def if_as(token, name):
     if token.get("as") is None:
         return name
     return token["as"]
-
 
 
 def evaluate_field(dict, token):
@@ -247,4 +248,4 @@ class Evaluator:
     def __next__(self):
         if not self._iter:
             self._iter = iter(self.tokens)
-        return next(self._iter) 
+        return next(self._iter)
