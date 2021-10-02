@@ -3,69 +3,22 @@
 This implements a SQL-like query syntax to filter dictionaries based on combinations
 of predicates.
 
-The implementation is as an expression tree, 
+The implementation is sort of an expression tree, it doesn't need to be a complete
+expression tree as it's only doing boolean logic.
 
 Derived from: https://gist.github.com/leehsueh/1290686
 """
 import re
-import operator
 import fastnumbers
 from ..readers.internals.inline_evaluator import *
-from ...utils.text import like, not_like
 from ...utils.dates import parse_iso
+from ...utils.token_labeler import get_token_type, TOKENS, OPERATORS
 
 
 class InvalidExpression(BaseException):
     pass
 
 
-def function_in(x, y):
-    return x in y
-
-
-TOKENS = {
-    "INTEGER": "<Integer>",
-    "FLOAT": "<Float>",
-    "STR": "<Literal>",
-    "VAR": "<Variable>",
-    "BOOL": "<Boolean>",
-    "DATE": "<Date>",
-    "NULL": "<Null>",
-    "NOT": "NOT",
-    ">": ">",
-    ">=": ">=",
-    "<": "<",
-    "<=": "<=",
-    "IS": "IS",
-    "IS NOT": "IS NOT",
-    "=": "==",
-    "==": "==",
-    "!=": "!=",
-    "<>": "!=",
-    "LP": "(",
-    "RP": ")",
-    "AND": "AND",
-    "OR": "OR",
-    "LIKE": "LIKE",
-    "NOT LIKE": "NOT LIKE",
-    "IN": "IN",
-    "BETWEEN": "BETWEEN",
-}
-
-TOKEN_OPERATORS = {
-    ">": operator.gt,
-    ">=": operator.ge,
-    "<": operator.lt,
-    "<=": operator.le,
-    "==": operator.eq,
-    "!=": operator.ne,
-    "IS": operator.is_,
-    "IS NOT": operator.is_not,
-    "LIKE": like,
-    "NOT LIKE": not_like,
-    "IN": function_in
-    ## BETWEEN
-}
 
 SPLITTER = re.compile(
     r"(\bNONE\b|\bNULL\b|\bIS\sNOT\b|\bIS\b|\bAND\b|\bOR\b|!=|==|=|\<\>|<=|>=|<|>|\(|\)|\bNOT\sLIKE\b|\bLIKE\b|\bNOT\b)",
@@ -105,9 +58,8 @@ class ExpressionTokenizer:
     def next_token_type(self):
         return self.token_types[self.i]
 
-    def next_token_type_is_operator(self):
-        t = self.token_types[self.i]
-        return t in TOKEN_OPERATORS
+    def next_token_value(self):
+        return self.tokens[self.i]
 
     def tokenize(self):
         self.tokens = SPLITTER.split(self.expression)
@@ -117,34 +69,7 @@ class ExpressionTokenizer:
         for token in self.tokens:
 
             token = str(token)
-
-            if token.upper() in TOKENS:
-                self.token_types.append(TOKENS[token.upper()])
-            elif token[0] == token[-1] == "`":
-                self.token_types.append(TOKENS["VAR"])
-            elif token.lower() in ("true", "false"):
-                # 'true' and 'false' without quotes are booleans
-                self.token_types.append(TOKENS["BOOL"])
-            elif token.lower() in ("null", "none"):
-                # 'null' or 'none' without quotes are nulls
-                self.token_types.append(TOKENS["NULL"])
-            elif token[0] == token[-1] == '"' or token[0] == token[-1] == "'":
-                # tokens in quotes are either dates or string literals
-                if parse_iso(token[1:-1]):
-                    self.token_types.append(TOKENS["DATE"])
-                else:
-                    self.token_types.append(TOKENS["STR"])
-            elif fastnumbers.isint(token):
-                self.token_types.append(TOKENS["INTEGER"])
-            elif fastnumbers.isfloat(token):
-                self.token_types.append(TOKENS["FLOAT"])
-            elif re.search(r"^[^\d\W][\w\-\.]*", token):
-                # tokens starting with a letter, is made up of letters, numbers,
-                # hyphens, underscores and dots are probably variables
-                self.token_types.append(TOKENS["VAR"])
-            else:
-                # don't know what this is
-                self.token_types.append(None)
+            self.token_types.append(get_token_type(token))
 
 
 class Expression(object):
@@ -163,11 +88,11 @@ class Expression(object):
         andTerm1 = self.parse_and_term()
         while (
             self.tokenizer.has_next()
-            and self.tokenizer.next_token_type() == TOKENS["OR"]
+            and self.tokenizer.next_token_type() == TOKENS.OR
         ):
             self.tokenizer.next()
             andTermX = self.parse_and_term()
-            andTerm = TreeNode(TOKENS["OR"], None)
+            andTerm = TreeNode(TOKENS.OR, None)
             andTerm.left = andTerm1
             andTerm.right = andTermX
             andTerm1 = andTerm
@@ -177,20 +102,23 @@ class Expression(object):
         condition1 = self.parse_condition()
         while (
             self.tokenizer.has_next()
-            and self.tokenizer.next_token_type() == TOKENS["AND"]
+            and self.tokenizer.next_token_type() == TOKENS.AND
         ):
             self.tokenizer.next()
             conditionX = self.parse_condition()
-            condition = TreeNode(TOKENS["AND"], None)
+            condition = TreeNode(TOKENS.AND, None)
             condition.left = condition1
             condition.right = conditionX
             condition1 = condition
         return condition1
 
     def parse_condition(self):
+
+        terminal1 = None
+
         if (
             self.tokenizer.has_next()
-            and self.tokenizer.next_token_type() == TOKENS["NOT"]
+            and self.tokenizer.next_token_type() == TOKENS.NOT
         ):
             not_condition = TreeNode(self.tokenizer.next_token_type(), None)
             self.tokenizer.next()
@@ -198,24 +126,54 @@ class Expression(object):
             not_condition.left = child_condition
             not_condition.right = None  # NOT is a unary operator
             return not_condition
+    
+        if self.tokenizer.has_next() and self.tokenizer.next_token_type() == TOKENS.FUNCTION:
+            # we don't evaluate functions as part of this module, the function call
+            # should be part of the record, e.g. record["YEAR(date_of_birth)"]
+            # we we extract out the function and treat is as a VARIABLE
+
+            collector = [self.tokenizer.next_token_value(), "("]
+
+            self.tokenizer.next()
+            if not self.tokenizer.has_next or self.tokenizer.next_token_type() != TOKENS.LEFTPARENTHESES:
+                raise InvalidExpression("Functions should be followed by paranthesis")
+
+            self.tokenizer.next()
+            open_parentheses = 1
+
+            while open_parentheses > 0:
+                if not self.tokenizer.has_next():
+                    break
+                if self.tokenizer.next_token_type() == TOKENS.RIGHTPARENTHESES:
+                    open_parentheses -= 1
+                elif self.tokenizer.next_token_type() == TOKENS.LEFTPARENTHESES:
+                    open_parentheses += 1
+                collector.append(self.tokenizer.next())
+
+            if open_parentheses != 0:
+                raise InvalidExpression("Unbalanced parantheses")
+
+            terminal1 = TreeNode(TOKENS.VARIABLE, ''.join(collector))
+
         if (
             self.tokenizer.has_next()
-            and self.tokenizer.next_token_type() == TOKENS["LP"]
+            and self.tokenizer.next_token_type() == TOKENS.LEFTPARENTHESES
         ):
             self.tokenizer.next()
             expression = self.parse_expression()
             if (
                 self.tokenizer.has_next()
-                and self.tokenizer.next_token_type() == TOKENS["RP"]
+                and self.tokenizer.next_token_type() == TOKENS.RIGHTPARENTHESES
             ):
                 self.tokenizer.next()
                 return expression
             raise InvalidExpression(f"`)` expected, but got `{self.tokenizer.next()}`")
 
-        terminal1 = self.parse_terminal()
+        if not terminal1:
+            terminal1 = self.parse_terminal()
         if self.tokenizer.has_next():
-            if self.tokenizer.next_token_type_is_operator():
-                condition = TreeNode(self.tokenizer.next_token_type(), None)
+            if self.tokenizer.next_token_type() == TOKENS.OPERATOR:
+                condition = TreeNode(self.tokenizer.next_token_type(), self.tokenizer.next_token_value().upper())
                 self.tokenizer.next()
                 terminal2 = self.parse_terminal()
                 condition.left = terminal1
@@ -229,25 +187,25 @@ class Expression(object):
     def parse_terminal(self):
         if self.tokenizer.has_next():
             token_type = self.tokenizer.next_token_type()
-            if token_type == TOKENS["INTEGER"]:
+            if token_type == TOKENS.INTEGER:
                 n = TreeNode(token_type, fastnumbers.fast_int(self.tokenizer.next()))
                 return n
-            if token_type == TOKENS["FLOAT"]:
+            if token_type == TOKENS.FLOAT:
                 n = TreeNode(token_type, fastnumbers.fast_float(self.tokenizer.next()))
                 return n
-            if token_type in (TOKENS["VAR"], TOKENS["NOT"]):
+            if token_type in (TOKENS.VARIABLE, TOKENS.NOT):
                 n = TreeNode(token_type, self.tokenizer.next())
                 return n
-            if token_type == TOKENS["STR"]:
+            if token_type == TOKENS.LITERAL:
                 n = TreeNode(token_type, self.tokenizer.next()[1:-1])
                 return n
-            if token_type == TOKENS["BOOL"]:
+            if token_type == TOKENS.BOOLEAN:
                 n = TreeNode(token_type, self.tokenizer.next().lower() == "true")
                 return n
-            if token_type == TOKENS["NULL"]:
+            if token_type == TOKENS.NULL:
                 n = TreeNode(token_type, None)
                 return n
-            if token_type == TOKENS["DATE"]:
+            if token_type == TOKENS.DATE:
                 n = TreeNode(token_type, parse_iso(self.tokenizer.next()[1:-1]))
                 return n
 
@@ -261,15 +219,15 @@ class Expression(object):
 
     def evaluate_recursive(self, treeNode, variable_dict):
         if treeNode.token_type in (
-            TOKENS["INTEGER"],
-            TOKENS["FLOAT"],
-            TOKENS["STR"],
-            TOKENS["BOOL"],
-            TOKENS["NULL"],
-            TOKENS["DATE"],
+            TOKENS.INTEGER,
+            TOKENS.FLOAT,
+            TOKENS.LITERAL,
+            TOKENS.BOOLEAN,
+            TOKENS.NULL,
+            TOKENS.DATE,
         ):
             return treeNode.value
-        if treeNode.token_type == TOKENS["VAR"]:
+        if treeNode.token_type == TOKENS.VARIABLE:
             if treeNode.value in variable_dict:
                 value = variable_dict[treeNode.value]
                 if str(value).isdecimal() or str(value).isnumeric():
@@ -283,16 +241,16 @@ class Expression(object):
 
         left = self.evaluate_recursive(treeNode.left, variable_dict)
 
-        if treeNode.token_type == TOKENS["NOT"]:
+        if treeNode.token_type == TOKENS.NOT:
             return not left
 
         right = self.evaluate_recursive(treeNode.right, variable_dict)
 
-        if treeNode.token_type in TOKEN_OPERATORS:
-            return TOKEN_OPERATORS[treeNode.token_type](left, right)
-        if treeNode.token_type == TOKENS["AND"]:
+        if treeNode.token_type == TOKENS.OPERATOR:
+            return OPERATORS[treeNode.value](left, right)
+        if treeNode.token_type == TOKENS.AND:
             return left and right
-        if treeNode.token_type == TOKENS["OR"]:
+        if treeNode.token_type == TOKENS.OR:
             return left or right
 
         raise InvalidExpression(
@@ -301,31 +259,41 @@ class Expression(object):
 
     def to_dnf(self):
         """
-        Converting SQL to DNF as sometimes it's easier to deal with DNF than an
+        Converting to DNF as sometimes it's easier to deal with DNF than an
         expression tree.
         """
         return self._inner_to_dnf(self.root)
 
     def _inner_to_dnf(self, treeNode):
         if treeNode.token_type in (
-            TOKENS["INTEGER"],
-            TOKENS["FLOAT"],
-            TOKENS["STR"],
-            TOKENS["VAR"],
-            TOKENS["BOOL"],
-            TOKENS["NULL"],
-            TOKENS["DATE"],
+            TOKENS.INTEGER,
+            TOKENS.FLOAT,
+            TOKENS.BOOLEAN,
+            TOKENS.NULL,
+            TOKENS.VARIABLE,
         ):
             return treeNode.value
 
-        left = self._inner_to_dnf(treeNode.left)
-        right = self._inner_to_dnf(treeNode.right)
+        if treeNode.token_type in (
+            TOKENS.DATE,
+            TOKENS.LITERAL
+        ):
+            return f'"{treeNode.value}"'
 
-        if treeNode.token_type == TOKENS["AND"]:
+        left = self._inner_to_dnf(treeNode.left)
+        right = None
+        if treeNode.right:
+            right = self._inner_to_dnf(treeNode.right)
+
+        if treeNode.token_type == TOKENS.AND:
             return [left, right]
 
-        if treeNode.token_type == TOKENS["OR"]:
+        if treeNode.token_type == TOKENS.OR:
             return [[left], [right]]
 
-        if treeNode.token_type in TOKEN_OPERATORS:
-            return (left, treeNode.token_type, right)
+        if treeNode.token_type == TOKENS.OPERATOR:
+            return (left, treeNode.value, right)
+
+        if treeNode.token_type == TOKENS.NOT:
+            # this isn't strict DNF
+            return ('NOT', left)
