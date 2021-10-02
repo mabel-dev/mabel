@@ -197,4 +197,10 @@ FUNCTIONS = {
     "HASH": lambda x: hex(siphash("INCOMPREHENSIBLE", str(x))),  # needs 16 characters
     "MD5": get_md5,
     "RANDOM": get_random,  # return a random number 0-99
+    # AGGREGATE FUNCTIONS
+    "COUNT": lambda x: 1,
+    "SUM": lambda x: 1,
+    "MAX": lambda x: 1,
+    "MIN": lambda x: 1,
+    "AVG": lambda x: 1
 }
