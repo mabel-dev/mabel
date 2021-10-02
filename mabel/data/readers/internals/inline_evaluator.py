@@ -26,75 +26,7 @@ class InvalidEvaluator(Exception):
     pass
 
 
-class TOKENS(str, Enum):
-    INTEGER = "<Integer>"
-    FLOAT = "<Float>"
-    LITERAL = "<Literal>"
-    VARIABLE = "<Variable>"
-    BOOLEAN = "<Boolean>"
-    DATE = "<Date>"
-    NULL = "<Null>"
-    LEFTPARENTHESES = "<LeftParentheses>"
-    RIGHTPARENTHESES = "<RightParentheses>"
-    COMMA = "<Comma>"
-    FUNCTION = "<Function>"
-    AS = "<As>"
-    UNKNOWN = "<?>"
-    EVERYTHING = "<*>"
-    OPERATOR = "<Operator>"
-    AND = "<And>"
-    OR = "<Or>"
 
-
-def get_token_type(token):
-    """
-    Guess the token type - tokens must have no spaces.
-    """
-    token = str(token)
-    if token[0] == token[-1] == "`":
-        # tokens in ` quotes are variables, this is how we supersede all other
-        # checks, e.g. if it looks like a number but is a variable.
-        return TOKENS.VARIABLE
-    if token == "*":  # nosec - not a password
-        return TOKENS.EVERYTHING
-    if token.upper() in FUNCTIONS:
-        # if it matches a function call, it is
-        return TOKENS.FUNCTION
-    if token.lower() in ("true", "false"):
-        # 'true' and 'false' without quotes are booleans
-        return TOKENS.BOOLEAN
-    if token.lower() in ("null", "none"):
-        # 'null' or 'none' without quotes are nulls
-        return TOKENS.NULL
-    if token.lower() == "and":
-        return TOKENS.AND
-    if token.lower() == "or":
-        return TOKENS.OR
-    if token[0] == token[-1] == '"' or token[0] == token[-1] == "'":
-        # tokens in quotes are either dates or string literals
-        if parse_iso(token[1:-1]):
-            return TOKENS.DATE
-        else:
-            return TOKENS.LITERAL
-    if fastnumbers.isint(token):
-        # if we can parse to an int, it's an int
-        return TOKENS.INTEGER
-    if fastnumbers.isfloat(token):
-        # if we can parse to a float, it's a float
-        return TOKENS.FLOAT
-    if token.upper() == "AS":
-        # AS looks like a variable but us a keyword
-        return TOKENS.AS
-    if re.search(r"^[^\d\W][\w\-\.]*", token):
-        # tokens starting with a letter, is made up of letters, numbers,
-        # hyphens, underscores and dots are probably variables
-        return TOKENS.VARIABLE
-    # if it doesn't match the above, we don't know what this is
-    if token in ("(", "["):
-        return TOKENS.LEFTPARENTHESES
-    if token in (")", "]"):
-        return TOKENS.RIGHTPARENTHESES
-    return TOKENS.UNKNOWN
 
 
 def build(tokens):
