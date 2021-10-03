@@ -149,6 +149,18 @@ def add_days(start_date, day_count):
     return None
 
 
+def diff_days(start_date, end_date):
+    if isinstance(start_date, str):
+        start_date = parse_iso(start_date)
+    if isinstance(end_date, str):
+        end_date = parse_iso(end_date)
+    if isinstance(start_date, (datetime.date, datetime.datetime)) and isinstance(
+        end_date, (datetime.date, datetime.datetime)
+    ):
+        return (end_date - start_date).days
+    return None
+
+
 @lru_cache(8)
 def get_md5(item):
     import hashlib
@@ -170,6 +182,7 @@ FUNCTIONS = {
     "TIME": get_time,
     "NOW": datetime.datetime.now,
     "ADDDAYS": add_days,
+    "DAYSDIFF": diff_days,
     # STRINGS
     "UCASE": lambda x: str(x).upper(),
     "UPPER": lambda x: str(x).upper(),
@@ -197,10 +210,6 @@ FUNCTIONS = {
     "HASH": lambda x: hex(siphash("INCOMPREHENSIBLE", str(x))),  # needs 16 characters
     "MD5": get_md5,
     "RANDOM": get_random,  # return a random number 0-99
-    # AGGREGATE FUNCTIONS
-    "COUNT": lambda x: 1,
-    "SUM": lambda x: 1,
-    "MAX": lambda x: 1,
-    "MIN": lambda x: 1,
-    "AVG": lambda x: 1
+    # OTHER
+    "BETWEEN": lambda val, low, high: low < val < high,
 }

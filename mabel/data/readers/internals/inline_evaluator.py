@@ -26,9 +26,6 @@ class InvalidEvaluator(Exception):
     pass
 
 
-
-
-
 def build(tokens):
     response = []
     if not isinstance(tokens, TokenSet):

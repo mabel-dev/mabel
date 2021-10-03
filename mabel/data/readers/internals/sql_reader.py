@@ -1,5 +1,6 @@
 # no-maintain-checks
 import re
+from numpy import select
 
 import simdjson
 from ....data.internals.group_by import GroupBy, AGGREGATORS
@@ -235,6 +236,7 @@ def SqlReader(sql_statement: str, **kwargs):
     get_logger().info(repr(sql).replace("\n", " "))
 
     reader = Reader(
+        # select=sql.select,
         filters=sql.where,
         dataset=sql._from,
         **kwargs,

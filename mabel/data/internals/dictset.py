@@ -464,6 +464,7 @@ class DictSet(object):
                 storage_class=self.storage_class,
             )
 
+    @property
     def cursor(self):
         """
         If the DictSet supports cursors, return the cursor.
