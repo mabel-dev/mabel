@@ -1,4 +1,3 @@
-# no-maintain-checks
 """
 This class performs functions on individual rows. There is a set of functions in
 the sql_functions module.

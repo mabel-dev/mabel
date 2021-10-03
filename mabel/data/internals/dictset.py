@@ -397,10 +397,10 @@ class DictSet(object):
         """
         Retun the first item in the DictSet
         """
-        f = next(iter(self._iterator), None)
-        if isinstance(f, simdjson.Object):
-            return f.as_dict()
-        return f
+        oneth = next(iter(self._iterator), None)
+        if isinstance(oneth, simdjson.Object):
+            return oneth.as_dict()
+        return oneth  # type:ignore
 
     def take(self, items: int):
         """

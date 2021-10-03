@@ -32,7 +32,5 @@ def test_reader_all_good():
     assert not failed
 
 
-
 if __name__ == "__main__":  # pragma: no cover
     test_reader_all_good()
-

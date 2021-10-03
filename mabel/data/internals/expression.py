@@ -177,7 +177,10 @@ class Expression(object):
                 collector = []
                 if self.tokenizer.has_next():
                     self.tokenizer.next()
-                while self.tokenizer.has_next() and self.tokenizer.next_token_type() != TOKENS.RIGHTPARENTHESES:
+                while (
+                    self.tokenizer.has_next()
+                    and self.tokenizer.next_token_type() != TOKENS.RIGHTPARENTHESES
+                ):
                     if self.tokenizer.next_token_type() != TOKENS.COMMA:
                         collector.append(self.interpret_value(self.tokenizer.next()))
                 if self.tokenizer.next_token_type() == TOKENS.RIGHTPARENTHESES:

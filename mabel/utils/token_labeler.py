@@ -1,3 +1,4 @@
+# no-maintain-checks
 """
 There are multiple usecases where we need to step over a set of tokens and apply
 a label to them. Doing this in a helper module means a) it only needs to be maintained
@@ -17,13 +18,18 @@ from ..data.internals.group_by import AGGREGATORS
 # These are the characters we should escape in our regex
 REGEX_CHARACTERS = {ch: "\\" + ch for ch in ".^$*+?{}[]|()\\"}
 
-class TokenError(Exception): pass
+
+class TokenError(Exception):
+    pass
+
 
 def function_in(x, y):
     return x in y
 
+
 def function_contains(x, y):
     return y in x
+
 
 # the order of the operators affects the regex, e.g. <> needs to be defined before
 # < otherwise that will be matched and the > will be invalid syntax.
@@ -41,7 +47,7 @@ OPERATORS = {
     "NOT LIKE": not_like,
     "LIKE": like,
     "IN": function_in,
-    "CONTAINS": function_contains
+    "CONTAINS": function_contains,
 }
 
 
@@ -107,13 +113,13 @@ def get_token_type(token):
         if token_upper in ("NULL", "NONE"):
             # 'null' or 'none' without quotes are nulls
             return TOKENS.NULL
-        if token_upper == "AND":
+        if token_upper == "AND":  # nosec - not a password
             return TOKENS.AND
-        if token_upper == "OR":
+        if token_upper == "OR":  # nosec - not a password
             return TOKENS.OR
-        if token_upper == "NOT":
+        if token_upper == "NOT":  # nosec - not a password
             return TOKENS.NOT
-        if token_upper == "AS":
+        if token_upper == "AS":  # nosec - not a password
             return TOKENS.AS
         # tokens starting with a letter, is made up of letters, numbers,
         # hyphens, underscores and dots are probably variables. We do this
@@ -149,7 +155,7 @@ def build_splitter():
         "DISTINCT",
         "ASC",
         "DESC",
-        "IN"
+        "IN",
     ]:
         keywords.append(r"\b" + item + r"\b")
     for item in ["(", ")", "[", "]", ",", "*"]:
@@ -197,11 +203,15 @@ class Tokenizer:
                 # the splitter can create empty strings
                 pass
 
-            elif not looking_for_end_char and stripped_token[0] not in ("\"", "'", "`"):
+            elif not looking_for_end_char and stripped_token[0] not in ('"', "'", "`"):
                 # nothing interesting here
                 yield token
 
-            elif stripped_token[0] in ("\"", "'", "`") and stripped_token[-1] == stripped_token[0] and len(stripped_token) > 1:
+            elif (
+                stripped_token[0] in ('"', "'", "`")
+                and stripped_token[-1] == stripped_token[0]
+                and len(stripped_token) > 1
+            ):
                 # the quotes wrap the entire token
                 yield token
 
@@ -212,7 +222,9 @@ class Tokenizer:
                 builder = ""
                 looking_for_end_char = None
 
-            elif stripped_token[0] in ("\"", "'", "`") and (stripped_token[-1] != stripped_token[0] or len(stripped_token) == 1):
+            elif stripped_token[0] in ('"', "'", "`") and (
+                stripped_token[-1] != stripped_token[0] or len(stripped_token) == 1
+            ):
                 # we've found a new token to collect
                 # the last character will always equal the last character if there's only one
                 builder = token
@@ -223,7 +235,9 @@ class Tokenizer:
                 builder += token
 
             else:
-                raise TokenError("Unable to determine quoted token boundaries, you may be missing a closing quote.")
+                raise TokenError(
+                    "Unable to determine quoted token boundaries, you may be missing a closing quote."
+                )
 
     def tokenize(self):
         self.tokens = build_splitter().split(self.expression)

@@ -216,7 +216,7 @@ class GroupBy:
         Return the set of groups - this is similar to a DISTINCT function
         """
         collector = defaultdict(dict)
-        for record in self._map('*'):
+        for record in self._map("*"):
             collector[record[0]] = 1
         for group in self._group_keys:
             yield dict(self._group_keys[group])

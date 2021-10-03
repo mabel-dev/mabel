@@ -29,7 +29,7 @@ TEST_DATA = [
 
 def test_expression_compilation():
 
-# fmt: off
+    # fmt: off
     EXPRESSIONS = [
         {"expression": "YEAR(dob) == 1979", "dnf": ("YEAR(dob)", "==", 1979)},
         {"expression": "name == 'James Potter'","dnf": ("name", "==", '"James Potter"'),},
@@ -37,7 +37,7 @@ def test_expression_compilation():
         {"expression": "age < 100 and alive == true","dnf": [("age", "<", 100), ("alive", "==", True)],},
         {"expression": "dob == '1979-09-19' or name like '%potter%'","dnf": [[("dob", "==", '"1979-09-19 00:00:00"')],[("name", "LIKE", '"%potter%"')],],},
     ]
-# fmt: on
+    # fmt: on
 
     for e in EXPRESSIONS:
         exp = Expression(e["expression"])
@@ -78,7 +78,6 @@ if __name__ == "__main__":  # pragma: no cover
 
     DATA = DictSet(TEST_DATA, storage_class=STORAGE_CLASS.MEMORY)
     assert DATA.filter("affiliations is not none").count() == 3
-
 
     test_expression_compilation()
     test_simple_equals_expressions()

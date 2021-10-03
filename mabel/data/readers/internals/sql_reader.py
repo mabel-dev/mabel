@@ -104,7 +104,7 @@ class SqlParser:
                 InvalidSqlError(f"Unexpected token `{part}`")
 
         if where_collector:
-            self.where = ','.join(where_collector)
+            self.where = ",".join(where_collector)
         if not self._from:
             raise InvalidSqlError("Queries must always have a FROM statement")
         if self.group_by or "(" in "".join(self.select):
@@ -248,7 +248,9 @@ def SqlReader(sql_statement: str, **kwargs):
         for count, r in enumerate(reader):
             pass
         # we can probably safely assume a 1 record set will fit in memory
-        reader = DictSet(iter([{"COUNT(*)": count + 1}]), storage_class=STORAGE_CLASS.MEMORY)
+        reader = DictSet(
+            iter([{"COUNT(*)": count + 1}]), storage_class=STORAGE_CLASS.MEMORY
+        )
     # if we're not grouping and we have functions, execute them
     elif not sql.group_by and any(
         isinstance(selector, tuple) for selector in sql.select

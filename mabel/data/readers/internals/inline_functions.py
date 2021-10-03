@@ -1,4 +1,3 @@
-# no-maintain-checks
 """
 These are a set of functions that can be applied to data as it passes through.
 
