@@ -21,7 +21,7 @@ def test_reader_all_good():
     try:
         reader = Reader(
             project="",
-            select=["a", "b"],
+            select="a, b",
             dataset="",
             start_date=datetime.datetime.now(),
             end_date=datetime.datetime.now(),
@@ -32,17 +32,7 @@ def test_reader_all_good():
     assert not failed
 
 
-def test_reader_select_not_list():
-    with pytest.raises((TypeError)):
-        reader = Reader(
-            project="",
-            select="everything",
-            dataset="",
-            start_date=datetime.datetime.now(),
-            end_date=datetime.datetime.now(),
-        )
-
 
 if __name__ == "__main__":  # pragma: no cover
     test_reader_all_good()
-    test_reader_select_not_list()
+

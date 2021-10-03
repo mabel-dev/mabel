@@ -29,25 +29,15 @@ TEST_DATA = [
 
 def test_expression_compilation():
 
+# fmt: off
     EXPRESSIONS = [
         {"expression": "YEAR(dob) == 1979", "dnf": ("YEAR(dob)", "==", 1979)},
-        {
-            "expression": "name == 'James Potter'",
-            "dnf": ("name", "==", '"James Potter"'),
-        },
+        {"expression": "name == 'James Potter'","dnf": ("name", "==", '"James Potter"'),},
         {"expression": "not alive == True", "dnf": ("NOT", ("alive", "==", True))},
-        {
-            "expression": "age < 100 and alive == true",
-            "dnf": [("age", "<", 100), ("alive", "==", True)],
-        },
-        {
-            "expression": "dob == '1979-09-19' or name like '%potter%'",
-            "dnf": [
-                [("dob", "==", '"1979-09-19 00:00:00"')],
-                [("name", "LIKE", '"%potter%"')],
-            ],
-        },
+        {"expression": "age < 100 and alive == true","dnf": [("age", "<", 100), ("alive", "==", True)],},
+        {"expression": "dob == '1979-09-19' or name like '%potter%'","dnf": [[("dob", "==", '"1979-09-19 00:00:00"')],[("name", "LIKE", '"%potter%"')],],},
     ]
+# fmt: on
 
     for e in EXPRESSIONS:
         exp = Expression(e["expression"])
@@ -85,6 +75,11 @@ def test_simple_compound_expressions():
 
 
 if __name__ == "__main__":  # pragma: no cover
+
+    DATA = DictSet(TEST_DATA, storage_class=STORAGE_CLASS.MEMORY)
+    assert DATA.filter("affiliations is not none").count() == 3
+
+
     test_expression_compilation()
     test_simple_equals_expressions()
     test_simple_not_expressions()

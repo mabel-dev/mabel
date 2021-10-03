@@ -1,7 +1,7 @@
 """
 There are multiple usecases where we need to step over a set of tokens and apply
-a label to them. The TokenLabeler doesn't actually apply labels, it's a helper
-so this a) only needs to be maintained in one place b) behaves consistently.
+a label to them. Doing this in a helper module means a) it only needs to be maintained
+in one place b) different parts of the system behave consistently.
 """
 
 from functools import lru_cache
@@ -9,31 +9,39 @@ import re
 import operator
 import fastnumbers
 from enum import Enum
-from typing import Iterable, Any
 from .text import like, not_like
 from .dates import parse_iso
 from ..data.readers.internals.inline_functions import FUNCTIONS
 from ..data.internals.group_by import AGGREGATORS
 
+# These are the characters we should escape in our regex
+REGEX_CHARACTERS = {ch: "\\" + ch for ch in ".^$*+?{}[]|()\\"}
+
+class TokenError(Exception): pass
 
 def function_in(x, y):
     return x in y
 
+def function_contains(x, y):
+    return y in x
 
+# the order of the operators affects the regex, e.g. <> needs to be defined before
+# < otherwise that will be matched and the > will be invalid syntax.
 OPERATORS = {
-    ">": operator.gt,
-    ">=": operator.ge,
-    "<": operator.lt,
-    "<=": operator.le,
-    "==": operator.eq,
-    "=": operator.eq,
-    "!=": operator.ne,
     "<>": operator.ne,
-    "IS": operator.is_,
+    ">=": operator.ge,
+    "<=": operator.le,
+    ">": operator.gt,
+    "<": operator.lt,
+    "==": operator.eq,
+    "!=": operator.ne,
+    "=": operator.eq,
     "IS NOT": operator.is_not,
-    "LIKE": like,
+    "IS": operator.is_,
     "NOT LIKE": not_like,
+    "LIKE": like,
     "IN": function_in,
+    "CONTAINS": function_contains
 }
 
 
@@ -124,10 +132,10 @@ def build_splitter():
     for item in AGGREGATORS:
         keywords.append(r"\b" + item + r"\b")
     for item in OPERATORS:
-        if item.isalpha():
+        if item.replace(" ", "").isalpha():
             keywords.append(r"\b" + item + r"\b")
         else:
-            keywords.append(item)
+            keywords.append("".join([REGEX_CHARACTERS.get(ch, ch) for ch in item]))
     for item in [
         "AND",
         "OR",
@@ -141,10 +149,11 @@ def build_splitter():
         "DISTINCT",
         "ASC",
         "DESC",
+        "IN"
     ]:
         keywords.append(r"\b" + item + r"\b")
     for item in ["(", ")", "[", "]", ",", "*"]:
-        keywords.append(item)
+        keywords.append("".join([REGEX_CHARACTERS.get(ch, ch) for ch in item]))
     splitter = re.compile(
         r"(" + r"|".join(keywords) + r")",
         re.IGNORECASE,
@@ -177,9 +186,53 @@ class Tokenizer:
     def next_token_value(self):
         return self.tokens[self.i]
 
+    def _fix_special_chars(self, tokens):
+
+        builder = ""
+        looking_for_end_char = None
+
+        for token in tokens:
+            stripped_token = token.strip()
+            if len(stripped_token) == 0:
+                # the splitter can create empty strings
+                pass
+
+            elif not looking_for_end_char and stripped_token[0] not in ("\"", "'", "`"):
+                # nothing interesting here
+                yield token
+
+            elif stripped_token[0] in ("\"", "'", "`") and stripped_token[-1] == stripped_token[0] and len(stripped_token) > 1:
+                # the quotes wrap the entire token
+                yield token
+
+            elif stripped_token[-1] == looking_for_end_char:
+                # we've found the end of the token, yield it and reset
+                builder += token
+                yield builder
+                builder = ""
+                looking_for_end_char = None
+
+            elif stripped_token[0] in ("\"", "'", "`") and (stripped_token[-1] != stripped_token[0] or len(stripped_token) == 1):
+                # we've found a new token to collect
+                # the last character will always equal the last character if there's only one
+                builder = token
+                looking_for_end_char = stripped_token[0]
+
+            elif looking_for_end_char:
+                # we're building a token
+                builder += token
+
+            else:
+                raise TokenError("Unable to determine quoted token boundaries, you may be missing a closing quote.")
+
     def tokenize(self):
         self.tokens = build_splitter().split(self.expression)
+        # characters like '*' in literals break the tokenizer, so we need to fix them
+        self.tokens = list(self._fix_special_chars(self.tokens))
         self.tokens = [t.strip() for t in self.tokens if t.strip() != ""]
         self.token_types = []
         for token in self.tokens:
             self.token_types.append(get_token_type(token))
+
+    def __str__(self):
+        return self.peek()

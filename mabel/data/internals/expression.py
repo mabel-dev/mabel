@@ -8,11 +8,11 @@ expression tree as it's only doing boolean logic.
 
 Derived from: https://gist.github.com/leehsueh/1290686
 """
-import re
 import fastnumbers
+from numpy.lib.arraysetops import isin
 from ..readers.internals.inline_evaluator import *
 from ...utils.dates import parse_iso
-from ...utils.token_labeler import get_token_type, TOKENS, OPERATORS
+from ...utils.token_labeler import Tokenizer, TOKENS, OPERATORS
 
 
 class InvalidExpression(BaseException):
@@ -20,13 +20,14 @@ class InvalidExpression(BaseException):
 
 
 class TreeNode:
-    __slots__ = ("token_type", "value", "left", "right")
+    __slots__ = ("token_type", "value", "left", "right", "parameters")
 
     def __init__(self, token_type, value):
         self.token_type = token_type
         self.value = value
         self.left = None
         self.right = None
+        self.parameters = []
 
 
 class Expression(object):
@@ -34,7 +35,7 @@ class Expression(object):
     root = None
 
     def __init__(self, exp):
-        self.tokenizer = ExpressionTokenizer(exp)
+        self.tokenizer = Tokenizer(exp)
         self.tokenizer.tokenize()
         self.parse()
 
@@ -117,6 +118,8 @@ class Expression(object):
             self.tokenizer.has_next()
             and self.tokenizer.next_token_type() == TOKENS.LEFTPARENTHESES
         ):
+            # If we have a ( then go looking for the matching )
+
             self.tokenizer.next()
             expression = self.parse_expression()
             if (
@@ -158,7 +161,7 @@ class Expression(object):
                 n = TreeNode(token_type, self.tokenizer.next())
                 return n
             if token_type == TOKENS.LITERAL:
-                n = TreeNode(token_type, self.tokenizer.next()[1:-1])
+                n = TreeNode(token_type, str(self.tokenizer.next()[1:-1]))
                 return n
             if token_type == TOKENS.BOOLEAN:
                 n = TreeNode(token_type, self.tokenizer.next().lower() == "true")
@@ -170,7 +173,32 @@ class Expression(object):
                 n = TreeNode(token_type, parse_iso(self.tokenizer.next()[1:-1]))
                 return n
 
+            if token_type == TOKENS.LEFTPARENTHESES:
+                collector = []
+                if self.tokenizer.has_next():
+                    self.tokenizer.next()
+                while self.tokenizer.has_next() and self.tokenizer.next_token_type() != TOKENS.RIGHTPARENTHESES:
+                    if self.tokenizer.next_token_type() != TOKENS.COMMA:
+                        collector.append(self.interpret_value(self.tokenizer.next()))
+                if self.tokenizer.next_token_type() == TOKENS.RIGHTPARENTHESES:
+                    self.tokenizer.next()
+                n = TreeNode(TOKENS.LITERAL, collector)
+                return n
+
         raise InvalidExpression(f"Unexpected token, got `{self.tokenizer.next()}`")
+
+    def interpret_value(self, value):
+        if not isinstance(value, str):
+            return value
+        if fastnumbers.isint(value):
+            return fastnumbers.fast_int(value)
+        if fastnumbers.isfloat(value):
+            return fastnumbers.fast_float(value)
+        if isinstance(value, str) and parse_iso(value):
+            return parse_iso(value)
+        if value.upper() in ("TRUE", "FALSE"):
+            return value.lower() == "true"
+        return value
 
     def evaluate(self, variable_dict):
         return self.evaluate_recursive(self.root, variable_dict)
@@ -191,13 +219,7 @@ class Expression(object):
         if treeNode.token_type == TOKENS.VARIABLE:
             if treeNode.value in variable_dict:
                 value = variable_dict[treeNode.value]
-                if str(value).isdecimal() or str(value).isnumeric():
-                    return fastnumbers.fast_float(value)
-                if isinstance(value, str) and parse_iso(value):
-                    return parse_iso(value)
-                if value in ("True", "False"):
-                    return value.lower() == "true"
-                return value
+                return self.interpret_value(value)
             return None
 
         left = self.evaluate_recursive(treeNode.left, variable_dict)

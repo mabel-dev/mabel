@@ -41,19 +41,19 @@ SQL_TESTS = [
     {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = 'Verizon Support'", "result":2},
     {"statement":"select * from tests.data.index.is  where user_name = 'Verizon Support'", "result":2},
     {"statement":"SELECT * FROM tests.data.index.not WHERE user_name = 'Verizon Support'", "result":2},
-    {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = '*******'", "result":0},
+    {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = '********'", "result":0},
     {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name LIKE '_erizon _upport'", "result":2},
     {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name LIKE '%Support%'", "result":31},
     {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = 'Verizon Support'", "result":2},
     {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id = 1346604539923853313", "result":1}, 
     {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id = 1346604539923853313 AND user_id = 4832862820", "result":1},
     {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id IN (1346604539923853313, 1346604544134885378)", "result":2},
-    {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id BETWEEN 1346604539923853313 AND 1346604544134885378", "result":2},
     {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id = 1346604539923853313 OR user_id = 2147860407", "result":2},
     {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id = 1346604539923853313 OR user_verified = True", "result":453},
     {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = 'Dave Jamieson' AND user_verified = True", "result":1},
     {"statement":"SELECT COUNT(*) FROM tests.data.index.is  WHERE user_name = 'Dave Jamieson' AND user_verified = True", "result":1},
-    {"statement":"SELECT COUNT(*) FROM tests.data.index.is GROUP BY user_verified", "result":1},
+    {"statement":"SELECT COUNT(*) FROM tests.data.index.is GROUP BY user_verified", "result":-1},  # there's two groups in a generator
+    {"statement":"SELECT * FROM tests.data.index.is WHERE hash_tags contains 'Georgia'", "result":50},
 ]
 # fmt:on
 
@@ -125,13 +125,13 @@ def test_group_by_count():
     assert record_count == 2, record_count
 
     s = SqlReader(
-        sql_statement="SELECT COUNT(*) FROM tests.data.index.not GROUP BY hash_tags",
+        sql_statement="SELECT COUNT(*) FROM tests.data.index.not GROUP BY user_name",
         inner_reader=DiskReader,
         raw_path=True,
     )
     records = s.collect()
     record_count = len(records)
-    assert record_count == 2370, record_count
+    assert record_count == 56527, record_count
 
 
 if __name__ == "__main__":  # pragma: no cover

@@ -7,6 +7,7 @@ These are the function definitions, the processor which uses these is in the
 """
 
 import datetime
+import csimdjson
 import fastnumbers
 from siphashc import siphash
 from functools import lru_cache
@@ -124,10 +125,6 @@ def get_week(input):
     return None
 
 
-def do_join(lst, separator=","):
-    return separator.join(map(str, list))
-
-
 def get_random():
     from ....utils.entropy import random_range
 
@@ -138,7 +135,11 @@ def concat(*items):
     """
     Turn each item to a string and concatenate the strings together
     """
-    return "".join(map(str, items))
+    sep = ""
+    if len(items) == 1 and isinstance(items[0], (csimdjson.Array, list, tuple, set)):
+        items = items[0]
+        sep = ", "
+    return sep.join(map(str, items))
 
 
 def add_days(start_date, day_count):
@@ -202,7 +203,6 @@ FUNCTIONS = {
     "FLOAT": fastnumbers.fast_float,
     # COMPLEX TYPES
     "FLATTEN": flatten,  # flatten(dictionary, separator)
-    "JOIN": do_join,
     # BOOLEAN
     "BOOLEAN": lambda x: x.upper() != "FALSE",
     "ISNONE": lambda x: x is None,

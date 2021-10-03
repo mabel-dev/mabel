@@ -30,7 +30,7 @@ def test_cursor():
 
     for row in reader.take(lim):
         test_counter += 1
-    cursor = reader.cursor()
+    cursor = reader.cursor
 
     print(cursor)
     assert cursor["location"] == (lim % 25), cursor["location"]

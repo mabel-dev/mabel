@@ -18,6 +18,7 @@ import fastnumbers
 from enum import Enum
 from .inline_functions import FUNCTIONS
 from ....utils.dates import parse_iso
+from ....utils.token_labeler import TOKENS, get_token_type
 
 
 class InvalidEvaluator(Exception):
