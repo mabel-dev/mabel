@@ -10,7 +10,7 @@ traceback.install()
 
 
 def test_parser():
-    
+
     # fmt:off
     STATEMENTS = [
         {"SQL": "SELECT * FROM TABLE", "select": ["*"], "from": "TABLE"},
@@ -26,6 +26,7 @@ def test_parser():
         {"SQL": "SELECT COUNT(*) FROM TABLE WHERE value == 1 GROUP BY value LIMIT 3","select": [("COUNT", "*")],"from": "TABLE","where": "value == 1","group_by": ["value"],"limit": 3,},
         {"SQL": "SELECT \n    MAX(cve.CVE_data_meta.ID),\n    MIN(cve.CVE_data_meta.ID),\n    COUNT(cve.CVE_data_meta.ID) \nFROM mabel_data.RAW.NVD.CVE_LIST GROUP BY cve.CVE_data_meta.ASSIGNER","select": [("MAX", "cve.CVE_data_meta.ID"),("MIN", "cve.CVE_data_meta.ID"),("COUNT", "cve.CVE_data_meta.ID"),],"from": "mabel_data/RAW/NVD/CVE_LIST","group_by": ["cve.CVE_data_meta.ASSIGNER"]},
     ]
+    # fmt:on
 
     for statement in STATEMENTS:
         print(statement["SQL"])
@@ -41,7 +42,7 @@ def test_parser():
 
 def test_invalid_sql():
     STATEMENTS = [
-        #"SELECT * FROM TABLE WHERE value == 1 GROUP BY value LIMIT 3",   <-- currently parses but raises error when run
+        # "SELECT * FROM TABLE WHERE value == 1 GROUP BY value LIMIT 3",   <-- currently parses but raises error when run
         "SELECT *",
     ]
 

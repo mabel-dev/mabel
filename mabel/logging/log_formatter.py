@@ -9,7 +9,14 @@ from ..utils.ipython import is_running_from_ipython
 
 
 # if we find a key which matches these strings, we hash the contents
-KEYS_TO_SANITIZE = [r"password$", r"pwd$", r".*_secret$", r".*_key$", r"_token$", r"credentials"]
+KEYS_TO_SANITIZE = [
+    r"password$",
+    r"pwd$",
+    r".*_secret$",
+    r".*_key$",
+    r"_token$",
+    r"credentials",
+]
 COLOR_EXCHANGES = {
     " ALERT    ": "{BOLD_RED} ALERT    {OFF}",
     " ERROR    ": "{RED} ERROR    {OFF}",

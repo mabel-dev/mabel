@@ -52,7 +52,7 @@ class BlobWriter(object):
         elif self.format == "flat":
             serialized = dumps(flatten(record)) + b"\n"  # type:ignore
         elif isinstance(record, simdjson.Object):
-            serialized = record.mini + b"\n"
+            serialized = record.mini + b"\n"  # type:ignore
         else:
             serialized = dumps(record) + b"\n"  # type:ignore
 

@@ -47,8 +47,6 @@ class GroupBy:
         data to be processed in parallel.
         """
 
-        print(*collect_columns)
-
         for record in self._dictset:
             group_key = "//".join(
                 [f"{record.get(column, '')}" for column in self._columns]
@@ -206,7 +204,19 @@ class GroupBy:
         return self.aggregate(("COUNT", "*"))
 
     def average(self, columns):
-
+        """
+        Calculate the average of the items in a group.
+        """
         if not isinstance(columns, (tuple, list, set)):
             columns = [columns]
         return self.aggregate([("AVG", column) for column in columns])
+
+    def groups(self):
+        """
+        Return the set of groups - this is similar to a DISTINCT function
+        """
+        collector = defaultdict(dict)
+        for record in self._map("*"):
+            collector[record[0]] = 1
+        for group in self._group_keys:
+            yield dict(self._group_keys[group])

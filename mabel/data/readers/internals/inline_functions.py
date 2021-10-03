@@ -1,4 +1,3 @@
-# no-maintain-checks
 """
 These are a set of functions that can be applied to data as it passes through.
 
@@ -7,6 +6,7 @@ These are the function definitions, the processor which uses these is in the
 """
 
 import datetime
+import csimdjson
 import fastnumbers
 from siphashc import siphash
 from functools import lru_cache
@@ -124,10 +124,6 @@ def get_week(input):
     return None
 
 
-def do_join(lst, separator=","):
-    return separator.join(map(str, list))
-
-
 def get_random():
     from ....utils.entropy import random_range
 
@@ -138,7 +134,11 @@ def concat(*items):
     """
     Turn each item to a string and concatenate the strings together
     """
-    return "".join(map(str, items))
+    sep = ""
+    if len(items) == 1 and isinstance(items[0], (csimdjson.Array, list, tuple, set)):
+        items = items[0]
+        sep = ", "
+    return sep.join(map(str, items))
 
 
 def add_days(start_date, day_count):
@@ -146,6 +146,18 @@ def add_days(start_date, day_count):
         start_date = parse_iso(start_date)
     if isinstance(start_date, (datetime.date, datetime.datetime)):
         return start_date + datetime.timedelta(days=day_count)
+    return None
+
+
+def diff_days(start_date, end_date):
+    if isinstance(start_date, str):
+        start_date = parse_iso(start_date)
+    if isinstance(end_date, str):
+        end_date = parse_iso(end_date)
+    if isinstance(start_date, (datetime.date, datetime.datetime)) and isinstance(
+        end_date, (datetime.date, datetime.datetime)
+    ):
+        return (end_date - start_date).days
     return None
 
 
@@ -170,6 +182,7 @@ FUNCTIONS = {
     "TIME": get_time,
     "NOW": datetime.datetime.now,
     "ADDDAYS": add_days,
+    "DAYSDIFF": diff_days,
     # STRINGS
     "UCASE": lambda x: str(x).upper(),
     "UPPER": lambda x: str(x).upper(),
@@ -189,7 +202,6 @@ FUNCTIONS = {
     "FLOAT": fastnumbers.fast_float,
     # COMPLEX TYPES
     "FLATTEN": flatten,  # flatten(dictionary, separator)
-    "JOIN": do_join,
     # BOOLEAN
     "BOOLEAN": lambda x: x.upper() != "FALSE",
     "ISNONE": lambda x: x is None,
@@ -197,4 +209,6 @@ FUNCTIONS = {
     "HASH": lambda x: hex(siphash("INCOMPREHENSIBLE", str(x))),  # needs 16 characters
     "MD5": get_md5,
     "RANDOM": get_random,  # return a random number 0-99
+    # OTHER
+    "BETWEEN": lambda val, low, high: low < val < high,
 }

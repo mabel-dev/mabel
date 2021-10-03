@@ -1,4 +1,3 @@
-# no-maintain-checks
 """
 This class performs functions on individual rows. There is a set of functions in
 the sql_functions module.
@@ -18,15 +17,13 @@ import fastnumbers
 from enum import Enum
 from .inline_functions import FUNCTIONS
 from ....utils.dates import parse_iso
+from ....utils.token_labeler import TOKENS, get_token_type
 
 
 class InvalidEvaluator(Exception):
     """custom error"""
 
     pass
-
-
-
 
 
 def build(tokens):

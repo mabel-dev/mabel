@@ -27,7 +27,7 @@ Terminology:
 class Index:
     def __init__(self, index: bytes):
         if hasattr(index, "read"):
-            index = index.read()
+            index = index.read()  # type:ignore
         self._index = simdjson.Parser().parse(index)
 
     @staticmethod
@@ -62,8 +62,8 @@ class Index:
         result: list = []
         for term in search_term:
             key = format(siphash(SEED, f"{term}") % MAX_INDEX, "x")
-            if key in self._index:
-                result[0:0] = self._index[key]
+            if key in self._index:  # type:ignore
+                result[0:0] = self._index[key]  # type:ignore
         return result
 
     def dump(self, file):

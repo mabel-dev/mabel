@@ -1,31 +1,26 @@
 # no-maintain-checks
+from mabel.data.internals.dictset import STORAGE_CLASS
 import re
+from numpy import select
 
 import simdjson
 from ....data.internals.group_by import GroupBy, AGGREGATORS
 from ..reader import Reader
 from ....logging import get_logger
 from .inline_functions import *
-from .inline_evaluator import Evaluator
 
 # not all are implemented, but we split by reserved words anyway
 SQL_KEYWORDS = [
     r"SELECT",
     r"FROM",
-    r"JOIN",
     r"WHERE",
     r"GROUP\sBY",
     r"HAVING",
     r"ORDER\sBY",
     r"LIMIT",
     r"DESC",
-    r"INNER",
-    r"OUTER",
-    r"IN",
-    r"BETWEEN",
     r"DISTINCT",
     r"ASC",
-    r"TOP",
 ]
 
 
@@ -72,6 +67,7 @@ class SqlParser:
         self.parts = self._split_statement(self.statement)
 
         collecting = None
+        where_collector = []
 
         for i, part in enumerate(self.parts):
 
@@ -82,8 +78,8 @@ class SqlParser:
                 collecting = None
                 self._from = safe_get(self.parts, i + 1, "").replace(".", "/")
             elif part.upper() == "WHERE":
-                collecting = None
-                self.where = self.parts[i + 1]
+                collecting = "WHERE"
+                self.where_collector = []
             elif re.match(r"GROUP\sBY", part, re.IGNORECASE):
                 collecting = "GROUP BY"
                 self.group_by = []
@@ -101,9 +97,14 @@ class SqlParser:
             elif collecting == "GROUP BY":
                 self.group_by.append(part)
 
+            elif collecting == "WHERE":
+                where_collector.append(part)
+
             else:
                 InvalidSqlError(f"Unexpected token `{part}`")
 
+        if where_collector:
+            self.where = ",".join(where_collector)
         if not self._from:
             raise InvalidSqlError("Queries must always have a FROM statement")
         if self.group_by or "(" in "".join(self.select):
@@ -235,6 +236,7 @@ def SqlReader(sql_statement: str, **kwargs):
     get_logger().info(repr(sql).replace("\n", " "))
 
     reader = Reader(
+        # select=sql.select,
         filters=sql.where,
         dataset=sql._from,
         **kwargs,
@@ -245,7 +247,10 @@ def SqlReader(sql_statement: str, **kwargs):
         count = -1
         for count, r in enumerate(reader):
             pass
-        reader = DictSet(iter([{"COUNT(*)": count + 1}]))
+        # we can probably safely assume a 1 record set will fit in memory
+        reader = DictSet(
+            iter([{"COUNT(*)": count + 1}]), storage_class=STORAGE_CLASS.MEMORY
+        )
     # if we're not grouping and we have functions, execute them
     elif not sql.group_by and any(
         isinstance(selector, tuple) for selector in sql.select
@@ -269,11 +274,12 @@ def SqlReader(sql_statement: str, **kwargs):
             ]
 
         groups = GroupBy(reader, *sql.group_by).aggregate(sql.select)
+        # there could be 250000 groups, so we#re not going to load them into memory
         reader = DictSet(groups)
     if sql.distinct:
         reader = reader.distinct()
     if sql.order_by:
-        take = 10000
+        take = 5000  # the Query UI is currently set to 2000
         if sql.limit:
             take = sql.limit
         reader = DictSet(

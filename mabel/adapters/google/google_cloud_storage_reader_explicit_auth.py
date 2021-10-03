@@ -7,7 +7,9 @@ from ...data.readers.internals.base_inner_reader import BaseInnerReader
 from ...utils import paths
 
 
-class GoogleStorageReadError(Exception): pass
+class GoogleStorageReadError(Exception):
+    pass
+
 
 def url_encoder(url):
     result_url = ""
@@ -17,6 +19,7 @@ def url_encoder(url):
         else:
             result_url += character
     return result_url
+
 
 class GoogleCloudStorageReader(BaseInnerReader):
 
@@ -59,7 +62,9 @@ class GoogleCloudStorageReader(BaseInnerReader):
         import requests
 
         # determin the domain
-        domain = os.environ.get("STORAGE_EMULATOR_HOST", "https://storage.googleapis.com")
+        domain = os.environ.get(
+            "STORAGE_EMULATOR_HOST", "https://storage.googleapis.com"
+        )
         if domain[-1] != "/":
             domain += "/"
 
@@ -72,7 +77,7 @@ class GoogleCloudStorageReader(BaseInnerReader):
         payload = requests.get(
             url=f"{domain}storage/v1/b/{url_encoder(bucket)}/o?prefix={object_path}",
             headers=headers,
-            timeout=30
+            timeout=30,
         )
 
         print(payload.content)
@@ -81,7 +86,9 @@ class GoogleCloudStorageReader(BaseInnerReader):
             return []
 
         yield from [
-            bucket + "/" + blob["name"] for blob in payload.json()["items"] if not blob["name"].endswith("/")
+            bucket + "/" + blob["name"]
+            for blob in payload.json()["items"]
+            if not blob["name"].endswith("/")
         ]
 
 
@@ -103,7 +110,7 @@ def get_blob(project: str, bucket: str, blob_name: str, credentials=None):
     payload = requests.get(
         url=f"{domain}storage/v1/b/{bucket}/o/{blob_name}?alt=media",
         headers=headers,
-        timeout=30
+        timeout=30,
     )
 
     print(payload.content)
