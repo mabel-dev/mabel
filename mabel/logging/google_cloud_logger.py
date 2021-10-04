@@ -71,14 +71,12 @@ class GoogleLogger(object):
             logging_seen_warnings[hashed] = 0
             atexit.register(report_suppressions, str(message))
 
-        from .create_logger import LOG_NAME
-
         structured_log = {
-            "logName": f'projects/{os.environ.get("PROJECT_NAME")}/logs/{os.environ.get("LOG_SINK")}',
             "severity": str(severity).split(".")[1],
             "logging.googleapis.com/labels": {
                 "system": system,
-                "log_name": LOG_NAME,
+                "platform": os.environ.get("LOG_SINK"),
+                "formatter": "MABEL"
             },
         }
 
@@ -91,6 +89,7 @@ class GoogleLogger(object):
 
         if spanId:
             structured_log["logging.googleapis.com/spanId"] = spanId
+
 
         if isinstance(message, dict):
             formatter = LogFormatter(None)

@@ -9,7 +9,6 @@ expression tree as it's only doing boolean logic.
 Derived from: https://gist.github.com/leehsueh/1290686
 """
 import fastnumbers
-from numpy.lib.arraysetops import isin
 from ..readers.internals.inline_evaluator import *
 from ...utils.dates import parse_iso
 from ...utils.token_labeler import Tokenizer, TOKENS, OPERATORS
