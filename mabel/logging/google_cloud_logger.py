@@ -76,7 +76,7 @@ class GoogleLogger(object):
             "logging.googleapis.com/labels": {
                 "system": system,
                 "platform": os.environ.get("LOG_SINK"),
-                "formatter": "MABEL"
+                "formatter": "MABEL",
             },
         }
 
@@ -89,7 +89,6 @@ class GoogleLogger(object):
 
         if spanId:
             structured_log["logging.googleapis.com/spanId"] = spanId
-
 
         if isinstance(message, dict):
             formatter = LogFormatter(None)
