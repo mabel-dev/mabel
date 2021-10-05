@@ -4,6 +4,7 @@ https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry
 import os
 import atexit
 import logging
+import datetime
 import orjson as json
 from typing import Union, Optional, Dict
 from ..logging.levels import LEVELS, LEVELS_TO_STRING
@@ -12,6 +13,21 @@ from ..logging.log_formatter import LogFormatter
 
 
 logging_seen_warnings: Dict[int, int] = {}
+
+
+def fix_dict(obj: dict) -> dict:
+    def fix_fields(dt):
+        if isinstance(dt, (datetime.date, datetime.datetime)):
+            return dt.isoformat()
+        if isinstance(dt, bytes):
+            return dt.decode("UTF8")
+        if isinstance(dt, dict):
+            return {k: fix_fields(v) for k, v in dt.items()}
+        return str(dt)
+
+    if not isinstance(obj, dict):
+        return obj  # type:ignore
+    return {k: fix_fields(v) for k, v in obj.items()}
 
 
 def report_suppressions(message):

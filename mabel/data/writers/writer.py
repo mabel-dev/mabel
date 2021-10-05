@@ -132,7 +132,7 @@ class Writer:
                 f"{type(self).__name__} has not been finalized - {self.records} may have been lost, use `.finalize()` to finalize writers."
             )
 
-    def finalize(self):
+    def finalize(self, **kwargs):
         self.finalized = True
         try:
             return self.blob_writer.commit()

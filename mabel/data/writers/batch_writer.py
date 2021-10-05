@@ -1,7 +1,7 @@
 import os
 import datetime
-from typing import Any
 import orjson
+from typing import Any
 from .writer import Writer
 from .internals.blob_writer import BlobWriter
 from ...utils import paths
