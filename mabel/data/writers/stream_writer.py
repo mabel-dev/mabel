@@ -107,7 +107,7 @@ class StreamWriter(SimpleWriter):
             blob_writer = self.writer_pool.get_writer(identity)
             return blob_writer.append(record)
 
-    def finalize(self):
+    def finalize(self, **kwargs):
         with threading.Lock():
             for blob_writer_identity in self.writer_pool.writers:
                 try:

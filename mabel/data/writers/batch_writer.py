@@ -82,9 +82,10 @@ class BatchWriter(SimpleWriter):
         # error cleared from the stack.
         self.seen_failures = False
 
-    def finalize(self, has_failure: bool = False):
+    def finalize(self, **kwargs):
         final = super().finalize()
 
+        has_failure = bool(kwargs.get("has_failure", False))
         if has_failure:
             self.seen_failures = True
             get_logger().debug(
