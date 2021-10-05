@@ -14,7 +14,8 @@ from the dict
 """
 import re
 import fastnumbers
-from enum import Enum
+
+from ....data.internals.records import flatten
 from .inline_functions import FUNCTIONS
 from ....utils.dates import parse_iso
 from ....utils.token_labeler import TOKENS, get_token_type
@@ -84,52 +85,58 @@ def evaluate_field(dict, token):
     Evaluate a single field
     """
     if token["type"] == TOKENS.VARIABLE:
-        return (
+        yield (
             token["value"],
             dict.get(token["value"]),
         )
-    if token["type"] == TOKENS.FUNCTION:
-        function_name = f"{token['value'].upper()}({','.join([t['value'] for t in token['parameters']])})"
-        return (
-            if_as(token, function_name),
-            FUNCTIONS[token["value"].upper()](
-                *[evaluate_field(dict, t)[1] for t in token["parameters"]]
-            ),
-        )
-    if token["type"] == TOKENS.FLOAT:
-        return (
+    elif token["type"] == TOKENS.FUNCTION:
+        if token["value"].upper() == "FLATTEN":
+            if len(token["parameters"]) != 1:
+                raise Exception("FLATTEN requires one parameter")
+            yield from flatten({token["parameters"][0]["value"]:dict[token["parameters"][0]["value"]]}).items()
+        else:
+            function_name = f"{token['value'].upper()}({','.join([t['value'] for t in token['parameters']])})"
+            yield (
+                if_as(token, function_name),
+                FUNCTIONS[token["value"].upper()](
+                    *[evaluate_field(dict, t)[1] for t in token["parameters"]]
+                ),
+            )
+    elif token["type"] == TOKENS.FLOAT:
+        yield (
             token["value"],
             fastnumbers.fast_float(token["value"]),
         )
-    if token["type"] == TOKENS.INTEGER:
-        return (
+    elif token["type"] == TOKENS.INTEGER:
+        yield (
             token["value"],
             fastnumbers.fast_int(token["value"]),
         )
-    if token["type"] == TOKENS.LITERAL:
-        return (
+    elif token["type"] == TOKENS.LITERAL:
+        yield (
             token["value"],
             str(token["value"])[1:-1],
         )
-    if token["type"] == TOKENS.DATE:
-        return (
+    elif token["type"] == TOKENS.DATE:
+        yield (
             token["value"],
             parse_iso(token["value"][1:-1]),
         )
-    if token["type"] == TOKENS.BOOLEAN:
-        return (
+    elif token["type"] == TOKENS.BOOLEAN:
+        yield (
             token["value"],
             str(token["value"]).upper() == "TRUE",
         )
-    if token["type"] == TOKENS.NULL:
+    elif token["type"] == TOKENS.NULL:
+        yield (
+            token["value"],
+            None,
+        )
+    else:
         return (
             token["value"],
             None,
         )
-    return (
-        token["value"],
-        None,
-    )
 
 
 class TokenSet(list):
@@ -175,7 +182,8 @@ class Evaluator:
     def __call__(self, dict):
         ret = []
         for field in self.tokens:
-            ret.append(evaluate_field(dict, field))
+            for value in evaluate_field(dict, field):
+                ret.append(value)
         return {k: v for k, v in ret}
 
     def __iter__(self):
