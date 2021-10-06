@@ -179,8 +179,16 @@ class DictSet(object):
         Return None if the value in the field is None, if the field doesn't exist in
         the record, don't return anything.
         """
+
+        def asdic(lst):
+            for l in lst:
+                if isinstance(l, dict):
+                    yield l
+                else:
+                    yield l.as_dict()
+
         if not key:
-            return list(iter(self._iterator))
+            return list(asdic(iter(self._iterator)))
         return [record[key] for record in iter(self._iterator) if key in record]
 
     def keys(self, number_of_rows: int = 0):
@@ -418,7 +426,10 @@ class DictSet(object):
         for count, item in enumerate(iter(self._iterator)):
             if count == items:
                 return
-            yield item
+            if isinstance(item, dict):
+                yield item
+            else:
+                yield item.as_dict()
 
     def filter(self, filters):
         """

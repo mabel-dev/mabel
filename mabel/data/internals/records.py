@@ -1,5 +1,6 @@
 from typing import List, Callable, MutableMapping, Any
 import collections
+import csimdjson
 
 
 def select_record_fields(record: dict, fields: List[str]) -> dict:
@@ -58,7 +59,7 @@ def set_value(record: dict, field_name: str, setter: Callable) -> dict:
 
 
 def flatten(
-    dictionary: MutableMapping[Any, Any], separator: str = "_", parent_key=False
+    dictionary: MutableMapping[Any, Any], separator: str = ".", parent_key=False
 ):
     """
     Turn a nested dictionary into a flattened dictionary
@@ -77,7 +78,7 @@ def flatten(
     items = []
     for key, value in dictionary.items():
         new_key = str(parent_key) + separator + key if parent_key else key
-        if isinstance(value, collections.MutableMapping):
+        if isinstance(value, (collections.MutableMapping, csimdjson.Object)):
             items.extend(
                 flatten(
                     dictionary=value, separator=separator, parent_key=new_key
