@@ -182,7 +182,10 @@ class DictSet(object):
 
         def asdic(lst):
             for l in lst:
-                yield l.as_dict()
+                if isinstance(l, dict):
+                    yield l
+                else:
+                    yield l.as_dict()
 
         if not key:
             return list(asdic(iter(self._iterator)))
@@ -423,7 +426,10 @@ class DictSet(object):
         for count, item in enumerate(iter(self._iterator)):
             if count == items:
                 return
-            yield item.as_dict()
+            if isinstance(item, dict):
+                yield item
+            else:
+                yield item.as_dict()
 
     def filter(self, filters):
         """

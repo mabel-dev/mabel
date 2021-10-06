@@ -24,7 +24,6 @@ def fix_dict(obj: dict) -> dict:
         if isinstance(dt, dict):
             return {k: fix_fields(v) for k, v in dt.items()}
         return str(dt)
-
     if not isinstance(obj, dict):
         return obj  # type:ignore
     return {k: fix_fields(v) for k, v in obj.items()}
@@ -42,7 +41,7 @@ def report_suppressions(message):
 
 def log_it(payload):
     if isinstance(payload, dict):
-        payload = json.dumps(payload)
+        payload = json.dumps(fix_dict(payload))
     if isinstance(payload, bytes):
         payload = payload.decode()
     print(payload, flush=True)
