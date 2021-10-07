@@ -24,6 +24,7 @@ def fix_dict(obj: dict) -> dict:
         if isinstance(dt, dict):
             return {k: fix_fields(v) for k, v in dt.items()}
         return str(dt)
+
     if not isinstance(obj, dict):
         return obj  # type:ignore
     return {k: fix_fields(v) for k, v in obj.items()}
@@ -108,10 +109,11 @@ class GoogleLogger(object):
         if isinstance(message, dict):
             formatter = LogFormatter(None)
             message = formatter.clean_record(message, False)
-            structured_log["jsonPayload"] = message  # type:ignore
+            structured_log["message"] = message
+            structured_log.update(message)
             return log_it(structured_log)
         else:
-            structured_log["textPayload"] = message
+            structured_log["message"] = message
             return log_it(structured_log)
 
     def __init__(self):

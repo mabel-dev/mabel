@@ -1,12 +1,11 @@
 # no-maintain-checks
-from mabel.data.internals.dictset import STORAGE_CLASS
-import re
-from numpy import select
 
+import re
 import simdjson
 from ....data.internals.group_by import GroupBy, AGGREGATORS
-from ..reader import Reader
+from ....data.internals.dictset import STORAGE_CLASS
 from ....logging import get_logger
+
 from .inline_functions import *
 
 # not all are implemented, but we split by reserved words anyway
@@ -217,6 +216,26 @@ def apply_functions_on_read_thru(ds, functions, merge=False):
         yield result_record
 
 
+def validate_from(dataset):
+    dataset = str(dataset)
+    # start with a letter
+    if not dataset[0].isalpha():
+        return False
+    # can't be attempting path traversal
+    if ".." in dataset or "//" in dataset or "--" in dataset:
+        return False
+    # can only contain limited character set
+    if (
+        not dataset.replace(".", "")
+        .replace("/", "")
+        .replace("-", "")
+        .replace("_", "")
+        .isalnum()
+    ):
+        return False
+    return True
+
+
 def SqlReader(sql_statement: str, **kwargs):
     """
     Use basic SQL queries to filter Reader.
@@ -230,10 +249,16 @@ def SqlReader(sql_statement: str, **kwargs):
         `dataset` is taken from SQL FROM
         `filters` is taken from SQL WHERE
     """
-    from mabel import DictSet
+    from mabel import DictSet, Reader
 
     sql = SqlParser(sql_statement)
     get_logger().info(repr(sql).replace("\n", " "))
+
+    if "bucket" in kwargs:
+        sql._from = f"{kwargs['bucket']}/{sql._from}"
+
+    if not validate_from(sql._from):
+        raise InvalidSqlError("FROM statement appears to be malformed.")
 
     reader = Reader(
         # select=sql.select,

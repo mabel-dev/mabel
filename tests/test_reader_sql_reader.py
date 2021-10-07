@@ -14,7 +14,7 @@ traceback.install()
 
 
 def do_writer():
-    w = BatchWriter(inner_writer=DiskWriter, dataset="_temp/twitter", raw_path=True)
+    w = BatchWriter(inner_writer=DiskWriter, dataset="temp/twitter", raw_path=True)
     r = Reader(inner_reader=DiskReader, dataset="tests/data/tweets", raw_path=True)
     for tweet in r:
         w.append(tweet)
@@ -23,16 +23,16 @@ def do_writer():
 
 def test_where():
 
-    shutil.rmtree("_temp", ignore_errors=True)
+    shutil.rmtree("temp", ignore_errors=True)
     do_writer()
     s = SqlReader(
-        "SELECT * FROM _temp.twitter",
+        "SELECT * FROM temp.twitter",
         inner_reader=DiskReader,
         raw_path=True,
         persistence=STORAGE_CLASS.MEMORY,
     )
     assert s.count() == 50, s.count()
-    shutil.rmtree("_temp", ignore_errors=True)
+    shutil.rmtree("temp", ignore_errors=True)
 
 
 # fmt:off

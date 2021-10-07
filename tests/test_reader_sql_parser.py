@@ -3,7 +3,7 @@ import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 import pytest
-from mabel.data.readers.internals.sql_reader import SqlParser
+from mabel.data.readers.internals.sql_reader import SqlParser, validate_from
 from rich import traceback
 
 traceback.install()
@@ -52,9 +52,21 @@ def test_invalid_sql():
             parsed = SqlParser(statement)
 
 
+def test_from_validator():
+
+    assert validate_from("table")
+    assert validate_from("data.set/is_valid")
+    assert not validate_from("1table")
+    assert not validate_from(".table")
+    assert not validate_from("this//isnotvalid")
+    assert not validate_from("this*is*not*okay")
+    assert not validate_from("this--is--not--okay")
+
+
 if __name__ == "__main__":
 
     test_parser()
     test_invalid_sql()
+    test_from_validator()
 
     print("complete")

@@ -20,11 +20,14 @@ dataset:
 │ Reduce     │ Aggregate                                                  │
 └────────────┴────────────────────────────────────────────────────────────┘
 """
+from numpy import vander
+import simdjson
 from mabel import logging
 from . import decompressors, parsers
 from enum import Enum
 from functools import reduce
 from ....utils import paths
+from ....data.internals.records import flatten
 from ....data.internals.index import Index
 from ....data.internals.expression import Expression
 from ....data.internals.dnf_filters import DnfFilters
@@ -66,6 +69,17 @@ def pass_thru(x):
 
 def no_filter(x):
     return True
+
+
+def expand_nested_json(row):
+    if isinstance(row, (dict, simdjson.Object)):
+        for k, v in [(k, v) for k, v in row.items()]:
+            if isinstance(v, (dict, simdjson.Object)):
+                if isinstance(row, simdjson.Object):
+                    row = row.as_dict()  # only convert if we really have to
+                row.update(flatten(dictionary={k: v}, separator="."))
+                row.pop(k)
+    return row
 
 
 class ParallelReader:
@@ -229,6 +243,8 @@ class ParallelReader:
                 record_iterator = self._select(record_iterator, selected_rows)
             # Parse
             record_iterator = map(parser, record_iterator)
+            # Expand Nested JSON
+            record_iterator = map(expand_nested_json, record_iterator)
             # Transform
             record_iterator = map(self.columns, record_iterator)
             # Filter
