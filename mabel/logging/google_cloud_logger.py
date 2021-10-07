@@ -24,6 +24,7 @@ def fix_dict(obj: dict) -> dict:
         if isinstance(dt, dict):
             return {k: fix_fields(v) for k, v in dt.items()}
         return str(dt)
+
     if not isinstance(obj, dict):
         return obj  # type:ignore
     return {k: fix_fields(v) for k, v in obj.items()}

@@ -62,6 +62,7 @@ def test_from_validator():
     assert not validate_from("this*is*not*okay")
     assert not validate_from("this--is--not--okay")
 
+
 if __name__ == "__main__":
 
     test_parser()

@@ -70,15 +70,17 @@ def pass_thru(x):
 def no_filter(x):
     return True
 
+
 def expand_nested_json(row):
     if isinstance(row, (dict, simdjson.Object)):
-        for k,v in [(k,v) for k,v in row.items()]:
+        for k, v in [(k, v) for k, v in row.items()]:
             if isinstance(v, (dict, simdjson.Object)):
                 if isinstance(row, simdjson.Object):
                     row = row.as_dict()  # only convert if we really have to
-                row.update(flatten(dictionary={k:v}, separator='.')) 
+                row.update(flatten(dictionary={k: v}, separator="."))
                 row.pop(k)
     return row
+
 
 class ParallelReader:
 

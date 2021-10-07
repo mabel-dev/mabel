@@ -215,18 +215,26 @@ def apply_functions_on_read_thru(ds, functions, merge=False):
                 )
         yield result_record
 
+
 def validate_from(dataset):
     dataset = str(dataset)
     # start with a letter
     if not dataset[0].isalpha():
         return False
     # can't be attempting path traversal
-    if '..' in dataset or '//' in dataset or '--' in dataset:
+    if ".." in dataset or "//" in dataset or "--" in dataset:
         return False
     # can only contain limited character set
-    if not dataset.replace(".", "").replace("/", "").replace("-", "").replace("_", "").isalnum():
+    if (
+        not dataset.replace(".", "")
+        .replace("/", "")
+        .replace("-", "")
+        .replace("_", "")
+        .isalnum()
+    ):
         return False
     return True
+
 
 def SqlReader(sql_statement: str, **kwargs):
     """
