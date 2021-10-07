@@ -108,10 +108,11 @@ class GoogleLogger(object):
         if isinstance(message, dict):
             formatter = LogFormatter(None)
             message = formatter.clean_record(message, False)
-            structured_log["jsonPayload"] = message  # type:ignore
+            structured_log["message"] = message
+            structured_log.update(message)
             return log_it(structured_log)
         else:
-            structured_log["textPayload"] = message
+            structured_log["message"] = message
             return log_it(structured_log)
 
     def __init__(self):
