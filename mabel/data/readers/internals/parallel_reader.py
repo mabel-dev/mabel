@@ -74,7 +74,9 @@ def expand_nested_json(row):
     if isinstance(row, (dict, simdjson.Object)):
         for k,v in [(k,v) for k,v in row.items()]:
             if isinstance(v, (dict, simdjson.Object)):
-                row.update(flatten(dictionary=v, separator='.')) 
+                if isinstance(row, simdjson.Object):
+                    row = row.as_dict()  # only convert if we really have to
+                row.update(flatten(dictionary={k:v}, separator='.')) 
                 row.pop(k)
     return row
 
