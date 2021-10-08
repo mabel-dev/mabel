@@ -20,7 +20,6 @@ dataset:
 │ Reduce     │ Aggregate                                                  │
 └────────────┴────────────────────────────────────────────────────────────┘
 """
-from numpy import vander
 import simdjson
 from mabel import logging
 from . import decompressors, parsers
