@@ -139,7 +139,9 @@ def Reader(
 
     """
     if valid_dataset_prefixes:
-        if not any([True for prefix in valid_dataset_prefixes if dataset.startswith(prefix)]):
+        if not any(
+            [True for prefix in valid_dataset_prefixes if dataset.startswith(prefix)]
+        ):
             raise ValueError("DataSet is not accessible.")
 
     # lazy loading of dependency - in this case the Google GCS Reader

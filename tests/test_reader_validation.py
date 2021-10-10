@@ -35,36 +35,26 @@ def test_reader_all_good():
 def test_dataset_prefix_validator():
 
     with pytest.raises(ValueError):
-        reader = Reader(
-            dataset="dataset",
-            valid_dataset_prefixes=["drive/"]
-        )
+        reader = Reader(dataset="dataset", valid_dataset_prefixes=["drive/"])
 
     with pytest.raises(ValueError):
         reader = Reader(
-            dataset="dataset",
-            valid_dataset_prefixes=["list", "of", "items"]
+            dataset="dataset", valid_dataset_prefixes=["list", "of", "items"]
         )
 
     # no whitelist - allow all
-    reader = Reader(
-        project="",
-        dataset="dataset"
-    )
+    reader = Reader(project="", dataset="dataset")
 
     # a list of one
-    reader = Reader(
-        project="",
-        dataset="dataset",
-        valid_dataset_prefixes=["dataset"]
-    )
+    reader = Reader(project="", dataset="dataset", valid_dataset_prefixes=["dataset"])
 
     # a list of many
     reader = Reader(
         project="",
         dataset="dataset",
-        valid_dataset_prefixes=["on", "the", "list", "dataset"]
+        valid_dataset_prefixes=["on", "the", "list", "dataset"],
     )
+
 
 if __name__ == "__main__":  # pragma: no cover
     test_reader_all_good()

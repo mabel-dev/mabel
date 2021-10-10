@@ -26,9 +26,7 @@ class InvalidSqlError(Exception):
     pass
 
 
-class SqlParser():
-    
-
+class SqlParser:
     def __init__(self, statement):
         self.select_expression: Optional[str] = None
         self.select_evaluator: None
@@ -38,24 +36,26 @@ class SqlParser():
         self.group_by: Optional[str] = None
         self.having: Optional[str] = None
         self.order_by: Optional[str] = None
-        self.order_descending: bool = False 
+        self.order_descending: bool = False
         self.limit: Optional[str] = None
 
         self.parse(statement=statement)
         self.select_evaluator = Evaluator(self.select_expression)
 
     def __repr__(self):
-        return str({
-            "select": self.select_expression,
-            "disctinct": self.distinct,
-            "from": self.dataset,
-            "where": self.where_expression,
-            "group by": self.group_by,
-            "having": self.having,
-            "order by": self.order_by,
-            "descending": self.order_descending,
-            "limit": self.limit
-        })
+        return str(
+            {
+                "select": self.select_expression,
+                "disctinct": self.distinct,
+                "from": self.dataset,
+                "where": self.where_expression,
+                "group by": self.group_by,
+                "having": self.having,
+                "order by": self.order_by,
+                "descending": self.order_descending,
+                "limit": self.limit,
+            }
+        )
 
     def sql_parts(self, string):
         reg = re.compile(
@@ -103,7 +103,9 @@ class SqlParser():
             raise InvalidSqlError("Malformed FROM clause - must start with a letter.")
         # can't be attempting path traversal
         if ".." in dataset or "//" in dataset or "--" in dataset:
-            raise InvalidSqlError("Malformed FROM clause - invalid repeated characters.")
+            raise InvalidSqlError(
+                "Malformed FROM clause - invalid repeated characters."
+            )
         # can only contain limited character set (alpha num . / - _)
         if (
             not dataset.replace(".", "")
@@ -146,13 +148,16 @@ class SqlParser():
             if labeler.peek().upper() == "ORDER BY":
                 labeler.next()
                 self.order_by = labeler.next()
-                if labeler.has_next() and labeler.next_token_value().upper() in ("ASC", "DESC"):
+                if labeler.has_next() and labeler.next_token_value().upper() in (
+                    "ASC",
+                    "DESC",
+                ):
                     self.order_descending = labeler.next_token_value().upper() == "DESC"
             if labeler.peek().upper() == "LIMIT":
                 labeler.next()
                 self.limit = int(labeler.peek())
             labeler.next()
-        
+
         # validate inputs (currently only the FROM clause)
         self.validate_dataset(self.dataset)
 
@@ -207,12 +212,16 @@ def SqlReader(sql_statement: str, **kwargs):
         from ...internals.group_by import GroupBy
 
         # convert the clause into something we can pass to GroupBy
-        groups = [group.strip() for group in sql.group_by.split(",") if group.strip() != ""]
+        groups = [
+            group.strip() for group in sql.group_by.split(",") if group.strip() != ""
+        ]
 
         aggregations = []
         for i, t in enumerate(sql.select_evaluator.tokens):
             if t["type"] == TOKENS.AGGREGATOR:
-                aggregations.append((t["value"], sql.select_evaluator.tokens[i+2]["value"]))
+                aggregations.append(
+                    (t["value"], sql.select_evaluator.tokens[i + 2]["value"])
+                )
 
         if aggregations:
             grouped = GroupBy(reader, *groups).aggregate(aggregations)
