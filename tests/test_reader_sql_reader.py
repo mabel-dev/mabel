@@ -13,26 +13,15 @@ from rich import traceback
 traceback.install()
 
 
-def do_writer():
-    w = BatchWriter(inner_writer=DiskWriter, dataset="temp/twitter", raw_path=True)
-    r = Reader(inner_reader=DiskReader, dataset="tests/data/tweets", raw_path=True)
-    for tweet in r:
-        w.append(tweet)
-    w.finalize()
-
-
 def test_where():
 
-    shutil.rmtree("temp", ignore_errors=True)
-    do_writer()
     s = SqlReader(
-        "SELECT * FROM temp.twitter",
+        "SELECT * FROM tests.data.tweets WHERE username == 'BBCNews'",
         inner_reader=DiskReader,
         raw_path=True,
         persistence=STORAGE_CLASS.MEMORY,
     )
-    assert s.count() == 50, s.count()
-    shutil.rmtree("temp", ignore_errors=True)
+    assert s.count() == 6, s.count()
 
 
 # fmt:off

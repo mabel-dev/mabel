@@ -59,7 +59,7 @@ def test_concat():
 def test_as():
     pf = "UPPER(name) as upper_name"
     res = Evaluator(pf)(TEST_DATA)
-    print(res)
+    assert res == {'upper_name': 'SIRIUS BLACK'}
 
 
 if __name__ == "__main__":  # pragma: no cover

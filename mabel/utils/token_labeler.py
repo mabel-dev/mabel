@@ -168,13 +168,17 @@ def build_splitter():
 
 
 class Tokenizer:
-    expression = None
-    tokens = None
-    token_types = None
-    i = 0
+
+    slots = ("i", "tokens")
 
     def __init__(self, exp):
-        self.expression = exp
+        print(exp)
+        self.i = 0
+        if isinstance(exp, str):
+            self.tokens = self.tokenize(exp)
+        else:
+            self.tokens = exp
+        print(self.tokens)
 
     def next(self):
         self.i += 1
@@ -187,7 +191,7 @@ class Tokenizer:
         return self.i < len(self.tokens)
 
     def next_token_type(self):
-        return self.token_types[self.i]
+        return get_token_type(self.tokens[self.i])
 
     def next_token_value(self):
         return self.tokens[self.i]
@@ -239,14 +243,20 @@ class Tokenizer:
                     "Unable to determine quoted token boundaries, you may be missing a closing quote."
                 )
 
-    def tokenize(self):
-        self.tokens = build_splitter().split(self.expression)
+    def clean_statement(self, string):
+        """
+        Remove carriage returns and all whitespace to single spaces
+        """
+        whitespace_cleaner = re.compile(r"\s+")
+        return whitespace_cleaner.sub(" ", string).strip()
+
+    def tokenize(self, expression):
+        expression = self.clean_statement(expression)
+        tokens = build_splitter().split(expression)
         # characters like '*' in literals break the tokenizer, so we need to fix them
-        self.tokens = list(self._fix_special_chars(self.tokens))
-        self.tokens = [t.strip() for t in self.tokens if t.strip() != ""]
-        self.token_types = []
-        for token in self.tokens:
-            self.token_types.append(get_token_type(token))
+        tokens = list(self._fix_special_chars(tokens))
+        tokens = [t.strip() for t in tokens if t.strip() != ""]
+        return tokens
 
     def __str__(self):
         return self.peek()

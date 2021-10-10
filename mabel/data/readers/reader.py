@@ -41,7 +41,7 @@ RULES = [
     {"name": "project", "required": False, "warning": "", "incompatible_with": []},
     {"name": "override_format", "required": False, "warning": "", "incompatible_with": []},
     {"name": "multiprocess", "required": False, "warning": "", "incompatible_with": ["cursor"]},
-    {"name": "credentials", "required": False},
+    {"name": "valid_dataset_prefixes", "required": False},
 ]
 # fmt:on
 
@@ -60,6 +60,7 @@ def Reader(
     override_format: Optional[str] = None,
     multiprocess: bool = False,
     cursor: Optional[Union[str, Dict]] = None,
+    valid_dataset_prefixes: Optional[list] = None,
     **kwargs,
 ) -> DictSet:
     """
@@ -125,6 +126,11 @@ def Reader(
             Split the task over multiple CPUs to improve throughput. Note that there
             are conditions that must be met for the multiprocessor to be safe which
             may mean even though this is set, data is accessed serially.
+        valid_dataset_prefixes: list (optional)
+            Raises an error if the start of the dataset isn't on the list. The
+            intended use is for situations where an external agent can initiate
+            the request (such as the Query application). This allows a whitelist
+            of allowable resources to be defined.
 
     Returns:
         DictSet
@@ -132,6 +138,10 @@ def Reader(
     Raises:
 
     """
+    if valid_dataset_prefixes:
+        if not any([True for prefix in valid_dataset_prefixes if dataset.startswith(prefix)]):
+            raise ValueError("DataSet is not accessible.")
+
     # lazy loading of dependency - in this case the Google GCS Reader
     # eager loading will cause failures when we try to load the google-cloud
     # libraries and they aren't installed.

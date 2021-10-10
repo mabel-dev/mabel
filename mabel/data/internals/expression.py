@@ -35,7 +35,6 @@ class Expression(object):
 
     def __init__(self, exp):
         self.tokenizer = Tokenizer(exp)
-        self.tokenizer.tokenize()
         self.parse()
 
     def parse(self):
@@ -81,7 +80,7 @@ class Expression(object):
 
         if (
             self.tokenizer.has_next()
-            and self.tokenizer.next_token_type() == TOKENS.FUNCTION
+            and self.tokenizer.next_token_type() in (TOKENS.FUNCTION, TOKENS.AGGREGATOR)
         ):
             # we don't evaluate functions as part of this module, the function call
             # should be part of the record, e.g. record["YEAR(date_of_birth)"]
@@ -232,7 +231,10 @@ class Expression(object):
         right = self.evaluate_recursive(treeNode.right, variable_dict)
 
         if treeNode.token_type == TOKENS.OPERATOR:
-            return OPERATORS[treeNode.value](left, right)
+            if left and right:
+                return OPERATORS[treeNode.value](left, right)
+            else:
+                return False
         if treeNode.token_type == TOKENS.AND:
             return left and right
         if treeNode.token_type == TOKENS.OR:

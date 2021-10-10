@@ -46,12 +46,11 @@ def build(tokens):
             while open_parentheses > 0:
                 if ts.finished():
                     break
+                collector.append(ts.token())
                 if ts.token()["type"] == TOKENS.RIGHTPARENTHESES:
                     open_parentheses -= 1
                 elif ts.token()["type"] == TOKENS.LEFTPARENTHESES:
                     open_parentheses += 1
-                else:
-                    collector.append(ts.token())
                 ts.step()
 
             if open_parentheses != 0:
@@ -82,6 +81,8 @@ def evaluate_field(dict, token):
     """
     Evaluate a single field
     """
+    if token["type"] == TOKENS.EVERYTHING:
+        return (TOKENS.EVERYTHING, TOKENS.EVERYTHING)
     if token["type"] == TOKENS.VARIABLE:
         return (
             token["value"],
@@ -172,10 +173,13 @@ class Evaluator:
         self._iter = None
 
     def __call__(self, dict):
-        ret = []
+        build_phase_1 = []
         for field in self.tokens:
-            ret.append(evaluate_field(dict, field))
-        return {k: v for k, v in ret}
+            build_phase_1.append(evaluate_field(dict, field))
+        build_phase_2 = {k: v for k, v in build_phase_1 if k != TOKENS.EVERYTHING}
+        if (TOKENS.EVERYTHING, TOKENS.EVERYTHING) in build_phase_1:
+            build_phase_2.update(dict)
+        return build_phase_2
 
     def __iter__(self):
         return self
