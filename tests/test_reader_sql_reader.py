@@ -85,9 +85,10 @@ def test_select():
         raw_path=True,
     )
     first = s.first()
-    assert first.get("tweet_id") is not None
-    assert first.get("user_name") is not None
-    assert first.get("timestamp") is None, first.get("timestamp")
+    assert first.get("tweet_id") is not None, first
+    assert first.get("user_name") is not None, first
+    assert first.get("timestamp") is None, first
+    
 
 
 def test_limit():

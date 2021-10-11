@@ -231,10 +231,7 @@ class Expression(object):
         right = self.evaluate_recursive(treeNode.right, variable_dict)
 
         if treeNode.token_type == TOKENS.OPERATOR:
-            if left and right:
-                return OPERATORS[treeNode.value](left, right)
-            else:
-                return False
+            return OPERATORS[treeNode.value](left, right)
         if treeNode.token_type == TOKENS.AND:
             return left and right
         if treeNode.token_type == TOKENS.OR:

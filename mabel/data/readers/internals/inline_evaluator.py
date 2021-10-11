@@ -12,6 +12,7 @@ Evaluator("LEFT(NAME, 1), AGE").evaluate(dic)
 will perform the function LEFT on the NAME field from the dict and return AGE
 from the dict
 """
+from functools import lru_cache
 import re
 import fastnumbers
 from .inline_functions import FUNCTIONS
@@ -24,6 +25,22 @@ class InvalidEvaluator(Exception):
 
     pass
 
+def get_fields(tokens):
+
+    def inner(tokens):
+        for token in tokens:
+            if token["type"] in (TOKENS.EVERYTHING):
+                yield "*"
+            elif token["type"] in (TOKENS.FUNCTION, TOKENS.AGGREGATOR):
+                if token["as"]:
+                    yield token["as"]
+                else:
+                    params = ",".join([f for f in inner(token["parameters"])])
+                    yield f"{token['value']}({params})"
+            elif token["type"] in (TOKENS.VARIABLE, TOKENS.INTEGER, TOKENS.LITERAL, TOKENS.DATE, TOKENS.FLOAT, TOKENS.DATE):
+                yield token["value"]
+
+    return list(inner(tokens))
 
 def build(tokens):
     response = []
@@ -34,7 +51,7 @@ def build(tokens):
     while not ts.finished():
         token = ts.token()
         ts.step()  # move along
-        if token["type"] == TOKENS.FUNCTION:
+        if token["type"] in (TOKENS.FUNCTION, TOKENS.AGGREGATOR):
 
             if not ts.token()["type"] == TOKENS.LEFTPARENTHESES:
                 raise InvalidEvaluator("Invalid expression, missing expected `(` ")
@@ -46,11 +63,16 @@ def build(tokens):
             while open_parentheses > 0:
                 if ts.finished():
                     break
-                collector.append(ts.token())
+                
                 if ts.token()["type"] == TOKENS.RIGHTPARENTHESES:
                     open_parentheses -= 1
+                    if open_parentheses != 0:
+                        collector.append(ts.token())
                 elif ts.token()["type"] == TOKENS.LEFTPARENTHESES:
                     open_parentheses += 1
+                    collector.append(ts.token())
+                else:
+                    collector.append(ts.token())
                 ts.step()
 
             if open_parentheses != 0:
@@ -64,17 +86,9 @@ def build(tokens):
                 raise InvalidEvaluator("Incomplete statement after AS")
             token["as"] = ts.token()["value"]
             ts.step()
+
         response.append(token)
     return response
-
-
-def if_as(token, name):
-    """
-    Deal with AS directives
-    """
-    if token.get("as") is None:
-        return name
-    return token["as"]
 
 
 def evaluate_field(dict, token):
@@ -89,9 +103,13 @@ def evaluate_field(dict, token):
             dict.get(token["value"]),
         )
     if token["type"] == TOKENS.FUNCTION:
-        function_name = f"{token['value'].upper()}({','.join([t['value'] for t in token['parameters']])})"
+        if not token["as"]:
+            label = get_fields([token]).pop()
+            token["as"] = label
+        else:
+            label = token["as"]
         return (
-            if_as(token, function_name),
+            label,
             FUNCTIONS[token["value"].upper()](
                 *[evaluate_field(dict, t)[1] for t in token["parameters"]]
             ),
@@ -188,3 +206,6 @@ class Evaluator:
         if not self._iter:
             self._iter = iter(self.tokens)
         return next(self._iter)
+
+    def fields(self):
+        return get_fields(self.tokens)

@@ -178,7 +178,7 @@ class Tokenizer:
             self.tokens = self.tokenize(exp)
         else:
             self.tokens = exp
-        print(self.tokens)
+
 
     def next(self):
         self.i += 1

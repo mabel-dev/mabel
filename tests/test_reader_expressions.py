@@ -76,9 +76,6 @@ def test_simple_compound_expressions():
 
 if __name__ == "__main__":  # pragma: no cover
 
-    DATA = DictSet(TEST_DATA, storage_class=STORAGE_CLASS.MEMORY)
-    assert DATA.filter("affiliations is not none").count() == 3
-
     test_expression_compilation()
     test_simple_equals_expressions()
     test_simple_not_expressions()

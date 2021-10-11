@@ -3,7 +3,6 @@
 import re
 from typing import Optional
 from ....data.readers.internals.inline_evaluator import Evaluator
-from ....data.internals.expression import Expression
 from ....utils.token_labeler import TOKENS, Tokenizer
 from ....logging import get_logger
 
@@ -217,10 +216,10 @@ def SqlReader(sql_statement: str, **kwargs):
         ]
 
         aggregations = []
-        for i, t in enumerate(sql.select_evaluator.tokens):
+        for t in sql.select_evaluator.tokens:
             if t["type"] == TOKENS.AGGREGATOR:
                 aggregations.append(
-                    (t["value"], sql.select_evaluator.tokens[i + 2]["value"])
+                    (t["value"], t["parameters"][0]["value"])
                 )
 
         if aggregations:
@@ -246,4 +245,4 @@ def SqlReader(sql_statement: str, **kwargs):
     if sql.limit:
         reader = reader.take(sql.limit)
 
-    return reader
+    return reader.select(sql.select_evaluator.fields())
