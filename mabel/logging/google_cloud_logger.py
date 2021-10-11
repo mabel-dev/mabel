@@ -112,7 +112,7 @@ class GoogleLogger(object):
             structured_log["message"] = (
                 str(message) + " *"
             )  # We don't want valid JSON here
-            structured_log.update(message)
+            structured_log.update(message)  # type:ignore
             return log_it(structured_log)
         else:
             structured_log["message"] = message

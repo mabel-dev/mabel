@@ -36,7 +36,7 @@ class SqlParser:
         self.having: Optional[str] = None
         self.order_by: Optional[str] = None
         self.order_descending: bool = False
-        self.limit: Optional[str] = None
+        self.limit: Optional[int] = None
 
         self.parse(statement=statement)
         self.select_evaluator = Evaluator(self.select_expression)
@@ -183,7 +183,9 @@ def SqlReader(sql_statement: str, **kwargs):
     get_logger().info(repr(sql))
 
     actual_select = sql.select_expression
-    if sql.select_expression != "*":
+    if sql.select_expression is None:
+        actual_select = "*"
+    elif sql.select_expression != "*":
         actual_select = sql.select_expression + ",*"
 
     reader = Reader(
@@ -198,7 +200,7 @@ def SqlReader(sql_statement: str, **kwargs):
         reader = reader.distinct()
 
     # if the query is COUNT(*) on a SELECT, just do it.
-    if sql.select_expression.upper() == "COUNT(*)" and not sql.group_by:
+    if str(sql.select_expression).upper() == "COUNT(*)" and not sql.group_by:
         count = -1
         for count, r in enumerate(reader):
             pass
@@ -216,7 +218,7 @@ def SqlReader(sql_statement: str, **kwargs):
         ]
 
         aggregations = []
-        for t in sql.select_evaluator.tokens:
+        for t in sql.select_evaluator.tokens:  # type:ignore
             if t["type"] == TOKENS.AGGREGATOR:
                 aggregations.append((t["value"], t["parameters"][0]["value"]))
 
@@ -234,7 +236,7 @@ def SqlReader(sql_statement: str, **kwargs):
     if sql.order_by:
         take = 5000  # the Query UI is currently set to 2000
         if sql.limit:
-            take = sql.limit
+            take = int(sql.limit)
         reader = DictSet(
             reader.sort_and_take(
                 column=sql.order_by, take=take, descending=sql.order_descending
@@ -243,4 +245,4 @@ def SqlReader(sql_statement: str, **kwargs):
     if sql.limit:
         reader = reader.take(sql.limit)
 
-    return reader.select(sql.select_evaluator.fields())
+    return reader.select(sql.select_evaluator.fields())  # type:ignore
