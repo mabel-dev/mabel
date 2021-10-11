@@ -11,7 +11,6 @@ import fastnumbers
 from siphashc import siphash
 from functools import lru_cache
 from ....utils.dates import parse_iso
-from ....data.internals.records import flatten
 
 
 def get_year(input):
@@ -200,8 +199,6 @@ FUNCTIONS = {
     "TRUNC": fastnumbers.fast_int,
     "INT": fastnumbers.fast_int,
     "FLOAT": fastnumbers.fast_float,
-    # COMPLEX TYPES
-    "FLATTEN": flatten,  # flatten(dictionary, separator)
     # BOOLEAN
     "BOOLEAN": lambda x: x.upper() != "FALSE",
     "ISNONE": lambda x: x is None,

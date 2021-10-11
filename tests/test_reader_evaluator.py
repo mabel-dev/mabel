@@ -37,7 +37,7 @@ def test_simple_fields():
 
 
 def test_simple_functions():
-    pf = "UPPER(name), YEAR(dob), LEFT(gender,2), RIGHT(gender,2), MID(name,5,3)"
+    pf = "UPPER(name), YEAR(dob), LEFT(gender, 2), RIGHT(gender, 2), MID(name, 5, 3)"
     res = Evaluator(pf)(TEST_DATA)
     assert res == {
         "UPPER(name)": "SIRIUS BLACK",
@@ -59,7 +59,7 @@ def test_concat():
 def test_as():
     pf = "UPPER(name) as upper_name"
     res = Evaluator(pf)(TEST_DATA)
-    print(res)
+    assert res == {"upper_name": "SIRIUS BLACK"}
 
 
 if __name__ == "__main__":  # pragma: no cover

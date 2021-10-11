@@ -35,7 +35,6 @@ class Expression(object):
 
     def __init__(self, exp):
         self.tokenizer = Tokenizer(exp)
-        self.tokenizer.tokenize()
         self.parse()
 
     def parse(self):
@@ -79,9 +78,9 @@ class Expression(object):
             not_condition.right = None  # NOT is a unary operator
             return not_condition
 
-        if (
-            self.tokenizer.has_next()
-            and self.tokenizer.next_token_type() == TOKENS.FUNCTION
+        if self.tokenizer.has_next() and self.tokenizer.next_token_type() in (
+            TOKENS.FUNCTION,
+            TOKENS.AGGREGATOR,
         ):
             # we don't evaluate functions as part of this module, the function call
             # should be part of the record, e.g. record["YEAR(date_of_birth)"]

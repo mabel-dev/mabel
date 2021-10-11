@@ -81,17 +81,17 @@ class LogFormatter(logging.Formatter):
 
     def clean_record(self, dirty_record, colorize: bool = True):
         if colorize:
-            BLUE = "{BLUE}"
-            OFF = "{OFF}"
-            PURPLE = "{PURPLE}"
-            YELLOW = "{YELLOW}"
-            GREEN = "{GREEN}"
+            BLUE = r"{BLUE}"
+            OFF = r"{OFF}"
+            PURPLE = r"{PURPLE}"
+            YELLOW = r"{YELLOW}"
+            GREEN = r"{GREEN}"
         else:
-            BLUE = ""
-            OFF = ""
-            PURPLE = ""
-            YELLOW = ""
-            GREEN = ""
+            BLUE = r""
+            OFF = r""
+            PURPLE = r""
+            YELLOW = r""
+            GREEN = r""
 
         clean_record = {}
         for key, value in dirty_record.items():
@@ -109,10 +109,10 @@ class LogFormatter(logging.Formatter):
                 )
             else:
                 value = re.sub(
-                    r"`([^`]*)`", r"`" + YELLOW + "\1" + GREEN + "`", f"{value}"
+                    r"`([^`]*)`", r"`" + YELLOW + r"\1" + GREEN + r"`", f"{value}"
                 )
                 value = re.sub(
-                    r"'([^']*)'", r"'" + YELLOW + "\1" + GREEN + "'", f"{value}"
+                    r"'([^']*)'", r"'" + YELLOW + r"\1" + GREEN + r"'", f"{value}"
                 )
                 clean_record[BLUE + key + OFF] = GREEN + f"{value}" + OFF
         return clean_record
