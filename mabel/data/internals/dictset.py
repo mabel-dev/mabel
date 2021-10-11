@@ -489,7 +489,7 @@ class DictSet(object):
         Selects columns from a _DictSet_. If the column doesn't exist it is populated
         with `None`.
         """
-        if columns == '*' or columns == ["*"]:
+        if columns == "*" or columns == ["*"]:
             return self
 
         if not isinstance(columns, (list, set, tuple)):

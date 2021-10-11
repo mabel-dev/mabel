@@ -179,7 +179,6 @@ class Tokenizer:
         else:
             self.tokens = exp
 
-
     def next(self):
         self.i += 1
         return self.tokens[self.i - 1]

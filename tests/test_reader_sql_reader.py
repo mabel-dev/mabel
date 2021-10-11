@@ -88,7 +88,6 @@ def test_select():
     assert first.get("tweet_id") is not None, first
     assert first.get("user_name") is not None, first
     assert first.get("timestamp") is None, first
-    
 
 
 def test_limit():
