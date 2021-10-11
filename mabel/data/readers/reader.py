@@ -1,6 +1,5 @@
 from mabel.data.readers.internals.inline_evaluator import Evaluator
 import sys
-import os.path
 import datetime
 
 from typing import Optional, Dict, Union
@@ -17,7 +16,6 @@ from .internals.cursor import Cursor
 
 from ..internals.expression import Expression
 from ..internals.dnf_filters import DnfFilters
-from ..internals.records import select_record_fields
 from ..internals.dictset import DictSet, STORAGE_CLASS
 
 from ...logging import get_logger
@@ -52,7 +50,7 @@ logger = get_logger()
 def Reader(
     *,  # force all paramters to be keyworded
     select: str = "*",
-    dataset: str = None,
+    dataset: str = "",
     filters: Optional[str] = None,
     inner_reader=None,  # type:ignore
     raw_path: bool = False,
@@ -140,7 +138,11 @@ def Reader(
     """
     if valid_dataset_prefixes:
         if not any(
-            [True for prefix in valid_dataset_prefixes if dataset.startswith(prefix)]
+            [
+                True
+                for prefix in valid_dataset_prefixes
+                if str(dataset).startswith(prefix)
+            ]
         ):
             raise ValueError("DataSet is not accessible.")
 

@@ -1,5 +1,3 @@
-# no-maintain-checks
-
 import re
 from typing import Optional
 from ....data.readers.internals.inline_evaluator import Evaluator
