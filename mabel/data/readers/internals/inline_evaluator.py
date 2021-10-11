@@ -25,8 +25,8 @@ class InvalidEvaluator(Exception):
 
     pass
 
-def get_fields(tokens):
 
+def get_fields(tokens):
     def inner(tokens):
         for token in tokens:
             if token["type"] in (TOKENS.EVERYTHING):
@@ -37,10 +37,18 @@ def get_fields(tokens):
                 else:
                     params = ",".join([f for f in inner(token["parameters"])])
                     yield f"{token['value']}({params})"
-            elif token["type"] in (TOKENS.VARIABLE, TOKENS.INTEGER, TOKENS.LITERAL, TOKENS.DATE, TOKENS.FLOAT, TOKENS.DATE):
+            elif token["type"] in (
+                TOKENS.VARIABLE,
+                TOKENS.INTEGER,
+                TOKENS.LITERAL,
+                TOKENS.DATE,
+                TOKENS.FLOAT,
+                TOKENS.DATE,
+            ):
                 yield token["value"]
 
     return list(inner(tokens))
+
 
 def build(tokens):
     response = []
@@ -63,7 +71,7 @@ def build(tokens):
             while open_parentheses > 0:
                 if ts.finished():
                     break
-                
+
                 if ts.token()["type"] == TOKENS.RIGHTPARENTHESES:
                     open_parentheses -= 1
                     if open_parentheses != 0:

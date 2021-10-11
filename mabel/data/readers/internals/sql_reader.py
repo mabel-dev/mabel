@@ -218,9 +218,7 @@ def SqlReader(sql_statement: str, **kwargs):
         aggregations = []
         for t in sql.select_evaluator.tokens:
             if t["type"] == TOKENS.AGGREGATOR:
-                aggregations.append(
-                    (t["value"], t["parameters"][0]["value"])
-                )
+                aggregations.append((t["value"], t["parameters"][0]["value"]))
 
         if aggregations:
             grouped = GroupBy(reader, *groups).aggregate(aggregations)
