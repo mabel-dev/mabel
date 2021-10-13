@@ -240,7 +240,14 @@ def SqlReader(sql_statement: str, **kwargs):
                 column=sql.order_by, take=take, descending=sql.order_descending
             )
         )
+
+    reader = reader.select(sql.select_evaluator.fields())  # type:ignore
+
+    # disctinct now we have only the columns we're interested in
+    if sql.distinct:
+        reader = reader.distinct()
+
     if sql.limit:
         reader = reader.take(sql.limit)
 
-    return reader.select(sql.select_evaluator.fields())  # type:ignore
+    return reader

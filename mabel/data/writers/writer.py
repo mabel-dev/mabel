@@ -61,11 +61,6 @@ class Writer:
                 )
             self.expectations = de.Expectations(set_of_expectations=set_of_expectations)
 
-        #        if self.schema is not None and self.expectations is not None:
-        #            raise InvalidCombinationError(
-        #                "Writer does not support having `schema`\`fields` and `expectations` set at the same time."
-        #            )
-
         self.finalized = False
         self.batch_date = self._get_writer_date(date)
 
@@ -93,7 +88,6 @@ class Writer:
 
         # create the writer
         self.blob_writer = BlobWriter(**kwargs)
-
         self.records = 0
 
     def append(self, record: Union[dict, BaseModel]):

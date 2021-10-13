@@ -150,7 +150,10 @@ class BaseOperator(abc.ABC):
         while attempts_to_go > 0:
             try:
                 start_time = time.perf_counter_ns()
-                outcome = self.execute(data, context)
+                if isinstance(data, dict):
+                    outcome = self.execute(data.copy(), context)
+                else:
+                    outcome = self.execute(data, context)
                 my_execution_time = time.perf_counter_ns() - start_time
                 self.execution_time_ns += my_execution_time
                 # add a success to the last_few_results list

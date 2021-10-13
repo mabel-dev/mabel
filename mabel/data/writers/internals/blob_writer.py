@@ -48,7 +48,12 @@ class BlobWriter(object):
     def append(self, record: dict = {}):
         # serialize the record
         if self.format == "text":
-            serialized = str(record).encode() + b"\n"
+            if isinstance(record, bytes):
+                serialized = record + b'\n'
+            elif isinstance(record, str):
+                serialized = record.encode() + b"\n"
+            else:
+                serialized = str(record).encode() + b"\n"
         elif self.format == "flat":
             serialized = dumps(flatten(record)) + b"\n"  # type:ignore
         elif isinstance(record, simdjson.Object):
