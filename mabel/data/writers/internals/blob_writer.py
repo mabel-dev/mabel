@@ -49,7 +49,7 @@ class BlobWriter(object):
         # serialize the record
         if self.format == "text":
             if isinstance(record, bytes):
-                serialized = record + b'\n'
+                serialized = record + b"\n"
             elif isinstance(record, str):
                 serialized = record.encode() + b"\n"
             else:
