@@ -41,6 +41,7 @@ SQL_TESTS = [
     {"statement":"SELECT COUNT(*) FROM tests.data.index.is GROUP BY user_verified", "result":1},
     {"statement":"SELECT COUNT(*), user_verified FROM tests.data.index.is GROUP BY user_verified", "result":-1},  # its in a generator so uncountable
     {"statement":"SELECT * FROM tests.data.index.is WHERE hash_tags contains 'Georgia'", "result":50},
+    {"statement":"SELECT COUNT(*) FROM (SELECT username FROM tests.data.index.is GROUP BY username)", "result":1},
 ]
 # fmt:on
 

@@ -10,9 +10,9 @@ SQL_PARTS = [
     r"DISTINCT",
     r"FROM",
     r"WHERE",
-    r"GROUP\sBY",
+    r"GROUP BY",
     r"HAVING",
-    r"ORDER\sBY",
+    r"ORDER BY",
     r"ASC",
     r"DESC",
     r"LIMIT",
@@ -56,11 +56,11 @@ class SqlParser:
 
     def sql_parts(self, string):
         reg = re.compile(
-            r"(" + r"|".join([r"\b" + i + r"\b" for i in SQL_PARTS]) + r")",
+            r"(\(|\)|,|" + r"|".join([r"\b" + i.replace(r" ", r"\s") + r"\b" for i in SQL_PARTS]) + r"|\s)",
             re.IGNORECASE,
         )
         parts = reg.split(string)
-        return [part.strip() for part in parts if part.strip() != ""]
+        return [part for part in parts if part != ""]
 
     def clean_statement(self, string):
         """
@@ -114,6 +114,16 @@ class SqlParser:
             raise InvalidSqlError("Malformed FROM clause - invalid characters.")
         return True
 
+    def collector(self, labeler):
+        collection = []
+        while labeler.has_next():
+            if labeler.next_token_value().upper() not in SQL_PARTS:
+                collection.append(labeler.next_token_value())
+                labeler.next()
+            else:
+                break
+        return ''.join(collection).strip()   
+
     def parse(self, statement):
         # clean the string
         clean = self.remove_comments(statement)
@@ -124,39 +134,74 @@ class SqlParser:
         labeler = Tokenizer(parts)
 
         while labeler.has_next():
-            if labeler.peek().upper() == "SELECT":
+            if labeler.peek().strip() == "":
+                labeler.next()
+            elif labeler.peek().upper() == "SELECT":
                 labeler.next()
                 if labeler.next_token_value().upper() == "DISTINCT":
                     self.distinct = True
                     labeler.next()
-                self.select_expression = labeler.peek()
-            if labeler.peek().upper() == "FROM":
+                self.select_expression = self.collector(labeler)
+            elif labeler.peek().upper() == "FROM":
+
                 labeler.next()
-                self.dataset = labeler.peek().replace(".", "/")
-            if labeler.peek().upper() == "WHERE":
+                while labeler.has_next() and labeler.next_token_type() == TOKENS.EMPTY:
+                    labeler.next()
+                
+                if labeler.next_token_type() == TOKENS.LEFTPARENTHESES:
+                    # we have a subquery
+                    open_parentheses = 1
+                    collector = []
+                    labeler.next()
+                    while open_parentheses > 0:
+                        if not labeler.has_next():
+                            break
+
+                        if labeler.next_token_type() == TOKENS.RIGHTPARENTHESES:
+                            open_parentheses -= 1
+                            if open_parentheses != 0:
+                                collector.append(labeler.peek())
+                        elif labeler.next_token_type() == TOKENS.LEFTPARENTHESES:
+                            open_parentheses += 1
+                            collector.append(labeler.peek())
+                        else:
+                            collector.append(labeler.peek())
+                        labeler.next()
+
+                    if open_parentheses != 0:
+                        raise InvalidSqlError("Malformed FROM clause - mismatched parenthesis.")
+
+                    self.dataset = collector
+                else:
+                    self.dataset = self.collector(labeler).replace(".", "/")
+            elif labeler.peek().upper() == "WHERE":
                 labeler.next()
-                self.where_expression = labeler.peek()
-            if labeler.peek().upper() == "GROUP BY":
+                self.where_expression = self.collector(labeler)
+            elif labeler.peek().upper() == "GROUP BY":
                 labeler.next()
-                self.group_by = labeler.peek()
-            if labeler.peek().upper() == "HAVING":
+                self.group_by = self.collector(labeler)
+            elif labeler.peek().upper() == "HAVING":
                 labeler.next()
-                self.having = labeler.peek()
-            if labeler.peek().upper() == "ORDER BY":
+                self.having = self.collector(labeler)
+            elif labeler.peek().upper() == "ORDER BY":
                 labeler.next()
-                self.order_by = labeler.next()
+                self.order_by = self.collector(labeler)
                 if labeler.has_next() and labeler.next_token_value().upper() in (
                     "ASC",
                     "DESC",
                 ):
                     self.order_descending = labeler.next_token_value().upper() == "DESC"
-            if labeler.peek().upper() == "LIMIT":
                 labeler.next()
-                self.limit = int(labeler.peek())
-            labeler.next()
+            elif labeler.peek().upper() == "LIMIT":
+                labeler.next()
+                self.limit = int(self.collector(labeler))
 
         # validate inputs (currently only the FROM clause)
-        self.validate_dataset(self.dataset)
+        if isinstance(self.dataset, str):
+            self.validate_dataset(self.dataset)
+
+        if self.dataset is None or self.select_expression is None:
+            raise InvalidSqlError("Malformed statement - all statements require SELECT and FROM clauses.")
 
 
 def SqlReader(sql_statement: str, **kwargs):
@@ -186,12 +231,15 @@ def SqlReader(sql_statement: str, **kwargs):
     elif sql.select_expression != "*":
         actual_select = sql.select_expression + ",*"
 
-    reader = Reader(
-        select=actual_select,
-        dataset=sql.dataset,
-        filters=sql.where_expression,
-        **kwargs,
-    )
+    if isinstance(sql.dataset, list):
+        reader = SqlReader(''.join(sql.dataset), **kwargs)
+    else:
+        reader = Reader(
+            select=actual_select,
+            dataset=sql.dataset,
+            filters=sql.where_expression,
+            **kwargs,
+        )
 
     # if we're distincting, do it first
     if sql.distinct:
