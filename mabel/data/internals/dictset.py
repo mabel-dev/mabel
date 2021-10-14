@@ -42,7 +42,6 @@ from .storage_classes import (
     StorageClassMemory,
     StorageClassDisk,
     StorageClassCompressedMemory,
-    StorageClassMsgPackMemory,
 )
 from .expression import Expression
 from .dnf_filters import DnfFilters
@@ -74,7 +73,6 @@ class STORAGE_CLASS(int, Enum):
     MEMORY = 2
     DISK = 3
     COMPRESSED_MEMORY = 4
-    MSGPACK = 5
 
 
 class DictSet(object):
@@ -112,9 +110,6 @@ class DictSet(object):
         # if we're persisiting to compressed memory, do it
         if storage_class == STORAGE_CLASS.COMPRESSED_MEMORY:
             self._iterator = StorageClassCompressedMemory(iterator)
-
-        if storage_class == STORAGE_CLASS.MSGPACK:
-            self._iterator = StorageClassMsgPackMemory(iterator)
 
         if not hasattr(self._iterator, "__iter__"):
             self._iterator = DumbIterator(self._iterator)
