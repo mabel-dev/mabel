@@ -197,16 +197,6 @@ def SqlReader(sql_statement: str, **kwargs):
     if sql.distinct:
         reader = reader.distinct()
 
-    # if the query is COUNT(*) on a SELECT, just do it.
-    if str(sql.select_expression).upper() == "COUNT(*)" and not sql.group_by:
-        count = -1
-        for count, r in enumerate(reader):
-            pass
-        # we can probably safely assume a 1 record set will fit in memory
-        reader = DictSet(
-            iter([{"COUNT(*)": count + 1}]), storage_class=STORAGE_CLASS.MEMORY
-        )
-
     if sql.group_by:
         from ...internals.group_by import GroupBy
 
@@ -230,6 +220,16 @@ def SqlReader(sql_statement: str, **kwargs):
         # if we have a HAVING clause, filter the grouped data by it
         if sql.having:
             reader = reader.filter(sql.having)
+
+    # if the query is COUNT(*) on a SELECT, just do it.
+    if str(sql.select_expression).upper() == "COUNT(*)":
+        count = -1
+        for count, r in enumerate(reader):
+            pass
+        # we can probably safely assume a 1 record set will fit in memory
+        reader = DictSet(
+            iter([{"COUNT(*)": count + 1}]), storage_class=STORAGE_CLASS.MEMORY
+        )
 
     if sql.order_by:
         take = 5000  # the Query UI is currently set to 2000
