@@ -71,14 +71,18 @@ class TOKENS(str, Enum):
     AND = "<And>"
     OR = "<Or>"
     NOT = "<Not>"
+    SUBQUERY = "<SubQuery>"
+    EMPTY = "<Empty>"
 
 
 def get_token_type(token):
     """
     Guess the token type.
     """
-    token = str(token)
+    token = str(token).strip()
     token_upper = token.upper()
+    if len(token) == 0:
+        return TOKENS.EMPTY
     if token[0] == token[-1] == "`":
         # tokens in ` quotes are variables, this is how we supersede all other
         # checks, e.g. if it looks like a number but is a variable.
@@ -172,7 +176,6 @@ class Tokenizer:
     slots = ("i", "tokens")
 
     def __init__(self, exp):
-        print(exp)
         self.i = 0
         if isinstance(exp, str):
             self.tokens = self.tokenize(exp)
@@ -203,7 +206,7 @@ class Tokenizer:
         for token in tokens:
             stripped_token = token.strip()
             if len(stripped_token) == 0:
-                # the splitter can create empty strings
+                # the splitter creates unwanted empty strings
                 pass
 
             elif not looking_for_end_char and stripped_token[0] not in ('"', "'", "`"):
