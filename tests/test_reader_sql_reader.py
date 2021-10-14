@@ -2,11 +2,8 @@ import os
 import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
-import shutil
 from mabel.data import STORAGE_CLASS
-from mabel.data import Reader
-from mabel.data import BatchWriter
-from mabel.adapters.disk import DiskWriter, DiskReader
+from mabel.adapters.disk import DiskReader
 from mabel.data.readers.internals.sql_reader import SqlReader
 from rich import traceback
 
@@ -41,7 +38,8 @@ SQL_TESTS = [
     {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id = 1346604539923853313 OR user_verified = True", "result":453},
     {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = 'Dave Jamieson' AND user_verified = True", "result":1},
     {"statement":"SELECT COUNT(*) FROM tests.data.index.is  WHERE user_name = 'Dave Jamieson' AND user_verified = True", "result":1},
-    {"statement":"SELECT COUNT(*) FROM tests.data.index.is GROUP BY user_verified", "result":-1},  # there's two groups in a generator
+    {"statement":"SELECT COUNT(*) FROM tests.data.index.is GROUP BY user_verified", "result":1},
+    {"statement":"SELECT COUNT(*), user_verified FROM tests.data.index.is GROUP BY user_verified", "result":-1},  # its in a generator so uncountable
     {"statement":"SELECT * FROM tests.data.index.is WHERE hash_tags contains 'Georgia'", "result":50},
 ]
 # fmt:on
@@ -111,10 +109,10 @@ def test_group_by_count():
     )
     records = s.collect()
     record_count = len(records)
-    assert record_count == 2, record_count
+    assert record_count == 1, record_count
 
     s = SqlReader(
-        sql_statement="SELECT COUNT(*) FROM tests.data.index.not GROUP BY user_name",
+        sql_statement="SELECT COUNT(*), user_name FROM tests.data.index.not GROUP BY user_name",
         inner_reader=DiskReader,
         raw_path=True,
     )
