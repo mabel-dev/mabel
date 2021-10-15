@@ -11,7 +11,7 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], "../.."))
 from mabel import Reader
 from mabel.adapters.disk import DiskReader
-from mabel.data.formats import dictset
+
 
 try:
     from rich import traceback
@@ -38,11 +38,7 @@ def time_it(test, *args):
 
 
 def use_dictset(data, cycles):
-    list(dictset.select_from(data, where=where_clause))
-
-
-def use_filter(data, cycles):
-    list(filter(where_clause, data))
+    list(data.filters(where_clause))
 
 
 def use_comprehension(data, cycle):
@@ -60,6 +56,5 @@ data = get_data()
 
 cycles = 1
 print("use_dictset :", time_it(use_dictset, data, cycles))  # 5.0
-print("use_filter  :", time_it(use_filter, data, cycles))  # 4.5 faster
 print("just code   :", time_it(just_code, data, cycles))  # 5.8
 print("comprehens  :", time_it(use_comprehension, data, cycles))  # 5.8

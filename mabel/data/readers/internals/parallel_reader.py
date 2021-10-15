@@ -71,6 +71,7 @@ def no_filter(x):
 
 
 def expand_nested_json(row):
+    # this is really slow - on a simple read it's roughly 60% of the execution
     if isinstance(row, (dict, simdjson.Object)):
         for k, v in [(k, v) for k, v in row.items()]:
             if isinstance(v, (dict, simdjson.Object)):
@@ -243,7 +244,7 @@ class ParallelReader:
             # Parse
             record_iterator = map(parser, record_iterator)
             # Expand Nested JSON
-            record_iterator = map(expand_nested_json, record_iterator)
+            #record_iterator = map(expand_nested_json, record_iterator)
             # Transform
             record_iterator = map(self.columns, record_iterator)
             # Filter

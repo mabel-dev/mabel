@@ -21,32 +21,34 @@ def test_where():
     assert s.count() == 6, s.count()
 
 
-# fmt:off
-SQL_TESTS = [
-    {"statement":"SELECT * FROM tests.data.index.is", "result":65499},
-    {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = 'Verizon Support'", "result":2},
-    {"statement":"select * from tests.data.index.is  where user_name = 'Verizon Support'", "result":2},
-    {"statement":"SELECT * FROM tests.data.index.not WHERE user_name = 'Verizon Support'", "result":2},
-    {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = '********'", "result":0},
-    {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name LIKE '_erizon _upport'", "result":2},
-    {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name LIKE '%Support%'", "result":31},
-    {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = 'Verizon Support'", "result":2},
-    {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id = 1346604539923853313", "result":1}, 
-    {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id = 1346604539923853313 AND user_id = 4832862820", "result":1},
-    {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id IN (1346604539923853313, 1346604544134885378)", "result":2},
-    {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id = 1346604539923853313 OR user_id = 2147860407", "result":2},
-    {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id = 1346604539923853313 OR user_verified = True", "result":453},
-    {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = 'Dave Jamieson' AND user_verified = True", "result":1},
-    {"statement":"SELECT COUNT(*) FROM tests.data.index.is  WHERE user_name = 'Dave Jamieson' AND user_verified = True", "result":1},
-    {"statement":"SELECT COUNT(*) FROM tests.data.index.is GROUP BY user_verified", "result":1},
-    {"statement":"SELECT COUNT(*), user_verified FROM tests.data.index.is GROUP BY user_verified", "result":-1},  # its in a generator so uncountable
-    {"statement":"SELECT * FROM tests.data.index.is WHERE hash_tags contains 'Georgia'", "result":50},
-    {"statement":"SELECT COUNT(*) FROM (SELECT username FROM tests.data.index.is GROUP BY username)", "result":1},
-]
-# fmt:on
-
-
-def test_sql():
+def test_sql_returned_rows():
+    """ """
+    # fmt:off
+    SQL_TESTS = [
+        {"statement":"SELECT * FROM tests.data.index.is", "result":65499},
+        {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = 'Verizon Support'", "result":2},
+        {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name == 'Verizon Support'", "result":2},
+        {"statement":"SELECT * FROM tests.data.index.is  WHERE `user_name` = 'Verizon Support'", "result":2},
+        {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = \"Verizon Support\"", "result":2},
+        {"statement":"select * from tests.data.index.is  where user_name = 'Verizon Support'", "result":2},
+        {"statement":"SELECT * FROM tests.data.index.not WHERE user_name = 'Verizon Support'", "result":2},
+        {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = '********'", "result":0},
+        {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name LIKE '_erizon _upport'", "result":2},
+        {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name LIKE '%Support%'", "result":31},
+        {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = 'Verizon Support'", "result":2},
+        {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id = 1346604539923853313", "result":1}, 
+        {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id = 1346604539923853313 AND user_id = 4832862820", "result":1},
+        {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id IN (1346604539923853313, 1346604544134885378)", "result":2},
+        {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id = 1346604539923853313 OR user_id = 2147860407", "result":2},
+        {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id = 1346604539923853313 OR user_verified = True", "result":453},
+        {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = 'Dave Jamieson' AND user_verified = True", "result":1},
+        {"statement":"SELECT COUNT(*) FROM tests.data.index.is  WHERE user_name = 'Dave Jamieson' AND user_verified = True", "result":1},
+        {"statement":"SELECT COUNT(*) FROM tests.data.index.is GROUP BY user_verified", "result":1},
+        {"statement":"SELECT COUNT(*), user_verified FROM tests.data.index.is GROUP BY user_verified", "result":2},
+        {"statement":"SELECT * FROM tests.data.index.is WHERE hash_tags contains 'Georgia'", "result":50},
+        {"statement":"SELECT COUNT(*) FROM (SELECT username FROM tests.data.index.is GROUP BY username)", "result":1},
+    ]
+    # fmt:on
 
     for test in SQL_TESTS:
         s = SqlReader(
@@ -55,10 +57,10 @@ def test_sql():
             raw_path=True,
             persistence=STORAGE_CLASS.MEMORY,
         )
-        # print(s)
-        assert s.count() == test.get(
+        len_s = len(s.collect())
+        assert len_s == test.get(
             "result"
-        ), f"{test.get('statement')} == {s.count()}"
+        ), f"{test.get('statement')} == {len_s} ({test.get('result')})"
 
 
 def test_sql_to_dictset():
@@ -76,17 +78,27 @@ def test_sql_to_dictset():
     assert len(s.take(10).collect()) == 10
 
 
-def test_select():
+def test_sql_returned_cols():
 
-    s = SqlReader(
-        sql_statement="SELECT tweet_id, user_name FROM tests.data.index.not",
-        inner_reader=DiskReader,
-        raw_path=True,
-    )
-    first = s.first()
-    assert first.get("tweet_id") is not None, first
-    assert first.get("user_name") is not None, first
-    assert first.get("timestamp") is None, first
+    # fmt:off
+    SQL_TESTS = [
+        {"statement":"SELECT tweet_id, user_name FROM tests.data.index.not LIMIT 1", "keys":["tweet_id","user_name"]},
+        {"statement":"SELECT COUNT(*) AS count FROM tests.data.index.not LIMIT 1", "keys": ["count"]},
+        {"statement":"SELECT COUNT(*) FROM tests.data.index.not LIMIT 1", "keys": ["COUNT(*)"]}
+                
+    ]
+    # fmt:on
+
+    for test in SQL_TESTS:
+        s = SqlReader(
+            test.get("statement"),
+            inner_reader=DiskReader,
+            raw_path=True,
+            persistence=STORAGE_CLASS.MEMORY,
+        )
+        #print(s.collect())
+        cols = s.keys()
+        assert sorted(cols) == sorted(test["keys"]), f"{test.get('statement')} - {cols}"
 
 
 def test_limit():
@@ -123,9 +135,13 @@ def test_group_by_count():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_sql()
+    import mabel
+
+    print(mabel.__version__)
+
+    test_sql_returned_rows()
     test_sql_to_dictset()
-    test_select()
+    test_sql_returned_cols()
     test_where()
     test_limit()
     test_group_by_count()
