@@ -27,6 +27,25 @@ class InvalidEvaluator(Exception):
     pass
 
 
+def get_function_name(token):
+    """
+    Convert tokens back to a function name for inclusion in results
+    """
+
+    def _inner(tokens):
+        ret = []
+        for token in tokens:
+            if token["type"] in (TOKENS.FUNCTION, TOKENS.AGGREGATOR):
+                ret.append(get_function_name(token))
+            else:
+                ret.append(token["value"])
+        return ret
+
+    if token["type"] in (TOKENS.FUNCTION, TOKENS.AGGREGATOR):
+        params = ",".join(_inner(token["parameters"]))
+        return f"{token['value']}({params})"
+
+
 def get_fields(tokens):
     def inner(tokens):
         for token in tokens:
@@ -36,8 +55,7 @@ def get_fields(tokens):
                 if token["as"]:
                     yield token["as"]
                 else:
-                    params = ",".join([f for f in inner(token["parameters"])])
-                    yield f"{token['value']}({params})"
+                    yield get_function_name(token)
             elif token["type"] in (
                 TOKENS.VARIABLE,
                 TOKENS.INTEGER,

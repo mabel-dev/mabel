@@ -218,6 +218,8 @@ class Expression(object):
         ):
             return treeNode.value
         if treeNode.token_type == TOKENS.VARIABLE:
+            if treeNode.value[0] == treeNode.value[-1] == "`":
+                treeNode.value = treeNode.value[1:-1]
             if treeNode.value in variable_dict:
                 value = variable_dict[treeNode.value]
                 return self.interpret_value(value)

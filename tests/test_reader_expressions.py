@@ -36,6 +36,7 @@ def test_expression_compilation():
         {"expression": "not alive == True", "dnf": ("NOT", ("alive", "==", True))},
         {"expression": "age < 100 and alive == true","dnf": [("age", "<", 100), ("alive", "==", True)],},
         {"expression": "dob == '1979-09-19' or name like '%potter%'","dnf": [[("dob", "==", '"1979-09-19 00:00:00"')],[("name", "LIKE", '"%potter%"')],],},
+        {"expression": "`name` == 'James Potter'", "dnf": ("`name`", "==", '"James Potter"')},
     ]
     # fmt: on
 

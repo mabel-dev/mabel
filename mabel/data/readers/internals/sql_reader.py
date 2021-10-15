@@ -1,6 +1,24 @@
+"""
+
+This is a basic SQL parser and interpreter - we process the parts of the SQL statement
+in the following order:
+
+FROM clause
+    - includes scalar functions
+WHERE clause
+GROUP BY clause
+    - includes aggregate functions
+HAVING clause
+SELECT clause
+    - includes AS renames
+ORDER BY clause
+LIMIT clause
+
+"""
+
 import re
 from typing import Optional
-from ....data.readers.internals.inline_evaluator import Evaluator
+from ....data.readers.internals.inline_evaluator import Evaluator, get_function_name
 from ....utils.token_labeler import TOKENS, Tokenizer
 from ....logging import get_logger
 
@@ -56,7 +74,9 @@ class SqlParser:
 
     def sql_parts(self, string):
         reg = re.compile(
-            r"(\(|\)|,|" + r"|".join([r"\b" + i.replace(r" ", r"\s") + r"\b" for i in SQL_PARTS]) + r"|\s)",
+            r"(\(|\)|,|"
+            + r"|".join([r"\b" + i.replace(r" ", r"\s") + r"\b" for i in SQL_PARTS])
+            + r"|\s)",
             re.IGNORECASE,
         )
         parts = reg.split(string)
@@ -122,7 +142,7 @@ class SqlParser:
                 labeler.next()
             else:
                 break
-        return ''.join(collection).strip()   
+        return "".join(collection).strip()
 
     def parse(self, statement):
         # clean the string
@@ -147,7 +167,7 @@ class SqlParser:
                 labeler.next()
                 while labeler.has_next() and labeler.next_token_type() == TOKENS.EMPTY:
                     labeler.next()
-                
+
                 if labeler.next_token_type() == TOKENS.LEFTPARENTHESES:
                     # we have a subquery
                     open_parentheses = 1
@@ -169,7 +189,9 @@ class SqlParser:
                         labeler.next()
 
                     if open_parentheses != 0:
-                        raise InvalidSqlError("Malformed FROM clause - mismatched parenthesis.")
+                        raise InvalidSqlError(
+                            "Malformed FROM clause - mismatched parenthesis."
+                        )
 
                     self.dataset = collector
                 else:
@@ -201,7 +223,9 @@ class SqlParser:
             self.validate_dataset(self.dataset)
 
         if self.dataset is None or self.select_expression is None:
-            raise InvalidSqlError("Malformed statement - all statements require SELECT and FROM clauses.")
+            raise InvalidSqlError(
+                "Invalid statement - all statements require SELECT and FROM clauses."
+            )
 
 
 def SqlReader(sql_statement: str, **kwargs):
@@ -231,8 +255,10 @@ def SqlReader(sql_statement: str, **kwargs):
     elif sql.select_expression != "*":
         actual_select = sql.select_expression + ",*"
 
+    # FROM clause
+    # WHERE clause
     if isinstance(sql.dataset, list):
-        reader = SqlReader(''.join(sql.dataset), **kwargs)
+        reader = SqlReader("".join(sql.dataset), **kwargs)
     else:
         reader = Reader(
             select=actual_select,
@@ -241,10 +267,7 @@ def SqlReader(sql_statement: str, **kwargs):
             **kwargs,
         )
 
-    # if we're distincting, do it first
-    if sql.distinct:
-        reader = reader.distinct()
-
+    # GROUP BY clause
     if sql.group_by:
         from ...internals.group_by import GroupBy
 
@@ -254,23 +277,27 @@ def SqlReader(sql_statement: str, **kwargs):
         ]
 
         aggregations = []
+        renames = []
         for t in sql.select_evaluator.tokens:  # type:ignore
             if t["type"] == TOKENS.AGGREGATOR:
                 aggregations.append((t["value"], t["parameters"][0]["value"]))
+                if t["as"]:
+                    t["raw"] = get_function_name(t)
+                    renames.append(t)
+            elif t["type"] == TOKENS.VARIABLE and t["value"] not in groups:
+                raise InvalidSqlError("Invalid SQL - SELECT clause in a statement with a GROUP BY clause must be made of aggregations or items from the GROUP BY clause.")
 
         if aggregations:
             grouped = GroupBy(reader, *groups).aggregate(aggregations)
         else:
             grouped = GroupBy(reader, *groups).groups()
-        # there could be 250000 groups, so we#re not going to load them into memory
+    
+        # there could be 250000 groups, so we're not going to load them into memory
         reader = DictSet(grouped)
 
-        # if we have a HAVING clause, filter the grouped data by it
-        if sql.having:
-            reader = reader.filter(sql.having)
 
     # if the query is COUNT(*) on a SELECT, just do it.
-    if str(sql.select_expression).upper() == "COUNT(*)":
+    if len(sql.select_evaluator.tokens) == 1 and sql.select_evaluator.tokens[0]["value"] == "COUNT":
         count = -1
         for count, r in enumerate(reader):
             pass
@@ -279,6 +306,36 @@ def SqlReader(sql_statement: str, **kwargs):
             iter([{"COUNT(*)": count + 1}]), storage_class=STORAGE_CLASS.MEMORY
         )
 
+    # HAVING clause
+    # if we have a HAVING clause, filter the grouped data by it
+    if sql.having:
+        reader = reader.filter(sql.having)
+
+    # SELECT clause
+
+    renames = {}
+    for t in sql.select_evaluator.tokens:  # type:ignore
+        if t["as"]:
+            print(t)
+            renames[get_function_name(t)] = t["as"]
+
+    def _perform_renames(row):
+        for k,v in [(k,v) for k,v in row.items()]:
+            if k in renames:
+                row[renames[k]] = row.pop(k, row.get(renames[k]))
+        return row
+    
+    print("RENAMES", renames)
+
+    if renames:
+        reader = DictSet(map(_perform_renames, reader))
+
+    reader = reader.select(sql.select_evaluator.fields())  # type:ignore
+    # disctinct now we have only the columns we're interested in
+    if sql.distinct:
+        reader = reader.distinct()
+
+    # ORDER BY clause
     if sql.order_by:
         take = 5000  # the Query UI is currently set to 2000
         if sql.limit:
@@ -289,12 +346,7 @@ def SqlReader(sql_statement: str, **kwargs):
             )
         )
 
-    reader = reader.select(sql.select_evaluator.fields())  # type:ignore
-
-    # disctinct now we have only the columns we're interested in
-    if sql.distinct:
-        reader = reader.distinct()
-
+    # LIMIT clause
     if sql.limit:
         reader = reader.take(sql.limit)
 
