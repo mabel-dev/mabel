@@ -10,19 +10,19 @@ from mabel.utils.timer import Timer
 
 def do_read():
 
-
     # d = Reader(inner_reader=DiskReader, dataset="tests/data/nvd/", raw_path=True)
-    #SQL = "SELECT COUNT(*) FROM (SELECT * FROM tests/data/huge GROUP BY cve.CVE_data_meta.ASSIGNER)"
+    # SQL = "SELECT COUNT(*) FROM (SELECT * FROM tests/data/huge GROUP BY cve.CVE_data_meta.ASSIGNER)"
     SQL = "SELECT count(*) FROM tests/data/huge"
-    #SQL = "SELECT * FROM tests.data.index.is  WHERE `user_name` = 'Verizon Support'"
+    # SQL = "SELECT * FROM tests.data.index.is  WHERE `user_name` = 'Verizon Support'"
     SQL = "SELECT COUNT(*) FROM tests.data.index.is GROUP BY user_verified"
     SQL = "SELECT user_name FROM tests.data.index.is LIMIT 2"
     SQL = "SELECT AVG(followers) FROM tests.data.index.is"
     d = SqlReader(
         SQL,
         inner_reader=DiskReader,
-        #multiprocess=True,
-        raw_path=True)
+        # multiprocess=True,
+        raw_path=True,
+    )
 
     i = -1
     for i, r in enumerate(d):
@@ -31,12 +31,12 @@ def do_read():
     print(i + 1)
 
 
-#cProfile.run("do_read()", "profile.txt")
+# cProfile.run("do_read()", "profile.txt")
 
-#import pstats
+# import pstats
 
-#p = pstats.Stats("profile.txt")
-#p.sort_stats("cumulative").print_stats(10)
+# p = pstats.Stats("profile.txt")
+# p.sort_stats("cumulative").print_stats(10)
 
 with Timer():
     do_read()

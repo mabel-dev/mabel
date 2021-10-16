@@ -270,16 +270,20 @@ def SqlReader(sql_statement: str, **kwargs):
         )
 
     # GROUP BY clause
-    if sql.group_by or any([t["type"] == TOKENS.AGGREGATOR for t in sql.select_evaluator.tokens]):
+    if sql.group_by or any(
+        [t["type"] == TOKENS.AGGREGATOR for t in sql.select_evaluator.tokens]
+    ):
         from ...internals.group_by import GroupBy
 
         # convert the clause into something we can pass to GroupBy
         if sql.group_by:
             groups = [
-                group.strip() for group in sql.group_by.split(",") if group.strip() != ""
+                group.strip()
+                for group in sql.group_by.split(",")
+                if group.strip() != ""
             ]
         else:
-            groups = ["$1$"] # an impossible column name
+            groups = ["$1$"]  # an impossible column name
 
         aggregations = []
         renames = []
@@ -290,19 +294,20 @@ def SqlReader(sql_statement: str, **kwargs):
                     t["raw"] = get_function_name(t)
                     renames.append(t)
             elif t["type"] == TOKENS.VARIABLE and t["value"] not in groups:
-                raise InvalidSqlError("Invalid SQL - SELECT clause in a statement with a GROUP BY clause must be made of aggregations or items from the GROUP BY clause.")
+                raise InvalidSqlError(
+                    "Invalid SQL - SELECT clause in a statement with a GROUP BY clause must be made of aggregations or items from the GROUP BY clause."
+                )
 
         if aggregations:
             grouped = GroupBy(reader, *groups).aggregate(aggregations)
         else:
             grouped = GroupBy(reader, *groups).groups()
-    
+
         # there could be 250000 groups, so we're not going to load them into memory
         reader = DictSet(grouped)
 
-
     # if the query is a singular count COUNT(*) on a SELECT, just do it.
-    #if len(sql.select_evaluator.tokens) == 1 and sql.select_evaluator.tokens[0]["value"] == "COUNT":
+    # if len(sql.select_evaluator.tokens) == 1 and sql.select_evaluator.tokens[0]["value"] == "COUNT":
     #    count = -1
     #    for count, r in enumerate(reader):
     #        pass
@@ -324,7 +329,7 @@ def SqlReader(sql_statement: str, **kwargs):
             renames[get_function_name(t)] = t["as"]
 
     def _perform_renames(row):
-        for k,v in [(k,v) for k,v in row.items()]:
+        for k, v in [(k, v) for k, v in row.items()]:
             if k in renames:
                 row[renames[k]] = row.pop(k, row.get(renames[k]))
         return row

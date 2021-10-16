@@ -70,7 +70,7 @@ def test_sql_returned_rows():
                 "result"
             ), f"{test.get('statement')} == {len_s} ({test.get('result')})"
         except Exception as e:
-            print(test.get('statement'))
+            print(test.get("statement"))
             raise e
 
 
@@ -107,7 +107,7 @@ def test_sql_returned_cols():
             raw_path=True,
             persistence=STORAGE_CLASS.MEMORY,
         )
-        #print(s.collect())
+        # print(s.collect())
         cols = s.keys()
         assert sorted(cols) == sorted(test["keys"]), f"{test.get('statement')} - {cols}"
 
