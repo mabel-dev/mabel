@@ -199,6 +199,12 @@ class Tokenizer:
         return self.tokens[self.i]
 
     def _fix_special_chars(self, tokens):
+        """
+        The splitter will cut quoted tokens if they contain characters or strings
+        we generally want to split on - quotes can be used to say, this isn't an
+        instance of that character to split on, so we join these quoted strings 
+        back together.
+        """
 
         builder = ""
         looking_for_end_char = None
@@ -245,6 +251,13 @@ class Tokenizer:
                     "Unable to determine quoted token boundaries, you may be missing a closing quote."
                 )
 
+    def _case_correction(self, tokens):
+        for token in tokens:
+            if get_token_type(token) in (TOKENS.LITERAL, TOKENS.VARIABLE, TOKENS.SUBQUERY):
+                yield token
+            else:
+                yield token.upper()
+
     def clean_statement(self, string):
         """
         Remove carriage returns and all whitespace to single spaces
@@ -258,6 +271,7 @@ class Tokenizer:
         # characters like '*' in literals break the tokenizer, so we need to fix them
         tokens = list(self._fix_special_chars(tokens))
         tokens = [t.strip() for t in tokens if t.strip() != ""]
+        tokens = list(self._case_correction(tokens))
         return tokens
 
     def __str__(self):

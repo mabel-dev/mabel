@@ -80,6 +80,8 @@ def build(tokens):
         ts.step()  # move along
         if token["type"] in (TOKENS.FUNCTION, TOKENS.AGGREGATOR):
 
+            token["value"] = token["value"].upper()
+
             if not ts.token()["type"] == TOKENS.LEFTPARENTHESES:
                 raise InvalidEvaluator("Invalid expression, missing expected `(` ")
             ts.step()  # step over the (
