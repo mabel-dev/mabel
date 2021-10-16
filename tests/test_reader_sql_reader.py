@@ -43,17 +43,17 @@ def test_sql_returned_rows():
         {"statement":"SELECT * FROM tests.data.index.is  WHERE tweet_id = 1346604539923853313 OR user_verified = True", "result":453},
         {"statement":"SELECT * FROM tests.data.index.is  WHERE user_name = 'Dave Jamieson' AND user_verified = True", "result":1},
         {"statement":"SELECT COUNT(*) FROM tests.data.index.is  WHERE user_name = 'Dave Jamieson' AND user_verified = True", "result":1},
-        {"statement":"SELECT count(*) FROM tests.data.index.is GROUP BY user_verified", "result":1},
-        {"statement":"SELECT COUNT (*) FROM tests.data.index.is GROUP BY user_verified", "result":1},
-        {"statement":"SELECT Count(*) FROM tests.data.index.is GROUP BY user_verified", "result":1},
+        {"statement":"SELECT count(*) FROM tests.data.index.is GROUP BY user_verified", "result":2},
+        {"statement":"SELECT COUNT (*) FROM tests.data.index.is GROUP BY user_verified", "result":2},
+        {"statement":"SELECT Count(*) FROM tests.data.index.is GROUP BY user_verified", "result":2},
         {"statement":"SELECT COUNT(*), user_verified FROM tests.data.index.is GROUP BY user_verified", "result":2},
         {"statement":"SELECT * FROM tests.data.index.is WHERE hash_tags contains 'Georgia'", "result":50},
         {"statement":"SELECT COUNT(*) FROM (SELECT user_name FROM tests.data.index.is GROUP BY user_name)", "result":1},
         {"statement":"SELECT MAX(user_name) FROM tests.data.index.is", "result":1},
         {"statement":"SELECT AVG(followers) FROM tests.data.index.is", "result":1},
-        {"statement":"SELECT * FROM tests.data.index.is ORDER BY user_name", "result":10000}, # ORDER BY is 5000 record limited
-        {"statement":"SELECT * FROM tests.data.index.is ORDER BY user_name ASC", "result":10000},  # ORDER BY is 5000 record limited
-        {"statement":"SELECT * FROM tests.data.index.is ORDER BY user_name DESC", "result":10000},  # ORDER BY is 5000 record limited
+        {"statement":"SELECT * FROM tests.data.index.is ORDER BY user_name", "result":10000}, # ORDER BY is 10000 record limited
+        {"statement":"SELECT * FROM tests.data.index.is ORDER BY user_name ASC", "result":10000},  # ORDER BY is 10000 record limited
+        {"statement":"SELECT * FROM tests.data.index.is ORDER BY user_name DESC", "result":10000},  # ORDER BY is 10000 record limited
     ]
     # fmt:on
 
@@ -133,7 +133,7 @@ def test_group_by_count():
     )
     records = s.collect()
     record_count = len(records)
-    assert record_count == 1, record_count
+    assert record_count == 2, record_count
 
     s = SqlReader(
         sql_statement="SELECT COUNT(*), user_name FROM tests.data.index.not GROUP BY user_name",
