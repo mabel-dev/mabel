@@ -316,7 +316,6 @@ def SqlReader(sql_statement: str, **kwargs):
     renames = {}
     for t in sql.select_evaluator.tokens:  # type:ignore
         if t["as"]:
-            print(t)
             renames[get_function_name(t)] = t["as"]
 
     def _perform_renames(row):
@@ -324,8 +323,6 @@ def SqlReader(sql_statement: str, **kwargs):
             if k in renames:
                 row[renames[k]] = row.pop(k, row.get(renames[k]))
         return row
-    
-    print("RENAMES", renames)
 
     if renames:
         reader = DictSet(map(_perform_renames, reader))

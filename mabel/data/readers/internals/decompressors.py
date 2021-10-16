@@ -38,7 +38,6 @@ def unzip(stream):
             # get the extention of the file(s) in the ZIP and put them
             # through a secondary decompressor and parser
             ext = "." + file_name.split(".")[-1]
-            print("EXT", ext)
             if ext in KNOWN_EXTENSIONS:
                 decompressor, parser, file_type = KNOWN_EXTENSIONS[ext]
                 for line in decompressor(io.BytesIO(file)):
