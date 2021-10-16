@@ -169,7 +169,8 @@ class SqlParser:
                     labeler.next()
 
                 if labeler.next_token_type() == TOKENS.LEFTPARENTHESES:
-                    # we have a subquery
+                    # we have a subquery - we're going to collect it based on matching
+                    # parentheses
                     open_parentheses = 1
                     collector = []
                     labeler.next()
@@ -213,7 +214,8 @@ class SqlParser:
                     "DESC",
                 ):
                     self.order_descending = labeler.next_token_value().upper() == "DESC"
-                labeler.next()
+                if labeler.has_next():
+                    labeler.next()
             elif labeler.peek().upper() == "LIMIT":
                 labeler.next()
                 self.limit = int(self.collector(labeler))
@@ -268,13 +270,16 @@ def SqlReader(sql_statement: str, **kwargs):
         )
 
     # GROUP BY clause
-    if sql.group_by:
+    if sql.group_by or any([t["type"] == TOKENS.AGGREGATOR for t in sql.select_evaluator.tokens]):
         from ...internals.group_by import GroupBy
 
         # convert the clause into something we can pass to GroupBy
-        groups = [
-            group.strip() for group in sql.group_by.split(",") if group.strip() != ""
-        ]
+        if sql.group_by:
+            groups = [
+                group.strip() for group in sql.group_by.split(",") if group.strip() != ""
+            ]
+        else:
+            groups = ["$1$"] # an impossible column name
 
         aggregations = []
         renames = []
@@ -296,7 +301,7 @@ def SqlReader(sql_statement: str, **kwargs):
         reader = DictSet(grouped)
 
 
-    # if the query is COUNT(*) on a SELECT, just do it.
+    # if the query is a singular count COUNT(*) on a SELECT, just do it.
     if len(sql.select_evaluator.tokens) == 1 and sql.select_evaluator.tokens[0]["value"] == "COUNT":
         count = -1
         for count, r in enumerate(reader):
@@ -334,7 +339,7 @@ def SqlReader(sql_statement: str, **kwargs):
 
     # ORDER BY clause
     if sql.order_by:
-        take = 5000  # the Query UI is currently set to 2000
+        take = 10000  # the Query UI is currently set to 2000
         if sql.limit:
             take = int(sql.limit)
         reader = DictSet(

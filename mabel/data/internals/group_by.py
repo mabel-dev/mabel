@@ -56,7 +56,7 @@ class GroupBy:
                 self._group_keys[group_key] = [
                     (column, record.get(column)) for column in self._columns
                 ]
-                if len(self._group_keys) >= 249999:
+                if len(self._group_keys) >= 4999999:
                     raise TooManyGroups(
                         f"Groups are not selective enough and too many Groups have been found (stopped at {len(self._group_keys)})."
                     )
@@ -64,7 +64,7 @@ class GroupBy:
             for column in collect_columns:
                 if column == "*":
                     yield (group_key, column, "*")
-                if record.get(column):
+                if record.get(column):  # ignore nulls
                     yield (group_key, column, record[column])
 
     def aggregate(self, aggregations):
