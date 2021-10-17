@@ -306,16 +306,6 @@ def SqlReader(sql_statement: str, **kwargs):
         # there could be 250000 groups, so we're not going to load them into memory
         reader = DictSet(grouped)
 
-    # if the query is a singular count COUNT(*) on a SELECT, just do it.
-    # if len(sql.select_evaluator.tokens) == 1 and sql.select_evaluator.tokens[0]["value"] == "COUNT":
-    #    count = -1
-    #    for count, r in enumerate(reader):
-    #        pass
-    #    # we can probably safely assume a 1 record set will fit in memory
-    #    reader = DictSet(
-    #        iter([{"COUNT(*)": count + 1}]), storage_class=STORAGE_CLASS.MEMORY
-    #    )
-
     # HAVING clause
     # if we have a HAVING clause, filter the grouped data by it
     if sql.having:
