@@ -202,7 +202,7 @@ class Tokenizer:
         """
         The splitter will cut quoted tokens if they contain characters or strings
         we generally want to split on - quotes can be used to say, this isn't an
-        instance of that character to split on, so we join these quoted strings 
+        instance of that character to split on, so we join these quoted strings
         back together.
         """
 
@@ -253,7 +253,11 @@ class Tokenizer:
 
     def _case_correction(self, tokens):
         for token in tokens:
-            if get_token_type(token) in (TOKENS.LITERAL, TOKENS.VARIABLE, TOKENS.SUBQUERY):
+            if get_token_type(token) in (
+                TOKENS.LITERAL,
+                TOKENS.VARIABLE,
+                TOKENS.SUBQUERY,
+            ):
                 yield token
             else:
                 yield token.upper()
