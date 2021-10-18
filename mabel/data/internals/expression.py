@@ -189,6 +189,8 @@ class Expression(object):
         raise InvalidExpression(f"Unexpected token, got `{self.tokenizer.next()}`")
 
     def interpret_value(self, value):
+        if value is None:
+            return None
         if not isinstance(value, str):
             return value
         if fastnumbers.isint(value):
@@ -233,7 +235,10 @@ class Expression(object):
         right = self.evaluate_recursive(treeNode.right, variable_dict)
 
         if treeNode.token_type == TOKENS.OPERATOR:
-            return OPERATORS[treeNode.value](left, right)
+            try:
+                return OPERATORS[treeNode.value](left, right)
+            except (TypeError, ValueError):
+                return None
         if treeNode.token_type == TOKENS.AND:
             return left and right
         if treeNode.token_type == TOKENS.OR:

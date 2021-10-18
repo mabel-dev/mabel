@@ -25,6 +25,11 @@ def test_parser():
         {"SQL": "SELECT\n\tvalue\nFROM\nTABLE\nWHERE\n\tvalue == 1","select": "value","from": "TABLE","where": "value == 1",},
         {"SQL": "SELECT COUNT(*) FROM TABLE WHERE value == 1 GROUP BY value LIMIT 3","select": "COUNT(*)", "from": "TABLE","where": "value == 1","group_by": "value","limit": 3,},
         {"SQL": "SELECT \n    MAX(cve.CVE_data_meta.ID),\n    MIN(cve.CVE_data_meta.ID),\n    COUNT(cve.CVE_data_meta.ID) \nFROM mabel_data.RAW.NVD.CVE_LIST GROUP BY cve.CVE_data_meta.ASSIGNER","select": "MAX(cve.CVE_data_meta.ID), MIN(cve.CVE_data_meta.ID), COUNT(cve.CVE_data_meta.ID)","from": "mabel_data/RAW/NVD/CVE_LIST","group_by": "cve.CVE_data_meta.ASSIGNER"},
+        {"SQL": "SELECT MAX(AGE), MIN(AGE), HASH(AGE) FROM TABLE", "select": "MAX(AGE), MIN(AGE), HASH(AGE)", "from": "TABLE"},
+        {"SQL": "SELECT DISTINCT * FROM TABLE", "select": "*", "from": "TABLE"},
+        {"SQL": "SELECT * FROM TABLE HAVING HASH(AGE) > 100", "select": "*", "from": "TABLE"},
+        {"SQL": "SELECT * FROM TABLE ORDER BY apples", "select": "*", "from": "TABLE"},
+        {"SQL": "SELECT * FROM TABLE ORDER BY apples DESC", "select": "*", "from": "TABLE"},
     ]
     # fmt:on
 
@@ -47,7 +52,7 @@ def test_invalid_sql():
     ]
 
     for statement in STATEMENTS:
-        print(statement)
+        # print(statement)
         with pytest.raises(Exception):
             parsed = SqlParser(statement)
 

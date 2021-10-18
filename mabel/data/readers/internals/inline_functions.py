@@ -200,12 +200,13 @@ FUNCTIONS = {
     "INT": fastnumbers.fast_int,
     "FLOAT": fastnumbers.fast_float,
     # BOOLEAN
-    "BOOLEAN": lambda x: x.upper() != "FALSE",
+    "BOOLEAN": lambda x: str(x).upper() != "FALSE",
     "ISNONE": lambda x: x is None,
     # HASHING & ENCODING
-    "HASH": lambda x: hex(siphash("INCOMPREHENSIBLE", str(x))),  # needs 16 characters
+    "HASH": lambda x: format(siphash("INCOMPREHENSIBLE", str(x)), "X"),
     "MD5": get_md5,
     "RANDOM": get_random,  # return a random number 0-99
     # OTHER
     "BETWEEN": lambda val, low, high: low < val < high,
+    "SORT": lambda x: sorted(x),
 }

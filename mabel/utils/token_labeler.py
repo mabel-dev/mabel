@@ -9,7 +9,6 @@ from functools import lru_cache
 import re
 import operator
 import fastnumbers
-from enum import Enum
 from .text import like, not_like
 from .dates import parse_iso
 from ..data.readers.internals.inline_functions import FUNCTIONS
@@ -51,28 +50,28 @@ OPERATORS = {
 }
 
 
-class TOKENS(str, Enum):
-    INTEGER = "<Integer>"
-    FLOAT = "<Float>"
-    LITERAL = "<Literal>"
-    VARIABLE = "<Variable>"
-    BOOLEAN = "<Boolean>"
-    DATE = "<Date>"
-    NULL = "<Null>"
-    LEFTPARENTHESES = "<LeftParentheses>"
-    RIGHTPARENTHESES = "<RightParentheses>"
-    COMMA = "<Comma>"
-    FUNCTION = "<Function>"
-    AGGREGATOR = "<Aggregator>"
-    AS = "<As>"
-    UNKNOWN = "<?>"
-    EVERYTHING = "<*>"
-    OPERATOR = "<Operator>"
-    AND = "<And>"
-    OR = "<Or>"
-    NOT = "<Not>"
-    SUBQUERY = "<SubQuery>"
-    EMPTY = "<Empty>"
+class TOKENS(int):
+    UNKNOWN = -1
+    INTEGER = 0
+    FLOAT = 1
+    LITERAL = 2
+    VARIABLE = 3
+    BOOLEAN = 4
+    DATE = 5
+    NULL = 6
+    LEFTPARENTHESES = 7
+    RIGHTPARENTHESES = 8
+    COMMA = 9
+    FUNCTION = 10
+    AGGREGATOR = 11
+    AS = 12
+    EVERYTHING = 13
+    OPERATOR = 14
+    AND = 15
+    OR = 16
+    NOT = 17
+    SUBQUERY = 18
+    EMPTY = 19
 
 
 def get_token_type(token):

@@ -13,7 +13,6 @@ Evaluator("LEFT(NAME, 1), AGE").evaluate(dic)
 will perform the function LEFT on the NAME field from the dict and return AGE
 from the dict
 """
-from functools import lru_cache
 import re
 import fastnumbers
 from .inline_functions import FUNCTIONS
@@ -49,7 +48,7 @@ def get_function_name(token):
 def get_fields(tokens):
     def inner(tokens):
         for token in tokens:
-            if token["type"] in (TOKENS.EVERYTHING):
+            if token["type"] in (TOKENS.EVERYTHING,):
                 yield "*"
             elif token["type"] in (TOKENS.FUNCTION, TOKENS.AGGREGATOR):
                 if token["as"]:
@@ -124,14 +123,15 @@ def evaluate_field(dict, token):
     """
     Evaluate a single field
     """
-    if token["type"] == TOKENS.EVERYTHING:
+    token_type = token["type"]
+    if token_type == TOKENS.EVERYTHING:
         return (TOKENS.EVERYTHING, TOKENS.EVERYTHING)
-    if token["type"] == TOKENS.VARIABLE:
+    if token_type == TOKENS.VARIABLE:
         return (
             token["value"],
             dict.get(token["value"]),
         )
-    if token["type"] == TOKENS.FUNCTION:
+    if token_type == TOKENS.FUNCTION:
         if not token["as"]:
             label = get_fields([token]).pop()
             token["as"] = label
@@ -143,32 +143,32 @@ def evaluate_field(dict, token):
                 *[evaluate_field(dict, t)[1] for t in token["parameters"]]
             ),
         )
-    if token["type"] == TOKENS.FLOAT:
+    if token_type == TOKENS.FLOAT:
         return (
             token["value"],
             fastnumbers.fast_float(token["value"]),
         )
-    if token["type"] == TOKENS.INTEGER:
+    if token_type == TOKENS.INTEGER:
         return (
             token["value"],
             fastnumbers.fast_int(token["value"]),
         )
-    if token["type"] == TOKENS.LITERAL:
+    if token_type == TOKENS.LITERAL:
         return (
             token["value"],
             str(token["value"])[1:-1],
         )
-    if token["type"] == TOKENS.DATE:
+    if token_type == TOKENS.DATE:
         return (
             token["value"],
             parse_iso(token["value"][1:-1]),
         )
-    if token["type"] == TOKENS.BOOLEAN:
+    if token_type == TOKENS.BOOLEAN:
         return (
             token["value"],
             str(token["value"]).upper() == "TRUE",
         )
-    if token["type"] == TOKENS.NULL:
+    if token_type == TOKENS.NULL:
         return (
             token["value"],
             None,
@@ -219,14 +219,14 @@ class Evaluator:
         self.tokens = build(tokens)
         self._iter = None
 
-    def __call__(self, dict):
-        build_phase_1 = []
+    def __call__(self, dic):
+        builder = {}
+        if any(t["type"] == TOKENS.EVERYTHING for t in self.tokens): 
+            builder = dic.copy()
         for field in self.tokens:
-            build_phase_1.append(evaluate_field(dict, field))
-        build_phase_2 = {k: v for k, v in build_phase_1 if k != TOKENS.EVERYTHING}
-        if (TOKENS.EVERYTHING, TOKENS.EVERYTHING) in build_phase_1:
-            build_phase_2.update(dict)
-        return build_phase_2
+            (k, v) = evaluate_field(dic, field)
+            builder[k] = v
+        return builder
 
     def __iter__(self):
         return self

@@ -10,6 +10,8 @@ AGGREGATORS = {
     "AVG": lambda x, y: 1,
 }
 
+HASH_SEED = b"Anakin Skywalker"
+
 
 class TooManyGroups(Exception):
     pass
@@ -43,16 +45,16 @@ class GroupBy:
         in the column.
 
         This is akin to the MAP step in a MapReduce algo, we're creating a set of values
-        which standardize the format of the data tp be processed and could allow the
+        which standardize the format of the data to be processed and could allow the
         data to be processed in parallel.
         """
 
         for record in self._dictset:
-            group_key = "//".join(
-                [f"{record.get(column, '')}" for column in self._columns]
+            group_key = siphash(
+                HASH_SEED,
+                "//".join([f"{record.get(column, '')}" for column in self._columns]),
             )
-            group_key = siphash("*" * 16, group_key)
-            if group_key not in self._group_keys:
+            if group_key not in self._group_keys.keys():
                 self._group_keys[group_key] = [
                     (column, record.get(column)) for column in self._columns
                 ]
@@ -64,7 +66,7 @@ class GroupBy:
             for column in collect_columns:
                 if column == "*":
                     yield (group_key, column, "*")
-                if record.get(column):  # ignore nulls
+                elif record.get(column):  # ignore nulls
                     yield (group_key, column, record[column])
 
     def aggregate(self, aggregations):

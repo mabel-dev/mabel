@@ -1,21 +1,13 @@
+import orjson
 from ...internals import xmler
-import simdjson
 
 
 def json(ds):
     """parse each line in the file to a dictionary"""
-
-    try:
-        json_parser = simdjson.Parser()
-        return json_parser.parse(ds)
-    except Exception as e:
-        print(ds, e)
-        raise e
+    return orjson.loads(ds)
 
 
-def pass_thru(ds):
-    """just pass it through"""
-    return ds
+pass_thru = lambda x: x
 
 
 def pass_thru_block(ds):
