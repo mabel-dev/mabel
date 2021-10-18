@@ -57,7 +57,9 @@ def _inner_process(func, source_queue, reply_queue):  # pragma: no cover
             time.sleep(1)
         # the empty list here is where the list of indicies should go
         reply_queue.put(
-            lz4.frame.compress(b"\n".join([orjson.dumps(d) for d in [*func(source, [])]])),
+            lz4.frame.compress(
+                b"\n".join([orjson.dumps(d) for d in [*func(source, [])]])
+            ),
             timeout=30,
         )
         source = None
