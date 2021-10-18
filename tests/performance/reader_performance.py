@@ -33,11 +33,11 @@ def do_read():
     print(i + 1)
 
 
-#cProfile.run("do_read()", "profile.txt")
+cProfile.run("do_read()", "profile.txt")
 
-#import pstats
+import pstats
 
-#p = pstats.Stats("profile.txt")
-#p.sort_stats("tottime").print_stats(20)
+p = pstats.Stats("profile.txt")
+p.sort_stats("tottime").print_stats(20)
 
-do_read()
+#do_read()

@@ -40,7 +40,8 @@ def _create_bucket():
 def test_using_batch_writer():
 
     errored = False
-    try:
+    #try:
+    if True:
         _create_bucket()
         w = BatchWriter(
             inner_writer=MinIoWriter,
@@ -54,9 +55,9 @@ def test_using_batch_writer():
         for member in VAMPIRIC_COUNCIL:
             w.append(member)
         w.finalize()
-    except Exception as a:
-        print(a)
-        errored = True
+    #except Exception as a:
+    #    print(a)
+    #    errored = True
 
     assert not errored
 
@@ -90,7 +91,7 @@ def test_using_operator():
         pass
 
     assert (i + 1) == len(VAMPIRIC_COUNCIL), i
-    assert item.as_dict() == VAMPIRIC_COUNCIL[i]
+    assert item == VAMPIRIC_COUNCIL[i]
 
 
 if __name__ == "__main__":  # pragma: no cover
