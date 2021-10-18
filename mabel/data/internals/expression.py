@@ -237,7 +237,7 @@ class Expression(object):
         if treeNode.token_type == TOKENS.OPERATOR:
             try:
                 return OPERATORS[treeNode.value](left, right)
-            except:
+            except (TypeError, ValueError):
                 return None
         if treeNode.token_type == TOKENS.AND:
             return left and right
