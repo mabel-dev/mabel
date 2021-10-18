@@ -189,6 +189,8 @@ class Expression(object):
         raise InvalidExpression(f"Unexpected token, got `{self.tokenizer.next()}`")
 
     def interpret_value(self, value):
+        if value is None:
+            return None
         if not isinstance(value, str):
             return value
         if fastnumbers.isint(value):

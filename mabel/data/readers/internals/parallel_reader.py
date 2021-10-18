@@ -62,8 +62,7 @@ KNOWN_EXTENSIONS = {
 }
 
 
-def pass_thru(x):
-    return x
+pass_thru = lambda x: x
 
 
 def no_filter(x):
@@ -212,7 +211,6 @@ class ParallelReader:
                 yield record
 
     def __call__(self, blob_name, index_files):
-
         try:
             if self.override_format:
                 ext = self.override_format

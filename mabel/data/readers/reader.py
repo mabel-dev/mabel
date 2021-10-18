@@ -3,7 +3,6 @@ import sys
 import datetime
 
 from typing import Optional, Dict, Union
-from multiprocessing import cpu_count
 
 from .internals.parallel_reader import (
     ParallelReader,
@@ -273,8 +272,7 @@ class _LowLevelReader(object):
             [
                 self.multiprocess,  # the user must have asked for it
                 not self.cursor,  # we must not have a cursor
-                cpu_count() > 1,  # we must have more than one CPU
-                len(readable_blobs) > (cpu_count() * 2),  # we must enough files to read
+                len(readable_blobs) > 4,  # we must enough files to read
             ]
         )
 

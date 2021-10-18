@@ -5,11 +5,10 @@ def zstd(stream):
     """
     Read zstandard compressed files
     """
-    # zstandard should always be present
     import zstandard  # type:ignore
 
     with zstandard.open(stream, "rb") as file:  # type:ignore
-        yield from file.read().splitlines()
+        yield from file.read().split(b"\n")[:-1]
 
 
 def lzma(stream):

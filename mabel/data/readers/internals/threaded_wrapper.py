@@ -56,9 +56,7 @@ def processed_reader(func, items_to_read, support_files):  # pragma: no cover
     process_start_time = time.time()
     item_index = slots
 
-    while (
-        any({p.is_alive() for p in process_pool})
-    ):
+    while any({p.is_alive() for p in process_pool}):
         try:
             records = reply_queue.get(timeout=1)
             yield from records

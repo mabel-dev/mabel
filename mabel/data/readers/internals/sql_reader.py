@@ -158,9 +158,15 @@ class SqlParser:
                 labeler.next()
             elif labeler.peek().upper() == "SELECT":
                 labeler.next()
-                if labeler.next_token_value().upper() == "DISTINCT":
-                    self.distinct = True
+                while labeler.has_next() and labeler.next_token_type() == TOKENS.EMPTY:
                     labeler.next()
+                if labeler.next_token_value().upper() == "DISTINCT":
+                    labeler.next()
+                    self.distinct = True
+                    while (
+                        labeler.has_next() and labeler.next_token_type() == TOKENS.EMPTY
+                    ):
+                        labeler.next()
                 self.select_expression = self.collector(labeler)
             elif labeler.peek().upper() == "FROM":
 
@@ -260,6 +266,12 @@ def SqlReader(sql_statement: str, **kwargs):
     # FROM clause
     # WHERE clause
     if isinstance(sql.dataset, list):
+        # it's a list if it's been parsed into a SQL statement,
+        # this is how subqueries are interpretted - the parser
+        # doesn't extract a dataset name - it collects parts of
+        # a SQL statement which it can then pass to a SqlReader
+        # to get back a dataset - which we then use as the
+        # dataset for the outer query.
         reader = SqlReader("".join(sql.dataset), **kwargs)
     else:
         reader = Reader(
@@ -283,7 +295,7 @@ def SqlReader(sql_statement: str, **kwargs):
                 if group.strip() != ""
             ]
         else:
-            groups = ["$1$"]  # an impossible column name
+            groups = ["*"]  # we're not really grouping
 
         aggregations = []
         renames = []
@@ -312,7 +324,6 @@ def SqlReader(sql_statement: str, **kwargs):
         reader = reader.filter(sql.having)
 
     # SELECT clause
-
     renames = {}
     for t in sql.select_evaluator.tokens:  # type:ignore
         if t["as"]:
