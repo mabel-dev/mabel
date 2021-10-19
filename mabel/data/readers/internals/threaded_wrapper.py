@@ -80,11 +80,13 @@ def processed_reader(func, items_to_read, support_files):  # pragma: no cover
         try:
             records = b''
             while 1:
-                records = reply_queue.get(timeout=1)
+                records = reply_queue.get_nowait()
                 if records == b'END OF RECORDS':
                     break
                 yield from records
             if item_index < len(items_to_read):
+                # we use this mechanism to throttle reading blobs so we
+                # don't exhaust memory
                 send_queue.put_nowait(items_to_read[item_index])
                 item_index += 1
             else:
