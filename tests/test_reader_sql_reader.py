@@ -54,6 +54,9 @@ def test_sql_returned_rows():
         {"statement":"SELECT * FROM tests.data.index.is ORDER BY user_name", "result":10000}, # ORDER BY is 10000 record limited
         {"statement":"SELECT * FROM tests.data.index.is ORDER BY user_name ASC", "result":10000},  # ORDER BY is 10000 record limited
         {"statement":"SELECT * FROM tests.data.index.is ORDER BY user_name DESC", "result":10000},  # ORDER BY is 10000 record limited
+        {"statement":"SELECT COUNT(user_id) FROM tests.data.index.is", "result":1},
+        {"statement":"SELECT * FROM tests.data.index.is WHERE user_id > 1000000", "result":65475},
+        {"statement":"SELECT * FROM tests.data.index.is WHERE followers > 100.0", "result":49601},
     ]
     # fmt:on
 

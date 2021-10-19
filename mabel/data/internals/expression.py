@@ -189,19 +189,14 @@ class Expression(object):
         raise InvalidExpression(f"Unexpected token, got `{self.tokenizer.next()}`")
 
     def interpret_value(self, value):
-        if value is None:
-            return None
         if not isinstance(value, str):
             return value
-        if fastnumbers.isint(value):
-            return fastnumbers.fast_int(value)
-        if fastnumbers.isfloat(value):
-            return fastnumbers.fast_float(value)
-        if isinstance(value, str) and parse_iso(value):
-            return parse_iso(value)
         if value.upper() in ("TRUE", "FALSE"):
-            return value.lower() == "true"
-        return value
+            return value.upper() == "TRUE"
+        num = fastnumbers.fast_int(value, on_fail=lambda x: "NaN")
+        if isinstance(num, (int, float)):
+            return num
+        return parse_iso(value) or value
 
     def evaluate(self, variable_dict):
         return self.evaluate_recursive(self.root, variable_dict)
