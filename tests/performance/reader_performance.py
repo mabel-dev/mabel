@@ -38,6 +38,6 @@ cProfile.run("do_read()", "profile.txt")
 import pstats
 
 p = pstats.Stats("profile.txt")
-p.sort_stats("tottime").print_stats(50)
+p.sort_stats("tottime").print_stats(20)
 
 #do_read()
