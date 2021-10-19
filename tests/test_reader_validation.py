@@ -11,6 +11,7 @@ sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.data import Reader
 from rich import traceback
 from mabel.errors import InvalidReaderConfigError
+from mabel.data.readers.reader import AccessDenied
 
 traceback.install()
 
@@ -34,10 +35,10 @@ def test_reader_all_good():
 
 def test_dataset_prefix_validator():
 
-    with pytest.raises(ValueError):
+    with pytest.raises(AccessDenied):
         reader = Reader(dataset="dataset", valid_dataset_prefixes=["drive/"])
 
-    with pytest.raises(ValueError):
+    with pytest.raises(AccessDenied):
         reader = Reader(
             dataset="dataset", valid_dataset_prefixes=["list", "of", "items"]
         )

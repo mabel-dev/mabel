@@ -48,7 +48,7 @@ class GroupBy:
         which standardize the format of the data to be processed and could allow the
         data to be processed in parallel.
         """
-        if collect_columns == ("*",):
+        if collect_columns == ("*",) and self._columns == ("*",):
             # if we're doing COUNT(*), short-cut the processing
             self._group_keys["*"] = [("*", "*")]
             for record in self._dictset:

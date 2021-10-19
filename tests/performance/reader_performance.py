@@ -22,7 +22,7 @@ def do_read():
     d = SqlReader(
         SQL,
         inner_reader=DiskReader,
-        #multiprocess=True,
+        multiprocess=True,
         raw_path=True,
     )
 
