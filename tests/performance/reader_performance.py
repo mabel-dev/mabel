@@ -18,11 +18,11 @@ def do_read():
     SQL = "SELECT * FROM tests.data.index.is  WHERE `user_name` = 'Verizon Support'"
     SQL = "SELECT COUNT(*) FROM tests.data.index.is GROUP BY user_verified"
     SQL = "SELECT user_name FROM tests.data.index.is LIMIT 2"
-    SQL = "SELECT AVG(followers) FROM tests/data/huge"
+    SQL = "SELECT COUNT(*) FROM tests/data/huge"
     d = SqlReader(
         SQL,
         inner_reader=DiskReader,
-        multiprocess=True,
+        #multiprocess=True,
         raw_path=True,
     )
 
@@ -38,6 +38,6 @@ cProfile.run("do_read()", "profile.txt")
 import pstats
 
 p = pstats.Stats("profile.txt")
-p.sort_stats("tottime").print_stats(20)
+p.sort_stats("tottime").print_stats(50)
 
-# do_read()
+#do_read()

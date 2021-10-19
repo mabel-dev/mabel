@@ -222,7 +222,7 @@ class Evaluator:
     def __call__(self, dic):
         builder = {}
         if any(t["type"] == TOKENS.EVERYTHING for t in self.tokens):
-            builder = dic.copy()
+            builder = dic.as_dict()
         for field in self.tokens:
             (k, v) = evaluate_field(dic, field)
             builder[k] = v

@@ -29,7 +29,7 @@ def _inner_process(func, source_queue, reply_queue):  # pragma: no cover
             try:
                 source = source_queue.get(timeout=1)
             except Empty:  # pragma: no cover
-                source = TERMINATE_SIGNAL
+                source = None
 
 
 def processed_reader(func, items_to_read, support_files):  # pragma: no cover

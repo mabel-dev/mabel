@@ -48,6 +48,11 @@ class GroupBy:
         which standardize the format of the data to be processed and could allow the
         data to be processed in parallel.
         """
+        if collect_columns == ["*"]:
+            self._group_keys["*"] = [("*", "*")]
+            for record in self._dictset:
+                yield ("*", "*", "*")
+            return
 
         for record in self._dictset:
             group_key = siphash(
@@ -107,7 +112,7 @@ class GroupBy:
 
                 # the aggregation works by performing a simple calculation on
                 # the last known value and the value currently seen. This means
-                # we don't need another copy of the full data in memory.
+                # we don't need a full copy of the full in memory ever.
                 if existing:
                     if value or func == "COUNT":
                         value = AGGREGATORS[func](existing, value)
