@@ -1,4 +1,4 @@
-from mabel.data.readers.internals.inline_evaluator import Evaluator
+
 import sys
 import datetime
 
@@ -12,6 +12,7 @@ from .internals.parallel_reader import (
 )
 from .internals.threaded_wrapper import processed_reader
 from .internals.cursor import Cursor
+from .internals.inline_evaluator import Evaluator
 
 from ..internals.expression import Expression
 from ..internals.dnf_filters import DnfFilters
@@ -44,6 +45,8 @@ RULES = [
 
 logger = get_logger()
 
+class AccessDenied(Exception):
+    pass
 
 @validate(RULES)
 def Reader(
@@ -135,6 +138,9 @@ def Reader(
     Raises:
 
     """
+    # We can provide an optional whitelist of prefixes that we allow access to
+    # - this doesn't replace a proper ACL and permissions model, but can provide
+    # some control if other options are limited or unavailable.
     if valid_dataset_prefixes:
         if not any(
             [
@@ -143,7 +149,7 @@ def Reader(
                 if str(dataset).startswith(prefix)
             ]
         ):
-            raise ValueError("DataSet is not accessible.")
+            raise AccessDenied("Access has been denied to this Dataset.")
 
     # lazy loading of dependency - in this case the Google GCS Reader
     # eager loading will cause failures when we try to load the google-cloud
