@@ -40,7 +40,7 @@ def _create_bucket():
 def test_using_batch_writer():
 
     errored = False
-    #try:
+    # try:
     if True:
         _create_bucket()
         w = BatchWriter(
@@ -55,7 +55,7 @@ def test_using_batch_writer():
         for member in VAMPIRIC_COUNCIL:
             w.append(member)
         w.finalize()
-    #except Exception as a:
+    # except Exception as a:
     #    print(a)
     #    errored = True
 
