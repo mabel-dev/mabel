@@ -193,7 +193,7 @@ class Expression(object):
             return value
         if value.upper() in ("TRUE", "FALSE"):
             return value.upper() == "TRUE"
-        num = fastnumbers.fast_int(value, on_fail=lambda x: "NaN")
+        num = fastnumbers.fast_int(value)
         if isinstance(num, (int, float)):
             return num
         return parse_iso(value) or value

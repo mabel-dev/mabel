@@ -283,7 +283,7 @@ def SqlReader(sql_statement: str, **kwargs):
 
     # GROUP BY clause
     if sql.group_by or any(
-        [t["type"] == TOKENS.AGGREGATOR for t in sql.select_evaluator.tokens]
+        [t["type"] == TOKENS.AGGREGATOR for t in sql.select_evaluator.tokens]  # type:ignore
     ):
         from ...internals.group_by import GroupBy
 
@@ -324,7 +324,7 @@ def SqlReader(sql_statement: str, **kwargs):
         reader = reader.filter(sql.having)
 
     # SELECT clause
-    renames = {}
+    renames = {}  # type:ignore
     for t in sql.select_evaluator.tokens:  # type:ignore
         if t["as"]:
             renames[get_function_name(t)] = t["as"]

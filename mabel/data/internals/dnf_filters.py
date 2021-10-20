@@ -5,7 +5,7 @@ import operator
 from typing import Optional, Iterable, List, Tuple, Union
 from ...errors import InvalidSyntaxError
 from ...logging import get_logger
-from ...utils.text import like
+from ...utils.text import like, matches
 
 
 def _in(x, y):
@@ -39,6 +39,7 @@ OPERATORS = {
     "<=": operator.le,
     ">=": operator.ge,
     "like": like,
+    "matches": matches,
     "in": _in,
     "!in": _nin,
     "not in": _nin,

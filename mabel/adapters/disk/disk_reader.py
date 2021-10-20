@@ -21,19 +21,6 @@ class DiskReader(BaseInnerReader):
             io_stream = io.BytesIO(f.read())
             return io_stream
 
-    def get_blob_chunk(self, blob_name: str, start: int, buffer_size: int) -> bytes:
-        """
-        It's written for compatibility, but we don't use this.
-        """
-        import mmap
-
-        with open(blob_name, mode="rb") as file_obj:
-            with mmap.mmap(
-                file_obj.fileno(), length=0, access=mmap.ACCESS_READ
-            ) as mmap_obj:
-                mmap_obj.seek(start, 0)
-                return mmap_obj.read(buffer_size)
-
     def get_blob_lines(self, blob_name: str) -> Iterable:
         """
         For DISK access, we override the get_blob_lines function for speed.

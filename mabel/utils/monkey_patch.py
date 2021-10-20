@@ -8,7 +8,7 @@ from types import MappingProxyType
 if hasattr(ctypes.pythonapi, "Py_InitModule4_64"):
     _Py_ssize_t = ctypes.c_int64
 else:
-    _Py_ssize_t = ctypes.c_int
+    _Py_ssize_t = ctypes.c_int  # type:ignore
 
 # regular python
 class _PyObject(ctypes.Structure):
@@ -23,7 +23,7 @@ _PyObject._fields_ = [
 # python with trace
 if object.__basicsize__ != ctypes.sizeof(_PyObject):
 
-    class _PyObject(ctypes.Structure):
+    class _PyObject(ctypes.Structure):  # type:ignore
         pass
 
     _PyObject._fields_ = [
