@@ -147,7 +147,7 @@ class GroupBy:
                     )
 
             results = {
-                f"{func}({col})": results[f"{func}({col})"]
+                f"{func}({col})": results.get(f"{func}({col})")
                 for func, col in requested_aggs
             }
 
