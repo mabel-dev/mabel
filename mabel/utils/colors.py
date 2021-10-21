@@ -35,6 +35,6 @@ def colorize(record, can_colorize=True):
         for k, v in COLORS.items():
             record = record.replace(k, v)
     else:
-        for k, v in COLORS.items():
+        for k, v in COLORS.items():  # pragma: no cover
             record = record.replace(k, "")
     return record

@@ -139,15 +139,17 @@ def concat(*items):
         sep = ", "
     return sep.join(map(str, items))
 
+
 def to_string(val):
     if isinstance(val, (csimdjson.Array, list, tuple, set)):
         return concat(val)
     if isinstance(val, csimdjson.Object):
-        return '\\' + val.mini.decode("UTF8") + '\\'
+        return "\\" + val.mini.decode("UTF8") + "\\"
     if isinstance(val, dict):
-        return '\\' + orjson.dumps(val).decode("UTF8") + '\\'
+        return "\\" + orjson.dumps(val).decode("UTF8") + "\\"
     else:
-        return str(val) 
+        return str(val)
+
 
 def add_days(start_date, day_count):
     if isinstance(start_date, str):

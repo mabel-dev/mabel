@@ -95,7 +95,4 @@ class StorageClassDisk(BaseStorageClass):
         return self.length
 
     def __del__(self):
-        try:
-            os.remove(self.file)
-        except:  # nosec
-            pass
+        os.remove(self.file)

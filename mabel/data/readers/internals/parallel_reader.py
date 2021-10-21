@@ -211,7 +211,7 @@ class ParallelReader:
                 yield record
 
     def __call__(self, blob_name, index_files):
-        #print(blob_name, "in")
+        # print(blob_name, "in")
         try:
             if self.override_format:
                 ext = self.override_format
@@ -252,7 +252,7 @@ class ParallelReader:
             record_iterator = self.reducer(record_iterator)
             # Yield
             yield from record_iterator
-            #print(blob_name, "out")
+            # print(blob_name, "out")
         except Exception as e:
             import traceback
 

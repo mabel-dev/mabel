@@ -1,5 +1,5 @@
+# no-maintain-checks
 """
-
 This is a basic SQL parser and interpreter - we process the parts of the SQL statement
 in the following order:
 
@@ -283,7 +283,9 @@ def SqlReader(sql_statement: str, **kwargs):
 
     # GROUP BY clause
     if sql.group_by or any(
-        [t["type"] == TOKENS.AGGREGATOR for t in sql.select_evaluator.tokens]  # type:ignore
+        [
+            t["type"] == TOKENS.AGGREGATOR for t in sql.select_evaluator.tokens
+        ]  # type:ignore
     ):
         from ...internals.group_by import GroupBy
 

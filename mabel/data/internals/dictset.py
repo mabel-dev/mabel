@@ -192,13 +192,13 @@ class DictSet(object):
         response = {}
         for key in top.keys():
             key_type = {type(val).__name__ for val in top.collect(key) if val != None}
-            if len(key_type) == 0:
+            if len(key_type) == 0:  # pragma: no cover
                 response[key] = "empty"
             if len(key_type) == 1:
                 response[key] = key_type.pop()
             elif sorted(key_type) == ["float", "int"]:
                 response[key] = "numeric"
-            else:
+            else:  # pragma: no cover
                 response[key] = "mixed"
         return response
 

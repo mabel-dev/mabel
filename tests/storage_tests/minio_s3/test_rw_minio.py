@@ -91,7 +91,7 @@ def test_using_operator():
         pass
 
     assert (i + 1) == len(VAMPIRIC_COUNCIL), i
-    assert item == VAMPIRIC_COUNCIL[i]
+    assert item.as_dict() == VAMPIRIC_COUNCIL[i]
 
 
 if __name__ == "__main__":  # pragma: no cover

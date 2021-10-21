@@ -41,18 +41,6 @@ class GoogleCloudStorageReader(BaseInnerReader):
         io_stream = io.BytesIO(stream)
         return io_stream
 
-    def get_blob_chunk(self, blob_name: str, start: int, buffer_size: int) -> bytes:
-        bucket, object_path, name, extension = paths.get_parts(blob_name)
-        blob = get_blob(
-            project=self.project,
-            bucket=bucket,
-            blob_name=object_path + name + extension,
-        )
-        stream = blob.download_as_bytes(
-            start=start, end=min(blob.size, start + buffer_size - 1)
-        )
-        return stream
-
     def get_blobs_at_path(self, path):
         bucket, object_path, name, extension = paths.get_parts(path)
 

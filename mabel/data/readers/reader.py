@@ -1,4 +1,3 @@
-
 import sys
 import datetime
 
@@ -45,8 +44,10 @@ RULES = [
 
 logger = get_logger()
 
+
 class AccessDenied(Exception):
     pass
+
 
 @validate(RULES)
 def Reader(

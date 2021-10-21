@@ -20,21 +20,3 @@ class DiskReader(BaseInnerReader):
         with open(blob_name, "rb") as f:
             io_stream = io.BytesIO(f.read())
             return io_stream
-
-    def get_blob_lines(self, blob_name: str) -> Iterable:
-        """
-        For DISK access, we override the get_blob_lines function for speed.
-
-        This is consistently fast at reading large files without exhausting
-        memory resources.
-        """
-        with open(blob_name, "rb") as file:
-            carry_forward = b""
-            chunk = file.read(BUFFER_SIZE * 2)
-            while len(chunk) > 0:
-                lines = (carry_forward + chunk).split(b"\n")
-                carry_forward = lines.pop()
-                yield from lines
-                chunk = file.read(BUFFER_SIZE * 2)
-            if carry_forward:
-                yield carry_forward

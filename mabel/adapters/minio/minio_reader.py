@@ -65,17 +65,3 @@ class MinIoReader(BaseInnerReader):
             return self.minio.stat_object(bucket_name, blob_name).size
         except:
             return 0
-
-    def get_blob_chunk(self, blob_name: str, start: int, buffer_size: int) -> bytes:
-        try:
-            bucket, object_path, name, extension = paths.get_parts(blob_name)
-            blob_path = object_path + name + extension
-            size = self.get_object_size(bucket, blob_path) - start
-            if size == 0:
-                return bytes()
-            stream = self.minio.get_object(
-                bucket, blob_path, offset=start, length=min(buffer_size, size)
-            )
-            return stream.read()
-        finally:
-            pass  # stream.close()
