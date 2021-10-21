@@ -125,6 +125,7 @@ def test_summary():
     assert ds.sum("key") == 10
     assert ds.mean("key") == 2.5
     assert ds.standard_deviation("key") == 1.2909944487358056
+    assert ds.variance("key") == 1.6666666666666667
 
 
 if __name__ == "__main__":

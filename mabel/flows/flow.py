@@ -116,7 +116,7 @@ class Flow:
         self.edges += assimilatee.edges
         self.edges = list(set(self.edges))
 
-    def attach_writers(self, writers: List[dict]):
+    def attach_writers(self, writers: List[dict]):  # pragma: no cover
 
         for writer in writers:
             name = writer.get("name")

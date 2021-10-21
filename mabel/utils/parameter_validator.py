@@ -34,7 +34,7 @@ def get_levenshtein_distance(word1, word2):
     return matrix[len(word1)][len(word2)]
 
 
-class validate:
+class validate:  # pragma: no cover
     def __init__(self, rules):
         self.rules = rules
 
