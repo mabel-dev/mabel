@@ -4,6 +4,7 @@ rich
 pytest
 coverage
 mypy
+radon
 
 # used for optional functionality
 google_cloud_storage>=1.35
