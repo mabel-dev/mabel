@@ -127,9 +127,12 @@ def evaluate_field(dict, token):
     if token_type == TOKENS.EVERYTHING:
         return (TOKENS.EVERYTHING, TOKENS.EVERYTHING)
     if token_type == TOKENS.VARIABLE:
+        variable = token["value"]
+        if variable[0] == variable[-1] == "`":
+            variable = variable[1:-1]
         return (
             token["value"],
-            dict.get(token["value"]),
+            dict.get(variable),
         )
     if token_type == TOKENS.FUNCTION:
         if not token["as"]:
