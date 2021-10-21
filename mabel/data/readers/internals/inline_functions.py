@@ -4,7 +4,7 @@ These are a set of functions that can be applied to data as it passes through.
 These are the function definitions, the processor which uses these is in the
 'inline_evaluator' module.
 """
-
+import orjson
 import datetime
 import csimdjson
 import fastnumbers
@@ -139,6 +139,15 @@ def concat(*items):
         sep = ", "
     return sep.join(map(str, items))
 
+def to_string(val):
+    if isinstance(val, (csimdjson.Array, list, tuple, set)):
+        return concat(val)
+    if isinstance(val, csimdjson.Object):
+        return '\\' + val.mini.decode("UTF8") + '\\'
+    if isinstance(val, dict):
+        return '\\' + orjson.dumps(val).decode("UTF8") + '\\'
+    else:
+        return str(val) 
 
 def add_days(start_date, day_count):
     if isinstance(start_date, str):
@@ -189,7 +198,7 @@ FUNCTIONS = {
     "LOWER": lambda x: str(x).lower(),
     "TRIM": lambda x: str(x).strip(),
     "LEN": len,
-    "STRING": str,
+    "STRING": to_string,
     "LEFT": lambda x, y: str(x)[: int(y)],
     "RIGHT": lambda x, y: str(x)[-int(y) :],
     "MID": lambda x, y, z: str(x)[int(y) :][: int(z)],

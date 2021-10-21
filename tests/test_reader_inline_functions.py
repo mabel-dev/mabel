@@ -75,6 +75,8 @@ def test_inline_other():
 
     assert inline_functions.get_md5("a") == "0cc175b9c0f1b6a831c399e269772661"
 
+    assert inline_functions.to_string({"apples":2, "pears":4}) == '\\{"apples":2,"pears":4}\\'
+
     
 if __name__ == "__main__":  # pragma: no cover
     test_inline_date_functions()
