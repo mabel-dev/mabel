@@ -82,6 +82,21 @@ def test_keys():
         ], storage_class
 
 
+def test_types():
+    for storage_class in STORAGE_CLASSES:
+        if storage_class != STORAGE_CLASS.NO_PERSISTANCE:
+            ds = get_ds(persistence=storage_class)
+            types = ds.types()
+            assert types["userid"] == 'int', types
+            assert types["username"] == 'str'
+            assert types["user_verified"] == 'bool'
+            assert types["followers"] == 'int'
+            assert types["tweet"] == 'str'
+            assert types["location"] == 'str'
+            assert types["sentiment"] == 'numeric'
+            assert types["timestamp"] == 'str'
+
+
 def test_distinct():
     for storage_class in STORAGE_CLASSES:
         if storage_class != STORAGE_CLASS.NO_PERSISTANCE:
@@ -100,5 +115,6 @@ if __name__ == "__main__":
     test_collect()
     test_keys()
     test_distinct()
+    test_types()
 
     print("OKAY")

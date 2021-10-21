@@ -111,45 +111,25 @@ class DictSet(object):
         if storage_class == STORAGE_CLASS.COMPRESSED_MEMORY:
             self._iterator = StorageClassCompressedMemory(iterator)
 
-        if not hasattr(self._iterator, "__iter__"):
+        if not hasattr(self._iterator, "__iter__"):  # pragma:no cover
             self._iterator = DumbIterator(self._iterator)
 
     def __iter__(self):
         """
         Wrap the iterator in a Iterable object
         """
-        if not hasattr(self._iterator, "__iter__"):
+        if not hasattr(self._iterator, "__iter__"):  # pragma:no cover
             self._iterator = DumbIterator(self._iterator)
         return self
 
     def __next__(self):
         return next(self._iterator)
 
-    def __enter__(self):
+    def __enter__(self):  # pragma:no cover
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type, exc_val, exc_tb):  # pragma:no cover
         pass  # exist needs to exist to be a context manager
-
-    def persist(self, storage_class=STORAGE_CLASS.MEMORY):
-        """
-        Persist changes the persistance engine used for the DictSet. The default
-        is no defined persistance, we can persist to MEMORY, which is only really
-        suitable for small datasets (or machines with large memories). The other
-        option is DISK, this is approximately 10x slower than MEMORY.
-        """
-        if storage_class == STORAGE_CLASS.NO_PERSISTANCE:
-            raise InvalidArgument("Persist cannot persist to 'NO_PERISISTANCE'")
-        if self.storage_class == storage_class:
-            return False
-        if storage_class == STORAGE_CLASS.MEMORY:
-            self._iterator == StorageClassMemory(self._iterator)
-        if storage_class == STORAGE_CLASS.DISK:
-            self._iterator = StorageClassDisk(self._iterator)
-        if storage_class == STORAGE_CLASS.COMPRESSED_MEMORY:
-            self._iterator = StorageClassCompressedMemory(self._iterator)
-        self.storage_class = storage_class
-        return True
 
     def sample(self, fraction: float = 0.5):
         """
@@ -212,6 +192,8 @@ class DictSet(object):
         response = {}
         for key in top.keys():
             key_type = {type(val).__name__ for val in top.collect(key) if val != None}
+            if len(key_type) == 0:
+                response[key] = "empty"
             if len(key_type) == 1:
                 response[key] = key_type.pop()
             elif sorted(key_type) == ["float", "int"]:

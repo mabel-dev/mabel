@@ -9,7 +9,7 @@ from functools import lru_cache
 import re
 import operator
 import fastnumbers
-from .text import like, not_like
+from .text import like, not_like, matches
 from .dates import parse_iso
 from ..data.readers.internals.inline_functions import FUNCTIONS
 from ..data.internals.group_by import AGGREGATORS
@@ -45,6 +45,7 @@ OPERATORS = {
     "IS": operator.is_,
     "NOT LIKE": not_like,
     "LIKE": like,
+    "MATCHES": matches,
     "IN": function_in,
     "CONTAINS": function_contains,
 }

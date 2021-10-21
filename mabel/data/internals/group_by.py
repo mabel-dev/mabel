@@ -48,7 +48,7 @@ class GroupBy:
         which standardize the format of the data to be processed and could allow the
         data to be processed in parallel.
         """
-        if collect_columns == ("*",) and self._columns == ("*",):
+        if collect_columns == self._columns == ("*",):
             # if we're doing COUNT(*), short-cut the processing
             self._group_keys["*"] = [("*", "*")]
             for record in self._dictset:
@@ -58,7 +58,7 @@ class GroupBy:
         for record in self._dictset:
             group_key = siphash(
                 HASH_SEED,
-                "//".join([f"{record.get(column, '')}" for column in self._columns]),
+                "/".join([f"{record.get(column, '')}" for column in self._columns]),
             )
             if group_key not in self._group_keys.keys():
                 self._group_keys[group_key] = [
@@ -72,8 +72,10 @@ class GroupBy:
             for column in collect_columns:
                 if column == "*":
                     yield (group_key, column, "*")
-                elif record.get(column):  # ignore nulls
-                    yield (group_key, column, record[column])
+                else:
+                    v = record.get(column)  # ignore nulls
+                    if v is not None:
+                        yield (group_key, column, record[column])
 
     def aggregate(self, aggregations):
         """
@@ -105,6 +107,9 @@ class GroupBy:
             # values as they come in - the collector holds the result up to this
             # point in the set.
             for func, col in aggregations:
+
+                if col != record[1]:
+                    continue
 
                 key = f"{func}({col})"
 
