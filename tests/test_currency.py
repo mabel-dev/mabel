@@ -212,11 +212,7 @@ def test_component_currency():
     logger.addHandler(log_handler)
     logger.setLevel(logging.DEBUG)
 
-    results = []
-    results.append(CurrencyTest().test())
-
-    if not all(results):
-        assert False, "Currency Tests Failed"
+    assert CurrencyTest().test(), "Currency Tests Failed"
 
 
 if __name__ == "__main__":

@@ -3,7 +3,6 @@ import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], "../../.."))
 from mabel.adapters.minio import MinIoWriter, MinIoReader
-from mabel.operators.minio import MinIoBatchWriterOperator
 from mabel.data import BatchWriter
 from mabel.data import Reader
 from rich import traceback
@@ -62,40 +61,9 @@ def test_using_batch_writer():
     assert not errored
 
 
-def test_using_operator():
-
-    _create_bucket()
-
-    w = MinIoBatchWriterOperator(
-        end_point=os.getenv("MINIO_END_POINT"),
-        access_key=os.getenv("MINIO_ACCESS_KEY"),
-        secret_key=os.getenv("MINIO_SECRET_KEY"),
-        secure=False,
-        dataset=f"{BUCKET_NAME}/test_operator",
-    )
-
-    for member in VAMPIRIC_COUNCIL:
-        w.execute(member)
-    w.finalize()
-
-    reader = Reader(
-        end_point=os.getenv("MINIO_END_POINT"),
-        access_key=os.getenv("MINIO_ACCESS_KEY"),
-        secret_key=os.getenv("MINIO_SECRET_KEY"),
-        secure=False,
-        dataset=f"{BUCKET_NAME}/test_operator",
-        inner_reader=MinIoReader,
-    )
-
-    for i, item in enumerate(reader):
-        pass
-
-    assert (i + 1) == len(VAMPIRIC_COUNCIL), i
-    assert item.as_dict() == VAMPIRIC_COUNCIL[i]
-
 
 if __name__ == "__main__":  # pragma: no cover
     test_using_batch_writer()
-    test_using_operator()
+
 
     print("okay")

@@ -252,7 +252,6 @@ def SqlReader(sql_statement: str, **kwargs):
 
     # some imports here to remove cyclic imports
     from mabel import DictSet, Reader
-    from mabel.data import STORAGE_CLASS
 
     sql = SqlParser(sql_statement)
     get_logger().info(repr(sql))
