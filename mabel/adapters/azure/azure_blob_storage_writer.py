@@ -3,7 +3,7 @@ from ...data.writers.internals.base_inner_writer import BaseInnerWriter
 from ...errors import MissingDependencyError
 
 try:
-    from azure.storage.blob import BlobServiceClient
+    from azure.storage.blob import BlobServiceClient  # type:ignore
 
     azure_blob_storage_installed = True
 except ImportError:  # pragma: no cover

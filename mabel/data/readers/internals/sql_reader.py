@@ -44,7 +44,6 @@ class InvalidSqlError(Exception):
 class SqlParser:
     def __init__(self, statement):
         self.select_expression: Optional[str] = None
-        self.select_evaluator: None
         self.distinct: bool = False
         self.dataset: Optional[str] = None
         self.where_expression: Optional[str] = None

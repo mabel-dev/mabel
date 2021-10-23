@@ -9,7 +9,7 @@ from ...errors import MissingDependencyError
 from ...utils import paths
 
 try:
-    from azure.storage.blob import BlobServiceClient
+    from azure.storage.blob import BlobServiceClient  # type:ignore
 
     azure_blob_storage_installed = True
 except ImportError:  # pragma: no cover
