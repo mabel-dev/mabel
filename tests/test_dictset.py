@@ -62,7 +62,7 @@ def test_repr():
 def test_collect():
     for storage_class in STORAGE_CLASSES:
         ds = get_ds(persistence=storage_class)
-        collection = ds.collect("username")
+        collection = ds.collect_list("username")
         assert collection.count("NBCNews") == 44, storage_class
 
 

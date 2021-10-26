@@ -17,7 +17,7 @@ def test_take():
         {"key": 4, "value": "four", "plus1": 5},
     ]
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
-    assert ds.take(1).collect().pop() == {"key": 1, "value": "one", "plus1": 2}
+    assert ds.take(1).collect_list().pop() == {"key": 1, "value": "one", "plus1": 2}
     assert ds.take(2).count() == 2, ds.take(2).count()
 
 
