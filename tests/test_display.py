@@ -17,6 +17,7 @@ def get_ds(**kwargs):
     )
     return ds
 
+
 def test_html_table():
 
     ds = get_ds(persistence=STORAGE_CLASS.MEMORY)
@@ -26,6 +27,7 @@ def test_html_table():
     assert "<th" in html
     assert "<tr" in html
     assert "</table>" in html
+
 
 if __name__ == "__main__":
     test_html_table()

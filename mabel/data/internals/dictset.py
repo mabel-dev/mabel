@@ -190,7 +190,9 @@ class DictSet(object):
         top = self.take(number_of_rows)
         response = {}
         for key in top.keys():
-            key_type = {type(val).__name__ for val in top.collect_list(key) if val != None}
+            key_type = {
+                type(val).__name__ for val in top.collect_list(key) if val != None
+            }
             if len(key_type) == 0:  # pragma: no cover
                 response[key] = "empty"
             if len(key_type) == 1:
@@ -324,8 +326,9 @@ class DictSet(object):
         """
         return GroupBy(iter(self._iterator), *group_by_column)
 
-    def collect_set(self, column, dedupe:bool=False):
+    def collect_set(self, column, dedupe: bool = False):
         from .collected_set import CollectedSet
+
         return CollectedSet(self, column, dedupe=dedupe)
 
     def get_items(self, *locations):

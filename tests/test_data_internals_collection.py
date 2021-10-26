@@ -35,7 +35,6 @@ def test_group_by_advanced():
     ]
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
 
-
     # don't deduplicate
     groups = ds.collect_set("user", dedupe=False).apply(summarize)
     assert groups["bob"] == {"count": 5, "min": 1, "max": 2}, groups["bob"]

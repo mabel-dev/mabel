@@ -61,9 +61,7 @@ def test_using_batch_writer():
     assert not errored
 
 
-
 if __name__ == "__main__":  # pragma: no cover
     test_using_batch_writer()
-
 
     print("okay")

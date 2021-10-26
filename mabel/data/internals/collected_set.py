@@ -6,7 +6,7 @@ class CollectedSet:
 
     __slots__ = "_collections"
 
-    def __init__(self, dictset: DictSet, column: str, dedupe:bool = False):
+    def __init__(self, dictset: DictSet, column: str, dedupe: bool = False):
         """
         Collection functionality for Iterables of Dictionaries
         Parameters:
@@ -29,7 +29,7 @@ class CollectedSet:
             groups = dictset.distinct()
 
         for item in groups:
-            if hasattr(item, 'as_dict'):
+            if hasattr(item, "as_dict"):
                 my_item = item.as_dict()
             else:
                 my_item = item.copy()
@@ -58,7 +58,9 @@ class CollectedSet:
             return {x: len(y) for x, y in self._collections.items()}
         else:
             try:
-                return [len(y) for x, y in self._collections.items() if x == collection].pop()
+                return [
+                    len(y) for x, y in self._collections.items() if x == collection
+                ].pop()
             except IndexError:
                 return 0
 
