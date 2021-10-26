@@ -8,7 +8,7 @@ class Histogram:
     def __init__(self, values, *, key: str, number_of_bins: int = 10):
 
         if isinstance(values, DictSet):
-            values = values.collect(key)
+            values = values.collect_list(key)
 
         self.bins = [0] * number_of_bins
         mn = min(values)
