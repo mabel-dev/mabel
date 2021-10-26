@@ -31,10 +31,9 @@ from siphashc import siphash
 from operator import itemgetter
 from functools import reduce
 
-from typing import Iterable, Dict, Any, List, Union
+from typing import Iterable, Dict, Any, Union
 
-# from ....logging import get_logger
-from ...errors import MissingDependencyError, InvalidArgument
+from ...errors import MissingDependencyError
 from ...utils.ipython import is_running_from_ipython
 
 from .display import html_table, ascii_table
@@ -151,7 +150,7 @@ class DictSet(object):
             inner_sampler(iter(self._iterator)), storage_class=self.storage_class
         )
 
-    def collect(self, key: str = None) -> Union[list, map]:
+    def collect_list(self, key: str = None) -> Union[list, map]:
         """
         Convert a _DictSet_ to a list, optionally, but probably usually, just extract
         a specific column.
@@ -191,14 +190,16 @@ class DictSet(object):
         top = self.take(number_of_rows)
         response = {}
         for key in top.keys():
-            key_type = {type(val).__name__ for val in top.collect(key) if val != None}
-            if len(key_type) == 0:
+            key_type = {
+                type(val).__name__ for val in top.collect_list(key) if val != None
+            }
+            if len(key_type) == 0:  # pragma: no cover
                 response[key] = "empty"
             if len(key_type) == 1:
                 response[key] = key_type.pop()
             elif sorted(key_type) == ["float", "int"]:
                 response[key] = "numeric"
-            else:
+            else:  # pragma: no cover
                 response[key] = "mixed"
         return response
 
@@ -210,7 +211,7 @@ class DictSet(object):
             key: string
                 The column to perform the function on
         """
-        return reduce(max, self.collect(key))
+        return reduce(max, self.collect_list(key))
 
     def sum(self, key: str):
         """
@@ -220,7 +221,7 @@ class DictSet(object):
             key: string
                 The column to perform the function on
         """
-        return reduce(lambda x, y: x + y, self.collect(key), 0)
+        return reduce(lambda x, y: x + y, self.collect_list(key), 0)
 
     def min(self, key: str):
         """
@@ -230,7 +231,7 @@ class DictSet(object):
             key: string
                 The column to perform the function on
         """
-        return reduce(min, self.collect(key))
+        return reduce(min, self.collect_list(key))
 
     def min_max(self, key: str):
         """
@@ -247,7 +248,7 @@ class DictSet(object):
         def minmax(a, b):
             return min(a[0], b[0]), max(a[1], b[1])
 
-        return reduce(minmax, map(lambda x: (x, x), self.collect(key)))
+        return reduce(minmax, map(lambda x: (x, x), self.collect_list(key)))
 
     def mean(self, key: str):
         """
@@ -257,7 +258,7 @@ class DictSet(object):
             key: string
                 The column to perform the function on
         """
-        return statistics.mean(self.collect(key))
+        return statistics.mean(self.collect_list(key))
 
     def variance(self, key: str):
         """
@@ -267,7 +268,7 @@ class DictSet(object):
             key: string
                 The column to perform the function on
         """
-        return statistics.variance(self.collect(key))
+        return statistics.variance(self.collect_list(key))
 
     def standard_deviation(self, key: str):
         """
@@ -277,7 +278,7 @@ class DictSet(object):
             key: string
                 The column to perform the function on
         """
-        return statistics.stdev(self.collect(key))
+        return statistics.stdev(self.collect_list(key))
 
     def count(self):
         """
@@ -324,6 +325,11 @@ class DictSet(object):
         Group a dictset by a column or group of columns. Returns a GroupBy object.
         """
         return GroupBy(iter(self._iterator), *group_by_column)
+
+    def collect_set(self, column, dedupe: bool = False):
+        from .collected_set import CollectedSet
+
+        return CollectedSet(self, column, dedupe=dedupe)
 
     def get_items(self, *locations):
         """

@@ -68,7 +68,7 @@ def test_sql_returned_rows():
                 raw_path=True,
                 persistence=STORAGE_CLASS.MEMORY,
             )
-            len_s = len(s.collect())
+            len_s = len(s.collect_list())
             assert len_s == test.get(
                 "result"
             ), f"{test.get('statement')} == {len_s} ({test.get('result')})"
@@ -89,7 +89,7 @@ def test_sql_to_dictset():
     assert "tweet_id" in keys, keys
     assert "text" in keys, keys
     assert "followers" in keys, keys
-    assert len(s.take(10).collect()) == 10
+    assert len(s.take(10).collect_list()) == 10
 
 
 def test_sql_returned_cols():
@@ -134,7 +134,7 @@ def test_group_by_count():
         inner_reader=DiskReader,
         raw_path=True,
     )
-    records = s.collect()
+    records = s.collect_list()
     record_count = len(records)
     assert record_count == 2, record_count
 
@@ -143,7 +143,7 @@ def test_group_by_count():
         inner_reader=DiskReader,
         raw_path=True,
     )
-    records = s.collect()
+    records = s.collect_list()
     record_count = len(records)
     assert record_count == 56527, record_count
 

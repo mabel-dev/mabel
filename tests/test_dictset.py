@@ -62,7 +62,7 @@ def test_repr():
 def test_collect():
     for storage_class in STORAGE_CLASSES:
         ds = get_ds(persistence=storage_class)
-        collection = ds.collect("username")
+        collection = ds.collect_list("username")
         assert collection.count("NBCNews") == 44, storage_class
 
 
@@ -87,14 +87,14 @@ def test_types():
         if storage_class != STORAGE_CLASS.NO_PERSISTANCE:
             ds = get_ds(persistence=storage_class)
             types = ds.types()
-            assert types["userid"] == 'int', types
-            assert types["username"] == 'str'
-            assert types["user_verified"] == 'bool'
-            assert types["followers"] == 'int'
-            assert types["tweet"] == 'str'
-            assert types["location"] == 'str'
-            assert types["sentiment"] == 'numeric'
-            assert types["timestamp"] == 'str'
+            assert types["userid"] == "int", types
+            assert types["username"] == "str"
+            assert types["user_verified"] == "bool"
+            assert types["followers"] == "int"
+            assert types["tweet"] == "str"
+            assert types["location"] == "str"
+            assert types["sentiment"] == "numeric"
+            assert types["timestamp"] == "str"
 
 
 def test_distinct():
@@ -107,6 +107,27 @@ def test_distinct():
             assert ds.distinct("sentiment").count() == 36, storage_class
 
 
+def test_summary():
+    data = [
+        {"key": 1, "value": "one", "plus1": 2},
+        {"key": 2, "value": "two", "plus1": 3},
+        {"key": 3, "value": "three", "plus1": 4},
+        {"key": 4, "value": "four", "plus1": 5},
+    ]
+    ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
+
+    assert ds.min("key") == 1
+    assert ds.max("key") == 4
+    assert ds.min_max("key") == (
+        1,
+        4,
+    )
+    assert ds.sum("key") == 10
+    assert ds.mean("key") == 2.5
+    assert ds.standard_deviation("key") == 1.2909944487358056
+    assert ds.variance("key") == 1.6666666666666667
+
+
 if __name__ == "__main__":
     test_count()
     test_enumeration()
@@ -116,5 +137,6 @@ if __name__ == "__main__":
     test_keys()
     test_distinct()
     test_types()
+    test_summary()
 
     print("OKAY")

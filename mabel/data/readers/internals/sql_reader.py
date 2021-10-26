@@ -1,5 +1,5 @@
+# no-maintain-checks
 """
-
 This is a basic SQL parser and interpreter - we process the parts of the SQL statement
 in the following order:
 
@@ -44,7 +44,6 @@ class InvalidSqlError(Exception):
 class SqlParser:
     def __init__(self, statement):
         self.select_expression: Optional[str] = None
-        self.select_evaluator: None
         self.distinct: bool = False
         self.dataset: Optional[str] = None
         self.where_expression: Optional[str] = None
@@ -252,7 +251,6 @@ def SqlReader(sql_statement: str, **kwargs):
 
     # some imports here to remove cyclic imports
     from mabel import DictSet, Reader
-    from mabel.data import STORAGE_CLASS
 
     sql = SqlParser(sql_statement)
     get_logger().info(repr(sql))
@@ -283,7 +281,9 @@ def SqlReader(sql_statement: str, **kwargs):
 
     # GROUP BY clause
     if sql.group_by or any(
-        [t["type"] == TOKENS.AGGREGATOR for t in sql.select_evaluator.tokens]  # type:ignore
+        [
+            t["type"] == TOKENS.AGGREGATOR for t in sql.select_evaluator.tokens
+        ]  # type:ignore
     ):
         from ...internals.group_by import GroupBy
 

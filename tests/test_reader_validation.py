@@ -10,6 +10,7 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.data import Reader
 from rich import traceback
+from mabel.utils import parameter_validator
 from mabel.errors import InvalidReaderConfigError
 from mabel.data.readers.reader import AccessDenied
 
@@ -57,6 +58,20 @@ def test_dataset_prefix_validator():
     )
 
 
+def test_levenshtein():
+    ld = parameter_validator.get_levenshtein_distance("abc", "def")
+    assert ld == 3, ld
+
+    ld = parameter_validator.get_levenshtein_distance("apples", "pear")
+    assert ld == 5, ld
+
+    ld = parameter_validator.get_levenshtein_distance("axe", "ace")
+    assert ld == 1, ld
+
+
 if __name__ == "__main__":  # pragma: no cover
     test_reader_all_good()
     test_dataset_prefix_validator()
+    test_levenshtein()
+
+    print("okay")
