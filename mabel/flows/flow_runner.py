@@ -11,6 +11,10 @@ class FlowRunner:
         self.flow = flow
         self.cycles = 0
 
+        from ..logging import get_logger
+        get_logger().warning("FlowRunner will be removed from mabel, use Flow from `internals.flow` instead.")
+
+
     def __call__(
         self, data: dict = {}, context: dict = None, trace_sample_rate: float = 1 / 1000
     ):
