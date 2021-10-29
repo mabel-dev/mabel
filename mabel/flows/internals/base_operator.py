@@ -87,8 +87,9 @@ class BaseOperator(abc.ABC):
             }
         )
 
-        self.logger.warning("Operators will be removed from mabel, use Operators from `internals.operators` instead.")
-
+        self.logger.warning(
+            "Operators will be removed from mabel, use Operators from `internals.operators` instead."
+        )
 
     @abc.abstractmethod
     def execute(self, data: dict = {}, context: dict = {}):
