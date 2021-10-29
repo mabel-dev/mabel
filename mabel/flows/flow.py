@@ -21,6 +21,12 @@ class Flow:
         self.edges = []
         self.has_run = False
 
+        from ..logging import get_logger
+
+        get_logger().warning(
+            "Flow will be removed from mabel, use Flow from `internals.flow` instead."
+        )
+
     def add_operator(self, name, operator):
         """
         Add a step to the DAG
