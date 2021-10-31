@@ -1,4 +1,3 @@
-import cython
 import operator
 from siphashc import siphash
 from collections import defaultdict
@@ -17,6 +16,7 @@ HASH_SEED = b"Anakin Skywalker"
 class TooManyGroups(Exception):
     pass
 
+
 class GroupBy:
     """
     GroupBy does a lazy evaluation of the groups, the groups are calculated as part of
@@ -33,7 +33,7 @@ class GroupBy:
             self._columns = [columns]
         self._group_keys = {}
 
-    def _map(self, collect_columns):
+    def _map(self, *collect_columns):
         """
         Create Tuples of records in the Groups (GroupID, CollectedColumn, Value)
 
@@ -48,7 +48,7 @@ class GroupBy:
         which standardize the format of the data to be processed and could allow the
         data to be processed in parallel.
         """
-        if collect_columns == self._columns == {"*"}:
+        if collect_columns == self._columns == ("*",):
             # if we're doing COUNT(*), short-cut the processing
             self._group_keys["*"] = [("*", "*")]
             for record in self._dictset:
@@ -56,16 +56,10 @@ class GroupBy:
             return
 
         for record in self._dictset:
-            try:
-                group_key = siphash(
-                    HASH_SEED,
-                    "".join([str(record[column]) for column in self._columns]),
-                )
-            except KeyError:
-                group_key = siphash(
-                    HASH_SEED,
-                    "".join([f"{record.get(column, '')}" for column in self._columns]),
-                ) 
+            group_key = siphash(
+                HASH_SEED,
+                "/".join([f"{record.get(column, '')}" for column in self._columns]),
+            )
             if group_key not in self._group_keys.keys():
                 self._group_keys[group_key] = [
                     (column, record.get(column)) for column in self._columns
@@ -111,7 +105,7 @@ class GroupBy:
         collector = defaultdict(dict)
         # Iterate through the data in the groups formatted by the mapper. This data
         # is a list of Tuples of (GroupID, Column Name, Value)
-        for record in self._map(columns_to_collect):
+        for record in self._map(*columns_to_collect):
             # For each aggregation, we need to perform the function against the
             # values as they come in - the collector holds the result up to this
             # point in the set.
