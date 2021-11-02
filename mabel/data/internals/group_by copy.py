@@ -1,4 +1,25 @@
-import cython
+"""
+THIS VERSION
+
+242069252 function calls (222726014 primitive calls) in 117.145 seconds
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+  9666289   13.310    0.000  105.820    0.000 mabel/data/internals/group_by.py:36(_map)
+  9666288   11.589    0.000   39.018    0.000 mabel/data/readers/internals/inline_evaluator.py:225(__call__)
+  9666388    8.037    0.000   75.580    0.000 mabel/data/readers/internals/parallel_reader.py:213(__call__)
+        2    7.576    3.788  115.214   57.607 mabel/data/internals/group_by.py:80(aggregate)
+ 19332576    6.425    0.000    6.425    0.000 mabel/data/readers/internals/inline_evaluator.py:122(evaluate_field)
+ 28998864    3.477    0.000    3.477    0.000 mabel/data/readers/internals/inline_evaluator.py:227(<genexpr>)
+  9666289    3.099    0.000   78.912    0.000 mabel/data/readers/reader.py:230(_create_line_reader)
+  9666289    3.042    0.000   81.955    0.000 mabel/data/readers/reader.py:316(__next__)
+  9666288    2.855    0.000   10.749    0.000 mabel/data/readers/internals/parsers.py:5(json)
+  9666288    2.250    0.000    2.961    0.000 mabel/data/internals/group_by.py:61(<listcomp>)
+9666291/2    1.730    0.000  115.214   57.607 mabel/data/internals/dictset.py:124(__next__)
+
+
+"""
+
+
 import operator
 from siphashc import siphash
 from collections import defaultdict
@@ -17,6 +38,7 @@ HASH_SEED = b"Anakin Skywalker"
 class TooManyGroups(Exception):
     pass
 
+
 class GroupBy:
     """
     GroupBy does a lazy evaluation of the groups, the groups are calculated as part of
@@ -33,7 +55,7 @@ class GroupBy:
             self._columns = [columns]
         self._group_keys = {}
 
-    def _map(self, collect_columns):
+    def _map(self, *collect_columns):
         """
         Create Tuples of records in the Groups (GroupID, CollectedColumn, Value)
 
@@ -48,7 +70,7 @@ class GroupBy:
         which standardize the format of the data to be processed and could allow the
         data to be processed in parallel.
         """
-        if collect_columns == self._columns == {"*"}:
+        if collect_columns == self._columns == ("*",):
             # if we're doing COUNT(*), short-cut the processing
             self._group_keys["*"] = [("*", "*")]
             for record in self._dictset:
@@ -56,16 +78,10 @@ class GroupBy:
             return
 
         for record in self._dictset:
-            try:
-                group_key = siphash(
-                    HASH_SEED,
-                    "".join([str(record[column]) for column in self._columns]),
-                )
-            except KeyError:
-                group_key = siphash(
-                    HASH_SEED,
-                    "".join([f"{record.get(column, '')}" for column in self._columns]),
-                ) 
+            group_key = siphash(
+                HASH_SEED,
+                "/".join([f"{record.get(column, '')}" for column in self._columns]),
+            )
             if group_key not in self._group_keys.keys():
                 self._group_keys[group_key] = [
                     (column, record.get(column)) for column in self._columns
@@ -111,7 +127,7 @@ class GroupBy:
         collector = defaultdict(dict)
         # Iterate through the data in the groups formatted by the mapper. This data
         # is a list of Tuples of (GroupID, Column Name, Value)
-        for record in self._map(columns_to_collect):
+        for record in self._map(*columns_to_collect):
             # For each aggregation, we need to perform the function against the
             # values as they come in - the collector holds the result up to this
             # point in the set.

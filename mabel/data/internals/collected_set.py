@@ -1,5 +1,5 @@
 from typing import Callable
-from mabel.data.internals.dictset import DictSet
+from mabel.data.internals.dictset import STORAGE_CLASS, DictSet
 
 
 class CollectedSet:
@@ -129,7 +129,7 @@ class SubCollection:
     __slots__ = "values"
 
     def __init__(self, values):
-        self.values = DictSet(values or [])
+        self.values = DictSet(values or [], storage_class=STORAGE_CLASS.MEMORY)
 
     def __getitem__(self, item):
         """
@@ -141,7 +141,7 @@ class SubCollection:
             return self.values.collect(item)
 
     def __len__(self):
-        return len(self.values)
+        return self.values.count()
 
     def __repr__(self):
         return f"SubCollection of {len(self)} items"
