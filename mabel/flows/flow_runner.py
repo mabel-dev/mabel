@@ -12,7 +12,7 @@ class FlowRunner:
         self.cycles = 0
 
         from ..logging import get_logger
-        get_logger().warning("FlowRunner will be removed from mabel, use Flow from `internals.flow` instead.")
+        get_logger().warning("FlowRunner will be removed from mabel, use Flow from `internals/flows` instead.")
 
 
     def __call__(

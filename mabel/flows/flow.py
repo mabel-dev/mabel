@@ -22,7 +22,7 @@ class Flow:
         self.has_run = False
 
         from ..logging import get_logger
-        get_logger().warning("Flow will be removed from mabel, use Flow from `internals.flow` instead.")
+        get_logger().warning("Flow will be removed from mabel, use Flow from `internals/flows` instead.")
 
     def add_operator(self, name, operator):
         """
