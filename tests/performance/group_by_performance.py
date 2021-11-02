@@ -1,5 +1,8 @@
 import cProfile
-import pyximport; pyximport.install()
+import pyximport
+
+pyximport.install()
+
 
 def do_read():
 

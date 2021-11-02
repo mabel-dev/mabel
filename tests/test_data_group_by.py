@@ -29,7 +29,7 @@ def test_group_by():
         {"user": "eve", "value": 7},
     ]
 
-    #fmt:off
+    # fmt:off
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
     assert list(GroupBy(ds, "user").groups()) == [{'user': 'bob'}, {'user': 'alice'}, {'user': 'eve'}]
 
@@ -44,7 +44,7 @@ def test_group_by():
 
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
     assert list(GroupBy(ds, "user").min("value")) == [{'MIN(value)': 3, 'user': 'alice'}, {'MIN(value)': 1, 'user': 'bob'}, {'MIN(value)': 6, 'user': 'eve'}]
-    #fmt:on
+    # fmt:on
 
 
 def test_combined_group_by():
@@ -67,7 +67,7 @@ def test_combined_group_by():
         {"fname": "eve", "sname": "smith", "value": 7, "cost": 1},
     ]
 
-    #fmt:off
+    # fmt:off
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
     gs = list(GroupBy(ds, ("fname", "sname")).groups())
     assert gs == [{'fname': 'bob', 'sname': 'smith'}, {'fname': 'bob', 'sname': 'jones'}, {'fname': 'alice', 'sname': 'jones'}, {'fname': 'alice', 'sname': 'smith'}, {'fname': 'eve', 'sname': 'jones'}, {'fname': 'eve', 'sname': 'smith'}], gs
@@ -92,11 +92,11 @@ def test_combined_group_by():
     gs = list(GroupBy(ds, ("fname", "sname")).aggregate([('MAX', 'value'),('MIN', 'cost')]))
     assert gs == [{'MAX(value)': 2, 'MIN(cost)': 2, 'fname': 'bob', 'sname': 'jones'}, {'MAX(value)': 1, 'MIN(cost)': 1, 'fname': 'bob', 'sname': 'smith'}, {'MAX(value)': 5, 'MIN(cost)': 1, 'fname': 'alice', 'sname': 'smith'}, {'MAX(value)': 7, 'MIN(cost)': 1, 'fname': 'eve', 'sname': 'smith'}, {'MAX(value)': 6, 'MIN(cost)': 2, 'fname': 'eve', 'sname': 'jones'}, {'MAX(value)': 5, 'MIN(cost)': 2, 'fname': 'alice', 'sname': 'jones'}], gs
 
-    #fmt:on
+    # fmt:on
+
 
 if __name__ == "__main__":  # pragma: no cover
     test_group_by()
     test_combined_group_by()
-
 
     print("okay")
