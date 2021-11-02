@@ -1,4 +1,4 @@
-import cython
+# import cython
 import operator
 from siphashc import siphash
 from collections import defaultdict
@@ -16,6 +16,7 @@ HASH_SEED = b"Anakin Skywalker"
 
 class TooManyGroups(Exception):
     pass
+
 
 class GroupBy:
     """
@@ -65,7 +66,7 @@ class GroupBy:
                 group_key = siphash(
                     HASH_SEED,
                     "".join([f"{record.get(column, '')}" for column in self._columns]),
-                ) 
+                )
             if group_key not in self._group_keys.keys():
                 self._group_keys[group_key] = [
                     (column, record.get(column)) for column in self._columns

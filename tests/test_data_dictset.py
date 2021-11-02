@@ -127,6 +127,7 @@ def test_summary():
     assert ds.standard_deviation("key") == 1.2909944487358056
     assert ds.variance("key") == 1.6666666666666667
 
+
 def test_take():
     data = [
         {"key": 1, "value": "one", "plus1": 2},
@@ -137,6 +138,7 @@ def test_take():
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
     assert ds.take(1).collect_list().pop() == {"key": 1, "value": "one", "plus1": 2}
     assert ds.take(2).count() == 2, ds.take(2).count()
+
 
 if __name__ == "__main__":
     test_count()
