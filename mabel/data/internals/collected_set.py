@@ -138,7 +138,7 @@ class SubCollection:
         if isinstance(item, tuple):
             return list(self.values.select(*item))
         else:
-            return self.values.collect(item)
+            return self.values.collect_list(item)
 
     def __len__(self):
         return self.values.count()
