@@ -22,7 +22,7 @@ def html_table(dictset: Iterable[dict], limit: int = 5):
     def sanitize(htmlstring):
         ## some types need converting to a string first
         if isinstance(htmlstring, (list, tuple, set, csimdjson.Array)):
-            return sanitize("[ " + ", ".join([i for i in htmlstring]) + " ]")
+            return "[ " + ", ".join([sanitize(i) for i in htmlstring]) + " ]"
         if isinstance(htmlstring, (dict, csimdjson.Object)):
             return sanitize(
                 "{ " + ", ".join([f'"{k}": {v}' for k, v in htmlstring.items()]) + " }"
