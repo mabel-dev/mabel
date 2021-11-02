@@ -1,4 +1,4 @@
-import cython
+#import cython
 import operator
 from siphashc import siphash
 from collections import defaultdict
