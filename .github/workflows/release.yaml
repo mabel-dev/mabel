@@ -6,56 +6,6 @@ on:
 
 jobs:
 
-  build-linux-cp35:
-    runs-on: ubuntu-latest
-    container: quay.io/pypa/manylinux2014_x86_64
-
-    steps:
-    - uses: actions/checkout@master
-
-    - name: Install Python package dependencies
-      run: /opt/python/cp35-cp35m/bin/python -m pip install cython wheel
-
-    - name: Build binary wheel
-      run: /opt/python/cp35-cp35m/bin/python setup.py bdist_wheel
-
-    - name: Apply auditwheel
-      run: auditwheel repair -w dist dist/*
-
-    - name: Remove linux wheel
-      run: rm dist/*-linux_x86_64.whl
-
-    - name: Archive dist artifacts
-      uses: actions/upload-artifact@v1
-      with:
-        name: dist-linux-3.5
-        path: dist
-
-  build-linux-cp36:
-    runs-on: ubuntu-latest
-    container: quay.io/pypa/manylinux2014_x86_64
-
-    steps:
-    - uses: actions/checkout@master
-
-    - name: Install Python package dependencies
-      run: /opt/python/cp36-cp36m/bin/python -m pip install cython wheel
-
-    - name: Build binary wheel
-      run: /opt/python/cp36-cp36m/bin/python setup.py bdist_wheel
-
-    - name: Apply auditwheel
-      run: auditwheel repair -w dist dist/*
-
-    - name: Remove linux wheel
-      run: rm dist/*-linux_x86_64.whl
-
-    - name: Archive dist artifacts
-      uses: actions/upload-artifact@v1
-      with:
-        name: dist-linux-3.6
-        path: dist
-
   build-linux-cp37:
     runs-on: ubuntu-latest
     container: quay.io/pypa/manylinux2014_x86_64
@@ -106,12 +56,39 @@ jobs:
         name: dist-linux-3.8
         path: dist
 
+
+  build-linux-cp39:
+    runs-on: ubuntu-latest
+    container: quay.io/pypa/manylinux2014_x86_64
+
+    steps:
+    - uses: actions/checkout@master
+
+    - name: Install Python package dependencies
+      run: /opt/python/cp39-cp39/bin/python -m pip install cython wheel
+
+    - name: Build binary wheel
+      run: /opt/python/cp39-cp39/bin/python setup.py bdist_wheel
+
+    - name: Apply auditwheel for manylinux wheel
+      run: auditwheel repair -w dist dist/*
+
+    - name: Remove linux wheel
+      run: rm dist/*-linux_x86_64.whl
+
+    - name: Archive dist artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: dist-linux-3.9
+        path: dist
+
+
   build-macos:
     runs-on: macos-latest
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.5, 3.6, 3.7, 3.8]
+        python-version: [3.7, 3.8, 3.9]
 
     steps:
     - uses: actions/checkout@master
@@ -139,7 +116,7 @@ jobs:
     strategy:
       max-parallel: 3
       matrix:
-        python-version: [3.6, 3.7, 3.8]
+        python-version: [3.7, 3.8, 3.9]
 
     steps:
     - uses: actions/checkout@master
@@ -169,7 +146,7 @@ jobs:
         path: dist
 
   upload:
-    needs: [build-linux-cp35, build-linux-cp36, build-linux-cp37, build-linux-cp38, build-macos, build-windows]
+    needs: [build-linux-cp37, build-linux-cp38, build-linux-cp39, build-macos, build-windows]
     runs-on: ubuntu-latest
 
     steps:
@@ -178,7 +155,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
-        python-version: 3.8
+        python-version: 3.9
 
     - name: Install dependencies
       run: |
@@ -187,18 +164,6 @@ jobs:
 
     - name: Create source dist
       run: python setup.py sdist
-
-    - name: Stage linux 3.5
-      uses: actions/download-artifact@v1
-      with:
-        name: dist-linux-3.5
-    - run: mv -v dist-linux-3.5/* dist/
-
-    - name: Stage linux 3.6
-      uses: actions/download-artifact@v1
-      with:
-        name: dist-linux-3.6
-    - run: mv -v dist-linux-3.6/* dist/
 
     - name: Stage linux 3.7
       uses: actions/download-artifact@v1
@@ -212,17 +177,11 @@ jobs:
         name: dist-linux-3.8
     - run: mv -v dist-linux-3.8/* dist/
 
-    - name: Stage macos 3.5
+    - name: Stage linux 3.9
       uses: actions/download-artifact@v1
       with:
-        name: dist-macos-3.5
-    - run: mv -v dist-macos-3.5/* dist/
-
-    - name: Stage macos 3.6
-      uses: actions/download-artifact@v1
-      with:
-        name: dist-macos-3.6
-    - run: mv -v dist-macos-3.6/* dist/
+        name: dist-linux-3.9
+    - run: mv -v dist-linux-3.9/* dist/
 
     - name: Stage macos 3.7
       uses: actions/download-artifact@v1
@@ -236,11 +195,11 @@ jobs:
         name: dist-macos-3.8
     - run: mv -v dist-macos-3.8/* dist/
 
-    - name: Stage windows 3.6
+    - name: Stage macos 3.9
       uses: actions/download-artifact@v1
       with:
-        name: dist-windows-3.6
-    - run: mv -v dist-windows-3.6/* dist/
+        name: dist-macos-3.9
+    - run: mv -v dist-macos-3.9/* dist/
 
     - name: Stage windows 3.7
       uses: actions/download-artifact@v1
@@ -253,6 +212,12 @@ jobs:
       with:
         name: dist-windows-3.8
     - run: mv -v dist-windows-3.8/* dist/
+
+    - name: Stage windows 3.9
+      uses: actions/download-artifact@v1
+      with:
+        name: dist-windows-3.9
+    - run: mv -v dist-windows-3.9/* dist/
 
     - name: Upload with twine
       env:
