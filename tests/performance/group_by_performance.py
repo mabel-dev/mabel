@@ -41,4 +41,4 @@ import pstats
 p = pstats.Stats("profile.txt")
 p.sort_stats("tottime").print_stats(50)
 
-# do_read()
+do_read()

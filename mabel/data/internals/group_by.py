@@ -1,4 +1,5 @@
-# import cython
+# cython: language_level=3
+import cython
 import operator
 from siphashc import siphash
 from collections import defaultdict
@@ -58,12 +59,12 @@ class GroupBy:
 
         for record in self._dictset:
             try:
-                group_key = siphash(
+                group_key: cython.ulong = siphash(
                     HASH_SEED,
                     "".join([str(record[column]) for column in self._columns]),
                 )
             except KeyError:
-                group_key = siphash(
+                group_key: cython.ulong = siphash(
                     HASH_SEED,
                     "".join([f"{record.get(column, '')}" for column in self._columns]),
                 )
