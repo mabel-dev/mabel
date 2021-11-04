@@ -1,4 +1,10 @@
 # cython: language_level=3
+"""
+This module is compiled, any changes to it need the following to be run before they
+will be effective:
+
+python setup.py build_ext --inplace
+"""
 import cython
 import operator
 from siphashc import siphash
