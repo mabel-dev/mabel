@@ -57,6 +57,7 @@ def test_sql_returned_rows():
         {"statement":"SELECT COUNT(user_id) FROM tests.data.index.is", "result":1},
         {"statement":"SELECT * FROM tests.data.index.is WHERE user_id > 1000000", "result":65475},
         {"statement":"SELECT * FROM tests.data.index.is WHERE followers > 100.0", "result":49601},
+        {"statement":"SELECT COUNT(*), user_verified, user_id FROM tests.data.index.is GROUP BY user_verified, user_id", "result":60724},
     ]
     # fmt:on
 

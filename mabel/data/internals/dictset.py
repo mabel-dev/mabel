@@ -320,11 +320,11 @@ class DictSet(object):
             do_dedupe(iter(self._iterator)), storage_class=self.storage_class
         )
 
-    def group_by(self, *group_by_column):
+    def group_by(self, group_by_columns):
         """
         Group a dictset by a column or group of columns. Returns a GroupBy object.
         """
-        return GroupBy(iter(self._iterator), *group_by_column)
+        return GroupBy(iter(self._iterator), group_by_columns)
 
     def collect_set(self, column, dedupe: bool = False):
         from .collected_set import CollectedSet

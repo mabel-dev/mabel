@@ -311,9 +311,9 @@ def SqlReader(sql_statement: str, **kwargs):
                 )
 
         if aggregations:
-            grouped = GroupBy(reader, *groups).aggregate(aggregations)
+            grouped = GroupBy(reader, groups).aggregate(aggregations)
         else:
-            grouped = GroupBy(reader, *groups).groups()
+            grouped = GroupBy(reader, groups).groups()
 
         # there could be 250000 groups, so we're not going to load them into memory
         reader = DictSet(grouped)
