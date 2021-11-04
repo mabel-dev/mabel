@@ -3,7 +3,6 @@ from setuptools import setup, find_packages  # type:ignore
 from setuptools import setup
 from Cython.Build import cythonize
 
-setup(ext_modules=cythonize(["mabel/data/internals/group_by.py"]))
 
 with open("mabel/version.py", "r") as v:
     vers = v.read()
@@ -27,4 +26,5 @@ setup(
     packages=find_packages(include=["mabel", "mabel.*"]),
     url="https://github.com/mabel-dev/mabel/",
     install_requires=required,
+    ext_modules=cythonize(["mabel/data/internals/group_by.py"]),
 )
