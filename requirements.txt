@@ -6,3 +6,4 @@ pydantic
 siphashc
 fastnumbers
 pysimdjson
+cython

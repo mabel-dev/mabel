@@ -1,5 +1,14 @@
 from setuptools import setup, find_packages  # type:ignore
 
+from setuptools import setup
+from Cython.Build import cythonize
+
+setup(
+    ext_modules = cythonize([
+        "mabel/data/internals/group_by.py"
+        ])
+)
+
 with open("mabel/version.py", "r") as v:
     vers = v.read()
 exec(vers)  # nosec
