@@ -1,5 +1,12 @@
 # no-maintain-checks
+# cython: language_level=3
 """
+This module is compiled, any changes to it need the following to be run before they
+will be effective:
+
+python setup.py build_ext --inplace
+
+
 This class performs functions on individual rows. There is a set of functions in
 the sql_functions module.
 
