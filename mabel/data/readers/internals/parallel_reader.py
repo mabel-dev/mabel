@@ -20,7 +20,6 @@ dataset:
 │ Reduce     │ Aggregate                                                  │
 └────────────┴────────────────────────────────────────────────────────────┘
 """
-import simdjson
 from mabel import logging
 from . import decompressors, parsers
 from enum import Enum
@@ -71,10 +70,10 @@ def no_filter(x):
 
 def expand_nested_json(row):
     # this is really slow - on a simple read it's roughly 60% of the execution
-    if isinstance(row, (dict, simdjson.Object)):
+    if hasattr(row, "items"):
         for k, v in [(k, v) for k, v in row.items()]:
-            if isinstance(v, (dict, simdjson.Object)):
-                if isinstance(row, simdjson.Object):
+            if hasattr(v, "items"):
+                if hasattr(row, "as_dict"):
                     row = row.as_dict()  # only convert if we really have to
                 row.update(flatten(dictionary={k: v}, separator="."))
                 row.pop(k)

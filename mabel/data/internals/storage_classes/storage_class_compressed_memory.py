@@ -10,7 +10,6 @@ storage is fast, this isn't a good option.
 """
 import orjson
 import lz4.frame
-import simdjson
 from itertools import zip_longest
 from . import BaseStorageClass
 
@@ -28,7 +27,7 @@ class StorageClassCompressedMemory(BaseStorageClass):
         for batch in zip_longest(*[iterable] * BATCH_SIZE):
             self.length += len(batch)
             # pay for fast deserialization here:
-            if isinstance(batch[0], simdjson.Object):
+            if hasattr(batch[0], "mini"):
                 json_batch = (
                     b"["
                     + b",".join([item.mini for item in batch if not item is None])
@@ -55,14 +54,14 @@ class StorageClassCompressedMemory(BaseStorageClass):
             for i in ordered_location:
                 requested_batch = i % BATCH_SIZE
                 if requested_batch != batch_number:
-                    batch = simdjson.Parser().parse(
+                    batch = self.parse_json(
                         decompressor.decompress(self.batches[requested_batch])
                     )
                 yield batch[i - i % BATCH_SIZE]
 
         else:
             for batch in self.batches:
-                records = simdjson.Parser().parse(decompressor.decompress(batch))
+                records = self.parse_json(decompressor.decompress(batch))
                 for record in records:
                     if record:
                         yield record

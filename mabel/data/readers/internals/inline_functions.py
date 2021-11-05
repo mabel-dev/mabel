@@ -6,7 +6,6 @@ These are the function definitions, the processor which uses these is in the
 """
 import orjson
 import datetime
-import csimdjson
 import fastnumbers
 from siphashc import siphash
 from functools import lru_cache
@@ -134,16 +133,18 @@ def concat(*items):
     Turn each item to a string and concatenate the strings together
     """
     sep = ""
-    if len(items) == 1 and isinstance(items[0], (csimdjson.Array, list, tuple, set)):
+    if len(items) == 1 and (
+        isinstance(items[0], (list, tuple, set)) or hasattr(items[0], "as_list")
+    ):
         items = items[0]
         sep = ", "
     return sep.join(map(str, items))
 
 
 def to_string(val):
-    if isinstance(val, (csimdjson.Array, list, tuple, set)):
+    if isinstance(val, (list, tuple, set)):
         return concat(val)
-    if isinstance(val, csimdjson.Object):
+    if hasattr(val, "mini"):
         return "\\" + val.mini.decode("UTF8") + "\\"
     if isinstance(val, dict):
         return "\\" + orjson.dumps(val).decode("UTF8") + "\\"
