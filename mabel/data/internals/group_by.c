@@ -834,7 +834,7 @@ struct __pyx_obj_5mabel_4data_9internals_8group_by___pyx_scope_struct_1_aggregat
 struct __pyx_obj_5mabel_4data_9internals_8group_by___pyx_scope_struct_2_genexpr;
 struct __pyx_obj_5mabel_4data_9internals_8group_by___pyx_scope_struct_3_groups;
 
-/* "mabel/data/internals/group_by.py":38
+/* "mabel/data/internals/group_by.py":44
  *         self._group_keys = {}
  * 
  *     def _map(self, collect_columns):             # <<<<<<<<<<<<<<
@@ -861,7 +861,7 @@ struct __pyx_obj_5mabel_4data_9internals_8group_by___pyx_scope_struct___map {
 };
 
 
-/* "mabel/data/internals/group_by.py":88
+/* "mabel/data/internals/group_by.py":94
  *                         yield (group_key, column, record[column])
  * 
  *     def aggregate(self, aggregations):             # <<<<<<<<<<<<<<
@@ -896,7 +896,7 @@ struct __pyx_obj_5mabel_4data_9internals_8group_by___pyx_scope_struct_1_aggregat
 };
 
 
-/* "mabel/data/internals/group_by.py":101
+/* "mabel/data/internals/group_by.py":107
  *         if not isinstance(aggregations, list):
  *             aggregations = [aggregations]
  *         if not all(isinstance(agg, tuple) for agg in aggregations):             # <<<<<<<<<<<<<<
@@ -910,7 +910,7 @@ struct __pyx_obj_5mabel_4data_9internals_8group_by___pyx_scope_struct_2_genexpr 
 };
 
 
-/* "mabel/data/internals/group_by.py":238
+/* "mabel/data/internals/group_by.py":244
  *         return self.aggregate([("AVG", column) for column in columns])
  * 
  *     def groups(self):             # <<<<<<<<<<<<<<
@@ -1715,6 +1715,7 @@ static const char __pyx_k_columns_to_collect[] = "columns_to_collect";
 static const char __pyx_k_mabel_data_internals_group_by[] = "mabel.data.internals.group_by";
 static const char __pyx_k_GroupBy_does_a_lazy_evaluation[] = "\n    GroupBy does a lazy evaluation of the groups, the groups are calculated as part of\n    calculating the aggregations. This was implemented like this so that generators\n    can be aggregated - we have one opportunity to cycle of the records, and if the\n    data is in a generator, there's a chance the dataset doesn't fit in memory.\n    ";
 static const char __pyx_k_Groups_are_not_selective_enough[] = "Groups are not selective enough and too many Groups have been found (stopped at ";
+static const char __pyx_k_This_module_is_compiled_any_cha[] = "\nThis module is compiled, any changes to it need the following to be run before they\nwill be effective:\n\npython setup.py build_ext --inplace\n";
 static const char __pyx_k_aggregate_expects_a_list_of_Tup[] = "`aggregate` expects a list of Tuples";
 static const char __pyx_k_GroupBy_aggregate_locals_genexpr[] = "GroupBy.aggregate.<locals>.genexpr";
 static const char __pyx_k_mabel_data_internals_group_by_py[] = "mabel/data/internals/group_by.py";
@@ -1853,7 +1854,7 @@ static PyObject *__pyx_codeobj__24;
 static PyObject *__pyx_codeobj__26;
 /* Late includes */
 
-/* "mabel/data/internals/group_by.py":11
+/* "mabel/data/internals/group_by.py":17
  *     "MAX": max,
  *     "MIN": min,
  *     "COUNT": lambda x, y: x + 1,             # <<<<<<<<<<<<<<
@@ -1896,11 +1897,11 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_8group_by_lambda(PyObject *__p
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("lambda", 1, 2, 2, 1); __PYX_ERR(0, 11, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("lambda", 1, 2, 2, 1); __PYX_ERR(0, 17, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "lambda") < 0)) __PYX_ERR(0, 11, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "lambda") < 0)) __PYX_ERR(0, 17, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -1913,7 +1914,7 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_8group_by_lambda(PyObject *__p
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("lambda", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 11, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("lambda", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 17, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mabel.data.internals.group_by.lambda", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -1935,7 +1936,7 @@ static PyObject *__pyx_lambda_funcdef_5mabel_4data_9internals_8group_by_lambda(C
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("lambda", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_AddObjC(__pyx_v_x, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_AddObjC(__pyx_v_x, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -1952,7 +1953,7 @@ static PyObject *__pyx_lambda_funcdef_5mabel_4data_9internals_8group_by_lambda(C
   return __pyx_r;
 }
 
-/* "mabel/data/internals/group_by.py":12
+/* "mabel/data/internals/group_by.py":18
  *     "MIN": min,
  *     "COUNT": lambda x, y: x + 1,
  *     "AVG": lambda x, y: 1,             # <<<<<<<<<<<<<<
@@ -1995,11 +1996,11 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_8group_by_1lambda1(PyObject *_
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("lambda1", 1, 2, 2, 1); __PYX_ERR(0, 12, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("lambda1", 1, 2, 2, 1); __PYX_ERR(0, 18, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "lambda1") < 0)) __PYX_ERR(0, 12, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "lambda1") < 0)) __PYX_ERR(0, 18, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -2012,7 +2013,7 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_8group_by_1lambda1(PyObject *_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("lambda1", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 12, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("lambda1", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 18, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mabel.data.internals.group_by.lambda1", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2041,7 +2042,7 @@ static PyObject *__pyx_lambda_funcdef_5mabel_4data_9internals_8group_by_lambda1(
   return __pyx_r;
 }
 
-/* "mabel/data/internals/group_by.py":30
+/* "mabel/data/internals/group_by.py":36
  *     """
  * 
  *     def __init__(self, dictset, columns):             # <<<<<<<<<<<<<<
@@ -2087,17 +2088,17 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_8group_by_7GroupBy_1__init__(P
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dictset)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 3, 3, 1); __PYX_ERR(0, 30, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 3, 3, 1); __PYX_ERR(0, 36, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_columns)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 3, 3, 2); __PYX_ERR(0, 30, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 3, 3, 2); __PYX_ERR(0, 36, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 30, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 36, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -2112,7 +2113,7 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_8group_by_7GroupBy_1__init__(P
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 30, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 36, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mabel.data.internals.group_by.GroupBy.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2137,16 +2138,16 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy___init__(CY
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "mabel/data/internals/group_by.py":31
+  /* "mabel/data/internals/group_by.py":37
  * 
  *     def __init__(self, dictset, columns):
  *         self._dictset = dictset             # <<<<<<<<<<<<<<
  *         if isinstance(columns, (list, set, tuple)):
  *             self._columns = tuple(columns)
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_dictset_2, __pyx_v_dictset) < 0) __PYX_ERR(0, 31, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_dictset_2, __pyx_v_dictset) < 0) __PYX_ERR(0, 37, __pyx_L1_error)
 
-  /* "mabel/data/internals/group_by.py":32
+  /* "mabel/data/internals/group_by.py":38
  *     def __init__(self, dictset, columns):
  *         self._dictset = dictset
  *         if isinstance(columns, (list, set, tuple)):             # <<<<<<<<<<<<<<
@@ -2174,19 +2175,19 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy___init__(CY
   __pyx_t_3 = (__pyx_t_1 != 0);
   if (__pyx_t_3) {
 
-    /* "mabel/data/internals/group_by.py":33
+    /* "mabel/data/internals/group_by.py":39
  *         self._dictset = dictset
  *         if isinstance(columns, (list, set, tuple)):
  *             self._columns = tuple(columns)             # <<<<<<<<<<<<<<
  *         else:
  *             self._columns = [columns]
  */
-    __pyx_t_4 = __Pyx_PySequence_Tuple(__pyx_v_columns); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 33, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PySequence_Tuple(__pyx_v_columns); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 39, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_columns_2, __pyx_t_4) < 0) __PYX_ERR(0, 33, __pyx_L1_error)
+    if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_columns_2, __pyx_t_4) < 0) __PYX_ERR(0, 39, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "mabel/data/internals/group_by.py":32
+    /* "mabel/data/internals/group_by.py":38
  *     def __init__(self, dictset, columns):
  *         self._dictset = dictset
  *         if isinstance(columns, (list, set, tuple)):             # <<<<<<<<<<<<<<
@@ -2196,7 +2197,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy___init__(CY
     goto __pyx_L3;
   }
 
-  /* "mabel/data/internals/group_by.py":35
+  /* "mabel/data/internals/group_by.py":41
  *             self._columns = tuple(columns)
  *         else:
  *             self._columns = [columns]             # <<<<<<<<<<<<<<
@@ -2204,29 +2205,29 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy___init__(CY
  * 
  */
   /*else*/ {
-    __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 35, __pyx_L1_error)
+    __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 41, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_INCREF(__pyx_v_columns);
     __Pyx_GIVEREF(__pyx_v_columns);
     PyList_SET_ITEM(__pyx_t_4, 0, __pyx_v_columns);
-    if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_columns_2, __pyx_t_4) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
+    if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_columns_2, __pyx_t_4) < 0) __PYX_ERR(0, 41, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   }
   __pyx_L3:;
 
-  /* "mabel/data/internals/group_by.py":36
+  /* "mabel/data/internals/group_by.py":42
  *         else:
  *             self._columns = [columns]
  *         self._group_keys = {}             # <<<<<<<<<<<<<<
  * 
  *     def _map(self, collect_columns):
  */
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 42, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_group_keys, __pyx_t_4) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_group_keys, __pyx_t_4) < 0) __PYX_ERR(0, 42, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mabel/data/internals/group_by.py":30
+  /* "mabel/data/internals/group_by.py":36
  *     """
  * 
  *     def __init__(self, dictset, columns):             # <<<<<<<<<<<<<<
@@ -2248,7 +2249,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy___init__(CY
 }
 static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "mabel/data/internals/group_by.py":38
+/* "mabel/data/internals/group_by.py":44
  *         self._group_keys = {}
  * 
  *     def _map(self, collect_columns):             # <<<<<<<<<<<<<<
@@ -2292,11 +2293,11 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_8group_by_7GroupBy_3_map(PyObj
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_collect_columns)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_map", 1, 2, 2, 1); __PYX_ERR(0, 38, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_map", 1, 2, 2, 1); __PYX_ERR(0, 44, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_map") < 0)) __PYX_ERR(0, 38, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_map") < 0)) __PYX_ERR(0, 44, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -2309,7 +2310,7 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_8group_by_7GroupBy_3_map(PyObj
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_map", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 38, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_map", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 44, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mabel.data.internals.group_by.GroupBy._map", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2334,7 +2335,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_2_map(CYTHO
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_5mabel_4data_9internals_8group_by___pyx_scope_struct___map *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 38, __pyx_L1_error)
+    __PYX_ERR(0, 44, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -2345,7 +2346,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_2_map(CYTHO
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_collect_columns);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_collect_columns);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator, __pyx_codeobj_, (PyObject *) __pyx_cur_scope, __pyx_n_s_map, __pyx_n_s_GroupBy__map, __pyx_n_s_mabel_data_internals_group_by); if (unlikely(!gen)) __PYX_ERR(0, 38, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator, __pyx_codeobj_, (PyObject *) __pyx_cur_scope, __pyx_n_s_map, __pyx_n_s_GroupBy__map, __pyx_n_s_mabel_data_internals_group_by); if (unlikely(!gen)) __PYX_ERR(0, 44, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -2406,65 +2407,65 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 38, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 44, __pyx_L1_error)
 
-  /* "mabel/data/internals/group_by.py":53
+  /* "mabel/data/internals/group_by.py":59
  *         data to be processed in parallel.
  *         """
  *         if collect_columns == self._columns == {"*"}:             # <<<<<<<<<<<<<<
  *             # if we're doing COUNT(*), short-cut the processing
  *             self._group_keys["*"] = [("*", "*")]
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_columns_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_columns_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyObject_RichCompare(__pyx_cur_scope->__pyx_v_collect_columns, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __pyx_t_2 = PyObject_RichCompare(__pyx_cur_scope->__pyx_v_collect_columns, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 59, __pyx_L1_error)
   if (__Pyx_PyObject_IsTrue(__pyx_t_2)) {
     __Pyx_DECREF(__pyx_t_2);
-    __pyx_t_3 = PySet_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 53, __pyx_L1_error)
+    __pyx_t_3 = PySet_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 59, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    if (PySet_Add(__pyx_t_3, __pyx_kp_u__2) < 0) __PYX_ERR(0, 53, __pyx_L1_error)
-    __pyx_t_2 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L1_error)
+    if (PySet_Add(__pyx_t_3, __pyx_kp_u__2) < 0) __PYX_ERR(0, 59, __pyx_L1_error)
+    __pyx_t_2 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 59, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 59, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (__pyx_t_4) {
 
-    /* "mabel/data/internals/group_by.py":55
+    /* "mabel/data/internals/group_by.py":61
  *         if collect_columns == self._columns == {"*"}:
  *             # if we're doing COUNT(*), short-cut the processing
  *             self._group_keys["*"] = [("*", "*")]             # <<<<<<<<<<<<<<
  *             for record in self._dictset:
  *                 yield ("*", "*", "*")
  */
-    __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)
+    __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 61, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_INCREF(__pyx_tuple__3);
     __Pyx_GIVEREF(__pyx_tuple__3);
     PyList_SET_ITEM(__pyx_t_2, 0, __pyx_tuple__3);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_group_keys); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_group_keys); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 61, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    if (unlikely(PyObject_SetItem(__pyx_t_1, __pyx_kp_u__2, __pyx_t_2) < 0)) __PYX_ERR(0, 55, __pyx_L1_error)
+    if (unlikely(PyObject_SetItem(__pyx_t_1, __pyx_kp_u__2, __pyx_t_2) < 0)) __PYX_ERR(0, 61, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "mabel/data/internals/group_by.py":56
+    /* "mabel/data/internals/group_by.py":62
  *             # if we're doing COUNT(*), short-cut the processing
  *             self._group_keys["*"] = [("*", "*")]
  *             for record in self._dictset:             # <<<<<<<<<<<<<<
  *                 yield ("*", "*", "*")
  *             return
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_dictset_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_dictset_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 62, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     if (likely(PyList_CheckExact(__pyx_t_2)) || PyTuple_CheckExact(__pyx_t_2)) {
       __pyx_t_1 = __pyx_t_2; __Pyx_INCREF(__pyx_t_1); __pyx_t_5 = 0;
       __pyx_t_6 = NULL;
     } else {
-      __pyx_t_5 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 56, __pyx_L1_error)
+      __pyx_t_5 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_6 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 56, __pyx_L1_error)
+      __pyx_t_6 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 62, __pyx_L1_error)
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     for (;;) {
@@ -2472,17 +2473,17 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
         if (likely(PyList_CheckExact(__pyx_t_1))) {
           if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_1)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_2); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 56, __pyx_L1_error)
+          __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_2); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 62, __pyx_L1_error)
           #else
-          __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
+          __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 62, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           #endif
         } else {
           if (__pyx_t_5 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_2); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 56, __pyx_L1_error)
+          __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_5); __Pyx_INCREF(__pyx_t_2); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 62, __pyx_L1_error)
           #else
-          __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
+          __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 62, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           #endif
         }
@@ -2492,7 +2493,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 56, __pyx_L1_error)
+            else __PYX_ERR(0, 62, __pyx_L1_error)
           }
           break;
         }
@@ -2503,7 +2504,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
       __Pyx_GIVEREF(__pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "mabel/data/internals/group_by.py":57
+      /* "mabel/data/internals/group_by.py":63
  *             self._group_keys["*"] = [("*", "*")]
  *             for record in self._dictset:
  *                 yield ("*", "*", "*")             # <<<<<<<<<<<<<<
@@ -2528,9 +2529,9 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
       __Pyx_XGOTREF(__pyx_t_1);
       __pyx_t_5 = __pyx_cur_scope->__pyx_t_1;
       __pyx_t_6 = __pyx_cur_scope->__pyx_t_2;
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 57, __pyx_L1_error)
+      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 63, __pyx_L1_error)
 
-      /* "mabel/data/internals/group_by.py":56
+      /* "mabel/data/internals/group_by.py":62
  *             # if we're doing COUNT(*), short-cut the processing
  *             self._group_keys["*"] = [("*", "*")]
  *             for record in self._dictset:             # <<<<<<<<<<<<<<
@@ -2540,7 +2541,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "mabel/data/internals/group_by.py":58
+    /* "mabel/data/internals/group_by.py":64
  *             for record in self._dictset:
  *                 yield ("*", "*", "*")
  *             return             # <<<<<<<<<<<<<<
@@ -2551,7 +2552,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
     __pyx_r = NULL;
     goto __pyx_L0;
 
-    /* "mabel/data/internals/group_by.py":53
+    /* "mabel/data/internals/group_by.py":59
  *         data to be processed in parallel.
  *         """
  *         if collect_columns == self._columns == {"*"}:             # <<<<<<<<<<<<<<
@@ -2560,22 +2561,22 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
  */
   }
 
-  /* "mabel/data/internals/group_by.py":60
+  /* "mabel/data/internals/group_by.py":66
  *             return
  * 
  *         for record in self._dictset:             # <<<<<<<<<<<<<<
  *             try:
  *                 group_key: cython.ulong = siphash(
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_dictset_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_dictset_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 66, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_5 = 0;
     __pyx_t_6 = NULL;
   } else {
-    __pyx_t_5 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __pyx_t_5 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 66, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_6 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __pyx_t_6 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 66, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -2583,17 +2584,17 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_5); __Pyx_INCREF(__pyx_t_1); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 60, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_5); __Pyx_INCREF(__pyx_t_1); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 66, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 66, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_5 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_5); __Pyx_INCREF(__pyx_t_1); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 60, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_5); __Pyx_INCREF(__pyx_t_1); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 66, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 66, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -2603,7 +2604,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 60, __pyx_L1_error)
+          else __PYX_ERR(0, 66, __pyx_L1_error)
         }
         break;
       }
@@ -2614,7 +2615,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
     __Pyx_GIVEREF(__pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "mabel/data/internals/group_by.py":61
+    /* "mabel/data/internals/group_by.py":67
  * 
  *         for record in self._dictset:
  *             try:             # <<<<<<<<<<<<<<
@@ -2628,27 +2629,27 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
       __Pyx_XGOTREF(__pyx_t_9);
       /*try:*/ {
 
-        /* "mabel/data/internals/group_by.py":62
+        /* "mabel/data/internals/group_by.py":68
  *         for record in self._dictset:
  *             try:
  *                 group_key: cython.ulong = siphash(             # <<<<<<<<<<<<<<
  *                     HASH_SEED,
  *                     "".join([str(record[column]) for column in self._columns]),
  */
-        __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_siphash); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 62, __pyx_L10_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_siphash); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 68, __pyx_L10_error)
         __Pyx_GOTREF(__pyx_t_3);
 
-        /* "mabel/data/internals/group_by.py":63
+        /* "mabel/data/internals/group_by.py":69
  *             try:
  *                 group_key: cython.ulong = siphash(
  *                     HASH_SEED,             # <<<<<<<<<<<<<<
  *                     "".join([str(record[column]) for column in self._columns]),
  *                 )
  */
-        __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_n_s_HASH_SEED); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 63, __pyx_L10_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_n_s_HASH_SEED); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 69, __pyx_L10_error)
         __Pyx_GOTREF(__pyx_t_10);
 
-        /* "mabel/data/internals/group_by.py":64
+        /* "mabel/data/internals/group_by.py":70
  *                 group_key: cython.ulong = siphash(
  *                     HASH_SEED,
  *                     "".join([str(record[column]) for column in self._columns]),             # <<<<<<<<<<<<<<
@@ -2656,17 +2657,17 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
  *             except KeyError:
  */
         { /* enter inner scope */
-          __pyx_t_11 = PyList_New(0); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 64, __pyx_L10_error)
+          __pyx_t_11 = PyList_New(0); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 70, __pyx_L10_error)
           __Pyx_GOTREF(__pyx_t_11);
-          __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_columns_2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 64, __pyx_L10_error)
+          __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_columns_2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 70, __pyx_L10_error)
           __Pyx_GOTREF(__pyx_t_12);
           if (likely(PyList_CheckExact(__pyx_t_12)) || PyTuple_CheckExact(__pyx_t_12)) {
             __pyx_t_13 = __pyx_t_12; __Pyx_INCREF(__pyx_t_13); __pyx_t_14 = 0;
             __pyx_t_15 = NULL;
           } else {
-            __pyx_t_14 = -1; __pyx_t_13 = PyObject_GetIter(__pyx_t_12); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 64, __pyx_L10_error)
+            __pyx_t_14 = -1; __pyx_t_13 = PyObject_GetIter(__pyx_t_12); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 70, __pyx_L10_error)
             __Pyx_GOTREF(__pyx_t_13);
-            __pyx_t_15 = Py_TYPE(__pyx_t_13)->tp_iternext; if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 64, __pyx_L10_error)
+            __pyx_t_15 = Py_TYPE(__pyx_t_13)->tp_iternext; if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 70, __pyx_L10_error)
           }
           __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
           for (;;) {
@@ -2674,17 +2675,17 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
               if (likely(PyList_CheckExact(__pyx_t_13))) {
                 if (__pyx_t_14 >= PyList_GET_SIZE(__pyx_t_13)) break;
                 #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-                __pyx_t_12 = PyList_GET_ITEM(__pyx_t_13, __pyx_t_14); __Pyx_INCREF(__pyx_t_12); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 64, __pyx_L10_error)
+                __pyx_t_12 = PyList_GET_ITEM(__pyx_t_13, __pyx_t_14); __Pyx_INCREF(__pyx_t_12); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 70, __pyx_L10_error)
                 #else
-                __pyx_t_12 = PySequence_ITEM(__pyx_t_13, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 64, __pyx_L10_error)
+                __pyx_t_12 = PySequence_ITEM(__pyx_t_13, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 70, __pyx_L10_error)
                 __Pyx_GOTREF(__pyx_t_12);
                 #endif
               } else {
                 if (__pyx_t_14 >= PyTuple_GET_SIZE(__pyx_t_13)) break;
                 #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-                __pyx_t_12 = PyTuple_GET_ITEM(__pyx_t_13, __pyx_t_14); __Pyx_INCREF(__pyx_t_12); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 64, __pyx_L10_error)
+                __pyx_t_12 = PyTuple_GET_ITEM(__pyx_t_13, __pyx_t_14); __Pyx_INCREF(__pyx_t_12); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 70, __pyx_L10_error)
                 #else
-                __pyx_t_12 = PySequence_ITEM(__pyx_t_13, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 64, __pyx_L10_error)
+                __pyx_t_12 = PySequence_ITEM(__pyx_t_13, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 70, __pyx_L10_error)
                 __Pyx_GOTREF(__pyx_t_12);
                 #endif
               }
@@ -2694,7 +2695,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
                 PyObject* exc_type = PyErr_Occurred();
                 if (exc_type) {
                   if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-                  else __PYX_ERR(0, 64, __pyx_L10_error)
+                  else __PYX_ERR(0, 70, __pyx_L10_error)
                 }
                 break;
               }
@@ -2704,17 +2705,17 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
             __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_7genexpr__pyx_v_column, __pyx_t_12);
             __Pyx_GIVEREF(__pyx_t_12);
             __pyx_t_12 = 0;
-            __pyx_t_12 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_record, __pyx_cur_scope->__pyx_7genexpr__pyx_v_column); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 64, __pyx_L10_error)
+            __pyx_t_12 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_record, __pyx_cur_scope->__pyx_7genexpr__pyx_v_column); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 70, __pyx_L10_error)
             __Pyx_GOTREF(__pyx_t_12);
-            __pyx_t_16 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_12); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 64, __pyx_L10_error)
+            __pyx_t_16 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_12); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 70, __pyx_L10_error)
             __Pyx_GOTREF(__pyx_t_16);
             __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-            if (unlikely(__Pyx_ListComp_Append(__pyx_t_11, (PyObject*)__pyx_t_16))) __PYX_ERR(0, 64, __pyx_L10_error)
+            if (unlikely(__Pyx_ListComp_Append(__pyx_t_11, (PyObject*)__pyx_t_16))) __PYX_ERR(0, 70, __pyx_L10_error)
             __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
           }
           __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
         } /* exit inner scope */
-        __pyx_t_13 = PyUnicode_Join(__pyx_kp_u__5, __pyx_t_11); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 64, __pyx_L10_error)
+        __pyx_t_13 = PyUnicode_Join(__pyx_kp_u__5, __pyx_t_11); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 70, __pyx_L10_error)
         __Pyx_GOTREF(__pyx_t_13);
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
         __pyx_t_11 = NULL;
@@ -2732,7 +2733,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
         #if CYTHON_FAST_PYCALL
         if (PyFunction_Check(__pyx_t_3)) {
           PyObject *__pyx_temp[3] = {__pyx_t_11, __pyx_t_10, __pyx_t_13};
-          __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_17, 2+__pyx_t_17); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L10_error)
+          __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_17, 2+__pyx_t_17); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L10_error)
           __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
           __Pyx_GOTREF(__pyx_t_1);
           __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
@@ -2742,7 +2743,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
         #if CYTHON_FAST_PYCCALL
         if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
           PyObject *__pyx_temp[3] = {__pyx_t_11, __pyx_t_10, __pyx_t_13};
-          __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_17, 2+__pyx_t_17); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L10_error)
+          __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_17, 2+__pyx_t_17); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L10_error)
           __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
           __Pyx_GOTREF(__pyx_t_1);
           __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
@@ -2750,7 +2751,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
         } else
         #endif
         {
-          __pyx_t_16 = PyTuple_New(2+__pyx_t_17); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 62, __pyx_L10_error)
+          __pyx_t_16 = PyTuple_New(2+__pyx_t_17); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 68, __pyx_L10_error)
           __Pyx_GOTREF(__pyx_t_16);
           if (__pyx_t_11) {
             __Pyx_GIVEREF(__pyx_t_11); PyTuple_SET_ITEM(__pyx_t_16, 0, __pyx_t_11); __pyx_t_11 = NULL;
@@ -2761,24 +2762,24 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
           PyTuple_SET_ITEM(__pyx_t_16, 1+__pyx_t_17, __pyx_t_13);
           __pyx_t_10 = 0;
           __pyx_t_13 = 0;
-          __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_16, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L10_error)
+          __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_16, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L10_error)
           __Pyx_GOTREF(__pyx_t_1);
           __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
         }
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-        /* "mabel/data/internals/group_by.py":62
+        /* "mabel/data/internals/group_by.py":68
  *         for record in self._dictset:
  *             try:
  *                 group_key: cython.ulong = siphash(             # <<<<<<<<<<<<<<
  *                     HASH_SEED,
  *                     "".join([str(record[column]) for column in self._columns]),
  */
-        __pyx_t_18 = __Pyx_PyInt_As_unsigned_long(__pyx_t_1); if (unlikely((__pyx_t_18 == (unsigned long)-1) && PyErr_Occurred())) __PYX_ERR(0, 62, __pyx_L10_error)
+        __pyx_t_18 = __Pyx_PyInt_As_unsigned_long(__pyx_t_1); if (unlikely((__pyx_t_18 == (unsigned long)-1) && PyErr_Occurred())) __PYX_ERR(0, 68, __pyx_L10_error)
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         __pyx_cur_scope->__pyx_v_group_key = __pyx_t_18;
 
-        /* "mabel/data/internals/group_by.py":61
+        /* "mabel/data/internals/group_by.py":67
  * 
  *         for record in self._dictset:
  *             try:             # <<<<<<<<<<<<<<
@@ -2799,7 +2800,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
       __Pyx_XDECREF(__pyx_t_16); __pyx_t_16 = 0;
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-      /* "mabel/data/internals/group_by.py":66
+      /* "mabel/data/internals/group_by.py":72
  *                     "".join([str(record[column]) for column in self._columns]),
  *                 )
  *             except KeyError:             # <<<<<<<<<<<<<<
@@ -2809,32 +2810,32 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
       __pyx_t_17 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_KeyError);
       if (__pyx_t_17) {
         __Pyx_AddTraceback("mabel.data.internals.group_by.GroupBy._map", __pyx_clineno, __pyx_lineno, __pyx_filename);
-        if (__Pyx_GetException(&__pyx_t_1, &__pyx_t_3, &__pyx_t_16) < 0) __PYX_ERR(0, 66, __pyx_L12_except_error)
+        if (__Pyx_GetException(&__pyx_t_1, &__pyx_t_3, &__pyx_t_16) < 0) __PYX_ERR(0, 72, __pyx_L12_except_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_GOTREF(__pyx_t_16);
 
-        /* "mabel/data/internals/group_by.py":67
+        /* "mabel/data/internals/group_by.py":73
  *                 )
  *             except KeyError:
  *                 group_key: cython.ulong = siphash(             # <<<<<<<<<<<<<<
  *                     HASH_SEED,
  *                     "".join([f"{record.get(column, '')}" for column in self._columns]),
  */
-        __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_n_s_siphash); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 67, __pyx_L12_except_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_10, __pyx_n_s_siphash); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 73, __pyx_L12_except_error)
         __Pyx_GOTREF(__pyx_t_10);
 
-        /* "mabel/data/internals/group_by.py":68
+        /* "mabel/data/internals/group_by.py":74
  *             except KeyError:
  *                 group_key: cython.ulong = siphash(
  *                     HASH_SEED,             # <<<<<<<<<<<<<<
  *                     "".join([f"{record.get(column, '')}" for column in self._columns]),
  *                 )
  */
-        __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_n_s_HASH_SEED); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 68, __pyx_L12_except_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_n_s_HASH_SEED); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 74, __pyx_L12_except_error)
         __Pyx_GOTREF(__pyx_t_11);
 
-        /* "mabel/data/internals/group_by.py":69
+        /* "mabel/data/internals/group_by.py":75
  *                 group_key: cython.ulong = siphash(
  *                     HASH_SEED,
  *                     "".join([f"{record.get(column, '')}" for column in self._columns]),             # <<<<<<<<<<<<<<
@@ -2842,17 +2843,17 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
  *             if group_key not in self._group_keys.keys():
  */
         { /* enter inner scope */
-          __pyx_t_12 = PyList_New(0); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 69, __pyx_L12_except_error)
+          __pyx_t_12 = PyList_New(0); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 75, __pyx_L12_except_error)
           __Pyx_GOTREF(__pyx_t_12);
-          __pyx_t_19 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_columns_2); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 69, __pyx_L12_except_error)
+          __pyx_t_19 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_columns_2); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 75, __pyx_L12_except_error)
           __Pyx_GOTREF(__pyx_t_19);
           if (likely(PyList_CheckExact(__pyx_t_19)) || PyTuple_CheckExact(__pyx_t_19)) {
             __pyx_t_20 = __pyx_t_19; __Pyx_INCREF(__pyx_t_20); __pyx_t_14 = 0;
             __pyx_t_15 = NULL;
           } else {
-            __pyx_t_14 = -1; __pyx_t_20 = PyObject_GetIter(__pyx_t_19); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 69, __pyx_L12_except_error)
+            __pyx_t_14 = -1; __pyx_t_20 = PyObject_GetIter(__pyx_t_19); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 75, __pyx_L12_except_error)
             __Pyx_GOTREF(__pyx_t_20);
-            __pyx_t_15 = Py_TYPE(__pyx_t_20)->tp_iternext; if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 69, __pyx_L12_except_error)
+            __pyx_t_15 = Py_TYPE(__pyx_t_20)->tp_iternext; if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 75, __pyx_L12_except_error)
           }
           __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
           for (;;) {
@@ -2860,17 +2861,17 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
               if (likely(PyList_CheckExact(__pyx_t_20))) {
                 if (__pyx_t_14 >= PyList_GET_SIZE(__pyx_t_20)) break;
                 #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-                __pyx_t_19 = PyList_GET_ITEM(__pyx_t_20, __pyx_t_14); __Pyx_INCREF(__pyx_t_19); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 69, __pyx_L12_except_error)
+                __pyx_t_19 = PyList_GET_ITEM(__pyx_t_20, __pyx_t_14); __Pyx_INCREF(__pyx_t_19); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 75, __pyx_L12_except_error)
                 #else
-                __pyx_t_19 = PySequence_ITEM(__pyx_t_20, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 69, __pyx_L12_except_error)
+                __pyx_t_19 = PySequence_ITEM(__pyx_t_20, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 75, __pyx_L12_except_error)
                 __Pyx_GOTREF(__pyx_t_19);
                 #endif
               } else {
                 if (__pyx_t_14 >= PyTuple_GET_SIZE(__pyx_t_20)) break;
                 #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-                __pyx_t_19 = PyTuple_GET_ITEM(__pyx_t_20, __pyx_t_14); __Pyx_INCREF(__pyx_t_19); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 69, __pyx_L12_except_error)
+                __pyx_t_19 = PyTuple_GET_ITEM(__pyx_t_20, __pyx_t_14); __Pyx_INCREF(__pyx_t_19); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 75, __pyx_L12_except_error)
                 #else
-                __pyx_t_19 = PySequence_ITEM(__pyx_t_20, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 69, __pyx_L12_except_error)
+                __pyx_t_19 = PySequence_ITEM(__pyx_t_20, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 75, __pyx_L12_except_error)
                 __Pyx_GOTREF(__pyx_t_19);
                 #endif
               }
@@ -2880,7 +2881,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
                 PyObject* exc_type = PyErr_Occurred();
                 if (exc_type) {
                   if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-                  else __PYX_ERR(0, 69, __pyx_L12_except_error)
+                  else __PYX_ERR(0, 75, __pyx_L12_except_error)
                 }
                 break;
               }
@@ -2890,7 +2891,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
             __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_8genexpr1__pyx_v_column, __pyx_t_19);
             __Pyx_GIVEREF(__pyx_t_19);
             __pyx_t_19 = 0;
-            __pyx_t_21 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_record, __pyx_n_s_get); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 69, __pyx_L12_except_error)
+            __pyx_t_21 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_record, __pyx_n_s_get); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 75, __pyx_L12_except_error)
             __Pyx_GOTREF(__pyx_t_21);
             __pyx_t_22 = NULL;
             __pyx_t_17 = 0;
@@ -2907,7 +2908,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
             #if CYTHON_FAST_PYCALL
             if (PyFunction_Check(__pyx_t_21)) {
               PyObject *__pyx_temp[3] = {__pyx_t_22, __pyx_cur_scope->__pyx_8genexpr1__pyx_v_column, __pyx_kp_u__5};
-              __pyx_t_19 = __Pyx_PyFunction_FastCall(__pyx_t_21, __pyx_temp+1-__pyx_t_17, 2+__pyx_t_17); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 69, __pyx_L12_except_error)
+              __pyx_t_19 = __Pyx_PyFunction_FastCall(__pyx_t_21, __pyx_temp+1-__pyx_t_17, 2+__pyx_t_17); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 75, __pyx_L12_except_error)
               __Pyx_XDECREF(__pyx_t_22); __pyx_t_22 = 0;
               __Pyx_GOTREF(__pyx_t_19);
             } else
@@ -2915,13 +2916,13 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
             #if CYTHON_FAST_PYCCALL
             if (__Pyx_PyFastCFunction_Check(__pyx_t_21)) {
               PyObject *__pyx_temp[3] = {__pyx_t_22, __pyx_cur_scope->__pyx_8genexpr1__pyx_v_column, __pyx_kp_u__5};
-              __pyx_t_19 = __Pyx_PyCFunction_FastCall(__pyx_t_21, __pyx_temp+1-__pyx_t_17, 2+__pyx_t_17); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 69, __pyx_L12_except_error)
+              __pyx_t_19 = __Pyx_PyCFunction_FastCall(__pyx_t_21, __pyx_temp+1-__pyx_t_17, 2+__pyx_t_17); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 75, __pyx_L12_except_error)
               __Pyx_XDECREF(__pyx_t_22); __pyx_t_22 = 0;
               __Pyx_GOTREF(__pyx_t_19);
             } else
             #endif
             {
-              __pyx_t_23 = PyTuple_New(2+__pyx_t_17); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 69, __pyx_L12_except_error)
+              __pyx_t_23 = PyTuple_New(2+__pyx_t_17); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 75, __pyx_L12_except_error)
               __Pyx_GOTREF(__pyx_t_23);
               if (__pyx_t_22) {
                 __Pyx_GIVEREF(__pyx_t_22); PyTuple_SET_ITEM(__pyx_t_23, 0, __pyx_t_22); __pyx_t_22 = NULL;
@@ -2932,20 +2933,20 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
               __Pyx_INCREF(__pyx_kp_u__5);
               __Pyx_GIVEREF(__pyx_kp_u__5);
               PyTuple_SET_ITEM(__pyx_t_23, 1+__pyx_t_17, __pyx_kp_u__5);
-              __pyx_t_19 = __Pyx_PyObject_Call(__pyx_t_21, __pyx_t_23, NULL); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 69, __pyx_L12_except_error)
+              __pyx_t_19 = __Pyx_PyObject_Call(__pyx_t_21, __pyx_t_23, NULL); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 75, __pyx_L12_except_error)
               __Pyx_GOTREF(__pyx_t_19);
               __Pyx_DECREF(__pyx_t_23); __pyx_t_23 = 0;
             }
             __Pyx_DECREF(__pyx_t_21); __pyx_t_21 = 0;
-            __pyx_t_21 = __Pyx_PyObject_FormatSimple(__pyx_t_19, __pyx_empty_unicode); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 69, __pyx_L12_except_error)
+            __pyx_t_21 = __Pyx_PyObject_FormatSimple(__pyx_t_19, __pyx_empty_unicode); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 75, __pyx_L12_except_error)
             __Pyx_GOTREF(__pyx_t_21);
             __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
-            if (unlikely(__Pyx_ListComp_Append(__pyx_t_12, (PyObject*)__pyx_t_21))) __PYX_ERR(0, 69, __pyx_L12_except_error)
+            if (unlikely(__Pyx_ListComp_Append(__pyx_t_12, (PyObject*)__pyx_t_21))) __PYX_ERR(0, 75, __pyx_L12_except_error)
             __Pyx_DECREF(__pyx_t_21); __pyx_t_21 = 0;
           }
           __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
         } /* exit inner scope */
-        __pyx_t_20 = PyUnicode_Join(__pyx_kp_u__5, __pyx_t_12); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 69, __pyx_L12_except_error)
+        __pyx_t_20 = PyUnicode_Join(__pyx_kp_u__5, __pyx_t_12); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 75, __pyx_L12_except_error)
         __Pyx_GOTREF(__pyx_t_20);
         __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
         __pyx_t_12 = NULL;
@@ -2963,7 +2964,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
         #if CYTHON_FAST_PYCALL
         if (PyFunction_Check(__pyx_t_10)) {
           PyObject *__pyx_temp[3] = {__pyx_t_12, __pyx_t_11, __pyx_t_20};
-          __pyx_t_13 = __Pyx_PyFunction_FastCall(__pyx_t_10, __pyx_temp+1-__pyx_t_17, 2+__pyx_t_17); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 67, __pyx_L12_except_error)
+          __pyx_t_13 = __Pyx_PyFunction_FastCall(__pyx_t_10, __pyx_temp+1-__pyx_t_17, 2+__pyx_t_17); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 73, __pyx_L12_except_error)
           __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
           __Pyx_GOTREF(__pyx_t_13);
           __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
@@ -2973,7 +2974,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
         #if CYTHON_FAST_PYCCALL
         if (__Pyx_PyFastCFunction_Check(__pyx_t_10)) {
           PyObject *__pyx_temp[3] = {__pyx_t_12, __pyx_t_11, __pyx_t_20};
-          __pyx_t_13 = __Pyx_PyCFunction_FastCall(__pyx_t_10, __pyx_temp+1-__pyx_t_17, 2+__pyx_t_17); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 67, __pyx_L12_except_error)
+          __pyx_t_13 = __Pyx_PyCFunction_FastCall(__pyx_t_10, __pyx_temp+1-__pyx_t_17, 2+__pyx_t_17); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 73, __pyx_L12_except_error)
           __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
           __Pyx_GOTREF(__pyx_t_13);
           __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
@@ -2981,7 +2982,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
         } else
         #endif
         {
-          __pyx_t_21 = PyTuple_New(2+__pyx_t_17); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 67, __pyx_L12_except_error)
+          __pyx_t_21 = PyTuple_New(2+__pyx_t_17); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 73, __pyx_L12_except_error)
           __Pyx_GOTREF(__pyx_t_21);
           if (__pyx_t_12) {
             __Pyx_GIVEREF(__pyx_t_12); PyTuple_SET_ITEM(__pyx_t_21, 0, __pyx_t_12); __pyx_t_12 = NULL;
@@ -2992,20 +2993,20 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
           PyTuple_SET_ITEM(__pyx_t_21, 1+__pyx_t_17, __pyx_t_20);
           __pyx_t_11 = 0;
           __pyx_t_20 = 0;
-          __pyx_t_13 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_21, NULL); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 67, __pyx_L12_except_error)
+          __pyx_t_13 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_21, NULL); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 73, __pyx_L12_except_error)
           __Pyx_GOTREF(__pyx_t_13);
           __Pyx_DECREF(__pyx_t_21); __pyx_t_21 = 0;
         }
         __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
 
-        /* "mabel/data/internals/group_by.py":67
+        /* "mabel/data/internals/group_by.py":73
  *                 )
  *             except KeyError:
  *                 group_key: cython.ulong = siphash(             # <<<<<<<<<<<<<<
  *                     HASH_SEED,
  *                     "".join([f"{record.get(column, '')}" for column in self._columns]),
  */
-        __pyx_t_18 = __Pyx_PyInt_As_unsigned_long(__pyx_t_13); if (unlikely((__pyx_t_18 == (unsigned long)-1) && PyErr_Occurred())) __PYX_ERR(0, 67, __pyx_L12_except_error)
+        __pyx_t_18 = __Pyx_PyInt_As_unsigned_long(__pyx_t_13); if (unlikely((__pyx_t_18 == (unsigned long)-1) && PyErr_Occurred())) __PYX_ERR(0, 73, __pyx_L12_except_error)
         __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
         __pyx_cur_scope->__pyx_v_group_key = __pyx_t_18;
         __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -3016,7 +3017,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
       goto __pyx_L12_except_error;
       __pyx_L12_except_error:;
 
-      /* "mabel/data/internals/group_by.py":61
+      /* "mabel/data/internals/group_by.py":67
  * 
  *         for record in self._dictset:
  *             try:             # <<<<<<<<<<<<<<
@@ -3036,18 +3037,18 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
       __pyx_L17_try_end:;
     }
 
-    /* "mabel/data/internals/group_by.py":71
+    /* "mabel/data/internals/group_by.py":77
  *                     "".join([f"{record.get(column, '')}" for column in self._columns]),
  *                 )
  *             if group_key not in self._group_keys.keys():             # <<<<<<<<<<<<<<
  *                 self._group_keys[group_key] = [
  *                     (column, record.get(column)) for column in self._columns
  */
-    __pyx_t_16 = __Pyx_PyInt_From_unsigned_long(__pyx_cur_scope->__pyx_v_group_key); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 71, __pyx_L1_error)
+    __pyx_t_16 = __Pyx_PyInt_From_unsigned_long(__pyx_cur_scope->__pyx_v_group_key); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 77, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_16);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_group_keys); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_group_keys); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_keys); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 71, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_keys); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 77, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_1 = NULL;
@@ -3062,16 +3063,16 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
     }
     __pyx_t_3 = (__pyx_t_1) ? __Pyx_PyObject_CallOneArg(__pyx_t_13, __pyx_t_1) : __Pyx_PyObject_CallNoArg(__pyx_t_13);
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 71, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 77, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-    __pyx_t_4 = (__Pyx_PySequence_ContainsTF(__pyx_t_16, __pyx_t_3, Py_NE)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 71, __pyx_L1_error)
+    __pyx_t_4 = (__Pyx_PySequence_ContainsTF(__pyx_t_16, __pyx_t_3, Py_NE)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 77, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_24 = (__pyx_t_4 != 0);
     if (__pyx_t_24) {
 
-      /* "mabel/data/internals/group_by.py":72
+      /* "mabel/data/internals/group_by.py":78
  *                 )
  *             if group_key not in self._group_keys.keys():
  *                 self._group_keys[group_key] = [             # <<<<<<<<<<<<<<
@@ -3079,25 +3080,25 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
  *                 ]
  */
       { /* enter inner scope */
-        __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 72, __pyx_L1_error)
+        __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 78, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
 
-        /* "mabel/data/internals/group_by.py":73
+        /* "mabel/data/internals/group_by.py":79
  *             if group_key not in self._group_keys.keys():
  *                 self._group_keys[group_key] = [
  *                     (column, record.get(column)) for column in self._columns             # <<<<<<<<<<<<<<
  *                 ]
  *                 if len(self._group_keys) >= 4999999:
  */
-        __pyx_t_16 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_columns_2); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 73, __pyx_L1_error)
+        __pyx_t_16 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_columns_2); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 79, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_16);
         if (likely(PyList_CheckExact(__pyx_t_16)) || PyTuple_CheckExact(__pyx_t_16)) {
           __pyx_t_13 = __pyx_t_16; __Pyx_INCREF(__pyx_t_13); __pyx_t_14 = 0;
           __pyx_t_15 = NULL;
         } else {
-          __pyx_t_14 = -1; __pyx_t_13 = PyObject_GetIter(__pyx_t_16); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 73, __pyx_L1_error)
+          __pyx_t_14 = -1; __pyx_t_13 = PyObject_GetIter(__pyx_t_16); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 79, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_13);
-          __pyx_t_15 = Py_TYPE(__pyx_t_13)->tp_iternext; if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 73, __pyx_L1_error)
+          __pyx_t_15 = Py_TYPE(__pyx_t_13)->tp_iternext; if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 79, __pyx_L1_error)
         }
         __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
         for (;;) {
@@ -3105,17 +3106,17 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
             if (likely(PyList_CheckExact(__pyx_t_13))) {
               if (__pyx_t_14 >= PyList_GET_SIZE(__pyx_t_13)) break;
               #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-              __pyx_t_16 = PyList_GET_ITEM(__pyx_t_13, __pyx_t_14); __Pyx_INCREF(__pyx_t_16); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 73, __pyx_L1_error)
+              __pyx_t_16 = PyList_GET_ITEM(__pyx_t_13, __pyx_t_14); __Pyx_INCREF(__pyx_t_16); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 79, __pyx_L1_error)
               #else
-              __pyx_t_16 = PySequence_ITEM(__pyx_t_13, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 73, __pyx_L1_error)
+              __pyx_t_16 = PySequence_ITEM(__pyx_t_13, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 79, __pyx_L1_error)
               __Pyx_GOTREF(__pyx_t_16);
               #endif
             } else {
               if (__pyx_t_14 >= PyTuple_GET_SIZE(__pyx_t_13)) break;
               #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-              __pyx_t_16 = PyTuple_GET_ITEM(__pyx_t_13, __pyx_t_14); __Pyx_INCREF(__pyx_t_16); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 73, __pyx_L1_error)
+              __pyx_t_16 = PyTuple_GET_ITEM(__pyx_t_13, __pyx_t_14); __Pyx_INCREF(__pyx_t_16); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 79, __pyx_L1_error)
               #else
-              __pyx_t_16 = PySequence_ITEM(__pyx_t_13, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 73, __pyx_L1_error)
+              __pyx_t_16 = PySequence_ITEM(__pyx_t_13, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 79, __pyx_L1_error)
               __Pyx_GOTREF(__pyx_t_16);
               #endif
             }
@@ -3125,7 +3126,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
               PyObject* exc_type = PyErr_Occurred();
               if (exc_type) {
                 if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-                else __PYX_ERR(0, 73, __pyx_L1_error)
+                else __PYX_ERR(0, 79, __pyx_L1_error)
               }
               break;
             }
@@ -3135,7 +3136,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
           __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_8genexpr2__pyx_v_column, __pyx_t_16);
           __Pyx_GIVEREF(__pyx_t_16);
           __pyx_t_16 = 0;
-          __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_record, __pyx_n_s_get); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 73, __pyx_L1_error)
+          __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_record, __pyx_n_s_get); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 79, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_1);
           __pyx_t_10 = NULL;
           if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -3149,10 +3150,10 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
           }
           __pyx_t_16 = (__pyx_t_10) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_10, __pyx_cur_scope->__pyx_8genexpr2__pyx_v_column) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_cur_scope->__pyx_8genexpr2__pyx_v_column);
           __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
-          if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 73, __pyx_L1_error)
+          if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 79, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_16);
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-          __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 73, __pyx_L1_error)
+          __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 79, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_1);
           __Pyx_INCREF(__pyx_cur_scope->__pyx_8genexpr2__pyx_v_column);
           __Pyx_GIVEREF(__pyx_cur_scope->__pyx_8genexpr2__pyx_v_column);
@@ -3160,57 +3161,57 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
           __Pyx_GIVEREF(__pyx_t_16);
           PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_16);
           __pyx_t_16 = 0;
-          if (unlikely(__Pyx_ListComp_Append(__pyx_t_3, (PyObject*)__pyx_t_1))) __PYX_ERR(0, 72, __pyx_L1_error)
+          if (unlikely(__Pyx_ListComp_Append(__pyx_t_3, (PyObject*)__pyx_t_1))) __PYX_ERR(0, 78, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         }
         __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
       } /* exit inner scope */
 
-      /* "mabel/data/internals/group_by.py":72
+      /* "mabel/data/internals/group_by.py":78
  *                 )
  *             if group_key not in self._group_keys.keys():
  *                 self._group_keys[group_key] = [             # <<<<<<<<<<<<<<
  *                     (column, record.get(column)) for column in self._columns
  *                 ]
  */
-      __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_group_keys); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 72, __pyx_L1_error)
+      __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_group_keys); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 78, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_13);
-      if (unlikely(__Pyx_SetItemInt(__pyx_t_13, __pyx_cur_scope->__pyx_v_group_key, __pyx_t_3, unsigned long, 0, __Pyx_PyInt_From_unsigned_long, 0, 0, 1) < 0)) __PYX_ERR(0, 72, __pyx_L1_error)
+      if (unlikely(__Pyx_SetItemInt(__pyx_t_13, __pyx_cur_scope->__pyx_v_group_key, __pyx_t_3, unsigned long, 0, __Pyx_PyInt_From_unsigned_long, 0, 0, 1) < 0)) __PYX_ERR(0, 78, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-      /* "mabel/data/internals/group_by.py":75
+      /* "mabel/data/internals/group_by.py":81
  *                     (column, record.get(column)) for column in self._columns
  *                 ]
  *                 if len(self._group_keys) >= 4999999:             # <<<<<<<<<<<<<<
  *                     raise TooManyGroups(
  *                         f"Groups are not selective enough and too many Groups have been found (stopped at {len(self._group_keys)})."
  */
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_group_keys); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 75, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_group_keys); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 81, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_14 = PyObject_Length(__pyx_t_3); if (unlikely(__pyx_t_14 == ((Py_ssize_t)-1))) __PYX_ERR(0, 75, __pyx_L1_error)
+      __pyx_t_14 = PyObject_Length(__pyx_t_3); if (unlikely(__pyx_t_14 == ((Py_ssize_t)-1))) __PYX_ERR(0, 81, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_t_24 = ((__pyx_t_14 >= 0x4C4B3F) != 0);
       if (unlikely(__pyx_t_24)) {
 
-        /* "mabel/data/internals/group_by.py":76
+        /* "mabel/data/internals/group_by.py":82
  *                 ]
  *                 if len(self._group_keys) >= 4999999:
  *                     raise TooManyGroups(             # <<<<<<<<<<<<<<
  *                         f"Groups are not selective enough and too many Groups have been found (stopped at {len(self._group_keys)})."
  *                     )
  */
-        __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_n_s_TooManyGroups); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 76, __pyx_L1_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_13, __pyx_n_s_TooManyGroups); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 82, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_13);
 
-        /* "mabel/data/internals/group_by.py":77
+        /* "mabel/data/internals/group_by.py":83
  *                 if len(self._group_keys) >= 4999999:
  *                     raise TooManyGroups(
  *                         f"Groups are not selective enough and too many Groups have been found (stopped at {len(self._group_keys)})."             # <<<<<<<<<<<<<<
  *                     )
  * 
  */
-        __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 83, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __pyx_t_14 = 0;
         __pyx_t_25 = 127;
@@ -3218,11 +3219,11 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
         __pyx_t_14 += 80;
         __Pyx_GIVEREF(__pyx_kp_u_Groups_are_not_selective_enough);
         PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_Groups_are_not_selective_enough);
-        __pyx_t_16 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_group_keys); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 77, __pyx_L1_error)
+        __pyx_t_16 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_group_keys); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 83, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_16);
-        __pyx_t_26 = PyObject_Length(__pyx_t_16); if (unlikely(__pyx_t_26 == ((Py_ssize_t)-1))) __PYX_ERR(0, 77, __pyx_L1_error)
+        __pyx_t_26 = PyObject_Length(__pyx_t_16); if (unlikely(__pyx_t_26 == ((Py_ssize_t)-1))) __PYX_ERR(0, 83, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
-        __pyx_t_16 = __Pyx_PyUnicode_From_Py_ssize_t(__pyx_t_26, 0, ' ', 'd'); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 77, __pyx_L1_error)
+        __pyx_t_16 = __Pyx_PyUnicode_From_Py_ssize_t(__pyx_t_26, 0, ' ', 'd'); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 83, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_16);
         __pyx_t_14 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_16);
         __Pyx_GIVEREF(__pyx_t_16);
@@ -3232,7 +3233,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
         __pyx_t_14 += 2;
         __Pyx_GIVEREF(__pyx_kp_u__6);
         PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u__6);
-        __pyx_t_16 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_14, __pyx_t_25); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 77, __pyx_L1_error)
+        __pyx_t_16 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_14, __pyx_t_25); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 83, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_16);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         __pyx_t_1 = NULL;
@@ -3248,14 +3249,14 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
         __pyx_t_3 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_13, __pyx_t_1, __pyx_t_16) : __Pyx_PyObject_CallOneArg(__pyx_t_13, __pyx_t_16);
         __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
         __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
-        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 76, __pyx_L1_error)
+        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 82, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
         __Pyx_Raise(__pyx_t_3, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __PYX_ERR(0, 76, __pyx_L1_error)
+        __PYX_ERR(0, 82, __pyx_L1_error)
 
-        /* "mabel/data/internals/group_by.py":75
+        /* "mabel/data/internals/group_by.py":81
  *                     (column, record.get(column)) for column in self._columns
  *                 ]
  *                 if len(self._group_keys) >= 4999999:             # <<<<<<<<<<<<<<
@@ -3264,7 +3265,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
  */
       }
 
-      /* "mabel/data/internals/group_by.py":71
+      /* "mabel/data/internals/group_by.py":77
  *                     "".join([f"{record.get(column, '')}" for column in self._columns]),
  *                 )
  *             if group_key not in self._group_keys.keys():             # <<<<<<<<<<<<<<
@@ -3273,7 +3274,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
  */
     }
 
-    /* "mabel/data/internals/group_by.py":80
+    /* "mabel/data/internals/group_by.py":86
  *                     )
  * 
  *             for column in collect_columns:             # <<<<<<<<<<<<<<
@@ -3284,26 +3285,26 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
       __pyx_t_3 = __pyx_cur_scope->__pyx_v_collect_columns; __Pyx_INCREF(__pyx_t_3); __pyx_t_14 = 0;
       __pyx_t_15 = NULL;
     } else {
-      __pyx_t_14 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_collect_columns); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 80, __pyx_L1_error)
+      __pyx_t_14 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_collect_columns); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 86, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_15 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 80, __pyx_L1_error)
+      __pyx_t_15 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 86, __pyx_L1_error)
     }
     for (;;) {
       if (likely(!__pyx_t_15)) {
         if (likely(PyList_CheckExact(__pyx_t_3))) {
           if (__pyx_t_14 >= PyList_GET_SIZE(__pyx_t_3)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_13 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_14); __Pyx_INCREF(__pyx_t_13); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 80, __pyx_L1_error)
+          __pyx_t_13 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_14); __Pyx_INCREF(__pyx_t_13); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 86, __pyx_L1_error)
           #else
-          __pyx_t_13 = PySequence_ITEM(__pyx_t_3, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 80, __pyx_L1_error)
+          __pyx_t_13 = PySequence_ITEM(__pyx_t_3, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 86, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_13);
           #endif
         } else {
           if (__pyx_t_14 >= PyTuple_GET_SIZE(__pyx_t_3)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_13 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_14); __Pyx_INCREF(__pyx_t_13); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 80, __pyx_L1_error)
+          __pyx_t_13 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_14); __Pyx_INCREF(__pyx_t_13); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 86, __pyx_L1_error)
           #else
-          __pyx_t_13 = PySequence_ITEM(__pyx_t_3, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 80, __pyx_L1_error)
+          __pyx_t_13 = PySequence_ITEM(__pyx_t_3, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 86, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_13);
           #endif
         }
@@ -3313,7 +3314,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 80, __pyx_L1_error)
+            else __PYX_ERR(0, 86, __pyx_L1_error)
           }
           break;
         }
@@ -3324,26 +3325,26 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
       __Pyx_GIVEREF(__pyx_t_13);
       __pyx_t_13 = 0;
 
-      /* "mabel/data/internals/group_by.py":81
+      /* "mabel/data/internals/group_by.py":87
  * 
  *             for column in collect_columns:
  *                 if column == "*":             # <<<<<<<<<<<<<<
  *                     yield (group_key, column, "*")
  *                 else:
  */
-      __pyx_t_24 = (__Pyx_PyUnicode_Equals(__pyx_cur_scope->__pyx_v_column, __pyx_kp_u__2, Py_EQ)); if (unlikely(__pyx_t_24 < 0)) __PYX_ERR(0, 81, __pyx_L1_error)
+      __pyx_t_24 = (__Pyx_PyUnicode_Equals(__pyx_cur_scope->__pyx_v_column, __pyx_kp_u__2, Py_EQ)); if (unlikely(__pyx_t_24 < 0)) __PYX_ERR(0, 87, __pyx_L1_error)
       if (__pyx_t_24) {
 
-        /* "mabel/data/internals/group_by.py":82
+        /* "mabel/data/internals/group_by.py":88
  *             for column in collect_columns:
  *                 if column == "*":
  *                     yield (group_key, column, "*")             # <<<<<<<<<<<<<<
  *                 else:
  *                     v = record.get(column)  # ignore nulls
  */
-        __pyx_t_13 = __Pyx_PyInt_From_unsigned_long(__pyx_cur_scope->__pyx_v_group_key); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 82, __pyx_L1_error)
+        __pyx_t_13 = __Pyx_PyInt_From_unsigned_long(__pyx_cur_scope->__pyx_v_group_key); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 88, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_13);
-        __pyx_t_16 = PyTuple_New(3); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 82, __pyx_L1_error)
+        __pyx_t_16 = PyTuple_New(3); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 88, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_16);
         __Pyx_GIVEREF(__pyx_t_13);
         PyTuple_SET_ITEM(__pyx_t_16, 0, __pyx_t_13);
@@ -3381,9 +3382,9 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
         __pyx_t_6 = __pyx_cur_scope->__pyx_t_2;
         __pyx_t_14 = __pyx_cur_scope->__pyx_t_4;
         __pyx_t_15 = __pyx_cur_scope->__pyx_t_5;
-        if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 82, __pyx_L1_error)
+        if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 88, __pyx_L1_error)
 
-        /* "mabel/data/internals/group_by.py":81
+        /* "mabel/data/internals/group_by.py":87
  * 
  *             for column in collect_columns:
  *                 if column == "*":             # <<<<<<<<<<<<<<
@@ -3393,7 +3394,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
         goto __pyx_L30;
       }
 
-      /* "mabel/data/internals/group_by.py":84
+      /* "mabel/data/internals/group_by.py":90
  *                     yield (group_key, column, "*")
  *                 else:
  *                     v = record.get(column)  # ignore nulls             # <<<<<<<<<<<<<<
@@ -3401,7 +3402,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
  *                         yield (group_key, column, record[column])
  */
       /*else*/ {
-        __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_record, __pyx_n_s_get); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 84, __pyx_L1_error)
+        __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_record, __pyx_n_s_get); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 90, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_13);
         __pyx_t_1 = NULL;
         if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_13))) {
@@ -3415,7 +3416,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
         }
         __pyx_t_16 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_13, __pyx_t_1, __pyx_cur_scope->__pyx_v_column) : __Pyx_PyObject_CallOneArg(__pyx_t_13, __pyx_cur_scope->__pyx_v_column);
         __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-        if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 84, __pyx_L1_error)
+        if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 90, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_16);
         __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
         __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_v);
@@ -3423,7 +3424,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
         __Pyx_GIVEREF(__pyx_t_16);
         __pyx_t_16 = 0;
 
-        /* "mabel/data/internals/group_by.py":85
+        /* "mabel/data/internals/group_by.py":91
  *                 else:
  *                     v = record.get(column)  # ignore nulls
  *                     if v is not None:             # <<<<<<<<<<<<<<
@@ -3434,18 +3435,18 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
         __pyx_t_4 = (__pyx_t_24 != 0);
         if (__pyx_t_4) {
 
-          /* "mabel/data/internals/group_by.py":86
+          /* "mabel/data/internals/group_by.py":92
  *                     v = record.get(column)  # ignore nulls
  *                     if v is not None:
  *                         yield (group_key, column, record[column])             # <<<<<<<<<<<<<<
  * 
  *     def aggregate(self, aggregations):
  */
-          __pyx_t_16 = __Pyx_PyInt_From_unsigned_long(__pyx_cur_scope->__pyx_v_group_key); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 86, __pyx_L1_error)
+          __pyx_t_16 = __Pyx_PyInt_From_unsigned_long(__pyx_cur_scope->__pyx_v_group_key); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 92, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_16);
-          __pyx_t_13 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_record, __pyx_cur_scope->__pyx_v_column); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 86, __pyx_L1_error)
+          __pyx_t_13 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_record, __pyx_cur_scope->__pyx_v_column); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 92, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_13);
-          __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 86, __pyx_L1_error)
+          __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 92, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_1);
           __Pyx_GIVEREF(__pyx_t_16);
           PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_16);
@@ -3483,9 +3484,9 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
           __pyx_t_6 = __pyx_cur_scope->__pyx_t_2;
           __pyx_t_14 = __pyx_cur_scope->__pyx_t_4;
           __pyx_t_15 = __pyx_cur_scope->__pyx_t_5;
-          if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 86, __pyx_L1_error)
+          if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 92, __pyx_L1_error)
 
-          /* "mabel/data/internals/group_by.py":85
+          /* "mabel/data/internals/group_by.py":91
  *                 else:
  *                     v = record.get(column)  # ignore nulls
  *                     if v is not None:             # <<<<<<<<<<<<<<
@@ -3496,7 +3497,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
       }
       __pyx_L30:;
 
-      /* "mabel/data/internals/group_by.py":80
+      /* "mabel/data/internals/group_by.py":86
  *                     )
  * 
  *             for column in collect_columns:             # <<<<<<<<<<<<<<
@@ -3506,7 +3507,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "mabel/data/internals/group_by.py":60
+    /* "mabel/data/internals/group_by.py":66
  *             return
  * 
  *         for record in self._dictset:             # <<<<<<<<<<<<<<
@@ -3517,7 +3518,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "mabel/data/internals/group_by.py":38
+  /* "mabel/data/internals/group_by.py":44
  *         self._group_keys = {}
  * 
  *     def _map(self, collect_columns):             # <<<<<<<<<<<<<<
@@ -3555,7 +3556,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_4generator(
 }
 static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "mabel/data/internals/group_by.py":88
+/* "mabel/data/internals/group_by.py":94
  *                         yield (group_key, column, record[column])
  * 
  *     def aggregate(self, aggregations):             # <<<<<<<<<<<<<<
@@ -3599,11 +3600,11 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_8group_by_7GroupBy_6aggregate(
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_aggregations)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("aggregate", 1, 2, 2, 1); __PYX_ERR(0, 88, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("aggregate", 1, 2, 2, 1); __PYX_ERR(0, 94, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "aggregate") < 0)) __PYX_ERR(0, 88, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "aggregate") < 0)) __PYX_ERR(0, 94, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -3616,7 +3617,7 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_8group_by_7GroupBy_6aggregate(
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("aggregate", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 88, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("aggregate", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 94, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mabel.data.internals.group_by.GroupBy.aggregate", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3630,7 +3631,7 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_8group_by_7GroupBy_6aggregate(
 }
 static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_9aggregate_2generator3(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "mabel/data/internals/group_by.py":101
+/* "mabel/data/internals/group_by.py":107
  *         if not isinstance(aggregations, list):
  *             aggregations = [aggregations]
  *         if not all(isinstance(agg, tuple) for agg in aggregations):             # <<<<<<<<<<<<<<
@@ -3650,7 +3651,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_9aggregate_
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_5mabel_4data_9internals_8group_by___pyx_scope_struct_2_genexpr *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 101, __pyx_L1_error)
+    __PYX_ERR(0, 107, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -3658,7 +3659,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_9aggregate_
   __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope));
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_outer_scope);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_9aggregate_2generator3, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_GroupBy_aggregate_locals_genexpr, __pyx_n_s_mabel_data_internals_group_by); if (unlikely(!gen)) __PYX_ERR(0, 101, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_9aggregate_2generator3, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_GroupBy_aggregate_locals_genexpr, __pyx_n_s_mabel_data_internals_group_by); if (unlikely(!gen)) __PYX_ERR(0, 107, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -3696,32 +3697,32 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_9aggregate_
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 101, __pyx_L1_error)
-  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_aggregations)) { __Pyx_RaiseClosureNameError("aggregations"); __PYX_ERR(0, 101, __pyx_L1_error) }
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 107, __pyx_L1_error)
+  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_aggregations)) { __Pyx_RaiseClosureNameError("aggregations"); __PYX_ERR(0, 107, __pyx_L1_error) }
   if (likely(PyList_CheckExact(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_aggregations)) || PyTuple_CheckExact(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_aggregations)) {
     __pyx_t_1 = __pyx_cur_scope->__pyx_outer_scope->__pyx_v_aggregations; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
     __pyx_t_3 = NULL;
   } else {
-    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_aggregations); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 101, __pyx_L1_error)
+    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_aggregations); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 101, __pyx_L1_error)
+    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_3)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 101, __pyx_L1_error)
+        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 107, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 101, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 107, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       } else {
         if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 101, __pyx_L1_error)
+        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 107, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 101, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 107, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       }
@@ -3731,7 +3732,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_9aggregate_
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 101, __pyx_L1_error)
+          else __PYX_ERR(0, 107, __pyx_L1_error)
         }
         break;
       }
@@ -3778,7 +3779,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_9aggregate_
   return __pyx_r;
 }
 
-/* "mabel/data/internals/group_by.py":88
+/* "mabel/data/internals/group_by.py":94
  *                         yield (group_key, column, record[column])
  * 
  *     def aggregate(self, aggregations):             # <<<<<<<<<<<<<<
@@ -3798,7 +3799,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_5aggregate(
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_5mabel_4data_9internals_8group_by___pyx_scope_struct_1_aggregate *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 88, __pyx_L1_error)
+    __PYX_ERR(0, 94, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -3809,7 +3810,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_5aggregate(
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_aggregations);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_aggregations);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1, __pyx_codeobj__7, (PyObject *) __pyx_cur_scope, __pyx_n_s_aggregate, __pyx_n_s_GroupBy_aggregate, __pyx_n_s_mabel_data_internals_group_by); if (unlikely(!gen)) __PYX_ERR(0, 88, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1, __pyx_codeobj__7, (PyObject *) __pyx_cur_scope, __pyx_n_s_aggregate, __pyx_n_s_GroupBy_aggregate, __pyx_n_s_mabel_data_internals_group_by); if (unlikely(!gen)) __PYX_ERR(0, 94, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -3863,9 +3864,9 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 88, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 94, __pyx_L1_error)
 
-  /* "mabel/data/internals/group_by.py":99
+  /* "mabel/data/internals/group_by.py":105
  *         """
  * 
  *         if not isinstance(aggregations, list):             # <<<<<<<<<<<<<<
@@ -3879,14 +3880,14 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
   __pyx_t_3 = ((!(__pyx_t_2 != 0)) != 0);
   if (__pyx_t_3) {
 
-    /* "mabel/data/internals/group_by.py":100
+    /* "mabel/data/internals/group_by.py":106
  * 
  *         if not isinstance(aggregations, list):
  *             aggregations = [aggregations]             # <<<<<<<<<<<<<<
  *         if not all(isinstance(agg, tuple) for agg in aggregations):
  *             raise ValueError("`aggregate` expects a list of Tuples")
  */
-    __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 100, __pyx_L1_error)
+    __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_cur_scope->__pyx_v_aggregations);
     __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_aggregations);
@@ -3896,7 +3897,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
     __Pyx_GIVEREF(__pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "mabel/data/internals/group_by.py":99
+    /* "mabel/data/internals/group_by.py":105
  *         """
  * 
  *         if not isinstance(aggregations, list):             # <<<<<<<<<<<<<<
@@ -3905,37 +3906,37 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
  */
   }
 
-  /* "mabel/data/internals/group_by.py":101
+  /* "mabel/data/internals/group_by.py":107
  *         if not isinstance(aggregations, list):
  *             aggregations = [aggregations]
  *         if not all(isinstance(agg, tuple) for agg in aggregations):             # <<<<<<<<<<<<<<
  *             raise ValueError("`aggregate` expects a list of Tuples")
  * 
  */
-  __pyx_t_1 = __pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_9aggregate_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 101, __pyx_L1_error)
+  __pyx_t_1 = __pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_9aggregate_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __Pyx_Generator_Next(__pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 101, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_Generator_Next(__pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 101, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 107, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_2 = ((!__pyx_t_3) != 0);
   if (unlikely(__pyx_t_2)) {
 
-    /* "mabel/data/internals/group_by.py":102
+    /* "mabel/data/internals/group_by.py":108
  *             aggregations = [aggregations]
  *         if not all(isinstance(agg, tuple) for agg in aggregations):
  *             raise ValueError("`aggregate` expects a list of Tuples")             # <<<<<<<<<<<<<<
  * 
  *         requested_aggs = aggregations.copy()
  */
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__8, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 102, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__8, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 108, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_Raise(__pyx_t_4, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __PYX_ERR(0, 102, __pyx_L1_error)
+    __PYX_ERR(0, 108, __pyx_L1_error)
 
-    /* "mabel/data/internals/group_by.py":101
+    /* "mabel/data/internals/group_by.py":107
  *         if not isinstance(aggregations, list):
  *             aggregations = [aggregations]
  *         if not all(isinstance(agg, tuple) for agg in aggregations):             # <<<<<<<<<<<<<<
@@ -3944,14 +3945,14 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
  */
   }
 
-  /* "mabel/data/internals/group_by.py":104
+  /* "mabel/data/internals/group_by.py":110
  *             raise ValueError("`aggregate` expects a list of Tuples")
  * 
  *         requested_aggs = aggregations.copy()             # <<<<<<<<<<<<<<
  * 
  *         # averages need the sum and the count
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_aggregations, __pyx_n_s_copy); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 104, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_aggregations, __pyx_n_s_copy); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 110, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_5 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -3965,14 +3966,14 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
   }
   __pyx_t_4 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 104, __pyx_L1_error)
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 110, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_GIVEREF(__pyx_t_4);
   __pyx_cur_scope->__pyx_v_requested_aggs = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "mabel/data/internals/group_by.py":107
+  /* "mabel/data/internals/group_by.py":113
  * 
  *         # averages need the sum and the count
  *         for func, col in aggregations:             # <<<<<<<<<<<<<<
@@ -3983,26 +3984,26 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
     __pyx_t_4 = __pyx_cur_scope->__pyx_v_aggregations; __Pyx_INCREF(__pyx_t_4); __pyx_t_6 = 0;
     __pyx_t_7 = NULL;
   } else {
-    __pyx_t_6 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_aggregations); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 107, __pyx_L1_error)
+    __pyx_t_6 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_aggregations); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 113, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_7 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 107, __pyx_L1_error)
+    __pyx_t_7 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 113, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_7)) {
       if (likely(PyList_CheckExact(__pyx_t_4))) {
         if (__pyx_t_6 >= PyList_GET_SIZE(__pyx_t_4)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_6); __Pyx_INCREF(__pyx_t_1); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 107, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_6); __Pyx_INCREF(__pyx_t_1); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 113, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_6 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_6); __Pyx_INCREF(__pyx_t_1); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 107, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_6); __Pyx_INCREF(__pyx_t_1); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 113, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -4012,7 +4013,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 107, __pyx_L1_error)
+          else __PYX_ERR(0, 113, __pyx_L1_error)
         }
         break;
       }
@@ -4024,7 +4025,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 107, __pyx_L1_error)
+        __PYX_ERR(0, 113, __pyx_L1_error)
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -4037,15 +4038,15 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
       __Pyx_INCREF(__pyx_t_5);
       __Pyx_INCREF(__pyx_t_8);
       #else
-      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 107, __pyx_L1_error)
+      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 113, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_8 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 107, __pyx_L1_error)
+      __pyx_t_8 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 113, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
       #endif
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_9 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 107, __pyx_L1_error)
+      __pyx_t_9 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 113, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_t_10 = Py_TYPE(__pyx_t_9)->tp_iternext;
@@ -4053,7 +4054,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
       __Pyx_GOTREF(__pyx_t_5);
       index = 1; __pyx_t_8 = __pyx_t_10(__pyx_t_9); if (unlikely(!__pyx_t_8)) goto __pyx_L8_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_8);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_10(__pyx_t_9), 2) < 0) __PYX_ERR(0, 107, __pyx_L1_error)
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_10(__pyx_t_9), 2) < 0) __PYX_ERR(0, 113, __pyx_L1_error)
       __pyx_t_10 = NULL;
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       goto __pyx_L9_unpacking_done;
@@ -4061,7 +4062,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __pyx_t_10 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 107, __pyx_L1_error)
+      __PYX_ERR(0, 113, __pyx_L1_error)
       __pyx_L9_unpacking_done:;
     }
     __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_func);
@@ -4073,24 +4074,24 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
     __Pyx_GIVEREF(__pyx_t_8);
     __pyx_t_8 = 0;
 
-    /* "mabel/data/internals/group_by.py":108
+    /* "mabel/data/internals/group_by.py":114
  *         # averages need the sum and the count
  *         for func, col in aggregations:
  *             if func == "AVG":             # <<<<<<<<<<<<<<
  *                 aggregations += [("SUM", col), ("COUNT", col)]
  * 
  */
-    __pyx_t_2 = (__Pyx_PyUnicode_Equals(__pyx_cur_scope->__pyx_v_func, __pyx_n_u_AVG, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 108, __pyx_L1_error)
+    __pyx_t_2 = (__Pyx_PyUnicode_Equals(__pyx_cur_scope->__pyx_v_func, __pyx_n_u_AVG, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 114, __pyx_L1_error)
     if (__pyx_t_2) {
 
-      /* "mabel/data/internals/group_by.py":109
+      /* "mabel/data/internals/group_by.py":115
  *         for func, col in aggregations:
  *             if func == "AVG":
  *                 aggregations += [("SUM", col), ("COUNT", col)]             # <<<<<<<<<<<<<<
  * 
  *         columns_to_collect = {col for func, col in aggregations}
  */
-      __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 109, __pyx_L1_error)
+      __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 115, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_INCREF(__pyx_n_u_SUM);
       __Pyx_GIVEREF(__pyx_n_u_SUM);
@@ -4098,7 +4099,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
       __Pyx_INCREF(__pyx_cur_scope->__pyx_v_col);
       __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_col);
       PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_cur_scope->__pyx_v_col);
-      __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 109, __pyx_L1_error)
+      __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 115, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_INCREF(__pyx_n_u_COUNT);
       __Pyx_GIVEREF(__pyx_n_u_COUNT);
@@ -4106,7 +4107,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
       __Pyx_INCREF(__pyx_cur_scope->__pyx_v_col);
       __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_col);
       PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_cur_scope->__pyx_v_col);
-      __pyx_t_5 = PyList_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 109, __pyx_L1_error)
+      __pyx_t_5 = PyList_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 115, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GIVEREF(__pyx_t_1);
       PyList_SET_ITEM(__pyx_t_5, 0, __pyx_t_1);
@@ -4114,7 +4115,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
       PyList_SET_ITEM(__pyx_t_5, 1, __pyx_t_8);
       __pyx_t_1 = 0;
       __pyx_t_8 = 0;
-      __pyx_t_8 = PyNumber_InPlaceAdd(__pyx_cur_scope->__pyx_v_aggregations, __pyx_t_5); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 109, __pyx_L1_error)
+      __pyx_t_8 = PyNumber_InPlaceAdd(__pyx_cur_scope->__pyx_v_aggregations, __pyx_t_5); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 115, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_GOTREF(__pyx_cur_scope->__pyx_v_aggregations);
@@ -4122,7 +4123,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
       __Pyx_GIVEREF(__pyx_t_8);
       __pyx_t_8 = 0;
 
-      /* "mabel/data/internals/group_by.py":108
+      /* "mabel/data/internals/group_by.py":114
  *         # averages need the sum and the count
  *         for func, col in aggregations:
  *             if func == "AVG":             # <<<<<<<<<<<<<<
@@ -4131,7 +4132,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
  */
     }
 
-    /* "mabel/data/internals/group_by.py":107
+    /* "mabel/data/internals/group_by.py":113
  * 
  *         # averages need the sum and the count
  *         for func, col in aggregations:             # <<<<<<<<<<<<<<
@@ -4141,7 +4142,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
   }
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mabel/data/internals/group_by.py":111
+  /* "mabel/data/internals/group_by.py":117
  *                 aggregations += [("SUM", col), ("COUNT", col)]
  * 
  *         columns_to_collect = {col for func, col in aggregations}             # <<<<<<<<<<<<<<
@@ -4149,32 +4150,32 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
  *         collector = defaultdict(dict)
  */
   { /* enter inner scope */
-    __pyx_t_4 = PySet_New(NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 111, __pyx_L1_error)
+    __pyx_t_4 = PySet_New(NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 117, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     if (likely(PyList_CheckExact(__pyx_cur_scope->__pyx_v_aggregations)) || PyTuple_CheckExact(__pyx_cur_scope->__pyx_v_aggregations)) {
       __pyx_t_8 = __pyx_cur_scope->__pyx_v_aggregations; __Pyx_INCREF(__pyx_t_8); __pyx_t_6 = 0;
       __pyx_t_7 = NULL;
     } else {
-      __pyx_t_6 = -1; __pyx_t_8 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_aggregations); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 111, __pyx_L1_error)
+      __pyx_t_6 = -1; __pyx_t_8 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_aggregations); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 117, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
-      __pyx_t_7 = Py_TYPE(__pyx_t_8)->tp_iternext; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 111, __pyx_L1_error)
+      __pyx_t_7 = Py_TYPE(__pyx_t_8)->tp_iternext; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 117, __pyx_L1_error)
     }
     for (;;) {
       if (likely(!__pyx_t_7)) {
         if (likely(PyList_CheckExact(__pyx_t_8))) {
           if (__pyx_t_6 >= PyList_GET_SIZE(__pyx_t_8)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_5 = PyList_GET_ITEM(__pyx_t_8, __pyx_t_6); __Pyx_INCREF(__pyx_t_5); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 111, __pyx_L1_error)
+          __pyx_t_5 = PyList_GET_ITEM(__pyx_t_8, __pyx_t_6); __Pyx_INCREF(__pyx_t_5); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 117, __pyx_L1_error)
           #else
-          __pyx_t_5 = PySequence_ITEM(__pyx_t_8, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 111, __pyx_L1_error)
+          __pyx_t_5 = PySequence_ITEM(__pyx_t_8, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 117, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_5);
           #endif
         } else {
           if (__pyx_t_6 >= PyTuple_GET_SIZE(__pyx_t_8)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_8, __pyx_t_6); __Pyx_INCREF(__pyx_t_5); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 111, __pyx_L1_error)
+          __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_8, __pyx_t_6); __Pyx_INCREF(__pyx_t_5); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 117, __pyx_L1_error)
           #else
-          __pyx_t_5 = PySequence_ITEM(__pyx_t_8, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 111, __pyx_L1_error)
+          __pyx_t_5 = PySequence_ITEM(__pyx_t_8, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 117, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_5);
           #endif
         }
@@ -4184,7 +4185,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 111, __pyx_L1_error)
+            else __PYX_ERR(0, 117, __pyx_L1_error)
           }
           break;
         }
@@ -4196,7 +4197,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         if (unlikely(size != 2)) {
           if (size > 2) __Pyx_RaiseTooManyValuesError(2);
           else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-          __PYX_ERR(0, 111, __pyx_L1_error)
+          __PYX_ERR(0, 117, __pyx_L1_error)
         }
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
         if (likely(PyTuple_CheckExact(sequence))) {
@@ -4209,15 +4210,15 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         __Pyx_INCREF(__pyx_t_1);
         __Pyx_INCREF(__pyx_t_9);
         #else
-        __pyx_t_1 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 111, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 117, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_9 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 111, __pyx_L1_error)
+        __pyx_t_9 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 117, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_9);
         #endif
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       } else {
         Py_ssize_t index = -1;
-        __pyx_t_11 = PyObject_GetIter(__pyx_t_5); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 111, __pyx_L1_error)
+        __pyx_t_11 = PyObject_GetIter(__pyx_t_5); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 117, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_11);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         __pyx_t_10 = Py_TYPE(__pyx_t_11)->tp_iternext;
@@ -4225,7 +4226,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         __Pyx_GOTREF(__pyx_t_1);
         index = 1; __pyx_t_9 = __pyx_t_10(__pyx_t_11); if (unlikely(!__pyx_t_9)) goto __pyx_L13_unpacking_failed;
         __Pyx_GOTREF(__pyx_t_9);
-        if (__Pyx_IternextUnpackEndCheck(__pyx_t_10(__pyx_t_11), 2) < 0) __PYX_ERR(0, 111, __pyx_L1_error)
+        if (__Pyx_IternextUnpackEndCheck(__pyx_t_10(__pyx_t_11), 2) < 0) __PYX_ERR(0, 117, __pyx_L1_error)
         __pyx_t_10 = NULL;
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
         goto __pyx_L14_unpacking_done;
@@ -4233,7 +4234,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
         __pyx_t_10 = NULL;
         if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-        __PYX_ERR(0, 111, __pyx_L1_error)
+        __PYX_ERR(0, 117, __pyx_L1_error)
         __pyx_L14_unpacking_done:;
       }
       __Pyx_XGOTREF(__pyx_cur_scope->__pyx_8genexpr4__pyx_v_func);
@@ -4244,7 +4245,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
       __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_8genexpr4__pyx_v_col, __pyx_t_9);
       __Pyx_GIVEREF(__pyx_t_9);
       __pyx_t_9 = 0;
-      if (unlikely(PySet_Add(__pyx_t_4, (PyObject*)__pyx_cur_scope->__pyx_8genexpr4__pyx_v_col))) __PYX_ERR(0, 111, __pyx_L1_error)
+      if (unlikely(PySet_Add(__pyx_t_4, (PyObject*)__pyx_cur_scope->__pyx_8genexpr4__pyx_v_col))) __PYX_ERR(0, 117, __pyx_L1_error)
     }
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   } /* exit inner scope */
@@ -4252,14 +4253,14 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
   __pyx_cur_scope->__pyx_v_columns_to_collect = ((PyObject*)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "mabel/data/internals/group_by.py":113
+  /* "mabel/data/internals/group_by.py":119
  *         columns_to_collect = {col for func, col in aggregations}
  * 
  *         collector = defaultdict(dict)             # <<<<<<<<<<<<<<
  *         # Iterate through the data in the groups formatted by the mapper. This data
  *         # is a list of Tuples of (GroupID, Column Name, Value)
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_defaultdict); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_defaultdict); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 119, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __pyx_t_5 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_8))) {
@@ -4273,21 +4274,21 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
   }
   __pyx_t_4 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_8, __pyx_t_5, ((PyObject *)(&PyDict_Type))) : __Pyx_PyObject_CallOneArg(__pyx_t_8, ((PyObject *)(&PyDict_Type)));
   __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 113, __pyx_L1_error)
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 119, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __Pyx_GIVEREF(__pyx_t_4);
   __pyx_cur_scope->__pyx_v_collector = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "mabel/data/internals/group_by.py":116
+  /* "mabel/data/internals/group_by.py":122
  *         # Iterate through the data in the groups formatted by the mapper. This data
  *         # is a list of Tuples of (GroupID, Column Name, Value)
  *         for record in self._map(columns_to_collect):             # <<<<<<<<<<<<<<
  *             # For each aggregation, we need to perform the function against the
  *             # values as they come in - the collector holds the result up to this
  */
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_map); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 116, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_map); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 122, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __pyx_t_5 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_8))) {
@@ -4301,16 +4302,16 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
   }
   __pyx_t_4 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_8, __pyx_t_5, __pyx_cur_scope->__pyx_v_columns_to_collect) : __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_cur_scope->__pyx_v_columns_to_collect);
   __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 116, __pyx_L1_error)
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 122, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   if (likely(PyList_CheckExact(__pyx_t_4)) || PyTuple_CheckExact(__pyx_t_4)) {
     __pyx_t_8 = __pyx_t_4; __Pyx_INCREF(__pyx_t_8); __pyx_t_6 = 0;
     __pyx_t_7 = NULL;
   } else {
-    __pyx_t_6 = -1; __pyx_t_8 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 116, __pyx_L1_error)
+    __pyx_t_6 = -1; __pyx_t_8 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 122, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_7 = Py_TYPE(__pyx_t_8)->tp_iternext; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 116, __pyx_L1_error)
+    __pyx_t_7 = Py_TYPE(__pyx_t_8)->tp_iternext; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 122, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   for (;;) {
@@ -4318,17 +4319,17 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
       if (likely(PyList_CheckExact(__pyx_t_8))) {
         if (__pyx_t_6 >= PyList_GET_SIZE(__pyx_t_8)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_8, __pyx_t_6); __Pyx_INCREF(__pyx_t_4); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 116, __pyx_L1_error)
+        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_8, __pyx_t_6); __Pyx_INCREF(__pyx_t_4); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 122, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_8, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 116, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_8, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 122, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       } else {
         if (__pyx_t_6 >= PyTuple_GET_SIZE(__pyx_t_8)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_8, __pyx_t_6); __Pyx_INCREF(__pyx_t_4); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 116, __pyx_L1_error)
+        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_8, __pyx_t_6); __Pyx_INCREF(__pyx_t_4); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 122, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_8, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 116, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_8, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 122, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       }
@@ -4338,7 +4339,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 116, __pyx_L1_error)
+          else __PYX_ERR(0, 122, __pyx_L1_error)
         }
         break;
       }
@@ -4349,7 +4350,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
     __Pyx_GIVEREF(__pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "mabel/data/internals/group_by.py":120
+    /* "mabel/data/internals/group_by.py":126
  *             # values as they come in - the collector holds the result up to this
  *             # point in the set.
  *             for func, col in aggregations:             # <<<<<<<<<<<<<<
@@ -4360,26 +4361,26 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
       __pyx_t_4 = __pyx_cur_scope->__pyx_v_aggregations; __Pyx_INCREF(__pyx_t_4); __pyx_t_12 = 0;
       __pyx_t_13 = NULL;
     } else {
-      __pyx_t_12 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_aggregations); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 120, __pyx_L1_error)
+      __pyx_t_12 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_aggregations); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 126, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_13 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 120, __pyx_L1_error)
+      __pyx_t_13 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 126, __pyx_L1_error)
     }
     for (;;) {
       if (likely(!__pyx_t_13)) {
         if (likely(PyList_CheckExact(__pyx_t_4))) {
           if (__pyx_t_12 >= PyList_GET_SIZE(__pyx_t_4)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_5 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_12); __Pyx_INCREF(__pyx_t_5); __pyx_t_12++; if (unlikely(0 < 0)) __PYX_ERR(0, 120, __pyx_L1_error)
+          __pyx_t_5 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_12); __Pyx_INCREF(__pyx_t_5); __pyx_t_12++; if (unlikely(0 < 0)) __PYX_ERR(0, 126, __pyx_L1_error)
           #else
-          __pyx_t_5 = PySequence_ITEM(__pyx_t_4, __pyx_t_12); __pyx_t_12++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 120, __pyx_L1_error)
+          __pyx_t_5 = PySequence_ITEM(__pyx_t_4, __pyx_t_12); __pyx_t_12++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 126, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_5);
           #endif
         } else {
           if (__pyx_t_12 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_12); __Pyx_INCREF(__pyx_t_5); __pyx_t_12++; if (unlikely(0 < 0)) __PYX_ERR(0, 120, __pyx_L1_error)
+          __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_12); __Pyx_INCREF(__pyx_t_5); __pyx_t_12++; if (unlikely(0 < 0)) __PYX_ERR(0, 126, __pyx_L1_error)
           #else
-          __pyx_t_5 = PySequence_ITEM(__pyx_t_4, __pyx_t_12); __pyx_t_12++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 120, __pyx_L1_error)
+          __pyx_t_5 = PySequence_ITEM(__pyx_t_4, __pyx_t_12); __pyx_t_12++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 126, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_5);
           #endif
         }
@@ -4389,7 +4390,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 120, __pyx_L1_error)
+            else __PYX_ERR(0, 126, __pyx_L1_error)
           }
           break;
         }
@@ -4401,7 +4402,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         if (unlikely(size != 2)) {
           if (size > 2) __Pyx_RaiseTooManyValuesError(2);
           else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-          __PYX_ERR(0, 120, __pyx_L1_error)
+          __PYX_ERR(0, 126, __pyx_L1_error)
         }
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
         if (likely(PyTuple_CheckExact(sequence))) {
@@ -4414,15 +4415,15 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         __Pyx_INCREF(__pyx_t_9);
         __Pyx_INCREF(__pyx_t_1);
         #else
-        __pyx_t_9 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 120, __pyx_L1_error)
+        __pyx_t_9 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 126, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_9);
-        __pyx_t_1 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 120, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 126, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       } else {
         Py_ssize_t index = -1;
-        __pyx_t_11 = PyObject_GetIter(__pyx_t_5); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 120, __pyx_L1_error)
+        __pyx_t_11 = PyObject_GetIter(__pyx_t_5); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 126, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_11);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         __pyx_t_10 = Py_TYPE(__pyx_t_11)->tp_iternext;
@@ -4430,7 +4431,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         __Pyx_GOTREF(__pyx_t_9);
         index = 1; __pyx_t_1 = __pyx_t_10(__pyx_t_11); if (unlikely(!__pyx_t_1)) goto __pyx_L19_unpacking_failed;
         __Pyx_GOTREF(__pyx_t_1);
-        if (__Pyx_IternextUnpackEndCheck(__pyx_t_10(__pyx_t_11), 2) < 0) __PYX_ERR(0, 120, __pyx_L1_error)
+        if (__Pyx_IternextUnpackEndCheck(__pyx_t_10(__pyx_t_11), 2) < 0) __PYX_ERR(0, 126, __pyx_L1_error)
         __pyx_t_10 = NULL;
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
         goto __pyx_L20_unpacking_done;
@@ -4438,7 +4439,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
         __pyx_t_10 = NULL;
         if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-        __PYX_ERR(0, 120, __pyx_L1_error)
+        __PYX_ERR(0, 126, __pyx_L1_error)
         __pyx_L20_unpacking_done:;
       }
       __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_func);
@@ -4450,22 +4451,22 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
       __Pyx_GIVEREF(__pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "mabel/data/internals/group_by.py":122
+      /* "mabel/data/internals/group_by.py":128
  *             for func, col in aggregations:
  * 
  *                 if col != record[1]:             # <<<<<<<<<<<<<<
  *                     continue
  * 
  */
-      __pyx_t_5 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_record, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 122, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_record, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 128, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_1 = PyObject_RichCompare(__pyx_cur_scope->__pyx_v_col, __pyx_t_5, Py_NE); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 122, __pyx_L1_error)
+      __pyx_t_1 = PyObject_RichCompare(__pyx_cur_scope->__pyx_v_col, __pyx_t_5, Py_NE); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 128, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 122, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 128, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       if (__pyx_t_2) {
 
-        /* "mabel/data/internals/group_by.py":123
+        /* "mabel/data/internals/group_by.py":129
  * 
  *                 if col != record[1]:
  *                     continue             # <<<<<<<<<<<<<<
@@ -4474,7 +4475,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
  */
         goto __pyx_L17_continue;
 
-        /* "mabel/data/internals/group_by.py":122
+        /* "mabel/data/internals/group_by.py":128
  *             for func, col in aggregations:
  * 
  *                 if col != record[1]:             # <<<<<<<<<<<<<<
@@ -4483,18 +4484,18 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
  */
       }
 
-      /* "mabel/data/internals/group_by.py":125
+      /* "mabel/data/internals/group_by.py":131
  *                     continue
  * 
  *                 key = f"{func}({col})"             # <<<<<<<<<<<<<<
  * 
  *                 existing = collector[record[0]].get(key)
  */
-      __pyx_t_1 = PyTuple_New(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 125, __pyx_L1_error)
+      __pyx_t_1 = PyTuple_New(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 131, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __pyx_t_14 = 0;
       __pyx_t_15 = 127;
-      __pyx_t_5 = __Pyx_PyObject_FormatSimple(__pyx_cur_scope->__pyx_v_func, __pyx_empty_unicode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 125, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_FormatSimple(__pyx_cur_scope->__pyx_v_func, __pyx_empty_unicode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 131, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_t_15 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) > __pyx_t_15) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) : __pyx_t_15;
       __pyx_t_14 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_5);
@@ -4505,7 +4506,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
       __pyx_t_14 += 1;
       __Pyx_GIVEREF(__pyx_kp_u__9);
       PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_kp_u__9);
-      __pyx_t_5 = __Pyx_PyObject_FormatSimple(__pyx_cur_scope->__pyx_v_col, __pyx_empty_unicode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 125, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_FormatSimple(__pyx_cur_scope->__pyx_v_col, __pyx_empty_unicode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 131, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_t_15 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) > __pyx_t_15) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) : __pyx_t_15;
       __pyx_t_14 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_5);
@@ -4516,7 +4517,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
       __pyx_t_14 += 1;
       __Pyx_GIVEREF(__pyx_kp_u__10);
       PyTuple_SET_ITEM(__pyx_t_1, 3, __pyx_kp_u__10);
-      __pyx_t_5 = __Pyx_PyUnicode_Join(__pyx_t_1, 4, __pyx_t_14, __pyx_t_15); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 125, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyUnicode_Join(__pyx_t_1, 4, __pyx_t_14, __pyx_t_15); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 131, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_key);
@@ -4524,19 +4525,19 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
       __Pyx_GIVEREF(__pyx_t_5);
       __pyx_t_5 = 0;
 
-      /* "mabel/data/internals/group_by.py":127
+      /* "mabel/data/internals/group_by.py":133
  *                 key = f"{func}({col})"
  * 
  *                 existing = collector[record[0]].get(key)             # <<<<<<<<<<<<<<
  *                 value = record[2]
  * 
  */
-      __pyx_t_1 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_record, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 127, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_record, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 133, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_9 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_collector, __pyx_t_1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 127, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_collector, __pyx_t_1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 133, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_get); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 127, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_get); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 133, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __pyx_t_9 = NULL;
@@ -4551,7 +4552,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
       }
       __pyx_t_5 = (__pyx_t_9) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_9, __pyx_cur_scope->__pyx_v_key) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_cur_scope->__pyx_v_key);
       __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 127, __pyx_L1_error)
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 133, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_existing);
@@ -4559,58 +4560,58 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
       __Pyx_GIVEREF(__pyx_t_5);
       __pyx_t_5 = 0;
 
-      /* "mabel/data/internals/group_by.py":128
+      /* "mabel/data/internals/group_by.py":134
  * 
  *                 existing = collector[record[0]].get(key)
  *                 value = record[2]             # <<<<<<<<<<<<<<
  * 
  *                 # the aggregation works by performing a simple calculation on
  */
-      __pyx_t_5 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_record, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 128, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_record, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 134, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_value);
       __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_value, __pyx_t_5);
       __Pyx_GIVEREF(__pyx_t_5);
       __pyx_t_5 = 0;
 
-      /* "mabel/data/internals/group_by.py":133
+      /* "mabel/data/internals/group_by.py":139
  *                 # the last known value and the value currently seen. This means
  *                 # we don't need a full copy of the full in memory ever.
  *                 if existing:             # <<<<<<<<<<<<<<
  *                     if value or func == "COUNT":
  *                         value = AGGREGATORS[func](existing, value)
  */
-      __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_cur_scope->__pyx_v_existing); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 133, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_cur_scope->__pyx_v_existing); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 139, __pyx_L1_error)
       if (__pyx_t_2) {
 
-        /* "mabel/data/internals/group_by.py":134
+        /* "mabel/data/internals/group_by.py":140
  *                 # we don't need a full copy of the full in memory ever.
  *                 if existing:
  *                     if value or func == "COUNT":             # <<<<<<<<<<<<<<
  *                         value = AGGREGATORS[func](existing, value)
  *                     else:
  */
-        __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_cur_scope->__pyx_v_value); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 134, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_cur_scope->__pyx_v_value); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 140, __pyx_L1_error)
         if (!__pyx_t_3) {
         } else {
           __pyx_t_2 = __pyx_t_3;
           goto __pyx_L24_bool_binop_done;
         }
-        __pyx_t_3 = (__Pyx_PyUnicode_Equals(__pyx_cur_scope->__pyx_v_func, __pyx_n_u_COUNT, Py_EQ)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 134, __pyx_L1_error)
+        __pyx_t_3 = (__Pyx_PyUnicode_Equals(__pyx_cur_scope->__pyx_v_func, __pyx_n_u_COUNT, Py_EQ)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 140, __pyx_L1_error)
         __pyx_t_2 = __pyx_t_3;
         __pyx_L24_bool_binop_done:;
         if (__pyx_t_2) {
 
-          /* "mabel/data/internals/group_by.py":135
+          /* "mabel/data/internals/group_by.py":141
  *                 if existing:
  *                     if value or func == "COUNT":
  *                         value = AGGREGATORS[func](existing, value)             # <<<<<<<<<<<<<<
  *                     else:
  *                         value = existing
  */
-          __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_AGGREGATORS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 135, __pyx_L1_error)
+          __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_AGGREGATORS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 141, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_1);
-          __pyx_t_9 = __Pyx_PyObject_GetItem(__pyx_t_1, __pyx_cur_scope->__pyx_v_func); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 135, __pyx_L1_error)
+          __pyx_t_9 = __Pyx_PyObject_GetItem(__pyx_t_1, __pyx_cur_scope->__pyx_v_func); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 141, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_9);
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
           __pyx_t_1 = NULL;
@@ -4628,7 +4629,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
           #if CYTHON_FAST_PYCALL
           if (PyFunction_Check(__pyx_t_9)) {
             PyObject *__pyx_temp[3] = {__pyx_t_1, __pyx_cur_scope->__pyx_v_existing, __pyx_cur_scope->__pyx_v_value};
-            __pyx_t_5 = __Pyx_PyFunction_FastCall(__pyx_t_9, __pyx_temp+1-__pyx_t_16, 2+__pyx_t_16); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 135, __pyx_L1_error)
+            __pyx_t_5 = __Pyx_PyFunction_FastCall(__pyx_t_9, __pyx_temp+1-__pyx_t_16, 2+__pyx_t_16); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 141, __pyx_L1_error)
             __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
             __Pyx_GOTREF(__pyx_t_5);
           } else
@@ -4636,13 +4637,13 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
           #if CYTHON_FAST_PYCCALL
           if (__Pyx_PyFastCFunction_Check(__pyx_t_9)) {
             PyObject *__pyx_temp[3] = {__pyx_t_1, __pyx_cur_scope->__pyx_v_existing, __pyx_cur_scope->__pyx_v_value};
-            __pyx_t_5 = __Pyx_PyCFunction_FastCall(__pyx_t_9, __pyx_temp+1-__pyx_t_16, 2+__pyx_t_16); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 135, __pyx_L1_error)
+            __pyx_t_5 = __Pyx_PyCFunction_FastCall(__pyx_t_9, __pyx_temp+1-__pyx_t_16, 2+__pyx_t_16); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 141, __pyx_L1_error)
             __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
             __Pyx_GOTREF(__pyx_t_5);
           } else
           #endif
           {
-            __pyx_t_11 = PyTuple_New(2+__pyx_t_16); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 135, __pyx_L1_error)
+            __pyx_t_11 = PyTuple_New(2+__pyx_t_16); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 141, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_11);
             if (__pyx_t_1) {
               __Pyx_GIVEREF(__pyx_t_1); PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_1); __pyx_t_1 = NULL;
@@ -4653,7 +4654,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
             __Pyx_INCREF(__pyx_cur_scope->__pyx_v_value);
             __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_value);
             PyTuple_SET_ITEM(__pyx_t_11, 1+__pyx_t_16, __pyx_cur_scope->__pyx_v_value);
-            __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_9, __pyx_t_11, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 135, __pyx_L1_error)
+            __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_9, __pyx_t_11, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 141, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_5);
             __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
           }
@@ -4663,7 +4664,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
           __Pyx_GIVEREF(__pyx_t_5);
           __pyx_t_5 = 0;
 
-          /* "mabel/data/internals/group_by.py":134
+          /* "mabel/data/internals/group_by.py":140
  *                 # we don't need a full copy of the full in memory ever.
  *                 if existing:
  *                     if value or func == "COUNT":             # <<<<<<<<<<<<<<
@@ -4673,7 +4674,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
           goto __pyx_L23;
         }
 
-        /* "mabel/data/internals/group_by.py":137
+        /* "mabel/data/internals/group_by.py":143
  *                         value = AGGREGATORS[func](existing, value)
  *                     else:
  *                         value = existing             # <<<<<<<<<<<<<<
@@ -4688,7 +4689,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         }
         __pyx_L23:;
 
-        /* "mabel/data/internals/group_by.py":133
+        /* "mabel/data/internals/group_by.py":139
  *                 # the last known value and the value currently seen. This means
  *                 # we don't need a full copy of the full in memory ever.
  *                 if existing:             # <<<<<<<<<<<<<<
@@ -4698,17 +4699,17 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         goto __pyx_L22;
       }
 
-      /* "mabel/data/internals/group_by.py":138
+      /* "mabel/data/internals/group_by.py":144
  *                     else:
  *                         value = existing
  *                 elif func == "COUNT":             # <<<<<<<<<<<<<<
  *                     # the COUNT needs seeding with 1, the next cycles are just
  *                     # adding 1 to the last value.
  */
-      __pyx_t_2 = (__Pyx_PyUnicode_Equals(__pyx_cur_scope->__pyx_v_func, __pyx_n_u_COUNT, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 138, __pyx_L1_error)
+      __pyx_t_2 = (__Pyx_PyUnicode_Equals(__pyx_cur_scope->__pyx_v_func, __pyx_n_u_COUNT, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 144, __pyx_L1_error)
       if (__pyx_t_2) {
 
-        /* "mabel/data/internals/group_by.py":141
+        /* "mabel/data/internals/group_by.py":147
  *                     # the COUNT needs seeding with 1, the next cycles are just
  *                     # adding 1 to the last value.
  *                     value = 1             # <<<<<<<<<<<<<<
@@ -4720,7 +4721,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         __Pyx_DECREF_SET(__pyx_cur_scope->__pyx_v_value, __pyx_int_1);
         __Pyx_GIVEREF(__pyx_int_1);
 
-        /* "mabel/data/internals/group_by.py":138
+        /* "mabel/data/internals/group_by.py":144
  *                     else:
  *                         value = existing
  *                 elif func == "COUNT":             # <<<<<<<<<<<<<<
@@ -4730,22 +4731,22 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
       }
       __pyx_L22:;
 
-      /* "mabel/data/internals/group_by.py":144
+      /* "mabel/data/internals/group_by.py":150
  * 
  *                 # update the collector with the latest value
  *                 collector[record[0]][key] = value             # <<<<<<<<<<<<<<
  * 
  *         # the order of the resulting data set is the order of the hashes - this
  */
-      __pyx_t_5 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_record, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 144, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_record, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 150, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_9 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_collector, __pyx_t_5); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 144, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_collector, __pyx_t_5); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 150, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(PyObject_SetItem(__pyx_t_9, __pyx_cur_scope->__pyx_v_key, __pyx_cur_scope->__pyx_v_value) < 0)) __PYX_ERR(0, 144, __pyx_L1_error)
+      if (unlikely(PyObject_SetItem(__pyx_t_9, __pyx_cur_scope->__pyx_v_key, __pyx_cur_scope->__pyx_v_value) < 0)) __PYX_ERR(0, 150, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-      /* "mabel/data/internals/group_by.py":120
+      /* "mabel/data/internals/group_by.py":126
  *             # values as they come in - the collector holds the result up to this
  *             # point in the set.
  *             for func, col in aggregations:             # <<<<<<<<<<<<<<
@@ -4756,7 +4757,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
     }
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "mabel/data/internals/group_by.py":116
+    /* "mabel/data/internals/group_by.py":122
  *         # Iterate through the data in the groups formatted by the mapper. This data
  *         # is a list of Tuples of (GroupID, Column Name, Value)
  *         for record in self._map(columns_to_collect):             # <<<<<<<<<<<<<<
@@ -4766,14 +4767,14 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
   }
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-  /* "mabel/data/internals/group_by.py":149
+  /* "mabel/data/internals/group_by.py":155
  *         # will appear random, but will ensure the order is consistent between
  *         # reruns.
  *         collector = dict(sorted(collector.items()))             # <<<<<<<<<<<<<<
  * 
  *         # We now need to expand out the hashed column names
  */
-  __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_collector, __pyx_n_s_items); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_collector, __pyx_n_s_items); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 155, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
   __pyx_t_5 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_9))) {
@@ -4787,16 +4788,16 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
   }
   __pyx_t_4 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_9, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_9);
   __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 149, __pyx_L1_error)
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 155, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  __pyx_t_9 = PySequence_List(__pyx_t_4); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __pyx_t_9 = PySequence_List(__pyx_t_4); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 155, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_8 = ((PyObject*)__pyx_t_9);
   __pyx_t_9 = 0;
-  __pyx_t_17 = PyList_Sort(__pyx_t_8); if (unlikely(__pyx_t_17 == ((int)-1))) __PYX_ERR(0, 149, __pyx_L1_error)
-  __pyx_t_9 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyDict_Type)), __pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __pyx_t_17 = PyList_Sort(__pyx_t_8); if (unlikely(__pyx_t_17 == ((int)-1))) __PYX_ERR(0, 155, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyDict_Type)), __pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 155, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __Pyx_GOTREF(__pyx_cur_scope->__pyx_v_collector);
@@ -4804,7 +4805,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
   __Pyx_GIVEREF(__pyx_t_9);
   __pyx_t_9 = 0;
 
-  /* "mabel/data/internals/group_by.py":152
+  /* "mabel/data/internals/group_by.py":158
  * 
  *         # We now need to expand out the hashed column names
  *         for group, results in collector.items():             # <<<<<<<<<<<<<<
@@ -4812,7 +4813,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
  *             for func, col in requested_aggs:
  */
   __pyx_t_6 = 0;
-  __pyx_t_8 = __Pyx_dict_iterator(__pyx_cur_scope->__pyx_v_collector, 1, __pyx_n_s_items, (&__pyx_t_12), (&__pyx_t_16)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 152, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_dict_iterator(__pyx_cur_scope->__pyx_v_collector, 1, __pyx_n_s_items, (&__pyx_t_12), (&__pyx_t_16)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 158, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_9);
   __pyx_t_9 = __pyx_t_8;
@@ -4820,7 +4821,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
   while (1) {
     __pyx_t_18 = __Pyx_dict_iter_next(__pyx_t_9, __pyx_t_12, &__pyx_t_6, &__pyx_t_8, &__pyx_t_4, NULL, __pyx_t_16);
     if (unlikely(__pyx_t_18 == 0)) break;
-    if (unlikely(__pyx_t_18 == -1)) __PYX_ERR(0, 152, __pyx_L1_error)
+    if (unlikely(__pyx_t_18 == -1)) __PYX_ERR(0, 158, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_group);
@@ -4832,7 +4833,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
     __Pyx_GIVEREF(__pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "mabel/data/internals/group_by.py":154
+    /* "mabel/data/internals/group_by.py":160
  *         for group, results in collector.items():
  * 
  *             for func, col in requested_aggs:             # <<<<<<<<<<<<<<
@@ -4843,26 +4844,26 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
       __pyx_t_4 = __pyx_cur_scope->__pyx_v_requested_aggs; __Pyx_INCREF(__pyx_t_4); __pyx_t_14 = 0;
       __pyx_t_7 = NULL;
     } else {
-      __pyx_t_14 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_requested_aggs); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 154, __pyx_L1_error)
+      __pyx_t_14 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_requested_aggs); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 160, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_7 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 154, __pyx_L1_error)
+      __pyx_t_7 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 160, __pyx_L1_error)
     }
     for (;;) {
       if (likely(!__pyx_t_7)) {
         if (likely(PyList_CheckExact(__pyx_t_4))) {
           if (__pyx_t_14 >= PyList_GET_SIZE(__pyx_t_4)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_8 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_14); __Pyx_INCREF(__pyx_t_8); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 154, __pyx_L1_error)
+          __pyx_t_8 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_14); __Pyx_INCREF(__pyx_t_8); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 160, __pyx_L1_error)
           #else
-          __pyx_t_8 = PySequence_ITEM(__pyx_t_4, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 154, __pyx_L1_error)
+          __pyx_t_8 = PySequence_ITEM(__pyx_t_4, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 160, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_8);
           #endif
         } else {
           if (__pyx_t_14 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_8 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_14); __Pyx_INCREF(__pyx_t_8); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 154, __pyx_L1_error)
+          __pyx_t_8 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_14); __Pyx_INCREF(__pyx_t_8); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 160, __pyx_L1_error)
           #else
-          __pyx_t_8 = PySequence_ITEM(__pyx_t_4, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 154, __pyx_L1_error)
+          __pyx_t_8 = PySequence_ITEM(__pyx_t_4, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 160, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_8);
           #endif
         }
@@ -4872,7 +4873,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 154, __pyx_L1_error)
+            else __PYX_ERR(0, 160, __pyx_L1_error)
           }
           break;
         }
@@ -4884,7 +4885,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         if (unlikely(size != 2)) {
           if (size > 2) __Pyx_RaiseTooManyValuesError(2);
           else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-          __PYX_ERR(0, 154, __pyx_L1_error)
+          __PYX_ERR(0, 160, __pyx_L1_error)
         }
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
         if (likely(PyTuple_CheckExact(sequence))) {
@@ -4897,15 +4898,15 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         __Pyx_INCREF(__pyx_t_5);
         __Pyx_INCREF(__pyx_t_11);
         #else
-        __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 154, __pyx_L1_error)
+        __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 160, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_11 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 154, __pyx_L1_error)
+        __pyx_t_11 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 160, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_11);
         #endif
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       } else {
         Py_ssize_t index = -1;
-        __pyx_t_1 = PyObject_GetIter(__pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 154, __pyx_L1_error)
+        __pyx_t_1 = PyObject_GetIter(__pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 160, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
         __pyx_t_10 = Py_TYPE(__pyx_t_1)->tp_iternext;
@@ -4913,7 +4914,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         __Pyx_GOTREF(__pyx_t_5);
         index = 1; __pyx_t_11 = __pyx_t_10(__pyx_t_1); if (unlikely(!__pyx_t_11)) goto __pyx_L30_unpacking_failed;
         __Pyx_GOTREF(__pyx_t_11);
-        if (__Pyx_IternextUnpackEndCheck(__pyx_t_10(__pyx_t_1), 2) < 0) __PYX_ERR(0, 154, __pyx_L1_error)
+        if (__Pyx_IternextUnpackEndCheck(__pyx_t_10(__pyx_t_1), 2) < 0) __PYX_ERR(0, 160, __pyx_L1_error)
         __pyx_t_10 = NULL;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         goto __pyx_L31_unpacking_done;
@@ -4921,7 +4922,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         __pyx_t_10 = NULL;
         if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-        __PYX_ERR(0, 154, __pyx_L1_error)
+        __PYX_ERR(0, 160, __pyx_L1_error)
         __pyx_L31_unpacking_done:;
       }
       __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_func);
@@ -4933,24 +4934,24 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
       __Pyx_GIVEREF(__pyx_t_11);
       __pyx_t_11 = 0;
 
-      /* "mabel/data/internals/group_by.py":155
+      /* "mabel/data/internals/group_by.py":161
  * 
  *             for func, col in requested_aggs:
  *                 if func == "AVG":             # <<<<<<<<<<<<<<
  *                     results[f"AVG({col})"] = (
  *                         results[f"SUM({col})"] / results[f"COUNT({col})"]
  */
-      __pyx_t_2 = (__Pyx_PyUnicode_Equals(__pyx_cur_scope->__pyx_v_func, __pyx_n_u_AVG, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 155, __pyx_L1_error)
+      __pyx_t_2 = (__Pyx_PyUnicode_Equals(__pyx_cur_scope->__pyx_v_func, __pyx_n_u_AVG, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 161, __pyx_L1_error)
       if (__pyx_t_2) {
 
-        /* "mabel/data/internals/group_by.py":157
+        /* "mabel/data/internals/group_by.py":163
  *                 if func == "AVG":
  *                     results[f"AVG({col})"] = (
  *                         results[f"SUM({col})"] / results[f"COUNT({col})"]             # <<<<<<<<<<<<<<
  *                     )
  * 
  */
-        __pyx_t_8 = PyTuple_New(3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 157, __pyx_L1_error)
+        __pyx_t_8 = PyTuple_New(3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 163, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
         __pyx_t_19 = 0;
         __pyx_t_15 = 127;
@@ -4958,7 +4959,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         __pyx_t_19 += 4;
         __Pyx_GIVEREF(__pyx_kp_u_SUM_2);
         PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_kp_u_SUM_2);
-        __pyx_t_11 = __Pyx_PyObject_FormatSimple(__pyx_cur_scope->__pyx_v_col, __pyx_empty_unicode); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 157, __pyx_L1_error)
+        __pyx_t_11 = __Pyx_PyObject_FormatSimple(__pyx_cur_scope->__pyx_v_col, __pyx_empty_unicode); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 163, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_11);
         __pyx_t_15 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_11) > __pyx_t_15) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_11) : __pyx_t_15;
         __pyx_t_19 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_11);
@@ -4969,13 +4970,13 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         __pyx_t_19 += 1;
         __Pyx_GIVEREF(__pyx_kp_u__10);
         PyTuple_SET_ITEM(__pyx_t_8, 2, __pyx_kp_u__10);
-        __pyx_t_11 = __Pyx_PyUnicode_Join(__pyx_t_8, 3, __pyx_t_19, __pyx_t_15); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 157, __pyx_L1_error)
+        __pyx_t_11 = __Pyx_PyUnicode_Join(__pyx_t_8, 3, __pyx_t_19, __pyx_t_15); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 163, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_11);
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-        __pyx_t_8 = __Pyx_PyObject_Dict_GetItem(__pyx_cur_scope->__pyx_v_results, __pyx_t_11); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 157, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyObject_Dict_GetItem(__pyx_cur_scope->__pyx_v_results, __pyx_t_11); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 163, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-        __pyx_t_11 = PyTuple_New(3); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 157, __pyx_L1_error)
+        __pyx_t_11 = PyTuple_New(3); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 163, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_11);
         __pyx_t_19 = 0;
         __pyx_t_15 = 127;
@@ -4983,7 +4984,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         __pyx_t_19 += 6;
         __Pyx_GIVEREF(__pyx_kp_u_COUNT_2);
         PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_kp_u_COUNT_2);
-        __pyx_t_5 = __Pyx_PyObject_FormatSimple(__pyx_cur_scope->__pyx_v_col, __pyx_empty_unicode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 157, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_PyObject_FormatSimple(__pyx_cur_scope->__pyx_v_col, __pyx_empty_unicode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 163, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __pyx_t_15 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) > __pyx_t_15) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) : __pyx_t_15;
         __pyx_t_19 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_5);
@@ -4994,25 +4995,25 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         __pyx_t_19 += 1;
         __Pyx_GIVEREF(__pyx_kp_u__10);
         PyTuple_SET_ITEM(__pyx_t_11, 2, __pyx_kp_u__10);
-        __pyx_t_5 = __Pyx_PyUnicode_Join(__pyx_t_11, 3, __pyx_t_19, __pyx_t_15); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 157, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_PyUnicode_Join(__pyx_t_11, 3, __pyx_t_19, __pyx_t_15); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 163, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-        __pyx_t_11 = __Pyx_PyObject_Dict_GetItem(__pyx_cur_scope->__pyx_v_results, __pyx_t_5); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 157, __pyx_L1_error)
+        __pyx_t_11 = __Pyx_PyObject_Dict_GetItem(__pyx_cur_scope->__pyx_v_results, __pyx_t_5); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 163, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_11);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __pyx_t_5 = __Pyx_PyNumber_Divide(__pyx_t_8, __pyx_t_11); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 157, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_PyNumber_Divide(__pyx_t_8, __pyx_t_11); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 163, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
 
-        /* "mabel/data/internals/group_by.py":156
+        /* "mabel/data/internals/group_by.py":162
  *             for func, col in requested_aggs:
  *                 if func == "AVG":
  *                     results[f"AVG({col})"] = (             # <<<<<<<<<<<<<<
  *                         results[f"SUM({col})"] / results[f"COUNT({col})"]
  *                     )
  */
-        __pyx_t_11 = PyTuple_New(3); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 156, __pyx_L1_error)
+        __pyx_t_11 = PyTuple_New(3); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 162, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_11);
         __pyx_t_19 = 0;
         __pyx_t_15 = 127;
@@ -5020,7 +5021,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         __pyx_t_19 += 4;
         __Pyx_GIVEREF(__pyx_kp_u_AVG_2);
         PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_kp_u_AVG_2);
-        __pyx_t_8 = __Pyx_PyObject_FormatSimple(__pyx_cur_scope->__pyx_v_col, __pyx_empty_unicode); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 156, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyObject_FormatSimple(__pyx_cur_scope->__pyx_v_col, __pyx_empty_unicode); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 162, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
         __pyx_t_15 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_8) > __pyx_t_15) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_8) : __pyx_t_15;
         __pyx_t_19 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_8);
@@ -5031,14 +5032,14 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         __pyx_t_19 += 1;
         __Pyx_GIVEREF(__pyx_kp_u__10);
         PyTuple_SET_ITEM(__pyx_t_11, 2, __pyx_kp_u__10);
-        __pyx_t_8 = __Pyx_PyUnicode_Join(__pyx_t_11, 3, __pyx_t_19, __pyx_t_15); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 156, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyUnicode_Join(__pyx_t_11, 3, __pyx_t_19, __pyx_t_15); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 162, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-        if (unlikely(PyObject_SetItem(__pyx_cur_scope->__pyx_v_results, __pyx_t_8, __pyx_t_5) < 0)) __PYX_ERR(0, 156, __pyx_L1_error)
+        if (unlikely(PyObject_SetItem(__pyx_cur_scope->__pyx_v_results, __pyx_t_8, __pyx_t_5) < 0)) __PYX_ERR(0, 162, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-        /* "mabel/data/internals/group_by.py":155
+        /* "mabel/data/internals/group_by.py":161
  * 
  *             for func, col in requested_aggs:
  *                 if func == "AVG":             # <<<<<<<<<<<<<<
@@ -5047,7 +5048,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
  */
       }
 
-      /* "mabel/data/internals/group_by.py":154
+      /* "mabel/data/internals/group_by.py":160
  *         for group, results in collector.items():
  * 
  *             for func, col in requested_aggs:             # <<<<<<<<<<<<<<
@@ -5057,7 +5058,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
     }
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "mabel/data/internals/group_by.py":160
+    /* "mabel/data/internals/group_by.py":166
  *                     )
  * 
  *             results = {             # <<<<<<<<<<<<<<
@@ -5065,10 +5066,10 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
  *                 for func, col in requested_aggs
  */
     { /* enter inner scope */
-      __pyx_t_4 = PyDict_New(); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 160, __pyx_L1_error)
+      __pyx_t_4 = PyDict_New(); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 166, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
 
-      /* "mabel/data/internals/group_by.py":162
+      /* "mabel/data/internals/group_by.py":168
  *             results = {
  *                 f"{func}({col})": results.get(f"{func}({col})")
  *                 for func, col in requested_aggs             # <<<<<<<<<<<<<<
@@ -5079,26 +5080,26 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         __pyx_t_5 = __pyx_cur_scope->__pyx_v_requested_aggs; __Pyx_INCREF(__pyx_t_5); __pyx_t_14 = 0;
         __pyx_t_7 = NULL;
       } else {
-        __pyx_t_14 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_requested_aggs); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 162, __pyx_L1_error)
+        __pyx_t_14 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_requested_aggs); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 168, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_7 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 162, __pyx_L1_error)
+        __pyx_t_7 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 168, __pyx_L1_error)
       }
       for (;;) {
         if (likely(!__pyx_t_7)) {
           if (likely(PyList_CheckExact(__pyx_t_5))) {
             if (__pyx_t_14 >= PyList_GET_SIZE(__pyx_t_5)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_8 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_14); __Pyx_INCREF(__pyx_t_8); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 162, __pyx_L1_error)
+            __pyx_t_8 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_14); __Pyx_INCREF(__pyx_t_8); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 168, __pyx_L1_error)
             #else
-            __pyx_t_8 = PySequence_ITEM(__pyx_t_5, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 162, __pyx_L1_error)
+            __pyx_t_8 = PySequence_ITEM(__pyx_t_5, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 168, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_8);
             #endif
           } else {
             if (__pyx_t_14 >= PyTuple_GET_SIZE(__pyx_t_5)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_8 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_14); __Pyx_INCREF(__pyx_t_8); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 162, __pyx_L1_error)
+            __pyx_t_8 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_14); __Pyx_INCREF(__pyx_t_8); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 168, __pyx_L1_error)
             #else
-            __pyx_t_8 = PySequence_ITEM(__pyx_t_5, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 162, __pyx_L1_error)
+            __pyx_t_8 = PySequence_ITEM(__pyx_t_5, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 168, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_8);
             #endif
           }
@@ -5108,7 +5109,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
               if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-              else __PYX_ERR(0, 162, __pyx_L1_error)
+              else __PYX_ERR(0, 168, __pyx_L1_error)
             }
             break;
           }
@@ -5120,7 +5121,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
           if (unlikely(size != 2)) {
             if (size > 2) __Pyx_RaiseTooManyValuesError(2);
             else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-            __PYX_ERR(0, 162, __pyx_L1_error)
+            __PYX_ERR(0, 168, __pyx_L1_error)
           }
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
           if (likely(PyTuple_CheckExact(sequence))) {
@@ -5133,15 +5134,15 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
           __Pyx_INCREF(__pyx_t_11);
           __Pyx_INCREF(__pyx_t_1);
           #else
-          __pyx_t_11 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 162, __pyx_L1_error)
+          __pyx_t_11 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 168, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_11);
-          __pyx_t_1 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 162, __pyx_L1_error)
+          __pyx_t_1 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 168, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_1);
           #endif
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
         } else {
           Py_ssize_t index = -1;
-          __pyx_t_20 = PyObject_GetIter(__pyx_t_8); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 162, __pyx_L1_error)
+          __pyx_t_20 = PyObject_GetIter(__pyx_t_8); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 168, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_20);
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
           __pyx_t_10 = Py_TYPE(__pyx_t_20)->tp_iternext;
@@ -5149,7 +5150,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
           __Pyx_GOTREF(__pyx_t_11);
           index = 1; __pyx_t_1 = __pyx_t_10(__pyx_t_20); if (unlikely(!__pyx_t_1)) goto __pyx_L35_unpacking_failed;
           __Pyx_GOTREF(__pyx_t_1);
-          if (__Pyx_IternextUnpackEndCheck(__pyx_t_10(__pyx_t_20), 2) < 0) __PYX_ERR(0, 162, __pyx_L1_error)
+          if (__Pyx_IternextUnpackEndCheck(__pyx_t_10(__pyx_t_20), 2) < 0) __PYX_ERR(0, 168, __pyx_L1_error)
           __pyx_t_10 = NULL;
           __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
           goto __pyx_L36_unpacking_done;
@@ -5157,7 +5158,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
           __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
           __pyx_t_10 = NULL;
           if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-          __PYX_ERR(0, 162, __pyx_L1_error)
+          __PYX_ERR(0, 168, __pyx_L1_error)
           __pyx_L36_unpacking_done:;
         }
         __Pyx_XGOTREF(__pyx_cur_scope->__pyx_8genexpr5__pyx_v_func);
@@ -5169,18 +5170,18 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         __Pyx_GIVEREF(__pyx_t_1);
         __pyx_t_1 = 0;
 
-        /* "mabel/data/internals/group_by.py":161
+        /* "mabel/data/internals/group_by.py":167
  * 
  *             results = {
  *                 f"{func}({col})": results.get(f"{func}({col})")             # <<<<<<<<<<<<<<
  *                 for func, col in requested_aggs
  *             }
  */
-        __pyx_t_8 = PyTuple_New(4); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 161, __pyx_L1_error)
+        __pyx_t_8 = PyTuple_New(4); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 167, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
         __pyx_t_19 = 0;
         __pyx_t_15 = 127;
-        __pyx_t_1 = __Pyx_PyObject_FormatSimple(__pyx_cur_scope->__pyx_8genexpr5__pyx_v_func, __pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 161, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_PyObject_FormatSimple(__pyx_cur_scope->__pyx_8genexpr5__pyx_v_func, __pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 167, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __pyx_t_15 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_1) > __pyx_t_15) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_1) : __pyx_t_15;
         __pyx_t_19 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_1);
@@ -5191,7 +5192,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         __pyx_t_19 += 1;
         __Pyx_GIVEREF(__pyx_kp_u__9);
         PyTuple_SET_ITEM(__pyx_t_8, 1, __pyx_kp_u__9);
-        __pyx_t_1 = __Pyx_PyObject_FormatSimple(__pyx_cur_scope->__pyx_8genexpr5__pyx_v_col, __pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 161, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_PyObject_FormatSimple(__pyx_cur_scope->__pyx_8genexpr5__pyx_v_col, __pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 167, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __pyx_t_15 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_1) > __pyx_t_15) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_1) : __pyx_t_15;
         __pyx_t_19 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_1);
@@ -5202,16 +5203,16 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         __pyx_t_19 += 1;
         __Pyx_GIVEREF(__pyx_kp_u__10);
         PyTuple_SET_ITEM(__pyx_t_8, 3, __pyx_kp_u__10);
-        __pyx_t_1 = __Pyx_PyUnicode_Join(__pyx_t_8, 4, __pyx_t_19, __pyx_t_15); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 161, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_PyUnicode_Join(__pyx_t_8, 4, __pyx_t_19, __pyx_t_15); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 167, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-        __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_results, __pyx_n_s_get); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 161, __pyx_L1_error)
+        __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_results, __pyx_n_s_get); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 167, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_11);
-        __pyx_t_20 = PyTuple_New(4); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 161, __pyx_L1_error)
+        __pyx_t_20 = PyTuple_New(4); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 167, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_20);
         __pyx_t_19 = 0;
         __pyx_t_15 = 127;
-        __pyx_t_21 = __Pyx_PyObject_FormatSimple(__pyx_cur_scope->__pyx_8genexpr5__pyx_v_func, __pyx_empty_unicode); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 161, __pyx_L1_error)
+        __pyx_t_21 = __Pyx_PyObject_FormatSimple(__pyx_cur_scope->__pyx_8genexpr5__pyx_v_func, __pyx_empty_unicode); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 167, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_21);
         __pyx_t_15 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_21) > __pyx_t_15) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_21) : __pyx_t_15;
         __pyx_t_19 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_21);
@@ -5222,7 +5223,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         __pyx_t_19 += 1;
         __Pyx_GIVEREF(__pyx_kp_u__9);
         PyTuple_SET_ITEM(__pyx_t_20, 1, __pyx_kp_u__9);
-        __pyx_t_21 = __Pyx_PyObject_FormatSimple(__pyx_cur_scope->__pyx_8genexpr5__pyx_v_col, __pyx_empty_unicode); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 161, __pyx_L1_error)
+        __pyx_t_21 = __Pyx_PyObject_FormatSimple(__pyx_cur_scope->__pyx_8genexpr5__pyx_v_col, __pyx_empty_unicode); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 167, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_21);
         __pyx_t_15 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_21) > __pyx_t_15) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_21) : __pyx_t_15;
         __pyx_t_19 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_21);
@@ -5233,7 +5234,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         __pyx_t_19 += 1;
         __Pyx_GIVEREF(__pyx_kp_u__10);
         PyTuple_SET_ITEM(__pyx_t_20, 3, __pyx_kp_u__10);
-        __pyx_t_21 = __Pyx_PyUnicode_Join(__pyx_t_20, 4, __pyx_t_19, __pyx_t_15); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 161, __pyx_L1_error)
+        __pyx_t_21 = __Pyx_PyUnicode_Join(__pyx_t_20, 4, __pyx_t_19, __pyx_t_15); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 167, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_21);
         __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
         __pyx_t_20 = NULL;
@@ -5249,14 +5250,14 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
         __pyx_t_8 = (__pyx_t_20) ? __Pyx_PyObject_Call2Args(__pyx_t_11, __pyx_t_20, __pyx_t_21) : __Pyx_PyObject_CallOneArg(__pyx_t_11, __pyx_t_21);
         __Pyx_XDECREF(__pyx_t_20); __pyx_t_20 = 0;
         __Pyx_DECREF(__pyx_t_21); __pyx_t_21 = 0;
-        if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 161, __pyx_L1_error)
+        if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 167, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-        if (unlikely(PyDict_SetItem(__pyx_t_4, (PyObject*)__pyx_t_1, (PyObject*)__pyx_t_8))) __PYX_ERR(0, 161, __pyx_L1_error)
+        if (unlikely(PyDict_SetItem(__pyx_t_4, (PyObject*)__pyx_t_1, (PyObject*)__pyx_t_8))) __PYX_ERR(0, 167, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-        /* "mabel/data/internals/group_by.py":162
+        /* "mabel/data/internals/group_by.py":168
  *             results = {
  *                 f"{func}({col})": results.get(f"{func}({col})")
  *                 for func, col in requested_aggs             # <<<<<<<<<<<<<<
@@ -5271,16 +5272,16 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
     __Pyx_GIVEREF(__pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "mabel/data/internals/group_by.py":165
+    /* "mabel/data/internals/group_by.py":171
  *             }
  * 
  *             keys = self._group_keys[group]             # <<<<<<<<<<<<<<
  *             for key in keys:
  *                 results[key[0]] = key[1]
  */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_group_keys); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 165, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_group_keys); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 171, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyObject_GetItem(__pyx_t_4, __pyx_cur_scope->__pyx_v_group); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 165, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetItem(__pyx_t_4, __pyx_cur_scope->__pyx_v_group); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 171, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_keys);
@@ -5288,7 +5289,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
     __Pyx_GIVEREF(__pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "mabel/data/internals/group_by.py":166
+    /* "mabel/data/internals/group_by.py":172
  * 
  *             keys = self._group_keys[group]
  *             for key in keys:             # <<<<<<<<<<<<<<
@@ -5299,26 +5300,26 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
       __pyx_t_5 = __pyx_cur_scope->__pyx_v_keys; __Pyx_INCREF(__pyx_t_5); __pyx_t_14 = 0;
       __pyx_t_7 = NULL;
     } else {
-      __pyx_t_14 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_keys); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 166, __pyx_L1_error)
+      __pyx_t_14 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_keys); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 172, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_7 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 166, __pyx_L1_error)
+      __pyx_t_7 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 172, __pyx_L1_error)
     }
     for (;;) {
       if (likely(!__pyx_t_7)) {
         if (likely(PyList_CheckExact(__pyx_t_5))) {
           if (__pyx_t_14 >= PyList_GET_SIZE(__pyx_t_5)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_4 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_14); __Pyx_INCREF(__pyx_t_4); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 166, __pyx_L1_error)
+          __pyx_t_4 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_14); __Pyx_INCREF(__pyx_t_4); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 172, __pyx_L1_error)
           #else
-          __pyx_t_4 = PySequence_ITEM(__pyx_t_5, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 166, __pyx_L1_error)
+          __pyx_t_4 = PySequence_ITEM(__pyx_t_5, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 172, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_4);
           #endif
         } else {
           if (__pyx_t_14 >= PyTuple_GET_SIZE(__pyx_t_5)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_14); __Pyx_INCREF(__pyx_t_4); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 166, __pyx_L1_error)
+          __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_14); __Pyx_INCREF(__pyx_t_4); __pyx_t_14++; if (unlikely(0 < 0)) __PYX_ERR(0, 172, __pyx_L1_error)
           #else
-          __pyx_t_4 = PySequence_ITEM(__pyx_t_5, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 166, __pyx_L1_error)
+          __pyx_t_4 = PySequence_ITEM(__pyx_t_5, __pyx_t_14); __pyx_t_14++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 172, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_4);
           #endif
         }
@@ -5328,7 +5329,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 166, __pyx_L1_error)
+            else __PYX_ERR(0, 172, __pyx_L1_error)
           }
           break;
         }
@@ -5339,22 +5340,22 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
       __Pyx_GIVEREF(__pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "mabel/data/internals/group_by.py":167
+      /* "mabel/data/internals/group_by.py":173
  *             keys = self._group_keys[group]
  *             for key in keys:
  *                 results[key[0]] = key[1]             # <<<<<<<<<<<<<<
  * 
  *             yield results
  */
-      __pyx_t_4 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_key, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 167, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_key, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 173, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_8 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_key, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 167, __pyx_L1_error)
+      __pyx_t_8 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_key, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 173, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
-      if (unlikely(PyObject_SetItem(__pyx_cur_scope->__pyx_v_results, __pyx_t_8, __pyx_t_4) < 0)) __PYX_ERR(0, 167, __pyx_L1_error)
+      if (unlikely(PyObject_SetItem(__pyx_cur_scope->__pyx_v_results, __pyx_t_8, __pyx_t_4) < 0)) __PYX_ERR(0, 173, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-      /* "mabel/data/internals/group_by.py":166
+      /* "mabel/data/internals/group_by.py":172
  * 
  *             keys = self._group_keys[group]
  *             for key in keys:             # <<<<<<<<<<<<<<
@@ -5364,7 +5365,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
     }
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "mabel/data/internals/group_by.py":169
+    /* "mabel/data/internals/group_by.py":175
  *                 results[key[0]] = key[1]
  * 
  *             yield results             # <<<<<<<<<<<<<<
@@ -5391,12 +5392,12 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
     __Pyx_XGOTREF(__pyx_t_9);
     __pyx_t_12 = __pyx_cur_scope->__pyx_t_2;
     __pyx_t_16 = __pyx_cur_scope->__pyx_t_3;
-    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 169, __pyx_L1_error)
+    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 175, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "mabel/data/internals/group_by.py":88
+  /* "mabel/data/internals/group_by.py":94
  *                         yield (group_key, column, record[column])
  * 
  *     def aggregate(self, aggregations):             # <<<<<<<<<<<<<<
@@ -5428,7 +5429,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
   return __pyx_r;
 }
 
-/* "mabel/data/internals/group_by.py":171
+/* "mabel/data/internals/group_by.py":177
  *             yield results
  * 
  *     def max(self, columns):             # <<<<<<<<<<<<<<
@@ -5472,11 +5473,11 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_8group_by_7GroupBy_9max(PyObje
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_columns)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("max", 1, 2, 2, 1); __PYX_ERR(0, 171, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("max", 1, 2, 2, 1); __PYX_ERR(0, 177, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "max") < 0)) __PYX_ERR(0, 171, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "max") < 0)) __PYX_ERR(0, 177, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -5489,7 +5490,7 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_8group_by_7GroupBy_9max(PyObje
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("max", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 171, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("max", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 177, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mabel.data.internals.group_by.GroupBy.max", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -5522,7 +5523,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_8max(CYTHON
   __Pyx_RefNannySetupContext("max", 0);
   __Pyx_INCREF(__pyx_v_columns);
 
-  /* "mabel/data/internals/group_by.py":182
+  /* "mabel/data/internals/group_by.py":188
  *             Dictionary
  *         """
  *         if not isinstance(columns, (tuple, list, set)):             # <<<<<<<<<<<<<<
@@ -5550,14 +5551,14 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_8max(CYTHON
   __pyx_t_3 = ((!(__pyx_t_1 != 0)) != 0);
   if (__pyx_t_3) {
 
-    /* "mabel/data/internals/group_by.py":183
+    /* "mabel/data/internals/group_by.py":189
  *         """
  *         if not isinstance(columns, (tuple, list, set)):
  *             columns = [columns]             # <<<<<<<<<<<<<<
  *         return self.aggregate([("MAX", column) for column in columns])
  * 
  */
-    __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 183, __pyx_L1_error)
+    __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 189, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_INCREF(__pyx_v_columns);
     __Pyx_GIVEREF(__pyx_v_columns);
@@ -5565,7 +5566,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_8max(CYTHON
     __Pyx_DECREF_SET(__pyx_v_columns, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "mabel/data/internals/group_by.py":182
+    /* "mabel/data/internals/group_by.py":188
  *             Dictionary
  *         """
  *         if not isinstance(columns, (tuple, list, set)):             # <<<<<<<<<<<<<<
@@ -5574,7 +5575,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_8max(CYTHON
  */
   }
 
-  /* "mabel/data/internals/group_by.py":184
+  /* "mabel/data/internals/group_by.py":190
  *         if not isinstance(columns, (tuple, list, set)):
  *             columns = [columns]
  *         return self.aggregate([("MAX", column) for column in columns])             # <<<<<<<<<<<<<<
@@ -5582,35 +5583,35 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_8max(CYTHON
  *     def min(self, columns):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_aggregate); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 184, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_aggregate); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 190, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   { /* enter inner scope */
-    __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 184, __pyx_L9_error)
+    __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 190, __pyx_L9_error)
     __Pyx_GOTREF(__pyx_t_6);
     if (likely(PyList_CheckExact(__pyx_v_columns)) || PyTuple_CheckExact(__pyx_v_columns)) {
       __pyx_t_7 = __pyx_v_columns; __Pyx_INCREF(__pyx_t_7); __pyx_t_8 = 0;
       __pyx_t_9 = NULL;
     } else {
-      __pyx_t_8 = -1; __pyx_t_7 = PyObject_GetIter(__pyx_v_columns); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 184, __pyx_L9_error)
+      __pyx_t_8 = -1; __pyx_t_7 = PyObject_GetIter(__pyx_v_columns); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 190, __pyx_L9_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_9 = Py_TYPE(__pyx_t_7)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 184, __pyx_L9_error)
+      __pyx_t_9 = Py_TYPE(__pyx_t_7)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 190, __pyx_L9_error)
     }
     for (;;) {
       if (likely(!__pyx_t_9)) {
         if (likely(PyList_CheckExact(__pyx_t_7))) {
           if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_7)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_10 = PyList_GET_ITEM(__pyx_t_7, __pyx_t_8); __Pyx_INCREF(__pyx_t_10); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 184, __pyx_L9_error)
+          __pyx_t_10 = PyList_GET_ITEM(__pyx_t_7, __pyx_t_8); __Pyx_INCREF(__pyx_t_10); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 190, __pyx_L9_error)
           #else
-          __pyx_t_10 = PySequence_ITEM(__pyx_t_7, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 184, __pyx_L9_error)
+          __pyx_t_10 = PySequence_ITEM(__pyx_t_7, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 190, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_10);
           #endif
         } else {
           if (__pyx_t_8 >= PyTuple_GET_SIZE(__pyx_t_7)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_10 = PyTuple_GET_ITEM(__pyx_t_7, __pyx_t_8); __Pyx_INCREF(__pyx_t_10); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 184, __pyx_L9_error)
+          __pyx_t_10 = PyTuple_GET_ITEM(__pyx_t_7, __pyx_t_8); __Pyx_INCREF(__pyx_t_10); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 190, __pyx_L9_error)
           #else
-          __pyx_t_10 = PySequence_ITEM(__pyx_t_7, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 184, __pyx_L9_error)
+          __pyx_t_10 = PySequence_ITEM(__pyx_t_7, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 190, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_10);
           #endif
         }
@@ -5620,7 +5621,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_8max(CYTHON
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 184, __pyx_L9_error)
+            else __PYX_ERR(0, 190, __pyx_L9_error)
           }
           break;
         }
@@ -5628,7 +5629,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_8max(CYTHON
       }
       __Pyx_XDECREF_SET(__pyx_8genexpr6__pyx_v_column, __pyx_t_10);
       __pyx_t_10 = 0;
-      __pyx_t_10 = PyTuple_New(2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 184, __pyx_L9_error)
+      __pyx_t_10 = PyTuple_New(2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 190, __pyx_L9_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_INCREF(__pyx_n_u_MAX);
       __Pyx_GIVEREF(__pyx_n_u_MAX);
@@ -5636,7 +5637,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_8max(CYTHON
       __Pyx_INCREF(__pyx_8genexpr6__pyx_v_column);
       __Pyx_GIVEREF(__pyx_8genexpr6__pyx_v_column);
       PyTuple_SET_ITEM(__pyx_t_10, 1, __pyx_8genexpr6__pyx_v_column);
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_6, (PyObject*)__pyx_t_10))) __PYX_ERR(0, 184, __pyx_L9_error)
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_6, (PyObject*)__pyx_t_10))) __PYX_ERR(0, 190, __pyx_L9_error)
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     }
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
@@ -5660,14 +5661,14 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_8max(CYTHON
   __pyx_t_4 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_7, __pyx_t_6) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 184, __pyx_L1_error)
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 190, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "mabel/data/internals/group_by.py":171
+  /* "mabel/data/internals/group_by.py":177
  *             yield results
  * 
  *     def max(self, columns):             # <<<<<<<<<<<<<<
@@ -5692,7 +5693,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_8max(CYTHON
   return __pyx_r;
 }
 
-/* "mabel/data/internals/group_by.py":186
+/* "mabel/data/internals/group_by.py":192
  *         return self.aggregate([("MAX", column) for column in columns])
  * 
  *     def min(self, columns):             # <<<<<<<<<<<<<<
@@ -5736,11 +5737,11 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_8group_by_7GroupBy_11min(PyObj
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_columns)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("min", 1, 2, 2, 1); __PYX_ERR(0, 186, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("min", 1, 2, 2, 1); __PYX_ERR(0, 192, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "min") < 0)) __PYX_ERR(0, 186, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "min") < 0)) __PYX_ERR(0, 192, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -5753,7 +5754,7 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_8group_by_7GroupBy_11min(PyObj
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("min", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 186, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("min", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 192, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mabel.data.internals.group_by.GroupBy.min", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -5786,7 +5787,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_10min(CYTHO
   __Pyx_RefNannySetupContext("min", 0);
   __Pyx_INCREF(__pyx_v_columns);
 
-  /* "mabel/data/internals/group_by.py":197
+  /* "mabel/data/internals/group_by.py":203
  *             Dictionary
  *         """
  *         if not isinstance(columns, (tuple, list, set)):             # <<<<<<<<<<<<<<
@@ -5814,14 +5815,14 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_10min(CYTHO
   __pyx_t_3 = ((!(__pyx_t_1 != 0)) != 0);
   if (__pyx_t_3) {
 
-    /* "mabel/data/internals/group_by.py":198
+    /* "mabel/data/internals/group_by.py":204
  *         """
  *         if not isinstance(columns, (tuple, list, set)):
  *             columns = [columns]             # <<<<<<<<<<<<<<
  *         return self.aggregate([("MIN", column) for column in columns])
  * 
  */
-    __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 198, __pyx_L1_error)
+    __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 204, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_INCREF(__pyx_v_columns);
     __Pyx_GIVEREF(__pyx_v_columns);
@@ -5829,7 +5830,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_10min(CYTHO
     __Pyx_DECREF_SET(__pyx_v_columns, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "mabel/data/internals/group_by.py":197
+    /* "mabel/data/internals/group_by.py":203
  *             Dictionary
  *         """
  *         if not isinstance(columns, (tuple, list, set)):             # <<<<<<<<<<<<<<
@@ -5838,7 +5839,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_10min(CYTHO
  */
   }
 
-  /* "mabel/data/internals/group_by.py":199
+  /* "mabel/data/internals/group_by.py":205
  *         if not isinstance(columns, (tuple, list, set)):
  *             columns = [columns]
  *         return self.aggregate([("MIN", column) for column in columns])             # <<<<<<<<<<<<<<
@@ -5846,35 +5847,35 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_10min(CYTHO
  *     def sum(self, columns):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_aggregate); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 199, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_aggregate); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   { /* enter inner scope */
-    __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 199, __pyx_L9_error)
+    __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 205, __pyx_L9_error)
     __Pyx_GOTREF(__pyx_t_6);
     if (likely(PyList_CheckExact(__pyx_v_columns)) || PyTuple_CheckExact(__pyx_v_columns)) {
       __pyx_t_7 = __pyx_v_columns; __Pyx_INCREF(__pyx_t_7); __pyx_t_8 = 0;
       __pyx_t_9 = NULL;
     } else {
-      __pyx_t_8 = -1; __pyx_t_7 = PyObject_GetIter(__pyx_v_columns); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 199, __pyx_L9_error)
+      __pyx_t_8 = -1; __pyx_t_7 = PyObject_GetIter(__pyx_v_columns); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 205, __pyx_L9_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_9 = Py_TYPE(__pyx_t_7)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 199, __pyx_L9_error)
+      __pyx_t_9 = Py_TYPE(__pyx_t_7)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 205, __pyx_L9_error)
     }
     for (;;) {
       if (likely(!__pyx_t_9)) {
         if (likely(PyList_CheckExact(__pyx_t_7))) {
           if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_7)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_10 = PyList_GET_ITEM(__pyx_t_7, __pyx_t_8); __Pyx_INCREF(__pyx_t_10); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 199, __pyx_L9_error)
+          __pyx_t_10 = PyList_GET_ITEM(__pyx_t_7, __pyx_t_8); __Pyx_INCREF(__pyx_t_10); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 205, __pyx_L9_error)
           #else
-          __pyx_t_10 = PySequence_ITEM(__pyx_t_7, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 199, __pyx_L9_error)
+          __pyx_t_10 = PySequence_ITEM(__pyx_t_7, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 205, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_10);
           #endif
         } else {
           if (__pyx_t_8 >= PyTuple_GET_SIZE(__pyx_t_7)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_10 = PyTuple_GET_ITEM(__pyx_t_7, __pyx_t_8); __Pyx_INCREF(__pyx_t_10); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 199, __pyx_L9_error)
+          __pyx_t_10 = PyTuple_GET_ITEM(__pyx_t_7, __pyx_t_8); __Pyx_INCREF(__pyx_t_10); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 205, __pyx_L9_error)
           #else
-          __pyx_t_10 = PySequence_ITEM(__pyx_t_7, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 199, __pyx_L9_error)
+          __pyx_t_10 = PySequence_ITEM(__pyx_t_7, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 205, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_10);
           #endif
         }
@@ -5884,7 +5885,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_10min(CYTHO
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 199, __pyx_L9_error)
+            else __PYX_ERR(0, 205, __pyx_L9_error)
           }
           break;
         }
@@ -5892,7 +5893,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_10min(CYTHO
       }
       __Pyx_XDECREF_SET(__pyx_8genexpr7__pyx_v_column, __pyx_t_10);
       __pyx_t_10 = 0;
-      __pyx_t_10 = PyTuple_New(2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 199, __pyx_L9_error)
+      __pyx_t_10 = PyTuple_New(2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 205, __pyx_L9_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_INCREF(__pyx_n_u_MIN);
       __Pyx_GIVEREF(__pyx_n_u_MIN);
@@ -5900,7 +5901,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_10min(CYTHO
       __Pyx_INCREF(__pyx_8genexpr7__pyx_v_column);
       __Pyx_GIVEREF(__pyx_8genexpr7__pyx_v_column);
       PyTuple_SET_ITEM(__pyx_t_10, 1, __pyx_8genexpr7__pyx_v_column);
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_6, (PyObject*)__pyx_t_10))) __PYX_ERR(0, 199, __pyx_L9_error)
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_6, (PyObject*)__pyx_t_10))) __PYX_ERR(0, 205, __pyx_L9_error)
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     }
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
@@ -5924,14 +5925,14 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_10min(CYTHO
   __pyx_t_4 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_7, __pyx_t_6) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 199, __pyx_L1_error)
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "mabel/data/internals/group_by.py":186
+  /* "mabel/data/internals/group_by.py":192
  *         return self.aggregate([("MAX", column) for column in columns])
  * 
  *     def min(self, columns):             # <<<<<<<<<<<<<<
@@ -5956,7 +5957,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_10min(CYTHO
   return __pyx_r;
 }
 
-/* "mabel/data/internals/group_by.py":201
+/* "mabel/data/internals/group_by.py":207
  *         return self.aggregate([("MIN", column) for column in columns])
  * 
  *     def sum(self, columns):             # <<<<<<<<<<<<<<
@@ -6000,11 +6001,11 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_8group_by_7GroupBy_13sum(PyObj
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_columns)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("sum", 1, 2, 2, 1); __PYX_ERR(0, 201, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("sum", 1, 2, 2, 1); __PYX_ERR(0, 207, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "sum") < 0)) __PYX_ERR(0, 201, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "sum") < 0)) __PYX_ERR(0, 207, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -6017,7 +6018,7 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_8group_by_7GroupBy_13sum(PyObj
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("sum", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 201, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("sum", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 207, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mabel.data.internals.group_by.GroupBy.sum", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -6050,7 +6051,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_12sum(CYTHO
   __Pyx_RefNannySetupContext("sum", 0);
   __Pyx_INCREF(__pyx_v_columns);
 
-  /* "mabel/data/internals/group_by.py":212
+  /* "mabel/data/internals/group_by.py":218
  *             Dictionary
  *         """
  *         if not isinstance(columns, (tuple, list, set)):             # <<<<<<<<<<<<<<
@@ -6078,14 +6079,14 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_12sum(CYTHO
   __pyx_t_3 = ((!(__pyx_t_1 != 0)) != 0);
   if (__pyx_t_3) {
 
-    /* "mabel/data/internals/group_by.py":213
+    /* "mabel/data/internals/group_by.py":219
  *         """
  *         if not isinstance(columns, (tuple, list, set)):
  *             columns = [columns]             # <<<<<<<<<<<<<<
  *         return self.aggregate([("SUM", column) for column in columns])
  * 
  */
-    __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 213, __pyx_L1_error)
+    __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 219, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_INCREF(__pyx_v_columns);
     __Pyx_GIVEREF(__pyx_v_columns);
@@ -6093,7 +6094,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_12sum(CYTHO
     __Pyx_DECREF_SET(__pyx_v_columns, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "mabel/data/internals/group_by.py":212
+    /* "mabel/data/internals/group_by.py":218
  *             Dictionary
  *         """
  *         if not isinstance(columns, (tuple, list, set)):             # <<<<<<<<<<<<<<
@@ -6102,7 +6103,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_12sum(CYTHO
  */
   }
 
-  /* "mabel/data/internals/group_by.py":214
+  /* "mabel/data/internals/group_by.py":220
  *         if not isinstance(columns, (tuple, list, set)):
  *             columns = [columns]
  *         return self.aggregate([("SUM", column) for column in columns])             # <<<<<<<<<<<<<<
@@ -6110,35 +6111,35 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_12sum(CYTHO
  *     def count(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_aggregate); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 214, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_aggregate); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   { /* enter inner scope */
-    __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 214, __pyx_L9_error)
+    __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 220, __pyx_L9_error)
     __Pyx_GOTREF(__pyx_t_6);
     if (likely(PyList_CheckExact(__pyx_v_columns)) || PyTuple_CheckExact(__pyx_v_columns)) {
       __pyx_t_7 = __pyx_v_columns; __Pyx_INCREF(__pyx_t_7); __pyx_t_8 = 0;
       __pyx_t_9 = NULL;
     } else {
-      __pyx_t_8 = -1; __pyx_t_7 = PyObject_GetIter(__pyx_v_columns); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 214, __pyx_L9_error)
+      __pyx_t_8 = -1; __pyx_t_7 = PyObject_GetIter(__pyx_v_columns); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 220, __pyx_L9_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_9 = Py_TYPE(__pyx_t_7)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 214, __pyx_L9_error)
+      __pyx_t_9 = Py_TYPE(__pyx_t_7)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 220, __pyx_L9_error)
     }
     for (;;) {
       if (likely(!__pyx_t_9)) {
         if (likely(PyList_CheckExact(__pyx_t_7))) {
           if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_7)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_10 = PyList_GET_ITEM(__pyx_t_7, __pyx_t_8); __Pyx_INCREF(__pyx_t_10); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 214, __pyx_L9_error)
+          __pyx_t_10 = PyList_GET_ITEM(__pyx_t_7, __pyx_t_8); __Pyx_INCREF(__pyx_t_10); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 220, __pyx_L9_error)
           #else
-          __pyx_t_10 = PySequence_ITEM(__pyx_t_7, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 214, __pyx_L9_error)
+          __pyx_t_10 = PySequence_ITEM(__pyx_t_7, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 220, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_10);
           #endif
         } else {
           if (__pyx_t_8 >= PyTuple_GET_SIZE(__pyx_t_7)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_10 = PyTuple_GET_ITEM(__pyx_t_7, __pyx_t_8); __Pyx_INCREF(__pyx_t_10); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 214, __pyx_L9_error)
+          __pyx_t_10 = PyTuple_GET_ITEM(__pyx_t_7, __pyx_t_8); __Pyx_INCREF(__pyx_t_10); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 220, __pyx_L9_error)
           #else
-          __pyx_t_10 = PySequence_ITEM(__pyx_t_7, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 214, __pyx_L9_error)
+          __pyx_t_10 = PySequence_ITEM(__pyx_t_7, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 220, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_10);
           #endif
         }
@@ -6148,7 +6149,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_12sum(CYTHO
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 214, __pyx_L9_error)
+            else __PYX_ERR(0, 220, __pyx_L9_error)
           }
           break;
         }
@@ -6156,7 +6157,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_12sum(CYTHO
       }
       __Pyx_XDECREF_SET(__pyx_8genexpr8__pyx_v_column, __pyx_t_10);
       __pyx_t_10 = 0;
-      __pyx_t_10 = PyTuple_New(2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 214, __pyx_L9_error)
+      __pyx_t_10 = PyTuple_New(2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 220, __pyx_L9_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_INCREF(__pyx_n_u_SUM);
       __Pyx_GIVEREF(__pyx_n_u_SUM);
@@ -6164,7 +6165,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_12sum(CYTHO
       __Pyx_INCREF(__pyx_8genexpr8__pyx_v_column);
       __Pyx_GIVEREF(__pyx_8genexpr8__pyx_v_column);
       PyTuple_SET_ITEM(__pyx_t_10, 1, __pyx_8genexpr8__pyx_v_column);
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_6, (PyObject*)__pyx_t_10))) __PYX_ERR(0, 214, __pyx_L9_error)
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_6, (PyObject*)__pyx_t_10))) __PYX_ERR(0, 220, __pyx_L9_error)
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     }
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
@@ -6188,14 +6189,14 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_12sum(CYTHO
   __pyx_t_4 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_7, __pyx_t_6) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 214, __pyx_L1_error)
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "mabel/data/internals/group_by.py":201
+  /* "mabel/data/internals/group_by.py":207
  *         return self.aggregate([("MIN", column) for column in columns])
  * 
  *     def sum(self, columns):             # <<<<<<<<<<<<<<
@@ -6220,7 +6221,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_12sum(CYTHO
   return __pyx_r;
 }
 
-/* "mabel/data/internals/group_by.py":216
+/* "mabel/data/internals/group_by.py":222
  *         return self.aggregate([("SUM", column) for column in columns])
  * 
  *     def count(self):             # <<<<<<<<<<<<<<
@@ -6254,7 +6255,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_14count(CYT
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("count", 0);
 
-  /* "mabel/data/internals/group_by.py":228
+  /* "mabel/data/internals/group_by.py":234
  *         # aggregate() function and removing the bits that aren't needed to just
  *         # count the values.
  *         return self.aggregate(("COUNT", "*"))             # <<<<<<<<<<<<<<
@@ -6262,7 +6263,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_14count(CYT
  *     def average(self, columns):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_aggregate); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 228, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_aggregate); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 234, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -6276,14 +6277,14 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_14count(CYT
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, __pyx_tuple__11) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_tuple__11);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 228, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 234, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mabel/data/internals/group_by.py":216
+  /* "mabel/data/internals/group_by.py":222
  *         return self.aggregate([("SUM", column) for column in columns])
  * 
  *     def count(self):             # <<<<<<<<<<<<<<
@@ -6304,7 +6305,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_14count(CYT
   return __pyx_r;
 }
 
-/* "mabel/data/internals/group_by.py":230
+/* "mabel/data/internals/group_by.py":236
  *         return self.aggregate(("COUNT", "*"))
  * 
  *     def average(self, columns):             # <<<<<<<<<<<<<<
@@ -6348,11 +6349,11 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_8group_by_7GroupBy_17average(P
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_columns)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("average", 1, 2, 2, 1); __PYX_ERR(0, 230, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("average", 1, 2, 2, 1); __PYX_ERR(0, 236, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "average") < 0)) __PYX_ERR(0, 230, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "average") < 0)) __PYX_ERR(0, 236, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -6365,7 +6366,7 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_8group_by_7GroupBy_17average(P
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("average", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 230, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("average", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 236, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mabel.data.internals.group_by.GroupBy.average", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -6398,7 +6399,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_16average(C
   __Pyx_RefNannySetupContext("average", 0);
   __Pyx_INCREF(__pyx_v_columns);
 
-  /* "mabel/data/internals/group_by.py":234
+  /* "mabel/data/internals/group_by.py":240
  *         Calculate the average of the items in a group.
  *         """
  *         if not isinstance(columns, (tuple, list, set)):             # <<<<<<<<<<<<<<
@@ -6426,14 +6427,14 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_16average(C
   __pyx_t_3 = ((!(__pyx_t_1 != 0)) != 0);
   if (__pyx_t_3) {
 
-    /* "mabel/data/internals/group_by.py":235
+    /* "mabel/data/internals/group_by.py":241
  *         """
  *         if not isinstance(columns, (tuple, list, set)):
  *             columns = [columns]             # <<<<<<<<<<<<<<
  *         return self.aggregate([("AVG", column) for column in columns])
  * 
  */
-    __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 235, __pyx_L1_error)
+    __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 241, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_INCREF(__pyx_v_columns);
     __Pyx_GIVEREF(__pyx_v_columns);
@@ -6441,7 +6442,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_16average(C
     __Pyx_DECREF_SET(__pyx_v_columns, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "mabel/data/internals/group_by.py":234
+    /* "mabel/data/internals/group_by.py":240
  *         Calculate the average of the items in a group.
  *         """
  *         if not isinstance(columns, (tuple, list, set)):             # <<<<<<<<<<<<<<
@@ -6450,7 +6451,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_16average(C
  */
   }
 
-  /* "mabel/data/internals/group_by.py":236
+  /* "mabel/data/internals/group_by.py":242
  *         if not isinstance(columns, (tuple, list, set)):
  *             columns = [columns]
  *         return self.aggregate([("AVG", column) for column in columns])             # <<<<<<<<<<<<<<
@@ -6458,35 +6459,35 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_16average(C
  *     def groups(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_aggregate); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 236, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_aggregate); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 242, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   { /* enter inner scope */
-    __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 236, __pyx_L9_error)
+    __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 242, __pyx_L9_error)
     __Pyx_GOTREF(__pyx_t_6);
     if (likely(PyList_CheckExact(__pyx_v_columns)) || PyTuple_CheckExact(__pyx_v_columns)) {
       __pyx_t_7 = __pyx_v_columns; __Pyx_INCREF(__pyx_t_7); __pyx_t_8 = 0;
       __pyx_t_9 = NULL;
     } else {
-      __pyx_t_8 = -1; __pyx_t_7 = PyObject_GetIter(__pyx_v_columns); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 236, __pyx_L9_error)
+      __pyx_t_8 = -1; __pyx_t_7 = PyObject_GetIter(__pyx_v_columns); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 242, __pyx_L9_error)
       __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_9 = Py_TYPE(__pyx_t_7)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 236, __pyx_L9_error)
+      __pyx_t_9 = Py_TYPE(__pyx_t_7)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 242, __pyx_L9_error)
     }
     for (;;) {
       if (likely(!__pyx_t_9)) {
         if (likely(PyList_CheckExact(__pyx_t_7))) {
           if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_7)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_10 = PyList_GET_ITEM(__pyx_t_7, __pyx_t_8); __Pyx_INCREF(__pyx_t_10); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 236, __pyx_L9_error)
+          __pyx_t_10 = PyList_GET_ITEM(__pyx_t_7, __pyx_t_8); __Pyx_INCREF(__pyx_t_10); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 242, __pyx_L9_error)
           #else
-          __pyx_t_10 = PySequence_ITEM(__pyx_t_7, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 236, __pyx_L9_error)
+          __pyx_t_10 = PySequence_ITEM(__pyx_t_7, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 242, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_10);
           #endif
         } else {
           if (__pyx_t_8 >= PyTuple_GET_SIZE(__pyx_t_7)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_10 = PyTuple_GET_ITEM(__pyx_t_7, __pyx_t_8); __Pyx_INCREF(__pyx_t_10); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 236, __pyx_L9_error)
+          __pyx_t_10 = PyTuple_GET_ITEM(__pyx_t_7, __pyx_t_8); __Pyx_INCREF(__pyx_t_10); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 242, __pyx_L9_error)
           #else
-          __pyx_t_10 = PySequence_ITEM(__pyx_t_7, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 236, __pyx_L9_error)
+          __pyx_t_10 = PySequence_ITEM(__pyx_t_7, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 242, __pyx_L9_error)
           __Pyx_GOTREF(__pyx_t_10);
           #endif
         }
@@ -6496,7 +6497,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_16average(C
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 236, __pyx_L9_error)
+            else __PYX_ERR(0, 242, __pyx_L9_error)
           }
           break;
         }
@@ -6504,7 +6505,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_16average(C
       }
       __Pyx_XDECREF_SET(__pyx_8genexpr9__pyx_v_column, __pyx_t_10);
       __pyx_t_10 = 0;
-      __pyx_t_10 = PyTuple_New(2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 236, __pyx_L9_error)
+      __pyx_t_10 = PyTuple_New(2); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 242, __pyx_L9_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_INCREF(__pyx_n_u_AVG);
       __Pyx_GIVEREF(__pyx_n_u_AVG);
@@ -6512,7 +6513,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_16average(C
       __Pyx_INCREF(__pyx_8genexpr9__pyx_v_column);
       __Pyx_GIVEREF(__pyx_8genexpr9__pyx_v_column);
       PyTuple_SET_ITEM(__pyx_t_10, 1, __pyx_8genexpr9__pyx_v_column);
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_6, (PyObject*)__pyx_t_10))) __PYX_ERR(0, 236, __pyx_L9_error)
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_6, (PyObject*)__pyx_t_10))) __PYX_ERR(0, 242, __pyx_L9_error)
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     }
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
@@ -6536,14 +6537,14 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_16average(C
   __pyx_t_4 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_7, __pyx_t_6) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 236, __pyx_L1_error)
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 242, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "mabel/data/internals/group_by.py":230
+  /* "mabel/data/internals/group_by.py":236
  *         return self.aggregate(("COUNT", "*"))
  * 
  *     def average(self, columns):             # <<<<<<<<<<<<<<
@@ -6569,7 +6570,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_16average(C
 }
 static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_20generator2(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "mabel/data/internals/group_by.py":238
+/* "mabel/data/internals/group_by.py":244
  *         return self.aggregate([("AVG", column) for column in columns])
  * 
  *     def groups(self):             # <<<<<<<<<<<<<<
@@ -6604,7 +6605,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_18groups(CY
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_5mabel_4data_9internals_8group_by___pyx_scope_struct_3_groups *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 238, __pyx_L1_error)
+    __PYX_ERR(0, 244, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -6612,7 +6613,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_8group_by_7GroupBy_18groups(CY
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_self);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_self);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_20generator2, __pyx_codeobj__12, (PyObject *) __pyx_cur_scope, __pyx_n_s_groups, __pyx_n_s_GroupBy_groups, __pyx_n_s_mabel_data_internals_group_by); if (unlikely(!gen)) __PYX_ERR(0, 238, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_20generator2, __pyx_codeobj__12, (PyObject *) __pyx_cur_scope, __pyx_n_s_groups, __pyx_n_s_GroupBy_groups, __pyx_n_s_mabel_data_internals_group_by); if (unlikely(!gen)) __PYX_ERR(0, 244, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -6650,16 +6651,16 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_20generator
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 238, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 244, __pyx_L1_error)
 
-  /* "mabel/data/internals/group_by.py":242
+  /* "mabel/data/internals/group_by.py":248
  *         Return the set of groups - this is similar to a DISTINCT function
  *         """
  *         collector = defaultdict(dict)             # <<<<<<<<<<<<<<
  *         for record in self._map("*"):
  *             collector[record[0]] = 1
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_defaultdict); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 242, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_defaultdict); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 248, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -6673,21 +6674,21 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_20generator
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, ((PyObject *)(&PyDict_Type))) : __Pyx_PyObject_CallOneArg(__pyx_t_2, ((PyObject *)(&PyDict_Type)));
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 242, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 248, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_GIVEREF(__pyx_t_1);
   __pyx_cur_scope->__pyx_v_collector = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mabel/data/internals/group_by.py":243
+  /* "mabel/data/internals/group_by.py":249
  *         """
  *         collector = defaultdict(dict)
  *         for record in self._map("*"):             # <<<<<<<<<<<<<<
  *             collector[record[0]] = 1
  *         for group in self._group_keys:
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_map); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 243, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_map); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 249, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -6701,16 +6702,16 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_20generator
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, __pyx_kp_u__2) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_kp_u__2);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 243, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 249, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_4 = 0;
     __pyx_t_5 = NULL;
   } else {
-    __pyx_t_4 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 243, __pyx_L1_error)
+    __pyx_t_4 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 249, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_5 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 243, __pyx_L1_error)
+    __pyx_t_5 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 249, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -6718,17 +6719,17 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_20generator
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_1); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 243, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_1); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 249, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 243, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 249, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_1); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 243, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_1); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 249, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 243, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 249, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -6738,7 +6739,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_20generator
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 243, __pyx_L1_error)
+          else __PYX_ERR(0, 249, __pyx_L1_error)
         }
         break;
       }
@@ -6749,19 +6750,19 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_20generator
     __Pyx_GIVEREF(__pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "mabel/data/internals/group_by.py":244
+    /* "mabel/data/internals/group_by.py":250
  *         collector = defaultdict(dict)
  *         for record in self._map("*"):
  *             collector[record[0]] = 1             # <<<<<<<<<<<<<<
  *         for group in self._group_keys:
  *             yield dict(self._group_keys[group])
  */
-    __pyx_t_1 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_record, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 244, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_v_record, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 250, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    if (unlikely(PyObject_SetItem(__pyx_cur_scope->__pyx_v_collector, __pyx_t_1, __pyx_int_1) < 0)) __PYX_ERR(0, 244, __pyx_L1_error)
+    if (unlikely(PyObject_SetItem(__pyx_cur_scope->__pyx_v_collector, __pyx_t_1, __pyx_int_1) < 0)) __PYX_ERR(0, 250, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "mabel/data/internals/group_by.py":243
+    /* "mabel/data/internals/group_by.py":249
  *         """
  *         collector = defaultdict(dict)
  *         for record in self._map("*"):             # <<<<<<<<<<<<<<
@@ -6771,21 +6772,21 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_20generator
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mabel/data/internals/group_by.py":245
+  /* "mabel/data/internals/group_by.py":251
  *         for record in self._map("*"):
  *             collector[record[0]] = 1
  *         for group in self._group_keys:             # <<<<<<<<<<<<<<
  *             yield dict(self._group_keys[group])
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_group_keys); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 245, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_group_keys); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 251, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   if (likely(PyList_CheckExact(__pyx_t_2)) || PyTuple_CheckExact(__pyx_t_2)) {
     __pyx_t_1 = __pyx_t_2; __Pyx_INCREF(__pyx_t_1); __pyx_t_4 = 0;
     __pyx_t_5 = NULL;
   } else {
-    __pyx_t_4 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 245, __pyx_L1_error)
+    __pyx_t_4 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 251, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_5 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 245, __pyx_L1_error)
+    __pyx_t_5 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 251, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   for (;;) {
@@ -6793,17 +6794,17 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_20generator
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 245, __pyx_L1_error)
+        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 251, __pyx_L1_error)
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 245, __pyx_L1_error)
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 251, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         #endif
       } else {
         if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 245, __pyx_L1_error)
+        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_4); __Pyx_INCREF(__pyx_t_2); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 251, __pyx_L1_error)
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 245, __pyx_L1_error)
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 251, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         #endif
       }
@@ -6813,7 +6814,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_20generator
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 245, __pyx_L1_error)
+          else __PYX_ERR(0, 251, __pyx_L1_error)
         }
         break;
       }
@@ -6824,17 +6825,17 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_20generator
     __Pyx_GIVEREF(__pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "mabel/data/internals/group_by.py":246
+    /* "mabel/data/internals/group_by.py":252
  *             collector[record[0]] = 1
  *         for group in self._group_keys:
  *             yield dict(self._group_keys[group])             # <<<<<<<<<<<<<<
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_group_keys); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 246, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_group_keys); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 252, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_t_2, __pyx_cur_scope->__pyx_v_group); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 246, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_t_2, __pyx_cur_scope->__pyx_v_group); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 252, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyDict_Type)), __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 246, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyDict_Type)), __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 252, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_r = __pyx_t_2;
@@ -6855,9 +6856,9 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_20generator
     __Pyx_XGOTREF(__pyx_t_1);
     __pyx_t_4 = __pyx_cur_scope->__pyx_t_1;
     __pyx_t_5 = __pyx_cur_scope->__pyx_t_2;
-    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 246, __pyx_L1_error)
+    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 252, __pyx_L1_error)
 
-    /* "mabel/data/internals/group_by.py":245
+    /* "mabel/data/internals/group_by.py":251
  *         for record in self._map("*"):
  *             collector[record[0]] = 1
  *         for group in self._group_keys:             # <<<<<<<<<<<<<<
@@ -6867,7 +6868,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_20generator
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "mabel/data/internals/group_by.py":238
+  /* "mabel/data/internals/group_by.py":244
  *         return self.aggregate([("AVG", column) for column in columns])
  * 
  *     def groups(self):             # <<<<<<<<<<<<<<
@@ -7468,7 +7469,7 @@ static PyModuleDef_Slot __pyx_moduledef_slots[] = {
 static struct PyModuleDef __pyx_moduledef = {
     PyModuleDef_HEAD_INIT,
     "group_by",
-    0, /* m_doc */
+    __pyx_k_This_module_is_compiled_any_cha, /* m_doc */
   #if CYTHON_PEP489_MULTI_PHASE_INIT
     0, /* m_size */
   #else
@@ -7593,10 +7594,10 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_max = __Pyx_GetBuiltinName(__pyx_n_s_max); if (!__pyx_builtin_max) __PYX_ERR(0, 9, __pyx_L1_error)
-  __pyx_builtin_min = __Pyx_GetBuiltinName(__pyx_n_s_min); if (!__pyx_builtin_min) __PYX_ERR(0, 10, __pyx_L1_error)
-  __pyx_builtin_KeyError = __Pyx_GetBuiltinName(__pyx_n_s_KeyError); if (!__pyx_builtin_KeyError) __PYX_ERR(0, 66, __pyx_L1_error)
-  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 102, __pyx_L1_error)
+  __pyx_builtin_max = __Pyx_GetBuiltinName(__pyx_n_s_max); if (!__pyx_builtin_max) __PYX_ERR(0, 15, __pyx_L1_error)
+  __pyx_builtin_min = __Pyx_GetBuiltinName(__pyx_n_s_min); if (!__pyx_builtin_min) __PYX_ERR(0, 16, __pyx_L1_error)
+  __pyx_builtin_KeyError = __Pyx_GetBuiltinName(__pyx_n_s_KeyError); if (!__pyx_builtin_KeyError) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 108, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -7606,157 +7607,157 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "mabel/data/internals/group_by.py":55
+  /* "mabel/data/internals/group_by.py":61
  *         if collect_columns == self._columns == {"*"}:
  *             # if we're doing COUNT(*), short-cut the processing
  *             self._group_keys["*"] = [("*", "*")]             # <<<<<<<<<<<<<<
  *             for record in self._dictset:
  *                 yield ("*", "*", "*")
  */
-  __pyx_tuple__3 = PyTuple_Pack(2, __pyx_kp_u__2, __pyx_kp_u__2); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __pyx_tuple__3 = PyTuple_Pack(2, __pyx_kp_u__2, __pyx_kp_u__2); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 61, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
 
-  /* "mabel/data/internals/group_by.py":57
+  /* "mabel/data/internals/group_by.py":63
  *             self._group_keys["*"] = [("*", "*")]
  *             for record in self._dictset:
  *                 yield ("*", "*", "*")             # <<<<<<<<<<<<<<
  *             return
  * 
  */
-  __pyx_tuple__4 = PyTuple_Pack(3, __pyx_kp_u__2, __pyx_kp_u__2, __pyx_kp_u__2); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_tuple__4 = PyTuple_Pack(3, __pyx_kp_u__2, __pyx_kp_u__2, __pyx_kp_u__2); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
 
-  /* "mabel/data/internals/group_by.py":102
+  /* "mabel/data/internals/group_by.py":108
  *             aggregations = [aggregations]
  *         if not all(isinstance(agg, tuple) for agg in aggregations):
  *             raise ValueError("`aggregate` expects a list of Tuples")             # <<<<<<<<<<<<<<
  * 
  *         requested_aggs = aggregations.copy()
  */
-  __pyx_tuple__8 = PyTuple_Pack(1, __pyx_kp_u_aggregate_expects_a_list_of_Tup); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(0, 102, __pyx_L1_error)
+  __pyx_tuple__8 = PyTuple_Pack(1, __pyx_kp_u_aggregate_expects_a_list_of_Tup); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(0, 108, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__8);
   __Pyx_GIVEREF(__pyx_tuple__8);
 
-  /* "mabel/data/internals/group_by.py":228
+  /* "mabel/data/internals/group_by.py":234
  *         # aggregate() function and removing the bits that aren't needed to just
  *         # count the values.
  *         return self.aggregate(("COUNT", "*"))             # <<<<<<<<<<<<<<
  * 
  *     def average(self, columns):
  */
-  __pyx_tuple__11 = PyTuple_Pack(2, __pyx_n_u_COUNT, __pyx_kp_u__2); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 228, __pyx_L1_error)
+  __pyx_tuple__11 = PyTuple_Pack(2, __pyx_n_u_COUNT, __pyx_kp_u__2); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 234, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
 
-  /* "mabel/data/internals/group_by.py":30
+  /* "mabel/data/internals/group_by.py":36
  *     """
  * 
  *     def __init__(self, dictset, columns):             # <<<<<<<<<<<<<<
  *         self._dictset = dictset
  *         if isinstance(columns, (list, set, tuple)):
  */
-  __pyx_tuple__13 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_dictset, __pyx_n_s_columns); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_tuple__13 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_dictset, __pyx_n_s_columns); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__13);
   __Pyx_GIVEREF(__pyx_tuple__13);
-  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(3, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_group_by_py, __pyx_n_s_init, 30, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(3, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_group_by_py, __pyx_n_s_init, 36, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) __PYX_ERR(0, 36, __pyx_L1_error)
 
-  /* "mabel/data/internals/group_by.py":38
+  /* "mabel/data/internals/group_by.py":44
  *         self._group_keys = {}
  * 
  *     def _map(self, collect_columns):             # <<<<<<<<<<<<<<
  *         """
  *         Create Tuples of records in the Groups (GroupID, CollectedColumn, Value)
  */
-  __pyx_tuple__15 = PyTuple_Pack(9, __pyx_n_s_self, __pyx_n_s_collect_columns, __pyx_n_s_record, __pyx_n_s_group_key, __pyx_n_s_column, __pyx_n_s_v, __pyx_n_s_column, __pyx_n_s_column, __pyx_n_s_column); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 38, __pyx_L1_error)
+  __pyx_tuple__15 = PyTuple_Pack(9, __pyx_n_s_self, __pyx_n_s_collect_columns, __pyx_n_s_record, __pyx_n_s_group_key, __pyx_n_s_column, __pyx_n_s_v, __pyx_n_s_column, __pyx_n_s_column, __pyx_n_s_column); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 44, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__15);
   __Pyx_GIVEREF(__pyx_tuple__15);
-  __pyx_codeobj_ = (PyObject*)__Pyx_PyCode_New(2, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__15, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_group_by_py, __pyx_n_s_map, 38, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj_)) __PYX_ERR(0, 38, __pyx_L1_error)
+  __pyx_codeobj_ = (PyObject*)__Pyx_PyCode_New(2, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__15, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_group_by_py, __pyx_n_s_map, 44, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj_)) __PYX_ERR(0, 44, __pyx_L1_error)
 
-  /* "mabel/data/internals/group_by.py":88
+  /* "mabel/data/internals/group_by.py":94
  *                         yield (group_key, column, record[column])
  * 
  *     def aggregate(self, aggregations):             # <<<<<<<<<<<<<<
  *         """
  *         This implements steps akin to the REDUCE step in MapReduce.
  */
-  __pyx_tuple__16 = PyTuple_Pack(20, __pyx_n_s_self, __pyx_n_s_aggregations, __pyx_n_s_requested_aggs, __pyx_n_s_func, __pyx_n_s_col, __pyx_n_s_columns_to_collect, __pyx_n_s_collector, __pyx_n_s_record, __pyx_n_s_key, __pyx_n_s_existing, __pyx_n_s_value, __pyx_n_s_group, __pyx_n_s_results, __pyx_n_s_keys, __pyx_n_s_genexpr, __pyx_n_s_genexpr, __pyx_n_s_func, __pyx_n_s_col, __pyx_n_s_func, __pyx_n_s_col); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 88, __pyx_L1_error)
+  __pyx_tuple__16 = PyTuple_Pack(20, __pyx_n_s_self, __pyx_n_s_aggregations, __pyx_n_s_requested_aggs, __pyx_n_s_func, __pyx_n_s_col, __pyx_n_s_columns_to_collect, __pyx_n_s_collector, __pyx_n_s_record, __pyx_n_s_key, __pyx_n_s_existing, __pyx_n_s_value, __pyx_n_s_group, __pyx_n_s_results, __pyx_n_s_keys, __pyx_n_s_genexpr, __pyx_n_s_genexpr, __pyx_n_s_func, __pyx_n_s_col, __pyx_n_s_func, __pyx_n_s_col); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 94, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__16);
   __Pyx_GIVEREF(__pyx_tuple__16);
-  __pyx_codeobj__7 = (PyObject*)__Pyx_PyCode_New(2, 0, 20, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__16, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_group_by_py, __pyx_n_s_aggregate, 88, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__7)) __PYX_ERR(0, 88, __pyx_L1_error)
+  __pyx_codeobj__7 = (PyObject*)__Pyx_PyCode_New(2, 0, 20, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__16, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_group_by_py, __pyx_n_s_aggregate, 94, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__7)) __PYX_ERR(0, 94, __pyx_L1_error)
 
-  /* "mabel/data/internals/group_by.py":171
+  /* "mabel/data/internals/group_by.py":177
  *             yield results
  * 
  *     def max(self, columns):             # <<<<<<<<<<<<<<
  *         """
  *         Get the maximum value of a column, or set of columns, in each group.
  */
-  __pyx_tuple__17 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_columns, __pyx_n_s_column); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(0, 171, __pyx_L1_error)
+  __pyx_tuple__17 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_columns, __pyx_n_s_column); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(0, 177, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__17);
   __Pyx_GIVEREF(__pyx_tuple__17);
-  __pyx_codeobj__18 = (PyObject*)__Pyx_PyCode_New(2, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__17, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_group_by_py, __pyx_n_s_max, 171, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__18)) __PYX_ERR(0, 171, __pyx_L1_error)
+  __pyx_codeobj__18 = (PyObject*)__Pyx_PyCode_New(2, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__17, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_group_by_py, __pyx_n_s_max, 177, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__18)) __PYX_ERR(0, 177, __pyx_L1_error)
 
-  /* "mabel/data/internals/group_by.py":186
+  /* "mabel/data/internals/group_by.py":192
  *         return self.aggregate([("MAX", column) for column in columns])
  * 
  *     def min(self, columns):             # <<<<<<<<<<<<<<
  *         """
  *         Get the minimum value of a column, or set of columns, in each group.
  */
-  __pyx_tuple__19 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_columns, __pyx_n_s_column); if (unlikely(!__pyx_tuple__19)) __PYX_ERR(0, 186, __pyx_L1_error)
+  __pyx_tuple__19 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_columns, __pyx_n_s_column); if (unlikely(!__pyx_tuple__19)) __PYX_ERR(0, 192, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__19);
   __Pyx_GIVEREF(__pyx_tuple__19);
-  __pyx_codeobj__20 = (PyObject*)__Pyx_PyCode_New(2, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__19, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_group_by_py, __pyx_n_s_min, 186, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__20)) __PYX_ERR(0, 186, __pyx_L1_error)
+  __pyx_codeobj__20 = (PyObject*)__Pyx_PyCode_New(2, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__19, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_group_by_py, __pyx_n_s_min, 192, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__20)) __PYX_ERR(0, 192, __pyx_L1_error)
 
-  /* "mabel/data/internals/group_by.py":201
+  /* "mabel/data/internals/group_by.py":207
  *         return self.aggregate([("MIN", column) for column in columns])
  * 
  *     def sum(self, columns):             # <<<<<<<<<<<<<<
  *         """
  *         Get the sum of values in a column, or set of columns, in each group.
  */
-  __pyx_tuple__21 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_columns, __pyx_n_s_column); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(0, 201, __pyx_L1_error)
+  __pyx_tuple__21 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_columns, __pyx_n_s_column); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(0, 207, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__21);
   __Pyx_GIVEREF(__pyx_tuple__21);
-  __pyx_codeobj__22 = (PyObject*)__Pyx_PyCode_New(2, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__21, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_group_by_py, __pyx_n_s_sum, 201, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__22)) __PYX_ERR(0, 201, __pyx_L1_error)
+  __pyx_codeobj__22 = (PyObject*)__Pyx_PyCode_New(2, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__21, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_group_by_py, __pyx_n_s_sum, 207, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__22)) __PYX_ERR(0, 207, __pyx_L1_error)
 
-  /* "mabel/data/internals/group_by.py":216
+  /* "mabel/data/internals/group_by.py":222
  *         return self.aggregate([("SUM", column) for column in columns])
  * 
  *     def count(self):             # <<<<<<<<<<<<<<
  *         """
  *         Count the number of items in each group.
  */
-  __pyx_tuple__23 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(0, 216, __pyx_L1_error)
+  __pyx_tuple__23 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(0, 222, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__23);
   __Pyx_GIVEREF(__pyx_tuple__23);
-  __pyx_codeobj__24 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__23, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_group_by_py, __pyx_n_s_count, 216, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__24)) __PYX_ERR(0, 216, __pyx_L1_error)
+  __pyx_codeobj__24 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__23, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_group_by_py, __pyx_n_s_count, 222, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__24)) __PYX_ERR(0, 222, __pyx_L1_error)
 
-  /* "mabel/data/internals/group_by.py":230
+  /* "mabel/data/internals/group_by.py":236
  *         return self.aggregate(("COUNT", "*"))
  * 
  *     def average(self, columns):             # <<<<<<<<<<<<<<
  *         """
  *         Calculate the average of the items in a group.
  */
-  __pyx_tuple__25 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_columns, __pyx_n_s_column); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(0, 230, __pyx_L1_error)
+  __pyx_tuple__25 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_columns, __pyx_n_s_column); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(0, 236, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__25);
   __Pyx_GIVEREF(__pyx_tuple__25);
-  __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(2, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_group_by_py, __pyx_n_s_average, 230, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) __PYX_ERR(0, 230, __pyx_L1_error)
+  __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(2, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_group_by_py, __pyx_n_s_average, 236, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) __PYX_ERR(0, 236, __pyx_L1_error)
 
-  /* "mabel/data/internals/group_by.py":238
+  /* "mabel/data/internals/group_by.py":244
  *         return self.aggregate([("AVG", column) for column in columns])
  * 
  *     def groups(self):             # <<<<<<<<<<<<<<
  *         """
  *         Return the set of groups - this is similar to a DISTINCT function
  */
-  __pyx_tuple__27 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_collector, __pyx_n_s_record, __pyx_n_s_group); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(0, 238, __pyx_L1_error)
+  __pyx_tuple__27 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_collector, __pyx_n_s_record, __pyx_n_s_group); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(0, 244, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__27);
   __Pyx_GIVEREF(__pyx_tuple__27);
-  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(1, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__27, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_group_by_py, __pyx_n_s_groups, 238, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 238, __pyx_L1_error)
+  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(1, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__27, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_group_by_py, __pyx_n_s_groups, 244, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 244, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -7811,7 +7812,7 @@ static int __Pyx_modinit_type_init_code(void) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
-  if (PyType_Ready(&__pyx_type_5mabel_4data_9internals_8group_by___pyx_scope_struct___map) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5mabel_4data_9internals_8group_by___pyx_scope_struct___map) < 0) __PYX_ERR(0, 44, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_5mabel_4data_9internals_8group_by___pyx_scope_struct___map.tp_print = 0;
   #endif
@@ -7819,7 +7820,7 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_type_5mabel_4data_9internals_8group_by___pyx_scope_struct___map.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_5mabel_4data_9internals_8group_by___pyx_scope_struct___map = &__pyx_type_5mabel_4data_9internals_8group_by___pyx_scope_struct___map;
-  if (PyType_Ready(&__pyx_type_5mabel_4data_9internals_8group_by___pyx_scope_struct_1_aggregate) < 0) __PYX_ERR(0, 88, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5mabel_4data_9internals_8group_by___pyx_scope_struct_1_aggregate) < 0) __PYX_ERR(0, 94, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_5mabel_4data_9internals_8group_by___pyx_scope_struct_1_aggregate.tp_print = 0;
   #endif
@@ -7827,7 +7828,7 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_type_5mabel_4data_9internals_8group_by___pyx_scope_struct_1_aggregate.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_5mabel_4data_9internals_8group_by___pyx_scope_struct_1_aggregate = &__pyx_type_5mabel_4data_9internals_8group_by___pyx_scope_struct_1_aggregate;
-  if (PyType_Ready(&__pyx_type_5mabel_4data_9internals_8group_by___pyx_scope_struct_2_genexpr) < 0) __PYX_ERR(0, 101, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5mabel_4data_9internals_8group_by___pyx_scope_struct_2_genexpr) < 0) __PYX_ERR(0, 107, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_5mabel_4data_9internals_8group_by___pyx_scope_struct_2_genexpr.tp_print = 0;
   #endif
@@ -7835,7 +7836,7 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_type_5mabel_4data_9internals_8group_by___pyx_scope_struct_2_genexpr.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_5mabel_4data_9internals_8group_by___pyx_scope_struct_2_genexpr = &__pyx_type_5mabel_4data_9internals_8group_by___pyx_scope_struct_2_genexpr;
-  if (PyType_Ready(&__pyx_type_5mabel_4data_9internals_8group_by___pyx_scope_struct_3_groups) < 0) __PYX_ERR(0, 238, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5mabel_4data_9internals_8group_by___pyx_scope_struct_3_groups) < 0) __PYX_ERR(0, 244, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_5mabel_4data_9internals_8group_by___pyx_scope_struct_3_groups.tp_print = 0;
   #endif
@@ -8033,7 +8034,7 @@ if (!__Pyx_RefNanny) {
   Py_INCREF(__pyx_m);
   #else
   #if PY_MAJOR_VERSION < 3
-  __pyx_m = Py_InitModule4("group_by", __pyx_methods, 0, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
+  __pyx_m = Py_InitModule4("group_by", __pyx_methods, __pyx_k_This_module_is_compiled_any_cha, 0, PYTHON_API_VERSION); Py_XINCREF(__pyx_m);
   #else
   __pyx_m = PyModule_Create(&__pyx_moduledef);
   #endif
@@ -8079,289 +8080,289 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "mabel/data/internals/group_by.py":3
- * # cython: language_level=3
+  /* "mabel/data/internals/group_by.py":9
+ * """
  * import cython
  * import operator             # <<<<<<<<<<<<<<
  * from siphashc import siphash
  * from collections import defaultdict
  */
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_operator, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 3, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_operator, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 9, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_operator, __pyx_t_1) < 0) __PYX_ERR(0, 3, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_operator, __pyx_t_1) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mabel/data/internals/group_by.py":4
+  /* "mabel/data/internals/group_by.py":10
  * import cython
  * import operator
  * from siphashc import siphash             # <<<<<<<<<<<<<<
  * from collections import defaultdict
  * 
  */
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 4, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 10, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_siphash);
   __Pyx_GIVEREF(__pyx_n_s_siphash);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_siphash);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_siphashc, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 4, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_siphashc, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 10, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_siphash); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 4, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_siphash); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 10, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_siphash, __pyx_t_1) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_siphash, __pyx_t_1) < 0) __PYX_ERR(0, 10, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mabel/data/internals/group_by.py":5
+  /* "mabel/data/internals/group_by.py":11
  * import operator
  * from siphashc import siphash
  * from collections import defaultdict             # <<<<<<<<<<<<<<
  * 
  * AGGREGATORS = {
  */
-  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 5, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_n_s_defaultdict);
   __Pyx_GIVEREF(__pyx_n_s_defaultdict);
   PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_defaultdict);
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_collections, __pyx_t_2, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 5, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_collections, __pyx_t_2, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_defaultdict); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 5, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_defaultdict); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_defaultdict, __pyx_t_2) < 0) __PYX_ERR(0, 5, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_defaultdict, __pyx_t_2) < 0) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mabel/data/internals/group_by.py":8
+  /* "mabel/data/internals/group_by.py":14
  * 
  * AGGREGATORS = {
  *     "SUM": operator.add,             # <<<<<<<<<<<<<<
  *     "MAX": max,
  *     "MIN": min,
  */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 8, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 14, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_operator); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 8, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_operator); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 14, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_add); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 8, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_add); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 14, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_SUM, __pyx_t_3) < 0) __PYX_ERR(0, 8, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_SUM, __pyx_t_3) < 0) __PYX_ERR(0, 14, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "mabel/data/internals/group_by.py":9
+  /* "mabel/data/internals/group_by.py":15
  * AGGREGATORS = {
  *     "SUM": operator.add,
  *     "MAX": max,             # <<<<<<<<<<<<<<
  *     "MIN": min,
  *     "COUNT": lambda x, y: x + 1,
  */
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_MAX, __pyx_builtin_max) < 0) __PYX_ERR(0, 8, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_MAX, __pyx_builtin_max) < 0) __PYX_ERR(0, 14, __pyx_L1_error)
 
-  /* "mabel/data/internals/group_by.py":10
+  /* "mabel/data/internals/group_by.py":16
  *     "SUM": operator.add,
  *     "MAX": max,
  *     "MIN": min,             # <<<<<<<<<<<<<<
  *     "COUNT": lambda x, y: x + 1,
  *     "AVG": lambda x, y: 1,
  */
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_MIN, __pyx_builtin_min) < 0) __PYX_ERR(0, 8, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_MIN, __pyx_builtin_min) < 0) __PYX_ERR(0, 14, __pyx_L1_error)
 
-  /* "mabel/data/internals/group_by.py":11
+  /* "mabel/data/internals/group_by.py":17
  *     "MAX": max,
  *     "MIN": min,
  *     "COUNT": lambda x, y: x + 1,             # <<<<<<<<<<<<<<
  *     "AVG": lambda x, y: 1,
  * }
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_8group_by_lambda, 0, __pyx_n_s_lambda, NULL, __pyx_n_s_mabel_data_internals_group_by, __pyx_d, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_8group_by_lambda, 0, __pyx_n_s_lambda, NULL, __pyx_n_s_mabel_data_internals_group_by, __pyx_d, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_COUNT, __pyx_t_3) < 0) __PYX_ERR(0, 8, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_COUNT, __pyx_t_3) < 0) __PYX_ERR(0, 14, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "mabel/data/internals/group_by.py":12
+  /* "mabel/data/internals/group_by.py":18
  *     "MIN": min,
  *     "COUNT": lambda x, y: x + 1,
  *     "AVG": lambda x, y: 1,             # <<<<<<<<<<<<<<
  * }
  * 
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_8group_by_1lambda1, 0, __pyx_n_s_lambda, NULL, __pyx_n_s_mabel_data_internals_group_by, __pyx_d, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 12, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_8group_by_1lambda1, 0, __pyx_n_s_lambda, NULL, __pyx_n_s_mabel_data_internals_group_by, __pyx_d, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 18, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_AVG, __pyx_t_3) < 0) __PYX_ERR(0, 8, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_AVG, __pyx_t_3) < 0) __PYX_ERR(0, 14, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_AGGREGATORS, __pyx_t_1) < 0) __PYX_ERR(0, 7, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_AGGREGATORS, __pyx_t_1) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mabel/data/internals/group_by.py":15
+  /* "mabel/data/internals/group_by.py":21
  * }
  * 
  * HASH_SEED = b"Anakin Skywalker"             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_HASH_SEED, __pyx_kp_b_Anakin_Skywalker) < 0) __PYX_ERR(0, 15, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_HASH_SEED, __pyx_kp_b_Anakin_Skywalker) < 0) __PYX_ERR(0, 21, __pyx_L1_error)
 
-  /* "mabel/data/internals/group_by.py":18
+  /* "mabel/data/internals/group_by.py":24
  * 
  * 
  * class TooManyGroups(Exception):             # <<<<<<<<<<<<<<
  *     pass
  * 
  */
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 18, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
   __Pyx_GIVEREF(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
-  __pyx_t_3 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 18, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_Py3MetaclassPrepare(__pyx_t_3, __pyx_t_1, __pyx_n_s_TooManyGroups, __pyx_n_s_TooManyGroups, (PyObject *) NULL, __pyx_n_s_mabel_data_internals_group_by, (PyObject *) NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 18, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Py3MetaclassPrepare(__pyx_t_3, __pyx_t_1, __pyx_n_s_TooManyGroups, __pyx_n_s_TooManyGroups, (PyObject *) NULL, __pyx_n_s_mabel_data_internals_group_by, (PyObject *) NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_3, __pyx_n_s_TooManyGroups, __pyx_t_1, __pyx_t_2, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 18, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_3, __pyx_n_s_TooManyGroups, __pyx_t_1, __pyx_t_2, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TooManyGroups, __pyx_t_4) < 0) __PYX_ERR(0, 18, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TooManyGroups, __pyx_t_4) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mabel/data/internals/group_by.py":22
+  /* "mabel/data/internals/group_by.py":28
  * 
  * 
  * class GroupBy:             # <<<<<<<<<<<<<<
  *     """
  *     GroupBy does a lazy evaluation of the groups, the groups are calculated as part of
  */
-  __pyx_t_1 = __Pyx_Py3MetaclassPrepare((PyObject *) NULL, __pyx_empty_tuple, __pyx_n_s_GroupBy, __pyx_n_s_GroupBy, (PyObject *) NULL, __pyx_n_s_mabel_data_internals_group_by, __pyx_kp_s_GroupBy_does_a_lazy_evaluation); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Py3MetaclassPrepare((PyObject *) NULL, __pyx_empty_tuple, __pyx_n_s_GroupBy, __pyx_n_s_GroupBy, (PyObject *) NULL, __pyx_n_s_mabel_data_internals_group_by, __pyx_kp_s_GroupBy_does_a_lazy_evaluation); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mabel/data/internals/group_by.py":30
+  /* "mabel/data/internals/group_by.py":36
  *     """
  * 
  *     def __init__(self, dictset, columns):             # <<<<<<<<<<<<<<
  *         self._dictset = dictset
  *         if isinstance(columns, (list, set, tuple)):
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_8group_by_7GroupBy_1__init__, 0, __pyx_n_s_GroupBy___init, NULL, __pyx_n_s_mabel_data_internals_group_by, __pyx_d, ((PyObject *)__pyx_codeobj__14)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_8group_by_7GroupBy_1__init__, 0, __pyx_n_s_GroupBy___init, NULL, __pyx_n_s_mabel_data_internals_group_by, __pyx_d, ((PyObject *)__pyx_codeobj__14)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_init, __pyx_t_3) < 0) __PYX_ERR(0, 30, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_init, __pyx_t_3) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "mabel/data/internals/group_by.py":38
+  /* "mabel/data/internals/group_by.py":44
  *         self._group_keys = {}
  * 
  *     def _map(self, collect_columns):             # <<<<<<<<<<<<<<
  *         """
  *         Create Tuples of records in the Groups (GroupID, CollectedColumn, Value)
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_8group_by_7GroupBy_3_map, 0, __pyx_n_s_GroupBy__map, NULL, __pyx_n_s_mabel_data_internals_group_by, __pyx_d, ((PyObject *)__pyx_codeobj_)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_8group_by_7GroupBy_3_map, 0, __pyx_n_s_GroupBy__map, NULL, __pyx_n_s_mabel_data_internals_group_by, __pyx_d, ((PyObject *)__pyx_codeobj_)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 44, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_map, __pyx_t_3) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_map, __pyx_t_3) < 0) __PYX_ERR(0, 44, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "mabel/data/internals/group_by.py":88
+  /* "mabel/data/internals/group_by.py":94
  *                         yield (group_key, column, record[column])
  * 
  *     def aggregate(self, aggregations):             # <<<<<<<<<<<<<<
  *         """
  *         This implements steps akin to the REDUCE step in MapReduce.
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_8group_by_7GroupBy_6aggregate, 0, __pyx_n_s_GroupBy_aggregate, NULL, __pyx_n_s_mabel_data_internals_group_by, __pyx_d, ((PyObject *)__pyx_codeobj__7)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 88, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_8group_by_7GroupBy_6aggregate, 0, __pyx_n_s_GroupBy_aggregate, NULL, __pyx_n_s_mabel_data_internals_group_by, __pyx_d, ((PyObject *)__pyx_codeobj__7)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 94, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_aggregate, __pyx_t_3) < 0) __PYX_ERR(0, 88, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_aggregate, __pyx_t_3) < 0) __PYX_ERR(0, 94, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "mabel/data/internals/group_by.py":171
+  /* "mabel/data/internals/group_by.py":177
  *             yield results
  * 
  *     def max(self, columns):             # <<<<<<<<<<<<<<
  *         """
  *         Get the maximum value of a column, or set of columns, in each group.
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_8group_by_7GroupBy_9max, 0, __pyx_n_s_GroupBy_max, NULL, __pyx_n_s_mabel_data_internals_group_by, __pyx_d, ((PyObject *)__pyx_codeobj__18)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 171, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_8group_by_7GroupBy_9max, 0, __pyx_n_s_GroupBy_max, NULL, __pyx_n_s_mabel_data_internals_group_by, __pyx_d, ((PyObject *)__pyx_codeobj__18)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 177, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_max, __pyx_t_3) < 0) __PYX_ERR(0, 171, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_max, __pyx_t_3) < 0) __PYX_ERR(0, 177, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "mabel/data/internals/group_by.py":186
+  /* "mabel/data/internals/group_by.py":192
  *         return self.aggregate([("MAX", column) for column in columns])
  * 
  *     def min(self, columns):             # <<<<<<<<<<<<<<
  *         """
  *         Get the minimum value of a column, or set of columns, in each group.
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_8group_by_7GroupBy_11min, 0, __pyx_n_s_GroupBy_min, NULL, __pyx_n_s_mabel_data_internals_group_by, __pyx_d, ((PyObject *)__pyx_codeobj__20)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 186, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_8group_by_7GroupBy_11min, 0, __pyx_n_s_GroupBy_min, NULL, __pyx_n_s_mabel_data_internals_group_by, __pyx_d, ((PyObject *)__pyx_codeobj__20)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 192, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_min, __pyx_t_3) < 0) __PYX_ERR(0, 186, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_min, __pyx_t_3) < 0) __PYX_ERR(0, 192, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "mabel/data/internals/group_by.py":201
+  /* "mabel/data/internals/group_by.py":207
  *         return self.aggregate([("MIN", column) for column in columns])
  * 
  *     def sum(self, columns):             # <<<<<<<<<<<<<<
  *         """
  *         Get the sum of values in a column, or set of columns, in each group.
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_8group_by_7GroupBy_13sum, 0, __pyx_n_s_GroupBy_sum, NULL, __pyx_n_s_mabel_data_internals_group_by, __pyx_d, ((PyObject *)__pyx_codeobj__22)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 201, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_8group_by_7GroupBy_13sum, 0, __pyx_n_s_GroupBy_sum, NULL, __pyx_n_s_mabel_data_internals_group_by, __pyx_d, ((PyObject *)__pyx_codeobj__22)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 207, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_sum, __pyx_t_3) < 0) __PYX_ERR(0, 201, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_sum, __pyx_t_3) < 0) __PYX_ERR(0, 207, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "mabel/data/internals/group_by.py":216
+  /* "mabel/data/internals/group_by.py":222
  *         return self.aggregate([("SUM", column) for column in columns])
  * 
  *     def count(self):             # <<<<<<<<<<<<<<
  *         """
  *         Count the number of items in each group.
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_8group_by_7GroupBy_15count, 0, __pyx_n_s_GroupBy_count, NULL, __pyx_n_s_mabel_data_internals_group_by, __pyx_d, ((PyObject *)__pyx_codeobj__24)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 216, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_8group_by_7GroupBy_15count, 0, __pyx_n_s_GroupBy_count, NULL, __pyx_n_s_mabel_data_internals_group_by, __pyx_d, ((PyObject *)__pyx_codeobj__24)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 222, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_count, __pyx_t_3) < 0) __PYX_ERR(0, 216, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_count, __pyx_t_3) < 0) __PYX_ERR(0, 222, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "mabel/data/internals/group_by.py":230
+  /* "mabel/data/internals/group_by.py":236
  *         return self.aggregate(("COUNT", "*"))
  * 
  *     def average(self, columns):             # <<<<<<<<<<<<<<
  *         """
  *         Calculate the average of the items in a group.
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_8group_by_7GroupBy_17average, 0, __pyx_n_s_GroupBy_average, NULL, __pyx_n_s_mabel_data_internals_group_by, __pyx_d, ((PyObject *)__pyx_codeobj__26)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 230, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_8group_by_7GroupBy_17average, 0, __pyx_n_s_GroupBy_average, NULL, __pyx_n_s_mabel_data_internals_group_by, __pyx_d, ((PyObject *)__pyx_codeobj__26)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 236, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_average, __pyx_t_3) < 0) __PYX_ERR(0, 230, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_average, __pyx_t_3) < 0) __PYX_ERR(0, 236, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "mabel/data/internals/group_by.py":238
+  /* "mabel/data/internals/group_by.py":244
  *         return self.aggregate([("AVG", column) for column in columns])
  * 
  *     def groups(self):             # <<<<<<<<<<<<<<
  *         """
  *         Return the set of groups - this is similar to a DISTINCT function
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_8group_by_7GroupBy_19groups, 0, __pyx_n_s_GroupBy_groups, NULL, __pyx_n_s_mabel_data_internals_group_by, __pyx_d, ((PyObject *)__pyx_codeobj__12)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 238, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_8group_by_7GroupBy_19groups, 0, __pyx_n_s_GroupBy_groups, NULL, __pyx_n_s_mabel_data_internals_group_by, __pyx_d, ((PyObject *)__pyx_codeobj__12)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 244, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_groups, __pyx_t_3) < 0) __PYX_ERR(0, 238, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_groups, __pyx_t_3) < 0) __PYX_ERR(0, 244, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "mabel/data/internals/group_by.py":22
+  /* "mabel/data/internals/group_by.py":28
  * 
  * 
  * class GroupBy:             # <<<<<<<<<<<<<<
  *     """
  *     GroupBy does a lazy evaluation of the groups, the groups are calculated as part of
  */
-  __pyx_t_3 = __Pyx_Py3ClassCreate(((PyObject*)&__Pyx_DefaultClassType), __pyx_n_s_GroupBy, __pyx_empty_tuple, __pyx_t_1, NULL, 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 22, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3ClassCreate(((PyObject*)&__Pyx_DefaultClassType), __pyx_n_s_GroupBy, __pyx_empty_tuple, __pyx_t_1, NULL, 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_GroupBy, __pyx_t_3) < 0) __PYX_ERR(0, 22, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_GroupBy, __pyx_t_3) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "mabel/data/internals/group_by.py":1
  * # cython: language_level=3             # <<<<<<<<<<<<<<
- * import cython
- * import operator
+ * """
+ * This module is compiled, any changes to it need the following to be run before they
  */
   __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);

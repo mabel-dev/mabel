@@ -24,5 +24,11 @@ setup(
     packages=find_packages(include=["mabel", "mabel.*"]),
     url="https://github.com/mabel-dev/mabel/",
     install_requires=required,
-    ext_modules=cythonize(["mabel/data/internals/group_by.py"]),
+    ext_modules=cythonize(
+        [
+            "mabel/data/internals/group_by.py",
+            "mabel/data/internals/expression.py",
+            "mabel/data/readers/internals/inline_evaluator.py",
+        ]
+    ),
 )

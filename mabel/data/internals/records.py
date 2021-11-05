@@ -1,5 +1,4 @@
 from typing import List, Callable, MutableMapping, Any
-import csimdjson
 
 
 def select_record_fields(record: dict, fields: List[str]) -> dict:
@@ -77,7 +76,7 @@ def flatten(
     items = []
     for key, value in dictionary.items():
         new_key = str(parent_key) + separator + key if parent_key else key
-        if isinstance(value, (dict, csimdjson.Object)):
+        if hasattr(value, "items"):
             items.extend(
                 flatten(
                     dictionary=value, separator=separator, parent_key=new_key

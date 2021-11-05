@@ -5,8 +5,8 @@ Index is a json KV store:
     "hash(value)": [list of locations]
 }
 """
-import simdjson
 from typing import Iterable
+import orjson
 from siphashc import siphash
 
 MAX_INDEX = 4294967295  # 2^32 - 1
@@ -28,7 +28,13 @@ class Index:
     def __init__(self, index: bytes):
         if hasattr(index, "read"):
             index = index.read()  # type:ignore
-        self._index = simdjson.Parser().parse(index)
+
+        try:
+            import simdjson
+
+            self._index = simdjson.Parser().parse(index)
+        except ImportError:
+            self._index = orjson.loads(index)
 
     @staticmethod
     def build_index(dictset: Iterable[dict], column_name: str):
@@ -71,7 +77,7 @@ class Index:
             f.write(self.bytes())
 
     def bytes(self):
-        if isinstance(self._index, simdjson.Object):
+        if hasattr(self._index, "mini"):
             return self._index.mini
         import orjson
 

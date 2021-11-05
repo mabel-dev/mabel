@@ -25,8 +25,6 @@ import os
 import orjson
 import statistics
 
-import simdjson
-
 from siphashc import siphash
 from operator import itemgetter
 from functools import reduce
@@ -394,8 +392,8 @@ class DictSet(object):
         Retun the first item in the DictSet
         """
         oneth = next(iter(self._iterator), None)
-        if isinstance(oneth, simdjson.Object):
-            return oneth.as_dict()
+        if hasattr(oneth, "as_dict"):
+            return oneth.as_dict()   # type:ignore
         return oneth  # type:ignore
 
     def take(self, items: int):

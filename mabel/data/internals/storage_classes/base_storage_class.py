@@ -1,5 +1,20 @@
 from abc import ABC, abstractclassmethod
 
+try:
+    import simdjson
+
+    def json(ds):
+        """parse each line in the file to a dictionary"""
+        json_parser = simdjson.Parser()
+        return json_parser.parse(ds)
+
+
+except ImportError:
+    import orjson
+
+    def json(ds):
+        return orjson.loads(ds)
+
 
 class BaseStorageClass(ABC):
 
@@ -25,3 +40,6 @@ class BaseStorageClass(ABC):
 
     def __len__(self):
         return self.length
+
+    def parse_json(self, ds):
+        return json(ds)

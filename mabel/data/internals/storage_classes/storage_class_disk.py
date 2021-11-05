@@ -13,8 +13,6 @@ from tempfile import NamedTemporaryFile
 from ....utils.paths import silent_remove
 from . import BaseStorageClass
 
-import simdjson
-
 
 BUFFER_SIZE = 16 * 1024 * 1024  # 16Mb
 
@@ -36,7 +34,7 @@ class StorageClassDisk(BaseStorageClass):
         with open(self.file, "wb") as f:
             for self.length, row in enumerate(iterator):
                 # there is a penalty for using this object
-                if isinstance(row, simdjson.Object):
+                if hasattr(row, "mini"):
                     buffer.extend(row.mini + b"\n")
                 else:
                     buffer.extend(orjson.dumps(row) + b"\n")
@@ -75,12 +73,12 @@ class StorageClassDisk(BaseStorageClass):
 
             for i, line in enumerate(reader, min_location):
                 if i in locations:
-                    yield simdjson.Parser().parse(line)
+                    yield self.parse_json(line)
                     if i == max_location:
                         return
         else:
             for line in self._read_file():
-                yield simdjson.Parser().parse(line)
+                yield self.parse_json(line)
 
     def __iter__(self):
         self.iterator = iter(self._inner_reader())

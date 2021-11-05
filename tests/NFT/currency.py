@@ -144,6 +144,7 @@ STYLES = {
     "VULNERABLE": "\033[0;31mVULNERABLE \033[0m",
     "NO PATCH": "\033[0;35mNO PATCH   \033[0m",
     "OKAY": "\033[0;32mOKAY       \033[0m",
+    "UNKNOWN": "\034[0;32mUNKNOWN    \033[0m",
 }
 
 
