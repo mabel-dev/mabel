@@ -75,8 +75,10 @@ def get_latest_version(package_name):
         url = "https://pypi.org/pypi/{}/json".format(package_name)
         resp = requests.get(url)
         data = resp.json()
+        print(data)
+        quit()
         return data.get("info").get("release_url").split("/")[-2]
-    except:
+    except KeyError:
         return "unknown"
 
 
