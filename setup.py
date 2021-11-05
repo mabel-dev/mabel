@@ -27,8 +27,10 @@ setup(
     ext_modules=cythonize(
         [
             "mabel/data/internals/group_by.py",
+            "mabel/data/internals/dictset.py",
             "mabel/data/internals/expression.py",
             "mabel/data/readers/internals/inline_evaluator.py",
+            "mabel/data/readers/internals/parallel_reader.py",
         ]
     ),
 )
