@@ -393,7 +393,7 @@ class DictSet(object):
         """
         oneth = next(iter(self._iterator), None)
         if hasattr(oneth, "as_dict"):
-            return oneth.as_dict()   # type:ignore
+            return oneth.as_dict()  # type:ignore
         return oneth  # type:ignore
 
     def take(self, items: int):
