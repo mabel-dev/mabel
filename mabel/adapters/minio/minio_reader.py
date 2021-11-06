@@ -2,7 +2,6 @@
 MinIo Reader - also works with AWS
 """
 from functools import lru_cache
-import io
 from ...data.readers.internals.base_inner_reader import BaseInnerReader
 from ...utils import paths, dates
 from ...errors import MissingDependencyError
@@ -49,13 +48,11 @@ class MinIoReader(BaseInnerReader):
                 if not blob.object_name.endswith("/")
             ]
 
-    def get_blob_stream(self, blob_name: str) -> io.IOBase:
+    def get_blob_bytes(self, blob_name: str) -> bytes:
         try:
             bucket, object_path, name, extension = paths.get_parts(blob_name)
             stream = self.minio.get_object(bucket, object_path + name + extension)
-
-            io_stream = io.BytesIO(stream.read())
-            return io_stream
+            return stream.read()
         finally:
             stream.close()
 

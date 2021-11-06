@@ -1,5 +1,4 @@
-import io
-from typing import Iterable
+from urllib3.packages.six import b
 from ...data.readers.internals.base_inner_reader import BaseInnerReader, BUFFER_SIZE
 
 
@@ -16,7 +15,6 @@ class DiskReader(BaseInnerReader):
             return [blob.as_posix() for blob in blobs if blob.is_file()]
         return []
 
-    def get_blob_stream(self, blob_name: str) -> io.IOBase:
+    def get_blob_bytes(self, blob_name: str) -> bytes:
         with open(blob_name, "rb") as f:
-            io_stream = io.BytesIO(f.read())
-            return io_stream
+            return f.read()

@@ -1674,6 +1674,7 @@ static const char __pyx_k_no_filter[] = "no_filter";
 static const char __pyx_k_parquet_2[] = "parquet";
 static const char __pyx_k_pass_thru[] = "pass_thru";
 static const char __pyx_k_predicate[] = "predicate";
+static const char __pyx_k_read_blob[] = "read_blob";
 static const char __pyx_k_separator[] = "separator";
 static const char __pyx_k_traceback[] = "traceback";
 static const char __pyx_k_DnfFilters[] = "DnfFilters";
@@ -1836,6 +1837,7 @@ static PyObject *__pyx_n_s_predicate;
 static PyObject *__pyx_n_s_predicates;
 static PyObject *__pyx_n_s_prepare;
 static PyObject *__pyx_n_s_qualname;
+static PyObject *__pyx_n_s_read_blob;
 static PyObject *__pyx_n_s_reader;
 static PyObject *__pyx_n_s_record;
 static PyObject *__pyx_n_s_record_iterator;
@@ -5385,13 +5387,13 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
       /* "mabel/data/readers/internals/parallel_reader.py":236
  * 
  *             # Read
- *             record_iterator = self.reader.get_blob_stream(blob_name)             # <<<<<<<<<<<<<<
+ *             record_iterator = self.reader.read_blob(blob_name)             # <<<<<<<<<<<<<<
  *             # Decompress
  *             record_iterator = decompressor(record_iterator)
  */
       __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_reader); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 236, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_get_blob_stream); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 236, __pyx_L4_error)
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_read_blob); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 236, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_t_4 = NULL;
@@ -5414,7 +5416,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
       __pyx_t_9 = 0;
 
       /* "mabel/data/readers/internals/parallel_reader.py":238
- *             record_iterator = self.reader.get_blob_stream(blob_name)
+ *             record_iterator = self.reader.read_blob(blob_name)
  *             # Decompress
  *             record_iterator = decompressor(record_iterator)             # <<<<<<<<<<<<<<
  *             ### bypass rows which aren't selected
@@ -6479,6 +6481,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_predicates, __pyx_k_predicates, sizeof(__pyx_k_predicates), 0, 0, 1, 1},
   {&__pyx_n_s_prepare, __pyx_k_prepare, sizeof(__pyx_k_prepare), 0, 0, 1, 1},
   {&__pyx_n_s_qualname, __pyx_k_qualname, sizeof(__pyx_k_qualname), 0, 0, 1, 1},
+  {&__pyx_n_s_read_blob, __pyx_k_read_blob, sizeof(__pyx_k_read_blob), 0, 0, 1, 1},
   {&__pyx_n_s_reader, __pyx_k_reader, sizeof(__pyx_k_reader), 0, 0, 1, 1},
   {&__pyx_n_s_record, __pyx_k_record, sizeof(__pyx_k_record), 0, 0, 1, 1},
   {&__pyx_n_s_record_iterator, __pyx_k_record_iterator, sizeof(__pyx_k_record_iterator), 0, 0, 1, 1},

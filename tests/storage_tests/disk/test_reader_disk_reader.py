@@ -37,7 +37,7 @@ def test_can_read_files():
         """ensure we can read the test files"""
         r = DiskReader(dataset=p, raw_path=True)
         for file in [b for b in r.get_list_of_blobs() if "/_SYS." not in b]:
-            for index, item in enumerate(r.get_blob_stream(file)):
+            for index, item in enumerate(r.get_blob_bytes(file).splitlines()):
                 pass
             assert index == 24, index
 

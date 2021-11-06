@@ -233,7 +233,7 @@ class ParallelReader:
                 return None
 
             # Read
-            record_iterator = self.reader.get_blob_stream(blob_name)
+            record_iterator = self.reader.read_blob(blob_name)
             # Decompress
             record_iterator = decompressor(record_iterator)
             ### bypass rows which aren't selected

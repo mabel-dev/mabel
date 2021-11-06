@@ -1,6 +1,8 @@
 """
 Base Inner Reader
 """
+from functools import lru_cache
+import io
 import abc
 import pathlib
 import datetime
@@ -11,6 +13,38 @@ from ....logging import get_logger
 
 
 BUFFER_SIZE: int = 64 * 1024 * 1024  # 64Mb
+
+
+@lru_cache(1)
+def memcached_server():
+    import os
+
+    # the server must be set in the environment
+    memcached_config = os.environ.get("MEMCACHED_SERVER", None)
+    if memcached_config is None:
+        return None
+
+    # expect either SERVER or SERVER:PORT entries
+    memcached_config = memcached_config.split(":")
+    if len(memcached_config) == 1:
+        # the default memcached port
+        memcached_config.append(11211)
+
+    # we need the server and the port
+    if len(memcached_config) != 2:
+        return None
+
+    try:
+        from pymemcache.client import base
+    except ImportError:
+        return None
+
+    return base.Client(
+        (
+            memcached_config[0],
+            memcached_config[1],
+        )
+    )
 
 
 class BaseInnerReader(abc.ABC):
@@ -55,11 +89,36 @@ class BaseInnerReader(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_blob_stream(self, blob: str) -> IOBase:
+    def get_blob_bytes(self, blob: str) -> bytes:
         """
         Return a filelike object
         """
         pass
+
+    def read_blob(self, blob: str) -> IOBase:
+        """
+        Read-thru cache
+        """
+        cache_server = memcached_server()
+        # if cache isn't configured, read and get out of here
+        if not cache_server:
+            result = self.get_blob_bytes(blob)
+            return io.BytesIO(result)
+
+        # hash the blob name for the look up
+        from siphashc import siphash
+
+        blob_hash = str(siphash("RevengeOfTheBlob", blob))
+
+        # try to fetch the cached file
+        result = cache_server.get(blob_hash)
+
+        # if the item was a miss, get it from storage and add it to the cache
+        if result is None:
+            result = self.get_blob_bytes(blob)
+            cache_server.set(blob_hash, result)
+
+        return io.BytesIO(result)
 
     def get_list_of_blobs(self):
 
