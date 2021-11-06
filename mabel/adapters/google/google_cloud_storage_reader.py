@@ -1,7 +1,6 @@
 """
 Google Cloud Storage Reader
 """
-import io
 import os
 from ...data.readers.internals.base_inner_reader import BaseInnerReader
 from ...errors import MissingDependencyError
@@ -30,7 +29,7 @@ class GoogleCloudStorageReader(BaseInnerReader):
         self.project = project
         self.credentials = credentials
 
-    def get_blob_stream(self, blob_name):
+    def get_blob_bytes(self, blob_name):
         bucket, object_path, name, extension = paths.get_parts(blob_name)
         blob = get_blob(
             project=self.project,
@@ -38,8 +37,7 @@ class GoogleCloudStorageReader(BaseInnerReader):
             blob_name=object_path + name + extension,
         )
         stream = blob.download_as_bytes()
-        io_stream = io.BytesIO(stream)
-        return io_stream
+        return stream
 
     def get_blobs_at_path(self, path):
         bucket, object_path, name, extension = paths.get_parts(path)
