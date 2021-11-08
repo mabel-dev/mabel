@@ -1143,6 +1143,30 @@ static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int eq
 /* UnicodeEquals.proto */
 static CYTHON_INLINE int __Pyx_PyUnicode_Equals(PyObject* s1, PyObject* s2, int equals);
 
+/* GetTopmostException.proto */
+#if CYTHON_USE_EXC_INFO_STACK
+static _PyErr_StackItem * __Pyx_PyErr_GetTopmostException(PyThreadState *tstate);
+#endif
+
+/* SaveResetException.proto */
+#if CYTHON_FAST_THREAD_STATE
+#define __Pyx_ExceptionSave(type, value, tb)  __Pyx__ExceptionSave(__pyx_tstate, type, value, tb)
+static CYTHON_INLINE void __Pyx__ExceptionSave(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
+#define __Pyx_ExceptionReset(type, value, tb)  __Pyx__ExceptionReset(__pyx_tstate, type, value, tb)
+static CYTHON_INLINE void __Pyx__ExceptionReset(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb);
+#else
+#define __Pyx_ExceptionSave(type, value, tb)   PyErr_GetExcInfo(type, value, tb)
+#define __Pyx_ExceptionReset(type, value, tb)  PyErr_SetExcInfo(type, value, tb)
+#endif
+
+/* PyErrExceptionMatches.proto */
+#if CYTHON_FAST_THREAD_STATE
+#define __Pyx_PyErr_ExceptionMatches(err) __Pyx_PyErr_ExceptionMatchesInState(__pyx_tstate, err)
+static CYTHON_INLINE int __Pyx_PyErr_ExceptionMatchesInState(PyThreadState* tstate, PyObject* err);
+#else
+#define __Pyx_PyErr_ExceptionMatches(err)  PyErr_ExceptionMatches(err)
+#endif
+
 /* GetItemInt.proto */
 #define __Pyx_GetItemInt(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
     (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
@@ -1176,30 +1200,6 @@ static CYTHON_INLINE int __Pyx_PySequence_ContainsTF(PyObject* item, PyObject* s
 static CYTHON_INLINE PyObject *__Pyx_PyObject_GetItem(PyObject *obj, PyObject* key);
 #else
 #define __Pyx_PyObject_GetItem(obj, key)  PyObject_GetItem(obj, key)
-#endif
-
-/* GetTopmostException.proto */
-#if CYTHON_USE_EXC_INFO_STACK
-static _PyErr_StackItem * __Pyx_PyErr_GetTopmostException(PyThreadState *tstate);
-#endif
-
-/* SaveResetException.proto */
-#if CYTHON_FAST_THREAD_STATE
-#define __Pyx_ExceptionSave(type, value, tb)  __Pyx__ExceptionSave(__pyx_tstate, type, value, tb)
-static CYTHON_INLINE void __Pyx__ExceptionSave(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
-#define __Pyx_ExceptionReset(type, value, tb)  __Pyx__ExceptionReset(__pyx_tstate, type, value, tb)
-static CYTHON_INLINE void __Pyx__ExceptionReset(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb);
-#else
-#define __Pyx_ExceptionSave(type, value, tb)   PyErr_GetExcInfo(type, value, tb)
-#define __Pyx_ExceptionReset(type, value, tb)  PyErr_SetExcInfo(type, value, tb)
-#endif
-
-/* PyErrExceptionMatches.proto */
-#if CYTHON_FAST_THREAD_STATE
-#define __Pyx_PyErr_ExceptionMatches(err) __Pyx_PyErr_ExceptionMatchesInState(__pyx_tstate, err)
-static CYTHON_INLINE int __Pyx_PyErr_ExceptionMatchesInState(PyThreadState* tstate, PyObject* err);
-#else
-#define __Pyx_PyErr_ExceptionMatches(err)  PyErr_ExceptionMatches(err)
 #endif
 
 /* GetException.proto */
@@ -1365,6 +1365,7 @@ int __pyx_module_is_main_mabel__data__internals__expression = 0;
 /* Implementation of 'mabel.data.internals.expression' */
 static PyObject *__pyx_builtin_BaseException;
 static PyObject *__pyx_builtin_object;
+static PyObject *__pyx_builtin_SystemError;
 static PyObject *__pyx_builtin_TypeError;
 static PyObject *__pyx_builtin_ValueError;
 static const char __pyx_k_[] = "(";
@@ -1427,6 +1428,7 @@ static const char __pyx_k_Tokenizer[] = "Tokenizer";
 static const char __pyx_k_TypeError[] = "TypeError";
 static const char __pyx_k_collector[] = "collector";
 static const char __pyx_k_condition[] = "condition";
+static const char __pyx_k_fast_real[] = "fast_real";
 static const char __pyx_k_metaclass[] = "__metaclass__";
 static const char __pyx_k_parse_iso[] = "parse_iso";
 static const char __pyx_k_terminal1[] = "terminal1";
@@ -1441,6 +1443,7 @@ static const char __pyx_k_expression[] = "expression";
 static const char __pyx_k_fast_float[] = "fast_float";
 static const char __pyx_k_parameters[] = "parameters";
 static const char __pyx_k_token_type[] = "token_type";
+static const char __pyx_k_SystemError[] = "SystemError";
 static const char __pyx_k_fastnumbers[] = "fastnumbers";
 static const char __pyx_k_utils_dates[] = "utils.dates";
 static const char __pyx_k_inner_to_dnf[] = "_inner_to_dnf";
@@ -1523,6 +1526,7 @@ static PyObject *__pyx_n_s_OR;
 static PyObject *__pyx_kp_u_Operator_expected_but_got;
 static PyObject *__pyx_kp_u_Operator_expected_but_got_nothin;
 static PyObject *__pyx_n_s_RIGHTPARENTHESES;
+static PyObject *__pyx_n_s_SystemError;
 static PyObject *__pyx_n_s_TOKENS;
 static PyObject *__pyx_n_u_TRUE;
 static PyObject *__pyx_n_s_Tokenizer;
@@ -1556,6 +1560,7 @@ static PyObject *__pyx_kp_u_expected_but_got;
 static PyObject *__pyx_n_s_expression;
 static PyObject *__pyx_n_s_fast_float;
 static PyObject *__pyx_n_s_fast_int;
+static PyObject *__pyx_n_s_fast_real;
 static PyObject *__pyx_n_s_fastnumbers;
 static PyObject *__pyx_n_s_has_next;
 static PyObject *__pyx_n_s_import;
@@ -6211,8 +6216,12 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_12in
   PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
   PyObject *__pyx_t_5 = NULL;
-  int __pyx_t_6;
+  PyObject *__pyx_t_6 = NULL;
   PyObject *__pyx_t_7 = NULL;
+  PyObject *__pyx_t_8 = NULL;
+  int __pyx_t_9;
+  int __pyx_t_10;
+  PyObject *__pyx_t_11 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -6255,7 +6264,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_12in
  *             return value
  *         if value.upper() in ("TRUE", "FALSE"):             # <<<<<<<<<<<<<<
  *             return value.upper() == "TRUE"
- *         num = fastnumbers.fast_int(value)
+ *         try:
  */
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_value, __pyx_n_s_upper); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 201, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
@@ -6291,8 +6300,8 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_12in
  *             return value
  *         if value.upper() in ("TRUE", "FALSE"):
  *             return value.upper() == "TRUE"             # <<<<<<<<<<<<<<
- *         num = fastnumbers.fast_int(value)
- *         if isinstance(num, (int, float)):
+ *         try:
+ *             # there appears to be a race condition with this library
  */
     __Pyx_XDECREF(__pyx_r);
     __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_value, __pyx_n_s_upper); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 202, __pyx_L1_error)
@@ -6323,119 +6332,193 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_12in
  *             return value
  *         if value.upper() in ("TRUE", "FALSE"):             # <<<<<<<<<<<<<<
  *             return value.upper() == "TRUE"
- *         num = fastnumbers.fast_int(value)
+ *         try:
  */
   }
 
   /* "mabel/data/internals/expression.py":203
  *         if value.upper() in ("TRUE", "FALSE"):
  *             return value.upper() == "TRUE"
- *         num = fastnumbers.fast_int(value)             # <<<<<<<<<<<<<<
- *         if isinstance(num, (int, float)):
- *             return num
+ *         try:             # <<<<<<<<<<<<<<
+ *             # there appears to be a race condition with this library
+ *             # so wrap in a SystemError
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_fastnumbers); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 203, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_fast_int); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 203, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
-    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_5);
-    if (likely(__pyx_t_3)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
-      __Pyx_INCREF(__pyx_t_3);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_5, function);
+  {
+    __Pyx_PyThreadState_declare
+    __Pyx_PyThreadState_assign
+    __Pyx_ExceptionSave(&__pyx_t_6, &__pyx_t_7, &__pyx_t_8);
+    __Pyx_XGOTREF(__pyx_t_6);
+    __Pyx_XGOTREF(__pyx_t_7);
+    __Pyx_XGOTREF(__pyx_t_8);
+    /*try:*/ {
+
+      /* "mabel/data/internals/expression.py":206
+ *             # there appears to be a race condition with this library
+ *             # so wrap in a SystemError
+ *             num = fastnumbers.fast_real(value)             # <<<<<<<<<<<<<<
+ *             if isinstance(num, (int, float)):
+ *                 return num
+ */
+      __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_fastnumbers); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 206, __pyx_L7_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_fast_real); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 206, __pyx_L7_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __pyx_t_3 = NULL;
+      if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
+        __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_5);
+        if (likely(__pyx_t_3)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+          __Pyx_INCREF(__pyx_t_3);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_5, function);
+        }
+      }
+      __pyx_t_4 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_3, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_v_value);
+      __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 206, __pyx_L7_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __pyx_v_num = __pyx_t_4;
+      __pyx_t_4 = 0;
+
+      /* "mabel/data/internals/expression.py":207
+ *             # so wrap in a SystemError
+ *             num = fastnumbers.fast_real(value)
+ *             if isinstance(num, (int, float)):             # <<<<<<<<<<<<<<
+ *                 return num
+ *         except SystemError:
+ */
+      __pyx_t_2 = PyInt_Check(__pyx_v_num); 
+      __pyx_t_9 = (__pyx_t_2 != 0);
+      if (!__pyx_t_9) {
+      } else {
+        __pyx_t_1 = __pyx_t_9;
+        goto __pyx_L14_bool_binop_done;
+      }
+      __pyx_t_9 = PyFloat_Check(__pyx_v_num); 
+      __pyx_t_2 = (__pyx_t_9 != 0);
+      __pyx_t_1 = __pyx_t_2;
+      __pyx_L14_bool_binop_done:;
+      __pyx_t_2 = (__pyx_t_1 != 0);
+      if (__pyx_t_2) {
+
+        /* "mabel/data/internals/expression.py":208
+ *             num = fastnumbers.fast_real(value)
+ *             if isinstance(num, (int, float)):
+ *                 return num             # <<<<<<<<<<<<<<
+ *         except SystemError:
+ *             pass
+ */
+        __Pyx_XDECREF(__pyx_r);
+        __Pyx_INCREF(__pyx_v_num);
+        __pyx_r = __pyx_v_num;
+        goto __pyx_L11_try_return;
+
+        /* "mabel/data/internals/expression.py":207
+ *             # so wrap in a SystemError
+ *             num = fastnumbers.fast_real(value)
+ *             if isinstance(num, (int, float)):             # <<<<<<<<<<<<<<
+ *                 return num
+ *         except SystemError:
+ */
+      }
+
+      /* "mabel/data/internals/expression.py":203
+ *         if value.upper() in ("TRUE", "FALSE"):
+ *             return value.upper() == "TRUE"
+ *         try:             # <<<<<<<<<<<<<<
+ *             # there appears to be a race condition with this library
+ *             # so wrap in a SystemError
+ */
     }
-  }
-  __pyx_t_4 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_3, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_v_value);
-  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 203, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_v_num = __pyx_t_4;
-  __pyx_t_4 = 0;
+    __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+    __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
+    goto __pyx_L12_try_end;
+    __pyx_L7_error:;
+    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "mabel/data/internals/expression.py":204
+    /* "mabel/data/internals/expression.py":209
+ *             if isinstance(num, (int, float)):
+ *                 return num
+ *         except SystemError:             # <<<<<<<<<<<<<<
+ *             pass
+ *         return parse_iso(value) or value
+ */
+    __pyx_t_10 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_SystemError);
+    if (__pyx_t_10) {
+      __Pyx_ErrRestore(0,0,0);
+      goto __pyx_L8_exception_handled;
+    }
+    goto __pyx_L9_except_error;
+    __pyx_L9_except_error:;
+
+    /* "mabel/data/internals/expression.py":203
+ *         if value.upper() in ("TRUE", "FALSE"):
  *             return value.upper() == "TRUE"
- *         num = fastnumbers.fast_int(value)
- *         if isinstance(num, (int, float)):             # <<<<<<<<<<<<<<
- *             return num
- *         return parse_iso(value) or value
+ *         try:             # <<<<<<<<<<<<<<
+ *             # there appears to be a race condition with this library
+ *             # so wrap in a SystemError
  */
-  __pyx_t_2 = PyInt_Check(__pyx_v_num); 
-  __pyx_t_6 = (__pyx_t_2 != 0);
-  if (!__pyx_t_6) {
-  } else {
-    __pyx_t_1 = __pyx_t_6;
-    goto __pyx_L8_bool_binop_done;
-  }
-  __pyx_t_6 = PyFloat_Check(__pyx_v_num); 
-  __pyx_t_2 = (__pyx_t_6 != 0);
-  __pyx_t_1 = __pyx_t_2;
-  __pyx_L8_bool_binop_done:;
-  __pyx_t_2 = (__pyx_t_1 != 0);
-  if (__pyx_t_2) {
-
-    /* "mabel/data/internals/expression.py":205
- *         num = fastnumbers.fast_int(value)
- *         if isinstance(num, (int, float)):
- *             return num             # <<<<<<<<<<<<<<
- *         return parse_iso(value) or value
- * 
- */
-    __Pyx_XDECREF(__pyx_r);
-    __Pyx_INCREF(__pyx_v_num);
-    __pyx_r = __pyx_v_num;
+    __Pyx_XGIVEREF(__pyx_t_6);
+    __Pyx_XGIVEREF(__pyx_t_7);
+    __Pyx_XGIVEREF(__pyx_t_8);
+    __Pyx_ExceptionReset(__pyx_t_6, __pyx_t_7, __pyx_t_8);
+    goto __pyx_L1_error;
+    __pyx_L11_try_return:;
+    __Pyx_XGIVEREF(__pyx_t_6);
+    __Pyx_XGIVEREF(__pyx_t_7);
+    __Pyx_XGIVEREF(__pyx_t_8);
+    __Pyx_ExceptionReset(__pyx_t_6, __pyx_t_7, __pyx_t_8);
     goto __pyx_L0;
-
-    /* "mabel/data/internals/expression.py":204
- *             return value.upper() == "TRUE"
- *         num = fastnumbers.fast_int(value)
- *         if isinstance(num, (int, float)):             # <<<<<<<<<<<<<<
- *             return num
- *         return parse_iso(value) or value
- */
+    __pyx_L8_exception_handled:;
+    __Pyx_XGIVEREF(__pyx_t_6);
+    __Pyx_XGIVEREF(__pyx_t_7);
+    __Pyx_XGIVEREF(__pyx_t_8);
+    __Pyx_ExceptionReset(__pyx_t_6, __pyx_t_7, __pyx_t_8);
+    __pyx_L12_try_end:;
   }
 
-  /* "mabel/data/internals/expression.py":206
- *         if isinstance(num, (int, float)):
- *             return num
+  /* "mabel/data/internals/expression.py":211
+ *         except SystemError:
+ *             pass
  *         return parse_iso(value) or value             # <<<<<<<<<<<<<<
  * 
  *     def evaluate(self, variable_dict):
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_parse_iso); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_parse_iso); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 211, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_7 = NULL;
+  __pyx_t_11 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
-    __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_3);
-    if (likely(__pyx_t_7)) {
+    __pyx_t_11 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_11)) {
       PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-      __Pyx_INCREF(__pyx_t_7);
+      __Pyx_INCREF(__pyx_t_11);
       __Pyx_INCREF(function);
       __Pyx_DECREF_SET(__pyx_t_3, function);
     }
   }
-  __pyx_t_5 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_7, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_value);
-  __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-  if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __pyx_t_5 = (__pyx_t_11) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_11, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_value);
+  __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
+  if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 211, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 211, __pyx_L1_error)
   if (!__pyx_t_2) {
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   } else {
     __Pyx_INCREF(__pyx_t_5);
     __pyx_t_4 = __pyx_t_5;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    goto __pyx_L10_bool_binop_done;
+    goto __pyx_L16_bool_binop_done;
   }
   __Pyx_INCREF(__pyx_v_value);
   __pyx_t_4 = __pyx_v_value;
-  __pyx_L10_bool_binop_done:;
+  __pyx_L16_bool_binop_done:;
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
@@ -6453,7 +6536,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_12in
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_XDECREF(__pyx_t_11);
   __Pyx_AddTraceback("mabel.data.internals.expression.Expression.interpret_value", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -6463,7 +6546,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_12in
   return __pyx_r;
 }
 
-/* "mabel/data/internals/expression.py":208
+/* "mabel/data/internals/expression.py":213
  *         return parse_iso(value) or value
  * 
  *     def evaluate(self, variable_dict):             # <<<<<<<<<<<<<<
@@ -6506,11 +6589,11 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_10expression_10Expression_15ev
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_variable_dict)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("evaluate", 1, 2, 2, 1); __PYX_ERR(0, 208, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("evaluate", 1, 2, 2, 1); __PYX_ERR(0, 213, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "evaluate") < 0)) __PYX_ERR(0, 208, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "evaluate") < 0)) __PYX_ERR(0, 213, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -6523,7 +6606,7 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_10expression_10Expression_15ev
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("evaluate", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 208, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("evaluate", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 213, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mabel.data.internals.expression.Expression.evaluate", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -6550,7 +6633,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_14ev
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("evaluate", 0);
 
-  /* "mabel/data/internals/expression.py":209
+  /* "mabel/data/internals/expression.py":214
  * 
  *     def evaluate(self, variable_dict):
  *         return self.evaluate_recursive(self.root, variable_dict)             # <<<<<<<<<<<<<<
@@ -6558,9 +6641,9 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_14ev
  *     def __call__(self, variable_dict):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_evaluate_recursive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 209, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_evaluate_recursive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 214, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_root); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 209, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_root); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 214, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
   __pyx_t_5 = 0;
@@ -6577,7 +6660,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_14ev
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_t_3, __pyx_v_variable_dict};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 209, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 214, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -6586,14 +6669,14 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_14ev
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_t_3, __pyx_v_variable_dict};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 209, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 214, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else
   #endif
   {
-    __pyx_t_6 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 209, __pyx_L1_error)
+    __pyx_t_6 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 214, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     if (__pyx_t_4) {
       __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_4); __pyx_t_4 = NULL;
@@ -6604,7 +6687,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_14ev
     __Pyx_GIVEREF(__pyx_v_variable_dict);
     PyTuple_SET_ITEM(__pyx_t_6, 1+__pyx_t_5, __pyx_v_variable_dict);
     __pyx_t_3 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 209, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 214, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   }
@@ -6613,7 +6696,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_14ev
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mabel/data/internals/expression.py":208
+  /* "mabel/data/internals/expression.py":213
  *         return parse_iso(value) or value
  * 
  *     def evaluate(self, variable_dict):             # <<<<<<<<<<<<<<
@@ -6636,7 +6719,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_14ev
   return __pyx_r;
 }
 
-/* "mabel/data/internals/expression.py":211
+/* "mabel/data/internals/expression.py":216
  *         return self.evaluate_recursive(self.root, variable_dict)
  * 
  *     def __call__(self, variable_dict):             # <<<<<<<<<<<<<<
@@ -6679,11 +6762,11 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_10expression_10Expression_17__
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_variable_dict)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__call__", 1, 2, 2, 1); __PYX_ERR(0, 211, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__call__", 1, 2, 2, 1); __PYX_ERR(0, 216, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__call__") < 0)) __PYX_ERR(0, 211, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__call__") < 0)) __PYX_ERR(0, 216, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -6696,7 +6779,7 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_10expression_10Expression_17__
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__call__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 211, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__call__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 216, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mabel.data.internals.expression.Expression.__call__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -6723,7 +6806,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_16__
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__call__", 0);
 
-  /* "mabel/data/internals/expression.py":212
+  /* "mabel/data/internals/expression.py":217
  * 
  *     def __call__(self, variable_dict):
  *         return self.evaluate_recursive(self.root, variable_dict)             # <<<<<<<<<<<<<<
@@ -6731,9 +6814,9 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_16__
  *     def evaluate_recursive(self, treeNode, variable_dict):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_evaluate_recursive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 212, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_evaluate_recursive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 217, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_root); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 212, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_root); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 217, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
   __pyx_t_5 = 0;
@@ -6750,7 +6833,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_16__
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_t_3, __pyx_v_variable_dict};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 212, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 217, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -6759,14 +6842,14 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_16__
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_t_3, __pyx_v_variable_dict};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 212, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 217, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else
   #endif
   {
-    __pyx_t_6 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 212, __pyx_L1_error)
+    __pyx_t_6 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 217, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     if (__pyx_t_4) {
       __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_4); __pyx_t_4 = NULL;
@@ -6777,7 +6860,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_16__
     __Pyx_GIVEREF(__pyx_v_variable_dict);
     PyTuple_SET_ITEM(__pyx_t_6, 1+__pyx_t_5, __pyx_v_variable_dict);
     __pyx_t_3 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 212, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 217, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   }
@@ -6786,7 +6869,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_16__
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mabel/data/internals/expression.py":211
+  /* "mabel/data/internals/expression.py":216
  *         return self.evaluate_recursive(self.root, variable_dict)
  * 
  *     def __call__(self, variable_dict):             # <<<<<<<<<<<<<<
@@ -6809,7 +6892,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_16__
   return __pyx_r;
 }
 
-/* "mabel/data/internals/expression.py":214
+/* "mabel/data/internals/expression.py":219
  *         return self.evaluate_recursive(self.root, variable_dict)
  * 
  *     def evaluate_recursive(self, treeNode, variable_dict):             # <<<<<<<<<<<<<<
@@ -6855,17 +6938,17 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_10expression_10Expression_19ev
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_treeNode)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("evaluate_recursive", 1, 3, 3, 1); __PYX_ERR(0, 214, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("evaluate_recursive", 1, 3, 3, 1); __PYX_ERR(0, 219, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_variable_dict)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("evaluate_recursive", 1, 3, 3, 2); __PYX_ERR(0, 214, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("evaluate_recursive", 1, 3, 3, 2); __PYX_ERR(0, 219, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "evaluate_recursive") < 0)) __PYX_ERR(0, 214, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "evaluate_recursive") < 0)) __PYX_ERR(0, 219, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -6880,7 +6963,7 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_10expression_10Expression_19ev
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("evaluate_recursive", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 214, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("evaluate_recursive", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 219, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mabel.data.internals.expression.Expression.evaluate_recursive", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -6917,39 +7000,39 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("evaluate_recursive", 0);
 
-  /* "mabel/data/internals/expression.py":215
+  /* "mabel/data/internals/expression.py":220
  * 
  *     def evaluate_recursive(self, treeNode, variable_dict):
  *         if treeNode.token_type in (             # <<<<<<<<<<<<<<
  *             TOKENS.INTEGER,
  *             TOKENS.FLOAT,
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 215, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mabel/data/internals/expression.py":216
+  /* "mabel/data/internals/expression.py":221
  *     def evaluate_recursive(self, treeNode, variable_dict):
  *         if treeNode.token_type in (
  *             TOKENS.INTEGER,             # <<<<<<<<<<<<<<
  *             TOKENS.FLOAT,
  *             TOKENS.LITERAL,
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 216, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 221, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_INTEGER); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 216, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_INTEGER); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 221, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 215, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mabel/data/internals/expression.py":215
+  /* "mabel/data/internals/expression.py":220
  * 
  *     def evaluate_recursive(self, treeNode, variable_dict):
  *         if treeNode.token_type in (             # <<<<<<<<<<<<<<
  *             TOKENS.INTEGER,
  *             TOKENS.FLOAT,
  */
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 215, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (!__pyx_t_5) {
   } else {
@@ -6957,29 +7040,29 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
     goto __pyx_L4_bool_binop_done;
   }
 
-  /* "mabel/data/internals/expression.py":217
+  /* "mabel/data/internals/expression.py":222
  *         if treeNode.token_type in (
  *             TOKENS.INTEGER,
  *             TOKENS.FLOAT,             # <<<<<<<<<<<<<<
  *             TOKENS.LITERAL,
  *             TOKENS.BOOLEAN,
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 217, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 222, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_FLOAT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 217, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_FLOAT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 222, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 215, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mabel/data/internals/expression.py":215
+  /* "mabel/data/internals/expression.py":220
  * 
  *     def evaluate_recursive(self, treeNode, variable_dict):
  *         if treeNode.token_type in (             # <<<<<<<<<<<<<<
  *             TOKENS.INTEGER,
  *             TOKENS.FLOAT,
  */
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 215, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (!__pyx_t_5) {
   } else {
@@ -6987,29 +7070,29 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
     goto __pyx_L4_bool_binop_done;
   }
 
-  /* "mabel/data/internals/expression.py":218
+  /* "mabel/data/internals/expression.py":223
  *             TOKENS.INTEGER,
  *             TOKENS.FLOAT,
  *             TOKENS.LITERAL,             # <<<<<<<<<<<<<<
  *             TOKENS.BOOLEAN,
  *             TOKENS.NULL,
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 218, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 223, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_LITERAL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 218, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_LITERAL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 223, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 215, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mabel/data/internals/expression.py":215
+  /* "mabel/data/internals/expression.py":220
  * 
  *     def evaluate_recursive(self, treeNode, variable_dict):
  *         if treeNode.token_type in (             # <<<<<<<<<<<<<<
  *             TOKENS.INTEGER,
  *             TOKENS.FLOAT,
  */
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 215, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (!__pyx_t_5) {
   } else {
@@ -7017,29 +7100,29 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
     goto __pyx_L4_bool_binop_done;
   }
 
-  /* "mabel/data/internals/expression.py":219
+  /* "mabel/data/internals/expression.py":224
  *             TOKENS.FLOAT,
  *             TOKENS.LITERAL,
  *             TOKENS.BOOLEAN,             # <<<<<<<<<<<<<<
  *             TOKENS.NULL,
  *             TOKENS.DATE,
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 219, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 224, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_BOOLEAN); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 219, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_BOOLEAN); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 224, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 215, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mabel/data/internals/expression.py":215
+  /* "mabel/data/internals/expression.py":220
  * 
  *     def evaluate_recursive(self, treeNode, variable_dict):
  *         if treeNode.token_type in (             # <<<<<<<<<<<<<<
  *             TOKENS.INTEGER,
  *             TOKENS.FLOAT,
  */
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 215, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (!__pyx_t_5) {
   } else {
@@ -7047,29 +7130,29 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
     goto __pyx_L4_bool_binop_done;
   }
 
-  /* "mabel/data/internals/expression.py":220
+  /* "mabel/data/internals/expression.py":225
  *             TOKENS.LITERAL,
  *             TOKENS.BOOLEAN,
  *             TOKENS.NULL,             # <<<<<<<<<<<<<<
  *             TOKENS.DATE,
  *         ):
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 220, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 225, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 220, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 225, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 215, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mabel/data/internals/expression.py":215
+  /* "mabel/data/internals/expression.py":220
  * 
  *     def evaluate_recursive(self, treeNode, variable_dict):
  *         if treeNode.token_type in (             # <<<<<<<<<<<<<<
  *             TOKENS.INTEGER,
  *             TOKENS.FLOAT,
  */
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 215, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (!__pyx_t_5) {
   } else {
@@ -7077,29 +7160,29 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
     goto __pyx_L4_bool_binop_done;
   }
 
-  /* "mabel/data/internals/expression.py":221
+  /* "mabel/data/internals/expression.py":226
  *             TOKENS.BOOLEAN,
  *             TOKENS.NULL,
  *             TOKENS.DATE,             # <<<<<<<<<<<<<<
  *         ):
  *             return treeNode.value
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 221, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 226, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_DATE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 221, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_DATE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 226, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 215, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mabel/data/internals/expression.py":215
+  /* "mabel/data/internals/expression.py":220
  * 
  *     def evaluate_recursive(self, treeNode, variable_dict):
  *         if treeNode.token_type in (             # <<<<<<<<<<<<<<
  *             TOKENS.INTEGER,
  *             TOKENS.FLOAT,
  */
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 215, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_2 = __pyx_t_5;
   __pyx_L4_bool_binop_done:;
@@ -7107,7 +7190,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
   __pyx_t_5 = (__pyx_t_2 != 0);
   if (__pyx_t_5) {
 
-    /* "mabel/data/internals/expression.py":223
+    /* "mabel/data/internals/expression.py":228
  *             TOKENS.DATE,
  *         ):
  *             return treeNode.value             # <<<<<<<<<<<<<<
@@ -7115,13 +7198,13 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
  *             if treeNode.value[0] == treeNode.value[-1] == "`":
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 223, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 228, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_r = __pyx_t_1;
     __pyx_t_1 = 0;
     goto __pyx_L0;
 
-    /* "mabel/data/internals/expression.py":215
+    /* "mabel/data/internals/expression.py":220
  * 
  *     def evaluate_recursive(self, treeNode, variable_dict):
  *         if treeNode.token_type in (             # <<<<<<<<<<<<<<
@@ -7130,71 +7213,71 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
  */
   }
 
-  /* "mabel/data/internals/expression.py":224
+  /* "mabel/data/internals/expression.py":229
  *         ):
  *             return treeNode.value
  *         if treeNode.token_type == TOKENS.VARIABLE:             # <<<<<<<<<<<<<<
  *             if treeNode.value[0] == treeNode.value[-1] == "`":
  *                 treeNode.value = treeNode.value[1:-1]
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 229, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 229, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_VARIABLE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_VARIABLE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 229, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 229, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 229, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_5) {
 
-    /* "mabel/data/internals/expression.py":225
+    /* "mabel/data/internals/expression.py":230
  *             return treeNode.value
  *         if treeNode.token_type == TOKENS.VARIABLE:
  *             if treeNode.value[0] == treeNode.value[-1] == "`":             # <<<<<<<<<<<<<<
  *                 treeNode.value = treeNode.value[1:-1]
  *             if treeNode.value in variable_dict:
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_value); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 225, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_value); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 230, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_GetItemInt(__pyx_t_3, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 225, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetItemInt(__pyx_t_3, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 230, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_value); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 225, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_value); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 230, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_3, -1L, long, 1, __Pyx_PyInt_From_long, 0, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 225, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetItemInt(__pyx_t_3, -1L, long, 1, __Pyx_PyInt_From_long, 0, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 230, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyObject_RichCompare(__pyx_t_4, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 225, __pyx_L1_error)
+    __pyx_t_3 = PyObject_RichCompare(__pyx_t_4, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 230, __pyx_L1_error)
     if (__Pyx_PyObject_IsTrue(__pyx_t_3)) {
       __Pyx_DECREF(__pyx_t_3);
-      __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_kp_u__3, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 225, __pyx_L1_error)
+      __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_kp_u__3, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 230, __pyx_L1_error)
     }
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 225, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 230, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (__pyx_t_5) {
 
-      /* "mabel/data/internals/expression.py":226
+      /* "mabel/data/internals/expression.py":231
  *         if treeNode.token_type == TOKENS.VARIABLE:
  *             if treeNode.value[0] == treeNode.value[-1] == "`":
  *                 treeNode.value = treeNode.value[1:-1]             # <<<<<<<<<<<<<<
  *             if treeNode.value in variable_dict:
  *                 value = variable_dict[treeNode.value]
  */
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_value); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 226, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_value); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 231, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_1 = __Pyx_PyObject_GetSlice(__pyx_t_3, 1, -1L, NULL, NULL, &__pyx_slice__4, 1, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 226, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetSlice(__pyx_t_3, 1, -1L, NULL, NULL, &__pyx_slice__4, 1, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 231, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (__Pyx_PyObject_SetAttrStr(__pyx_v_treeNode, __pyx_n_s_value, __pyx_t_1) < 0) __PYX_ERR(0, 226, __pyx_L1_error)
+      if (__Pyx_PyObject_SetAttrStr(__pyx_v_treeNode, __pyx_n_s_value, __pyx_t_1) < 0) __PYX_ERR(0, 231, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-      /* "mabel/data/internals/expression.py":225
+      /* "mabel/data/internals/expression.py":230
  *             return treeNode.value
  *         if treeNode.token_type == TOKENS.VARIABLE:
  *             if treeNode.value[0] == treeNode.value[-1] == "`":             # <<<<<<<<<<<<<<
@@ -7203,36 +7286,36 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
  */
     }
 
-    /* "mabel/data/internals/expression.py":227
+    /* "mabel/data/internals/expression.py":232
  *             if treeNode.value[0] == treeNode.value[-1] == "`":
  *                 treeNode.value = treeNode.value[1:-1]
  *             if treeNode.value in variable_dict:             # <<<<<<<<<<<<<<
  *                 value = variable_dict[treeNode.value]
  *                 return self.interpret_value(value)
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 227, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 232, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_5 = (__Pyx_PySequence_ContainsTF(__pyx_t_1, __pyx_v_variable_dict, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 227, __pyx_L1_error)
+    __pyx_t_5 = (__Pyx_PySequence_ContainsTF(__pyx_t_1, __pyx_v_variable_dict, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 232, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_2 = (__pyx_t_5 != 0);
     if (__pyx_t_2) {
 
-      /* "mabel/data/internals/expression.py":228
+      /* "mabel/data/internals/expression.py":233
  *                 treeNode.value = treeNode.value[1:-1]
  *             if treeNode.value in variable_dict:
  *                 value = variable_dict[treeNode.value]             # <<<<<<<<<<<<<<
  *                 return self.interpret_value(value)
  *             return None
  */
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 228, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 233, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_v_variable_dict, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 228, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_v_variable_dict, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 233, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_v_value = __pyx_t_3;
       __pyx_t_3 = 0;
 
-      /* "mabel/data/internals/expression.py":229
+      /* "mabel/data/internals/expression.py":234
  *             if treeNode.value in variable_dict:
  *                 value = variable_dict[treeNode.value]
  *                 return self.interpret_value(value)             # <<<<<<<<<<<<<<
@@ -7240,7 +7323,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
  * 
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_interpret_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 229, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_interpret_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 234, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __pyx_t_4 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -7254,14 +7337,14 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
       }
       __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_4, __pyx_v_value) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_v_value);
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 229, __pyx_L1_error)
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 234, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_r = __pyx_t_3;
       __pyx_t_3 = 0;
       goto __pyx_L0;
 
-      /* "mabel/data/internals/expression.py":227
+      /* "mabel/data/internals/expression.py":232
  *             if treeNode.value[0] == treeNode.value[-1] == "`":
  *                 treeNode.value = treeNode.value[1:-1]
  *             if treeNode.value in variable_dict:             # <<<<<<<<<<<<<<
@@ -7270,7 +7353,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
  */
     }
 
-    /* "mabel/data/internals/expression.py":230
+    /* "mabel/data/internals/expression.py":235
  *                 value = variable_dict[treeNode.value]
  *                 return self.interpret_value(value)
  *             return None             # <<<<<<<<<<<<<<
@@ -7281,7 +7364,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
 
-    /* "mabel/data/internals/expression.py":224
+    /* "mabel/data/internals/expression.py":229
  *         ):
  *             return treeNode.value
  *         if treeNode.token_type == TOKENS.VARIABLE:             # <<<<<<<<<<<<<<
@@ -7290,16 +7373,16 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
  */
   }
 
-  /* "mabel/data/internals/expression.py":232
+  /* "mabel/data/internals/expression.py":237
  *             return None
  * 
  *         left = self.evaluate_recursive(treeNode.left, variable_dict)             # <<<<<<<<<<<<<<
  * 
  *         if treeNode.token_type == TOKENS.NOT:
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_evaluate_recursive); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 232, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_evaluate_recursive); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 237, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_left); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 232, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_left); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 237, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_6 = NULL;
   __pyx_t_7 = 0;
@@ -7316,7 +7399,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_1)) {
     PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_t_4, __pyx_v_variable_dict};
-    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 232, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 237, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -7325,14 +7408,14 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_1)) {
     PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_t_4, __pyx_v_variable_dict};
-    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 232, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 237, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   } else
   #endif
   {
-    __pyx_t_8 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 232, __pyx_L1_error)
+    __pyx_t_8 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 237, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     if (__pyx_t_6) {
       __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_6); __pyx_t_6 = NULL;
@@ -7343,7 +7426,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
     __Pyx_GIVEREF(__pyx_v_variable_dict);
     PyTuple_SET_ITEM(__pyx_t_8, 1+__pyx_t_7, __pyx_v_variable_dict);
     __pyx_t_4 = 0;
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_8, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 232, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_8, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 237, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   }
@@ -7351,28 +7434,28 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
   __pyx_v_left = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "mabel/data/internals/expression.py":234
+  /* "mabel/data/internals/expression.py":239
  *         left = self.evaluate_recursive(treeNode.left, variable_dict)
  * 
  *         if treeNode.token_type == TOKENS.NOT:             # <<<<<<<<<<<<<<
  *             return not left
  * 
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 234, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 239, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 234, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 239, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_NOT); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 234, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_NOT); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 239, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyObject_RichCompare(__pyx_t_3, __pyx_t_8, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 234, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_t_3, __pyx_t_8, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 239, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 234, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 239, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "mabel/data/internals/expression.py":235
+    /* "mabel/data/internals/expression.py":240
  * 
  *         if treeNode.token_type == TOKENS.NOT:
  *             return not left             # <<<<<<<<<<<<<<
@@ -7380,14 +7463,14 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
  *         right = self.evaluate_recursive(treeNode.right, variable_dict)
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_left); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 235, __pyx_L1_error)
-    __pyx_t_1 = __Pyx_PyBool_FromLong((!__pyx_t_2)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 235, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_left); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 240, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyBool_FromLong((!__pyx_t_2)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 240, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_r = __pyx_t_1;
     __pyx_t_1 = 0;
     goto __pyx_L0;
 
-    /* "mabel/data/internals/expression.py":234
+    /* "mabel/data/internals/expression.py":239
  *         left = self.evaluate_recursive(treeNode.left, variable_dict)
  * 
  *         if treeNode.token_type == TOKENS.NOT:             # <<<<<<<<<<<<<<
@@ -7396,16 +7479,16 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
  */
   }
 
-  /* "mabel/data/internals/expression.py":237
+  /* "mabel/data/internals/expression.py":242
  *             return not left
  * 
  *         right = self.evaluate_recursive(treeNode.right, variable_dict)             # <<<<<<<<<<<<<<
  * 
  *         if treeNode.token_type == TOKENS.OPERATOR:
  */
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_evaluate_recursive); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 237, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_evaluate_recursive); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 242, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_right); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 237, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_right); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 242, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
   __pyx_t_7 = 0;
@@ -7422,7 +7505,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_8)) {
     PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_t_3, __pyx_v_variable_dict};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_8, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 237, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_8, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 242, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -7431,14 +7514,14 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_8)) {
     PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_t_3, __pyx_v_variable_dict};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_8, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 237, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_8, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 242, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else
   #endif
   {
-    __pyx_t_6 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 237, __pyx_L1_error)
+    __pyx_t_6 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 242, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     if (__pyx_t_4) {
       __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_4); __pyx_t_4 = NULL;
@@ -7449,7 +7532,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
     __Pyx_GIVEREF(__pyx_v_variable_dict);
     PyTuple_SET_ITEM(__pyx_t_6, 1+__pyx_t_7, __pyx_v_variable_dict);
     __pyx_t_3 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 237, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 242, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   }
@@ -7457,28 +7540,28 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
   __pyx_v_right = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mabel/data/internals/expression.py":239
+  /* "mabel/data/internals/expression.py":244
  *         right = self.evaluate_recursive(treeNode.right, variable_dict)
  * 
  *         if treeNode.token_type == TOKENS.OPERATOR:             # <<<<<<<<<<<<<<
  *             try:
  *                 return OPERATORS[treeNode.value](left, right)
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 239, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 244, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 239, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 244, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_OPERATOR); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 239, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_OPERATOR); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 244, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = PyObject_RichCompare(__pyx_t_1, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 239, __pyx_L1_error)
+  __pyx_t_8 = PyObject_RichCompare(__pyx_t_1, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 244, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 239, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 244, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   if (__pyx_t_2) {
 
-    /* "mabel/data/internals/expression.py":240
+    /* "mabel/data/internals/expression.py":245
  * 
  *         if treeNode.token_type == TOKENS.OPERATOR:
  *             try:             # <<<<<<<<<<<<<<
@@ -7494,7 +7577,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
       __Pyx_XGOTREF(__pyx_t_11);
       /*try:*/ {
 
-        /* "mabel/data/internals/expression.py":241
+        /* "mabel/data/internals/expression.py":246
  *         if treeNode.token_type == TOKENS.OPERATOR:
  *             try:
  *                 return OPERATORS[treeNode.value](left, right)             # <<<<<<<<<<<<<<
@@ -7502,11 +7585,11 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
  *                 return None
  */
         __Pyx_XDECREF(__pyx_r);
-        __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_OPERATORS); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 241, __pyx_L15_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_OPERATORS); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 246, __pyx_L15_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 241, __pyx_L15_error)
+        __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 246, __pyx_L15_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_t_6, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 241, __pyx_L15_error)
+        __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_t_6, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 246, __pyx_L15_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -7525,7 +7608,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
         #if CYTHON_FAST_PYCALL
         if (PyFunction_Check(__pyx_t_3)) {
           PyObject *__pyx_temp[3] = {__pyx_t_1, __pyx_v_left, __pyx_v_right};
-          __pyx_t_8 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 241, __pyx_L15_error)
+          __pyx_t_8 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 246, __pyx_L15_error)
           __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
           __Pyx_GOTREF(__pyx_t_8);
         } else
@@ -7533,13 +7616,13 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
         #if CYTHON_FAST_PYCCALL
         if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
           PyObject *__pyx_temp[3] = {__pyx_t_1, __pyx_v_left, __pyx_v_right};
-          __pyx_t_8 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 241, __pyx_L15_error)
+          __pyx_t_8 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 246, __pyx_L15_error)
           __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
           __Pyx_GOTREF(__pyx_t_8);
         } else
         #endif
         {
-          __pyx_t_6 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 241, __pyx_L15_error)
+          __pyx_t_6 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 246, __pyx_L15_error)
           __Pyx_GOTREF(__pyx_t_6);
           if (__pyx_t_1) {
             __Pyx_GIVEREF(__pyx_t_1); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_1); __pyx_t_1 = NULL;
@@ -7550,7 +7633,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
           __Pyx_INCREF(__pyx_v_right);
           __Pyx_GIVEREF(__pyx_v_right);
           PyTuple_SET_ITEM(__pyx_t_6, 1+__pyx_t_7, __pyx_v_right);
-          __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 241, __pyx_L15_error)
+          __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 246, __pyx_L15_error)
           __Pyx_GOTREF(__pyx_t_8);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         }
@@ -7559,7 +7642,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
         __pyx_t_8 = 0;
         goto __pyx_L19_try_return;
 
-        /* "mabel/data/internals/expression.py":240
+        /* "mabel/data/internals/expression.py":245
  * 
  *         if treeNode.token_type == TOKENS.OPERATOR:
  *             try:             # <<<<<<<<<<<<<<
@@ -7574,7 +7657,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-      /* "mabel/data/internals/expression.py":242
+      /* "mabel/data/internals/expression.py":247
  *             try:
  *                 return OPERATORS[treeNode.value](left, right)
  *             except (TypeError, ValueError):             # <<<<<<<<<<<<<<
@@ -7584,12 +7667,12 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
       __pyx_t_7 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_TypeError) || __Pyx_PyErr_ExceptionMatches(__pyx_builtin_ValueError);
       if (__pyx_t_7) {
         __Pyx_AddTraceback("mabel.data.internals.expression.Expression.evaluate_recursive", __pyx_clineno, __pyx_lineno, __pyx_filename);
-        if (__Pyx_GetException(&__pyx_t_8, &__pyx_t_3, &__pyx_t_6) < 0) __PYX_ERR(0, 242, __pyx_L17_except_error)
+        if (__Pyx_GetException(&__pyx_t_8, &__pyx_t_3, &__pyx_t_6) < 0) __PYX_ERR(0, 247, __pyx_L17_except_error)
         __Pyx_GOTREF(__pyx_t_8);
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_GOTREF(__pyx_t_6);
 
-        /* "mabel/data/internals/expression.py":243
+        /* "mabel/data/internals/expression.py":248
  *                 return OPERATORS[treeNode.value](left, right)
  *             except (TypeError, ValueError):
  *                 return None             # <<<<<<<<<<<<<<
@@ -7606,7 +7689,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
       goto __pyx_L17_except_error;
       __pyx_L17_except_error:;
 
-      /* "mabel/data/internals/expression.py":240
+      /* "mabel/data/internals/expression.py":245
  * 
  *         if treeNode.token_type == TOKENS.OPERATOR:
  *             try:             # <<<<<<<<<<<<<<
@@ -7632,7 +7715,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
       goto __pyx_L0;
     }
 
-    /* "mabel/data/internals/expression.py":239
+    /* "mabel/data/internals/expression.py":244
  *         right = self.evaluate_recursive(treeNode.right, variable_dict)
  * 
  *         if treeNode.token_type == TOKENS.OPERATOR:             # <<<<<<<<<<<<<<
@@ -7641,28 +7724,28 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
  */
   }
 
-  /* "mabel/data/internals/expression.py":244
+  /* "mabel/data/internals/expression.py":249
  *             except (TypeError, ValueError):
  *                 return None
  *         if treeNode.token_type == TOKENS.AND:             # <<<<<<<<<<<<<<
  *             return left and right
  *         if treeNode.token_type == TOKENS.OR:
  */
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 244, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 249, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 244, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 249, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_AND); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 244, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_AND); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 249, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_6, __pyx_t_8, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 244, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_6, __pyx_t_8, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 249, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 244, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 249, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_2) {
 
-    /* "mabel/data/internals/expression.py":245
+    /* "mabel/data/internals/expression.py":250
  *                 return None
  *         if treeNode.token_type == TOKENS.AND:
  *             return left and right             # <<<<<<<<<<<<<<
@@ -7670,7 +7753,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
  *             return left or right
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_left); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 245, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_left); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 250, __pyx_L1_error)
     if (__pyx_t_2) {
     } else {
       __Pyx_INCREF(__pyx_v_left);
@@ -7684,7 +7767,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "mabel/data/internals/expression.py":244
+    /* "mabel/data/internals/expression.py":249
  *             except (TypeError, ValueError):
  *                 return None
  *         if treeNode.token_type == TOKENS.AND:             # <<<<<<<<<<<<<<
@@ -7693,28 +7776,28 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
  */
   }
 
-  /* "mabel/data/internals/expression.py":246
+  /* "mabel/data/internals/expression.py":251
  *         if treeNode.token_type == TOKENS.AND:
  *             return left and right
  *         if treeNode.token_type == TOKENS.OR:             # <<<<<<<<<<<<<<
  *             return left or right
  * 
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 246, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 251, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 246, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 251, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_OR); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 246, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_OR); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 251, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = PyObject_RichCompare(__pyx_t_3, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 246, __pyx_L1_error)
+  __pyx_t_8 = PyObject_RichCompare(__pyx_t_3, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_8); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 251, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 246, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_8); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 251, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   if (__pyx_t_2) {
 
-    /* "mabel/data/internals/expression.py":247
+    /* "mabel/data/internals/expression.py":252
  *             return left and right
  *         if treeNode.token_type == TOKENS.OR:
  *             return left or right             # <<<<<<<<<<<<<<
@@ -7722,7 +7805,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
  *         raise InvalidExpression(
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_left); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 247, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_left); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 252, __pyx_L1_error)
     if (!__pyx_t_2) {
     } else {
       __Pyx_INCREF(__pyx_v_left);
@@ -7736,7 +7819,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
     __pyx_t_8 = 0;
     goto __pyx_L0;
 
-    /* "mabel/data/internals/expression.py":246
+    /* "mabel/data/internals/expression.py":251
  *         if treeNode.token_type == TOKENS.AND:
  *             return left and right
  *         if treeNode.token_type == TOKENS.OR:             # <<<<<<<<<<<<<<
@@ -7745,24 +7828,24 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
  */
   }
 
-  /* "mabel/data/internals/expression.py":249
+  /* "mabel/data/internals/expression.py":254
  *             return left or right
  * 
  *         raise InvalidExpression(             # <<<<<<<<<<<<<<
  *             f"Unexpected value of type `{str(treeNode.token_type)}`"
  *         )
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_InvalidExpression); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 249, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_InvalidExpression); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
 
-  /* "mabel/data/internals/expression.py":250
+  /* "mabel/data/internals/expression.py":255
  * 
  *         raise InvalidExpression(
  *             f"Unexpected value of type `{str(treeNode.token_type)}`"             # <<<<<<<<<<<<<<
  *         )
  * 
  */
-  __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 250, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_12 = 0;
   __pyx_t_13 = 127;
@@ -7770,9 +7853,9 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
   __pyx_t_12 += 26;
   __Pyx_GIVEREF(__pyx_kp_u_Unexpected_value_of_type);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_kp_u_Unexpected_value_of_type);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 250, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 250, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_13 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) > __pyx_t_13) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) : __pyx_t_13;
@@ -7784,7 +7867,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
   __pyx_t_12 += 1;
   __Pyx_GIVEREF(__pyx_kp_u__3);
   PyTuple_SET_ITEM(__pyx_t_3, 2, __pyx_kp_u__3);
-  __pyx_t_4 = __Pyx_PyUnicode_Join(__pyx_t_3, 3, __pyx_t_12, __pyx_t_13); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 250, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyUnicode_Join(__pyx_t_3, 3, __pyx_t_12, __pyx_t_13); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_3 = NULL;
@@ -7800,14 +7883,14 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
   __pyx_t_8 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_4);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 249, __pyx_L1_error)
+  if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_Raise(__pyx_t_8, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __PYX_ERR(0, 249, __pyx_L1_error)
+  __PYX_ERR(0, 254, __pyx_L1_error)
 
-  /* "mabel/data/internals/expression.py":214
+  /* "mabel/data/internals/expression.py":219
  *         return self.evaluate_recursive(self.root, variable_dict)
  * 
  *     def evaluate_recursive(self, treeNode, variable_dict):             # <<<<<<<<<<<<<<
@@ -7833,7 +7916,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_18ev
   return __pyx_r;
 }
 
-/* "mabel/data/internals/expression.py":253
+/* "mabel/data/internals/expression.py":258
  *         )
  * 
  *     def to_dnf(self):             # <<<<<<<<<<<<<<
@@ -7868,7 +7951,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_20to
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("to_dnf", 0);
 
-  /* "mabel/data/internals/expression.py":258
+  /* "mabel/data/internals/expression.py":263
  *         expression tree.
  *         """
  *         return self._inner_to_dnf(self.root)             # <<<<<<<<<<<<<<
@@ -7876,9 +7959,9 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_20to
  *     def _inner_to_dnf(self, treeNode):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_inner_to_dnf); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 258, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_inner_to_dnf); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 263, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_root); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 258, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_root); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 263, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -7893,14 +7976,14 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_20to
   __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 258, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 263, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mabel/data/internals/expression.py":253
+  /* "mabel/data/internals/expression.py":258
  *         )
  * 
  *     def to_dnf(self):             # <<<<<<<<<<<<<<
@@ -7922,7 +8005,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_20to
   return __pyx_r;
 }
 
-/* "mabel/data/internals/expression.py":260
+/* "mabel/data/internals/expression.py":265
  *         return self._inner_to_dnf(self.root)
  * 
  *     def _inner_to_dnf(self, treeNode):             # <<<<<<<<<<<<<<
@@ -7965,11 +8048,11 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_10expression_10Expression_23_i
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_treeNode)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_inner_to_dnf", 1, 2, 2, 1); __PYX_ERR(0, 260, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_inner_to_dnf", 1, 2, 2, 1); __PYX_ERR(0, 265, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_inner_to_dnf") < 0)) __PYX_ERR(0, 260, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_inner_to_dnf") < 0)) __PYX_ERR(0, 265, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -7982,7 +8065,7 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_10expression_10Expression_23_i
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_inner_to_dnf", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 260, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_inner_to_dnf", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 265, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mabel.data.internals.expression.Expression._inner_to_dnf", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -8013,39 +8096,39 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("_inner_to_dnf", 0);
 
-  /* "mabel/data/internals/expression.py":261
+  /* "mabel/data/internals/expression.py":266
  * 
  *     def _inner_to_dnf(self, treeNode):
  *         if treeNode.token_type in (             # <<<<<<<<<<<<<<
  *             TOKENS.INTEGER,
  *             TOKENS.FLOAT,
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 261, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 266, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mabel/data/internals/expression.py":262
+  /* "mabel/data/internals/expression.py":267
  *     def _inner_to_dnf(self, treeNode):
  *         if treeNode.token_type in (
  *             TOKENS.INTEGER,             # <<<<<<<<<<<<<<
  *             TOKENS.FLOAT,
  *             TOKENS.BOOLEAN,
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 262, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 267, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_INTEGER); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 262, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_INTEGER); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 267, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 261, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 266, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mabel/data/internals/expression.py":261
+  /* "mabel/data/internals/expression.py":266
  * 
  *     def _inner_to_dnf(self, treeNode):
  *         if treeNode.token_type in (             # <<<<<<<<<<<<<<
  *             TOKENS.INTEGER,
  *             TOKENS.FLOAT,
  */
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 261, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 266, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (!__pyx_t_5) {
   } else {
@@ -8053,29 +8136,29 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
     goto __pyx_L4_bool_binop_done;
   }
 
-  /* "mabel/data/internals/expression.py":263
+  /* "mabel/data/internals/expression.py":268
  *         if treeNode.token_type in (
  *             TOKENS.INTEGER,
  *             TOKENS.FLOAT,             # <<<<<<<<<<<<<<
  *             TOKENS.BOOLEAN,
  *             TOKENS.NULL,
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 263, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 268, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_FLOAT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 263, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_FLOAT); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 268, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 261, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 266, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mabel/data/internals/expression.py":261
+  /* "mabel/data/internals/expression.py":266
  * 
  *     def _inner_to_dnf(self, treeNode):
  *         if treeNode.token_type in (             # <<<<<<<<<<<<<<
  *             TOKENS.INTEGER,
  *             TOKENS.FLOAT,
  */
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 261, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 266, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (!__pyx_t_5) {
   } else {
@@ -8083,29 +8166,29 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
     goto __pyx_L4_bool_binop_done;
   }
 
-  /* "mabel/data/internals/expression.py":264
+  /* "mabel/data/internals/expression.py":269
  *             TOKENS.INTEGER,
  *             TOKENS.FLOAT,
  *             TOKENS.BOOLEAN,             # <<<<<<<<<<<<<<
  *             TOKENS.NULL,
  *             TOKENS.VARIABLE,
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 264, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 269, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_BOOLEAN); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 264, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_BOOLEAN); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 269, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 261, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 266, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mabel/data/internals/expression.py":261
+  /* "mabel/data/internals/expression.py":266
  * 
  *     def _inner_to_dnf(self, treeNode):
  *         if treeNode.token_type in (             # <<<<<<<<<<<<<<
  *             TOKENS.INTEGER,
  *             TOKENS.FLOAT,
  */
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 261, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 266, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (!__pyx_t_5) {
   } else {
@@ -8113,29 +8196,29 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
     goto __pyx_L4_bool_binop_done;
   }
 
-  /* "mabel/data/internals/expression.py":265
+  /* "mabel/data/internals/expression.py":270
  *             TOKENS.FLOAT,
  *             TOKENS.BOOLEAN,
  *             TOKENS.NULL,             # <<<<<<<<<<<<<<
  *             TOKENS.VARIABLE,
  *         ):
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 265, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 270, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 265, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 270, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 261, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 266, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mabel/data/internals/expression.py":261
+  /* "mabel/data/internals/expression.py":266
  * 
  *     def _inner_to_dnf(self, treeNode):
  *         if treeNode.token_type in (             # <<<<<<<<<<<<<<
  *             TOKENS.INTEGER,
  *             TOKENS.FLOAT,
  */
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 261, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 266, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (!__pyx_t_5) {
   } else {
@@ -8143,29 +8226,29 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
     goto __pyx_L4_bool_binop_done;
   }
 
-  /* "mabel/data/internals/expression.py":266
+  /* "mabel/data/internals/expression.py":271
  *             TOKENS.BOOLEAN,
  *             TOKENS.NULL,
  *             TOKENS.VARIABLE,             # <<<<<<<<<<<<<<
  *         ):
  *             return treeNode.value
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 266, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 271, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_VARIABLE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 266, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_VARIABLE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 271, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 261, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 266, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mabel/data/internals/expression.py":261
+  /* "mabel/data/internals/expression.py":266
  * 
  *     def _inner_to_dnf(self, treeNode):
  *         if treeNode.token_type in (             # <<<<<<<<<<<<<<
  *             TOKENS.INTEGER,
  *             TOKENS.FLOAT,
  */
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 261, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 266, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_2 = __pyx_t_5;
   __pyx_L4_bool_binop_done:;
@@ -8173,7 +8256,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
   __pyx_t_5 = (__pyx_t_2 != 0);
   if (__pyx_t_5) {
 
-    /* "mabel/data/internals/expression.py":268
+    /* "mabel/data/internals/expression.py":273
  *             TOKENS.VARIABLE,
  *         ):
  *             return treeNode.value             # <<<<<<<<<<<<<<
@@ -8181,13 +8264,13 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
  *         if treeNode.token_type in (TOKENS.DATE, TOKENS.LITERAL):
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 268, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 273, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_r = __pyx_t_1;
     __pyx_t_1 = 0;
     goto __pyx_L0;
 
-    /* "mabel/data/internals/expression.py":261
+    /* "mabel/data/internals/expression.py":266
  * 
  *     def _inner_to_dnf(self, treeNode):
  *         if treeNode.token_type in (             # <<<<<<<<<<<<<<
@@ -8196,37 +8279,37 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
  */
   }
 
-  /* "mabel/data/internals/expression.py":270
+  /* "mabel/data/internals/expression.py":275
  *             return treeNode.value
  * 
  *         if treeNode.token_type in (TOKENS.DATE, TOKENS.LITERAL):             # <<<<<<<<<<<<<<
  *             return f'"{treeNode.value}"'
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 270, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 270, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_DATE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 270, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_DATE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 270, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 270, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (!__pyx_t_2) {
   } else {
     __pyx_t_5 = __pyx_t_2;
     goto __pyx_L10_bool_binop_done;
   }
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 270, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_LITERAL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 270, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_LITERAL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 270, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 270, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_5 = __pyx_t_2;
   __pyx_L10_bool_binop_done:;
@@ -8234,7 +8317,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
   __pyx_t_2 = (__pyx_t_5 != 0);
   if (__pyx_t_2) {
 
-    /* "mabel/data/internals/expression.py":271
+    /* "mabel/data/internals/expression.py":276
  * 
  *         if treeNode.token_type in (TOKENS.DATE, TOKENS.LITERAL):
  *             return f'"{treeNode.value}"'             # <<<<<<<<<<<<<<
@@ -8242,7 +8325,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
  *         left = self._inner_to_dnf(treeNode.left)
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 271, __pyx_L1_error)
+    __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 276, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_6 = 0;
     __pyx_t_7 = 127;
@@ -8250,9 +8333,9 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
     __pyx_t_6 += 1;
     __Pyx_GIVEREF(__pyx_kp_u__5);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u__5);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_value); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 271, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_value); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 276, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_FormatSimple(__pyx_t_3, __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 271, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_FormatSimple(__pyx_t_3, __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 276, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_7 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) > __pyx_t_7) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) : __pyx_t_7;
@@ -8264,14 +8347,14 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
     __pyx_t_6 += 1;
     __Pyx_GIVEREF(__pyx_kp_u__5);
     PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u__5);
-    __pyx_t_4 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_6, __pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 271, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_6, __pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 276, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
     goto __pyx_L0;
 
-    /* "mabel/data/internals/expression.py":270
+    /* "mabel/data/internals/expression.py":275
  *             return treeNode.value
  * 
  *         if treeNode.token_type in (TOKENS.DATE, TOKENS.LITERAL):             # <<<<<<<<<<<<<<
@@ -8280,16 +8363,16 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
  */
   }
 
-  /* "mabel/data/internals/expression.py":273
+  /* "mabel/data/internals/expression.py":278
  *             return f'"{treeNode.value}"'
  * 
  *         left = self._inner_to_dnf(treeNode.left)             # <<<<<<<<<<<<<<
  *         right = None
  *         if treeNode.right:
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_inner_to_dnf); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 273, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_inner_to_dnf); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_left); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 273, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_left); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_8 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -8304,13 +8387,13 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
   __pyx_t_4 = (__pyx_t_8) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_8, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_3);
   __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 273, __pyx_L1_error)
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_left = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "mabel/data/internals/expression.py":274
+  /* "mabel/data/internals/expression.py":279
  * 
  *         left = self._inner_to_dnf(treeNode.left)
  *         right = None             # <<<<<<<<<<<<<<
@@ -8320,29 +8403,29 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
   __Pyx_INCREF(Py_None);
   __pyx_v_right = Py_None;
 
-  /* "mabel/data/internals/expression.py":275
+  /* "mabel/data/internals/expression.py":280
  *         left = self._inner_to_dnf(treeNode.left)
  *         right = None
  *         if treeNode.right:             # <<<<<<<<<<<<<<
  *             right = self._inner_to_dnf(treeNode.right)
  * 
  */
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_right); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 275, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_right); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 280, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 275, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 280, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__pyx_t_2) {
 
-    /* "mabel/data/internals/expression.py":276
+    /* "mabel/data/internals/expression.py":281
  *         right = None
  *         if treeNode.right:
  *             right = self._inner_to_dnf(treeNode.right)             # <<<<<<<<<<<<<<
  * 
  *         if treeNode.token_type == TOKENS.AND:
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_inner_to_dnf); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 276, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_inner_to_dnf); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 281, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_right); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 276, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_right); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 281, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_8 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -8357,13 +8440,13 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
     __pyx_t_4 = (__pyx_t_8) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_8, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_3);
     __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 276, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 281, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF_SET(__pyx_v_right, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "mabel/data/internals/expression.py":275
+    /* "mabel/data/internals/expression.py":280
  *         left = self._inner_to_dnf(treeNode.left)
  *         right = None
  *         if treeNode.right:             # <<<<<<<<<<<<<<
@@ -8372,28 +8455,28 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
  */
   }
 
-  /* "mabel/data/internals/expression.py":278
+  /* "mabel/data/internals/expression.py":283
  *             right = self._inner_to_dnf(treeNode.right)
  * 
  *         if treeNode.token_type == TOKENS.AND:             # <<<<<<<<<<<<<<
  *             return [left, right]
  * 
  */
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 278, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 283, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 278, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 283, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_AND); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 278, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_AND); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 283, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyObject_RichCompare(__pyx_t_4, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 278, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_t_4, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 283, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 278, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 283, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "mabel/data/internals/expression.py":279
+    /* "mabel/data/internals/expression.py":284
  * 
  *         if treeNode.token_type == TOKENS.AND:
  *             return [left, right]             # <<<<<<<<<<<<<<
@@ -8401,7 +8484,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
  *         if treeNode.token_type == TOKENS.OR:
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_1 = PyList_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 279, __pyx_L1_error)
+    __pyx_t_1 = PyList_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 284, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_v_left);
     __Pyx_GIVEREF(__pyx_v_left);
@@ -8413,7 +8496,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
     __pyx_t_1 = 0;
     goto __pyx_L0;
 
-    /* "mabel/data/internals/expression.py":278
+    /* "mabel/data/internals/expression.py":283
  *             right = self._inner_to_dnf(treeNode.right)
  * 
  *         if treeNode.token_type == TOKENS.AND:             # <<<<<<<<<<<<<<
@@ -8422,28 +8505,28 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
  */
   }
 
-  /* "mabel/data/internals/expression.py":281
+  /* "mabel/data/internals/expression.py":286
  *             return [left, right]
  * 
  *         if treeNode.token_type == TOKENS.OR:             # <<<<<<<<<<<<<<
  *             return [[left], [right]]
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 281, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 286, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 281, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 286, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_OR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 281, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_OR); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 286, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 281, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 286, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 281, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 286, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_2) {
 
-    /* "mabel/data/internals/expression.py":282
+    /* "mabel/data/internals/expression.py":287
  * 
  *         if treeNode.token_type == TOKENS.OR:
  *             return [[left], [right]]             # <<<<<<<<<<<<<<
@@ -8451,17 +8534,17 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
  *         if treeNode.token_type == TOKENS.OPERATOR:
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 282, __pyx_L1_error)
+    __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 287, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_INCREF(__pyx_v_left);
     __Pyx_GIVEREF(__pyx_v_left);
     PyList_SET_ITEM(__pyx_t_3, 0, __pyx_v_left);
-    __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 282, __pyx_L1_error)
+    __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 287, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_INCREF(__pyx_v_right);
     __Pyx_GIVEREF(__pyx_v_right);
     PyList_SET_ITEM(__pyx_t_4, 0, __pyx_v_right);
-    __pyx_t_1 = PyList_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 282, __pyx_L1_error)
+    __pyx_t_1 = PyList_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 287, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_3);
     PyList_SET_ITEM(__pyx_t_1, 0, __pyx_t_3);
@@ -8473,7 +8556,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
     __pyx_t_1 = 0;
     goto __pyx_L0;
 
-    /* "mabel/data/internals/expression.py":281
+    /* "mabel/data/internals/expression.py":286
  *             return [left, right]
  * 
  *         if treeNode.token_type == TOKENS.OR:             # <<<<<<<<<<<<<<
@@ -8482,28 +8565,28 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
  */
   }
 
-  /* "mabel/data/internals/expression.py":284
+  /* "mabel/data/internals/expression.py":289
  *             return [[left], [right]]
  * 
  *         if treeNode.token_type == TOKENS.OPERATOR:             # <<<<<<<<<<<<<<
  *             return (left, treeNode.value, right)
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 284, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 289, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 284, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 289, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_OPERATOR); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 284, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_OPERATOR); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 289, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 284, __pyx_L1_error)
+  __pyx_t_4 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 289, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 284, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 289, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__pyx_t_2) {
 
-    /* "mabel/data/internals/expression.py":285
+    /* "mabel/data/internals/expression.py":290
  * 
  *         if treeNode.token_type == TOKENS.OPERATOR:
  *             return (left, treeNode.value, right)             # <<<<<<<<<<<<<<
@@ -8511,9 +8594,9 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
  *         if treeNode.token_type == TOKENS.NOT:
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_value); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 285, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_value); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 290, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 285, __pyx_L1_error)
+    __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 290, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_INCREF(__pyx_v_left);
     __Pyx_GIVEREF(__pyx_v_left);
@@ -8528,7 +8611,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "mabel/data/internals/expression.py":284
+    /* "mabel/data/internals/expression.py":289
  *             return [[left], [right]]
  * 
  *         if treeNode.token_type == TOKENS.OPERATOR:             # <<<<<<<<<<<<<<
@@ -8537,34 +8620,34 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
  */
   }
 
-  /* "mabel/data/internals/expression.py":287
+  /* "mabel/data/internals/expression.py":292
  *             return (left, treeNode.value, right)
  * 
  *         if treeNode.token_type == TOKENS.NOT:             # <<<<<<<<<<<<<<
  *             # this isn't strict DNF
  *             return ("NOT", left)
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 287, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_treeNode, __pyx_n_s_token_type); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 292, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 287, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 292, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_NOT); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 287, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_NOT); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 292, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = PyObject_RichCompare(__pyx_t_3, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 287, __pyx_L1_error)
+  __pyx_t_4 = PyObject_RichCompare(__pyx_t_3, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 292, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 287, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 292, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__pyx_t_2) {
 
-    /* "mabel/data/internals/expression.py":289
+    /* "mabel/data/internals/expression.py":294
  *         if treeNode.token_type == TOKENS.NOT:
  *             # this isn't strict DNF
  *             return ("NOT", left)             # <<<<<<<<<<<<<<
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 289, __pyx_L1_error)
+    __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 294, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_INCREF(__pyx_n_u_NOT);
     __Pyx_GIVEREF(__pyx_n_u_NOT);
@@ -8576,7 +8659,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
     __pyx_t_4 = 0;
     goto __pyx_L0;
 
-    /* "mabel/data/internals/expression.py":287
+    /* "mabel/data/internals/expression.py":292
  *             return (left, treeNode.value, right)
  * 
  *         if treeNode.token_type == TOKENS.NOT:             # <<<<<<<<<<<<<<
@@ -8585,7 +8668,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_10expression_10Expression_22_i
  */
   }
 
-  /* "mabel/data/internals/expression.py":260
+  /* "mabel/data/internals/expression.py":265
  *         return self._inner_to_dnf(self.root)
  * 
  *     def _inner_to_dnf(self, treeNode):             # <<<<<<<<<<<<<<
@@ -8822,6 +8905,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_u_Operator_expected_but_got, __pyx_k_Operator_expected_but_got, sizeof(__pyx_k_Operator_expected_but_got), 0, 1, 0, 0},
   {&__pyx_kp_u_Operator_expected_but_got_nothin, __pyx_k_Operator_expected_but_got_nothin, sizeof(__pyx_k_Operator_expected_but_got_nothin), 0, 1, 0, 0},
   {&__pyx_n_s_RIGHTPARENTHESES, __pyx_k_RIGHTPARENTHESES, sizeof(__pyx_k_RIGHTPARENTHESES), 0, 0, 1, 1},
+  {&__pyx_n_s_SystemError, __pyx_k_SystemError, sizeof(__pyx_k_SystemError), 0, 0, 1, 1},
   {&__pyx_n_s_TOKENS, __pyx_k_TOKENS, sizeof(__pyx_k_TOKENS), 0, 0, 1, 1},
   {&__pyx_n_u_TRUE, __pyx_k_TRUE, sizeof(__pyx_k_TRUE), 0, 1, 0, 1},
   {&__pyx_n_s_Tokenizer, __pyx_k_Tokenizer, sizeof(__pyx_k_Tokenizer), 0, 0, 1, 1},
@@ -8855,6 +8939,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_expression, __pyx_k_expression, sizeof(__pyx_k_expression), 0, 0, 1, 1},
   {&__pyx_n_s_fast_float, __pyx_k_fast_float, sizeof(__pyx_k_fast_float), 0, 0, 1, 1},
   {&__pyx_n_s_fast_int, __pyx_k_fast_int, sizeof(__pyx_k_fast_int), 0, 0, 1, 1},
+  {&__pyx_n_s_fast_real, __pyx_k_fast_real, sizeof(__pyx_k_fast_real), 0, 0, 1, 1},
   {&__pyx_n_s_fastnumbers, __pyx_k_fastnumbers, sizeof(__pyx_k_fastnumbers), 0, 0, 1, 1},
   {&__pyx_n_s_has_next, __pyx_k_has_next, sizeof(__pyx_k_has_next), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
@@ -8914,8 +8999,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_BaseException = __Pyx_GetBuiltinName(__pyx_n_s_BaseException); if (!__pyx_builtin_BaseException) __PYX_ERR(0, 24, __pyx_L1_error)
   __pyx_builtin_object = __Pyx_GetBuiltinName(__pyx_n_s_object); if (!__pyx_builtin_object) __PYX_ERR(0, 39, __pyx_L1_error)
-  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(0, 242, __pyx_L1_error)
-  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 242, __pyx_L1_error)
+  __pyx_builtin_SystemError = __Pyx_GetBuiltinName(__pyx_n_s_SystemError); if (!__pyx_builtin_SystemError) __PYX_ERR(0, 209, __pyx_L1_error)
+  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(0, 247, __pyx_L1_error)
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 247, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -9065,65 +9151,65 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__24);
   __pyx_codeobj__25 = (PyObject*)__Pyx_PyCode_New(2, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__24, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_expression_2, __pyx_n_s_interpret_value, 198, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__25)) __PYX_ERR(0, 198, __pyx_L1_error)
 
-  /* "mabel/data/internals/expression.py":208
+  /* "mabel/data/internals/expression.py":213
  *         return parse_iso(value) or value
  * 
  *     def evaluate(self, variable_dict):             # <<<<<<<<<<<<<<
  *         return self.evaluate_recursive(self.root, variable_dict)
  * 
  */
-  __pyx_tuple__26 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_variable_dict); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(0, 208, __pyx_L1_error)
+  __pyx_tuple__26 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_variable_dict); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__26);
   __Pyx_GIVEREF(__pyx_tuple__26);
-  __pyx_codeobj__27 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__26, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_expression_2, __pyx_n_s_evaluate, 208, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__27)) __PYX_ERR(0, 208, __pyx_L1_error)
+  __pyx_codeobj__27 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__26, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_expression_2, __pyx_n_s_evaluate, 213, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__27)) __PYX_ERR(0, 213, __pyx_L1_error)
 
-  /* "mabel/data/internals/expression.py":211
+  /* "mabel/data/internals/expression.py":216
  *         return self.evaluate_recursive(self.root, variable_dict)
  * 
  *     def __call__(self, variable_dict):             # <<<<<<<<<<<<<<
  *         return self.evaluate_recursive(self.root, variable_dict)
  * 
  */
-  __pyx_tuple__28 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_variable_dict); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(0, 211, __pyx_L1_error)
+  __pyx_tuple__28 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_variable_dict); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(0, 216, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__28);
   __Pyx_GIVEREF(__pyx_tuple__28);
-  __pyx_codeobj__29 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_expression_2, __pyx_n_s_call, 211, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__29)) __PYX_ERR(0, 211, __pyx_L1_error)
+  __pyx_codeobj__29 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_expression_2, __pyx_n_s_call, 216, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__29)) __PYX_ERR(0, 216, __pyx_L1_error)
 
-  /* "mabel/data/internals/expression.py":214
+  /* "mabel/data/internals/expression.py":219
  *         return self.evaluate_recursive(self.root, variable_dict)
  * 
  *     def evaluate_recursive(self, treeNode, variable_dict):             # <<<<<<<<<<<<<<
  *         if treeNode.token_type in (
  *             TOKENS.INTEGER,
  */
-  __pyx_tuple__30 = PyTuple_Pack(6, __pyx_n_s_self, __pyx_n_s_treeNode, __pyx_n_s_variable_dict, __pyx_n_s_value, __pyx_n_s_left, __pyx_n_s_right); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(0, 214, __pyx_L1_error)
+  __pyx_tuple__30 = PyTuple_Pack(6, __pyx_n_s_self, __pyx_n_s_treeNode, __pyx_n_s_variable_dict, __pyx_n_s_value, __pyx_n_s_left, __pyx_n_s_right); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(0, 219, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__30);
   __Pyx_GIVEREF(__pyx_tuple__30);
-  __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(3, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__30, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_expression_2, __pyx_n_s_evaluate_recursive, 214, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(0, 214, __pyx_L1_error)
+  __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(3, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__30, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_expression_2, __pyx_n_s_evaluate_recursive, 219, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(0, 219, __pyx_L1_error)
 
-  /* "mabel/data/internals/expression.py":253
+  /* "mabel/data/internals/expression.py":258
  *         )
  * 
  *     def to_dnf(self):             # <<<<<<<<<<<<<<
  *         """
  *         Converting to DNF as sometimes it's easier to deal with DNF than an
  */
-  __pyx_tuple__32 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 253, __pyx_L1_error)
+  __pyx_tuple__32 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 258, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__32);
   __Pyx_GIVEREF(__pyx_tuple__32);
-  __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_expression_2, __pyx_n_s_to_dnf, 253, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(0, 253, __pyx_L1_error)
+  __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_expression_2, __pyx_n_s_to_dnf, 258, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(0, 258, __pyx_L1_error)
 
-  /* "mabel/data/internals/expression.py":260
+  /* "mabel/data/internals/expression.py":265
  *         return self._inner_to_dnf(self.root)
  * 
  *     def _inner_to_dnf(self, treeNode):             # <<<<<<<<<<<<<<
  *         if treeNode.token_type in (
  *             TOKENS.INTEGER,
  */
-  __pyx_tuple__34 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_treeNode, __pyx_n_s_left, __pyx_n_s_right); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(0, 260, __pyx_L1_error)
+  __pyx_tuple__34 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_treeNode, __pyx_n_s_left, __pyx_n_s_right); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(0, 265, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__34);
   __Pyx_GIVEREF(__pyx_tuple__34);
-  __pyx_codeobj__35 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__34, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_expression_2, __pyx_n_s_inner_to_dnf, 260, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__35)) __PYX_ERR(0, 260, __pyx_L1_error)
+  __pyx_codeobj__35 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__34, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_expression_2, __pyx_n_s_inner_to_dnf, 265, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__35)) __PYX_ERR(0, 265, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -9671,64 +9757,64 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_interpret_value, __pyx_t_3) < 0) __PYX_ERR(0, 198, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "mabel/data/internals/expression.py":208
+  /* "mabel/data/internals/expression.py":213
  *         return parse_iso(value) or value
  * 
  *     def evaluate(self, variable_dict):             # <<<<<<<<<<<<<<
  *         return self.evaluate_recursive(self.root, variable_dict)
  * 
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_10expression_10Expression_15evaluate, 0, __pyx_n_s_Expression_evaluate, NULL, __pyx_n_s_mabel_data_internals_expression, __pyx_d, ((PyObject *)__pyx_codeobj__27)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 208, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_10expression_10Expression_15evaluate, 0, __pyx_n_s_Expression_evaluate, NULL, __pyx_n_s_mabel_data_internals_expression, __pyx_d, ((PyObject *)__pyx_codeobj__27)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_evaluate, __pyx_t_3) < 0) __PYX_ERR(0, 208, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_evaluate, __pyx_t_3) < 0) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "mabel/data/internals/expression.py":211
+  /* "mabel/data/internals/expression.py":216
  *         return self.evaluate_recursive(self.root, variable_dict)
  * 
  *     def __call__(self, variable_dict):             # <<<<<<<<<<<<<<
  *         return self.evaluate_recursive(self.root, variable_dict)
  * 
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_10expression_10Expression_17__call__, 0, __pyx_n_s_Expression___call, NULL, __pyx_n_s_mabel_data_internals_expression, __pyx_d, ((PyObject *)__pyx_codeobj__29)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 211, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_10expression_10Expression_17__call__, 0, __pyx_n_s_Expression___call, NULL, __pyx_n_s_mabel_data_internals_expression, __pyx_d, ((PyObject *)__pyx_codeobj__29)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 216, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_call, __pyx_t_3) < 0) __PYX_ERR(0, 211, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_call, __pyx_t_3) < 0) __PYX_ERR(0, 216, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "mabel/data/internals/expression.py":214
+  /* "mabel/data/internals/expression.py":219
  *         return self.evaluate_recursive(self.root, variable_dict)
  * 
  *     def evaluate_recursive(self, treeNode, variable_dict):             # <<<<<<<<<<<<<<
  *         if treeNode.token_type in (
  *             TOKENS.INTEGER,
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_10expression_10Expression_19evaluate_recursive, 0, __pyx_n_s_Expression_evaluate_recursive, NULL, __pyx_n_s_mabel_data_internals_expression, __pyx_d, ((PyObject *)__pyx_codeobj__31)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 214, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_10expression_10Expression_19evaluate_recursive, 0, __pyx_n_s_Expression_evaluate_recursive, NULL, __pyx_n_s_mabel_data_internals_expression, __pyx_d, ((PyObject *)__pyx_codeobj__31)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 219, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_evaluate_recursive, __pyx_t_3) < 0) __PYX_ERR(0, 214, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_evaluate_recursive, __pyx_t_3) < 0) __PYX_ERR(0, 219, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "mabel/data/internals/expression.py":253
+  /* "mabel/data/internals/expression.py":258
  *         )
  * 
  *     def to_dnf(self):             # <<<<<<<<<<<<<<
  *         """
  *         Converting to DNF as sometimes it's easier to deal with DNF than an
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_10expression_10Expression_21to_dnf, 0, __pyx_n_s_Expression_to_dnf, NULL, __pyx_n_s_mabel_data_internals_expression, __pyx_d, ((PyObject *)__pyx_codeobj__33)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 253, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_10expression_10Expression_21to_dnf, 0, __pyx_n_s_Expression_to_dnf, NULL, __pyx_n_s_mabel_data_internals_expression, __pyx_d, ((PyObject *)__pyx_codeobj__33)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 258, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_to_dnf, __pyx_t_3) < 0) __PYX_ERR(0, 253, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_to_dnf, __pyx_t_3) < 0) __PYX_ERR(0, 258, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "mabel/data/internals/expression.py":260
+  /* "mabel/data/internals/expression.py":265
  *         return self._inner_to_dnf(self.root)
  * 
  *     def _inner_to_dnf(self, treeNode):             # <<<<<<<<<<<<<<
  *         if treeNode.token_type in (
  *             TOKENS.INTEGER,
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_10expression_10Expression_23_inner_to_dnf, 0, __pyx_n_s_Expression__inner_to_dnf, NULL, __pyx_n_s_mabel_data_internals_expression, __pyx_d, ((PyObject *)__pyx_codeobj__35)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 260, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_10expression_10Expression_23_inner_to_dnf, 0, __pyx_n_s_Expression__inner_to_dnf, NULL, __pyx_n_s_mabel_data_internals_expression, __pyx_d, ((PyObject *)__pyx_codeobj__35)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 265, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_inner_to_dnf, __pyx_t_3) < 0) __PYX_ERR(0, 260, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_inner_to_dnf, __pyx_t_3) < 0) __PYX_ERR(0, 265, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
   /* "mabel/data/internals/expression.py":39
@@ -11123,6 +11209,87 @@ return_ne:
 #endif
 }
 
+/* GetTopmostException */
+#if CYTHON_USE_EXC_INFO_STACK
+static _PyErr_StackItem *
+__Pyx_PyErr_GetTopmostException(PyThreadState *tstate)
+{
+    _PyErr_StackItem *exc_info = tstate->exc_info;
+    while ((exc_info->exc_type == NULL || exc_info->exc_type == Py_None) &&
+           exc_info->previous_item != NULL)
+    {
+        exc_info = exc_info->previous_item;
+    }
+    return exc_info;
+}
+#endif
+
+/* SaveResetException */
+#if CYTHON_FAST_THREAD_STATE
+static CYTHON_INLINE void __Pyx__ExceptionSave(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
+    #if CYTHON_USE_EXC_INFO_STACK
+    _PyErr_StackItem *exc_info = __Pyx_PyErr_GetTopmostException(tstate);
+    *type = exc_info->exc_type;
+    *value = exc_info->exc_value;
+    *tb = exc_info->exc_traceback;
+    #else
+    *type = tstate->exc_type;
+    *value = tstate->exc_value;
+    *tb = tstate->exc_traceback;
+    #endif
+    Py_XINCREF(*type);
+    Py_XINCREF(*value);
+    Py_XINCREF(*tb);
+}
+static CYTHON_INLINE void __Pyx__ExceptionReset(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
+    PyObject *tmp_type, *tmp_value, *tmp_tb;
+    #if CYTHON_USE_EXC_INFO_STACK
+    _PyErr_StackItem *exc_info = tstate->exc_info;
+    tmp_type = exc_info->exc_type;
+    tmp_value = exc_info->exc_value;
+    tmp_tb = exc_info->exc_traceback;
+    exc_info->exc_type = type;
+    exc_info->exc_value = value;
+    exc_info->exc_traceback = tb;
+    #else
+    tmp_type = tstate->exc_type;
+    tmp_value = tstate->exc_value;
+    tmp_tb = tstate->exc_traceback;
+    tstate->exc_type = type;
+    tstate->exc_value = value;
+    tstate->exc_traceback = tb;
+    #endif
+    Py_XDECREF(tmp_type);
+    Py_XDECREF(tmp_value);
+    Py_XDECREF(tmp_tb);
+}
+#endif
+
+/* PyErrExceptionMatches */
+#if CYTHON_FAST_THREAD_STATE
+static int __Pyx_PyErr_ExceptionMatchesTuple(PyObject *exc_type, PyObject *tuple) {
+    Py_ssize_t i, n;
+    n = PyTuple_GET_SIZE(tuple);
+#if PY_MAJOR_VERSION >= 3
+    for (i=0; i<n; i++) {
+        if (exc_type == PyTuple_GET_ITEM(tuple, i)) return 1;
+    }
+#endif
+    for (i=0; i<n; i++) {
+        if (__Pyx_PyErr_GivenExceptionMatches(exc_type, PyTuple_GET_ITEM(tuple, i))) return 1;
+    }
+    return 0;
+}
+static CYTHON_INLINE int __Pyx_PyErr_ExceptionMatchesInState(PyThreadState* tstate, PyObject* err) {
+    PyObject *exc_type = tstate->curexc_type;
+    if (exc_type == err) return 1;
+    if (unlikely(!exc_type)) return 0;
+    if (unlikely(PyTuple_Check(err)))
+        return __Pyx_PyErr_ExceptionMatchesTuple(exc_type, err);
+    return __Pyx_PyErr_GivenExceptionMatches(exc_type, err);
+}
+#endif
+
 /* GetItemInt */
 static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j) {
     PyObject *r;
@@ -11236,87 +11403,6 @@ static PyObject *__Pyx_PyObject_GetItem(PyObject *obj, PyObject* key) {
         return m->mp_subscript(obj, key);
     }
     return __Pyx_PyObject_GetIndex(obj, key);
-}
-#endif
-
-/* GetTopmostException */
-#if CYTHON_USE_EXC_INFO_STACK
-static _PyErr_StackItem *
-__Pyx_PyErr_GetTopmostException(PyThreadState *tstate)
-{
-    _PyErr_StackItem *exc_info = tstate->exc_info;
-    while ((exc_info->exc_type == NULL || exc_info->exc_type == Py_None) &&
-           exc_info->previous_item != NULL)
-    {
-        exc_info = exc_info->previous_item;
-    }
-    return exc_info;
-}
-#endif
-
-/* SaveResetException */
-#if CYTHON_FAST_THREAD_STATE
-static CYTHON_INLINE void __Pyx__ExceptionSave(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
-    #if CYTHON_USE_EXC_INFO_STACK
-    _PyErr_StackItem *exc_info = __Pyx_PyErr_GetTopmostException(tstate);
-    *type = exc_info->exc_type;
-    *value = exc_info->exc_value;
-    *tb = exc_info->exc_traceback;
-    #else
-    *type = tstate->exc_type;
-    *value = tstate->exc_value;
-    *tb = tstate->exc_traceback;
-    #endif
-    Py_XINCREF(*type);
-    Py_XINCREF(*value);
-    Py_XINCREF(*tb);
-}
-static CYTHON_INLINE void __Pyx__ExceptionReset(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
-    PyObject *tmp_type, *tmp_value, *tmp_tb;
-    #if CYTHON_USE_EXC_INFO_STACK
-    _PyErr_StackItem *exc_info = tstate->exc_info;
-    tmp_type = exc_info->exc_type;
-    tmp_value = exc_info->exc_value;
-    tmp_tb = exc_info->exc_traceback;
-    exc_info->exc_type = type;
-    exc_info->exc_value = value;
-    exc_info->exc_traceback = tb;
-    #else
-    tmp_type = tstate->exc_type;
-    tmp_value = tstate->exc_value;
-    tmp_tb = tstate->exc_traceback;
-    tstate->exc_type = type;
-    tstate->exc_value = value;
-    tstate->exc_traceback = tb;
-    #endif
-    Py_XDECREF(tmp_type);
-    Py_XDECREF(tmp_value);
-    Py_XDECREF(tmp_tb);
-}
-#endif
-
-/* PyErrExceptionMatches */
-#if CYTHON_FAST_THREAD_STATE
-static int __Pyx_PyErr_ExceptionMatchesTuple(PyObject *exc_type, PyObject *tuple) {
-    Py_ssize_t i, n;
-    n = PyTuple_GET_SIZE(tuple);
-#if PY_MAJOR_VERSION >= 3
-    for (i=0; i<n; i++) {
-        if (exc_type == PyTuple_GET_ITEM(tuple, i)) return 1;
-    }
-#endif
-    for (i=0; i<n; i++) {
-        if (__Pyx_PyErr_GivenExceptionMatches(exc_type, PyTuple_GET_ITEM(tuple, i))) return 1;
-    }
-    return 0;
-}
-static CYTHON_INLINE int __Pyx_PyErr_ExceptionMatchesInState(PyThreadState* tstate, PyObject* err) {
-    PyObject *exc_type = tstate->curexc_type;
-    if (exc_type == err) return 1;
-    if (unlikely(!exc_type)) return 0;
-    if (unlikely(PyTuple_Check(err)))
-        return __Pyx_PyErr_ExceptionMatchesTuple(exc_type, err);
-    return __Pyx_PyErr_GivenExceptionMatches(exc_type, err);
 }
 #endif
 
