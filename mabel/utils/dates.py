@@ -4,6 +4,7 @@ from fastnumbers import fast_int
 from typing import Optional, Union
 
 TIMEDELTA_REGEX = (
+    r"((?P<months>-?\d+)mo)?"
     r"((?P<days>-?\d+)d)?"
     r"((?P<hours>-?\d+)h)?"
     r"((?P<minutes>-?\d+)m)?"
@@ -19,6 +20,25 @@ def extract_date(value):
         return datetime.date(value.year, value.month, value.day)
     return datetime.date.today()
 
+def add_months(date, months):
+    new_month = (((date.month - 1) + months) % 12) + 1
+    new_year = int(date.year + (((date.month - 1) + months) / 12))
+    new_day = date.day
+
+    # if adding one day puts us in a new month, jump to the end of the month
+    if (date + datetime.timedelta(days=1)).month != date.month:
+        new_day = 31
+
+    # not all months have 31 days so walk backwards to the end of the month
+    while new_day > 0:
+        try:
+            new_date = datetime.date(new_year, new_month, new_day)
+            return date - new_date
+        except ValueError:
+            new_day -= 1
+
+    # we should never be here - but just return a value
+    return date - datetime.date(new_year, new_month, date.day)
 
 # based on:
 # https://gist.github.com/santiagobasulto/698f0ff660968200f873a2f9d1c4113c#file-parse_timedeltas-py
@@ -27,6 +47,7 @@ def parse_delta(delta: str) -> datetime.timedelta:
     Parses a human readable timedelta (3d5h19m) into a datetime.timedelta.
 
     Delta includes:
+    * Xmo months
     * Xd days
     * Xh hours
     * Xm minutes
@@ -36,8 +57,11 @@ def parse_delta(delta: str) -> datetime.timedelta:
     """
     match = TIMEDELTA_PATTERN.match(delta)
     if match:
+        months = 0
         parts = {k: int(v) for k, v in match.groupdict().items() if v}
-        return datetime.timedelta(**parts)
+        if "months" in parts:
+            months = parts.pop("months")
+        return add_months(datetime.timedelta(**parts), months)
     return datetime.timedelta(seconds=0)
 
 
@@ -122,3 +146,11 @@ def date_range(
 
     for n in range(int((end_date - start_date).days) + 1):  # type:ignore
         yield start_date + datetime.timedelta(n)  # type:ignore
+
+
+
+if __name__ == "__main__":
+
+    print(add_months(datetime.date(2000,4,30), 6))
+
+    print(parse_delta("12mo"))
