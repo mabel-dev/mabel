@@ -39,11 +39,14 @@ def memcached_server():
     except ImportError:
         return None
 
+    # wait 1 second to try to connect, it's not worthwhile as a cache if it's slow
     return base.Client(
         (
             memcached_config[0],
             memcached_config[1],
-        )
+        ),
+        connect_timeout=1,
+        timeout=1
     )
 
 
