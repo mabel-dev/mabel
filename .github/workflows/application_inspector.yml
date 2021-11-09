@@ -6,8 +6,15 @@ jobs:
     name: Application Inspector
     runs-on: ubuntu-latest
     steps:
+    - name: Get Code
     - uses: actions/checkout@v2
+
+    - name: Scan
     - uses: microsoft/ApplicationInspector-Action@v1
+        with:
+          arguments: -t
+
+    - name: Results
     - uses: actions/upload-artifact@v2
         with:
             name: AppInspectorResults
