@@ -2,19 +2,19 @@ name: Application Inspector
 on: [push]
 
 jobs:
-  fides:
+  app_inspector:
     name: Application Inspector
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
 
     - name: Scan
-    - uses: microsoft/ApplicationInspector-Action@v1
+      uses: microsoft/ApplicationInspector-Action@v1
       with:
         arguments: -t
 
     - name: Results
-    - uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v2
       with:
         name: AppInspectorResults
         path: AppInspectorResults.json
