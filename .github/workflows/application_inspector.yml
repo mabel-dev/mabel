@@ -1,0 +1,14 @@
+name: Application Inspector
+on: [push]
+
+jobs:
+  fides:
+    name: Application Inspector
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: microsoft/ApplicationInspector-Action@v1
+    - uses: actions/upload-artifact@v2
+        with:
+            name: AppInspectorResults
+            path: AppInspectorResults.json
