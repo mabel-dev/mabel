@@ -1,3 +1,4 @@
+from functools import lru_cache
 import re
 import datetime
 from fastnumbers import fast_int
@@ -41,6 +42,7 @@ def parse_delta(delta: str) -> datetime.timedelta:
     return datetime.timedelta(seconds=0)
 
 
+@lru_cache(128)
 def parse_iso(value):
     DATE_SEPARATORS = {"-", ":"}
     # date validation at speed is hard, dateutil is great but really slow, this is fast

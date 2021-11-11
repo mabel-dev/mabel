@@ -9,6 +9,8 @@ from functools import lru_cache
 import re
 import operator
 import fastnumbers
+
+from mabel import data
 from .text import like, not_like, matches
 from .dates import parse_iso
 from ..data.readers.internals.inline_functions import FUNCTIONS
@@ -22,8 +24,27 @@ class TokenError(Exception):
     pass
 
 
+def interpret_value(value):
+    if not isinstance(value, str):
+        return value
+    if value.upper() in ("TRUE", "FALSE"):
+        return value.upper() == "TRUE"
+    try:
+        # there appears to be a race condition with this library
+        # so wrap in a SystemError
+        num = fastnumbers.fast_real(value)
+        if isinstance(num, (int, float)):
+            return num
+    except SystemError:
+        pass
+    value = value[1:-1]
+    return parse_iso(value) or value
+
+
 def function_in(x, y):
-    return x in y
+    candidates = [interpret_value(i) for i in y if str(i).strip() != ","]
+
+    return x in candidates
 
 
 def function_contains(x, y):
@@ -73,8 +94,10 @@ class TOKENS(int):
     NOT = 17
     SUBQUERY = 18
     EMPTY = 19
+    LIST = 20
 
 
+@lru_cache(64)
 def get_token_type(token):
     """
     Guess the token type.

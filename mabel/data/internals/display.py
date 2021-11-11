@@ -91,6 +91,16 @@ def ascii_table(dictset: Iterable[Dict[Any, Any]], limit: int = 5):
     Returns:
         string (ASCII table)
     """
+
+    def format_value(val):
+        if isinstance(val, (list, tuple, set)) or hasattr(val, "as_list"):
+            return "[ " + ", ".join([format_value(i) for i in val]) + " ]"
+        if hasattr(val, "items"):
+            return format_value(
+                "{ " + ", ".join([f'"{k}": {v}' for k, v in val.items()]) + " }"
+            )
+        return val
+
     result = []
     columns: dict = {}
     cache = []
@@ -102,7 +112,8 @@ def ascii_table(dictset: Iterable[Dict[Any, Any]], limit: int = 5):
 
         cache.append(row)
         for k, v in row.items():
-            length = max(len(str(v)), len(k))
+            v = format_value(v)
+            length = max(len(str(v)), len(str(k)))
             if length > columns.get(k, 0):
                 columns[k] = length
 
@@ -113,14 +124,18 @@ def ascii_table(dictset: Iterable[Dict[Any, Any]], limit: int = 5):
 
     # display headers
     result.append("┌" + "┬".join(bars) + "┐")
-    result.append("│" + "│".join([k.center(v + 2) for k, v in columns.items()]) + "│")
+    result.append(
+        "│" + "│".join([str(k).center(v + 2) for k, v in columns.items()]) + "│"
+    )
     result.append("├" + "┼".join(bars) + "┤")
 
     # display values
     for row in cache:
         result.append(
             "│"
-            + "│".join([str(v).center(columns[k] + 2) for k, v in row.items()])
+            + "│".join(
+                [str(format_value(v)).center(columns[k] + 2) for k, v in row.items()]
+            )
             + "│"
         )
 

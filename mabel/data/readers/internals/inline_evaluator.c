@@ -833,7 +833,7 @@ struct __pyx_obj_5mabel_4data_7readers_9internals_16inline_evaluator___pyx_scope
 struct __pyx_obj_5mabel_4data_7readers_9internals_16inline_evaluator___pyx_scope_struct_1___call__;
 struct __pyx_obj_5mabel_4data_7readers_9internals_16inline_evaluator___pyx_scope_struct_2_genexpr;
 
-/* "mabel/data/readers/internals/inline_evaluator.py":56
+/* "mabel/data/readers/internals/inline_evaluator.py":58
  * 
  * def get_fields(tokens):
  *     def inner(tokens):             # <<<<<<<<<<<<<<
@@ -850,7 +850,7 @@ struct __pyx_obj_5mabel_4data_7readers_9internals_16inline_evaluator___pyx_scope
 };
 
 
-/* "mabel/data/readers/internals/inline_evaluator.py":232
+/* "mabel/data/readers/internals/inline_evaluator.py":237
  *         self._iter = None
  * 
  *     def __call__(self, dic):             # <<<<<<<<<<<<<<
@@ -863,7 +863,7 @@ struct __pyx_obj_5mabel_4data_7readers_9internals_16inline_evaluator___pyx_scope
 };
 
 
-/* "mabel/data/readers/internals/inline_evaluator.py":234
+/* "mabel/data/readers/internals/inline_evaluator.py":239
  *     def __call__(self, dic):
  *         builder = {}
  *         if any(t["type"] == TOKENS.EVERYTHING for t in self.tokens):             # <<<<<<<<<<<<<<
@@ -2233,7 +2233,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_ge
  *     if token["type"] in (TOKENS.FUNCTION, TOKENS.AGGREGATOR):
  *         params = ",".join(_inner(token["parameters"]))             # <<<<<<<<<<<<<<
  *         return f"{token['value']}({params})"
- * 
+ *     else:
  */
     __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_parameters); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
@@ -2250,8 +2250,8 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_ge
  *     if token["type"] in (TOKENS.FUNCTION, TOKENS.AGGREGATOR):
  *         params = ",".join(_inner(token["parameters"]))
  *         return f"{token['value']}({params})"             # <<<<<<<<<<<<<<
- * 
- * 
+ *     else:
+ *         return token['value']
  */
     __Pyx_XDECREF(__pyx_r);
     __pyx_t_1 = PyTuple_New(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
@@ -2299,6 +2299,22 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_ge
  */
   }
 
+  /* "mabel/data/readers/internals/inline_evaluator.py":54
+ *         return f"{token['value']}({params})"
+ *     else:
+ *         return token['value']             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  /*else*/ {
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 54, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_r = __pyx_t_4;
+    __pyx_t_4 = 0;
+    goto __pyx_L0;
+  }
+
   /* "mabel/data/readers/internals/inline_evaluator.py":36
  * 
  * 
@@ -2308,8 +2324,6 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_ge
  */
 
   /* function exit code */
-  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
-  goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_3);
@@ -2324,7 +2338,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_ge
   return __pyx_r;
 }
 
-/* "mabel/data/readers/internals/inline_evaluator.py":55
+/* "mabel/data/readers/internals/inline_evaluator.py":57
  * 
  * 
  * def get_fields(tokens):             # <<<<<<<<<<<<<<
@@ -2347,7 +2361,7 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_16inline_evaluator_3g
 }
 static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_10get_fields_2generator(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "mabel/data/readers/internals/inline_evaluator.py":56
+/* "mabel/data/readers/internals/inline_evaluator.py":58
  * 
  * def get_fields(tokens):
  *     def inner(tokens):             # <<<<<<<<<<<<<<
@@ -2381,7 +2395,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_10
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_5mabel_4data_7readers_9internals_16inline_evaluator___pyx_scope_struct__inner *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 56, __pyx_L1_error)
+    __PYX_ERR(0, 58, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -2389,7 +2403,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_10
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_tokens);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_tokens);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_10get_fields_2generator, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_inner_2, __pyx_n_s_get_fields_locals_inner, __pyx_n_s_mabel_data_readers_internals_inl_2); if (unlikely(!gen)) __PYX_ERR(0, 56, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_10get_fields_2generator, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_inner_2, __pyx_n_s_get_fields_locals_inner, __pyx_n_s_mabel_data_readers_internals_inl_2); if (unlikely(!gen)) __PYX_ERR(0, 58, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -2427,15 +2441,16 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_10
     case 1: goto __pyx_L7_resume_from_yield;
     case 2: goto __pyx_L11_resume_from_yield;
     case 3: goto __pyx_L12_resume_from_yield;
-    case 4: goto __pyx_L19_resume_from_yield;
+    case 4: goto __pyx_L20_resume_from_yield;
+    case 5: goto __pyx_L21_resume_from_yield;
     default: /* CPython raises the right error here */
     __Pyx_RefNannyFinishContext();
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 56, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 58, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":57
+  /* "mabel/data/readers/internals/inline_evaluator.py":59
  * def get_fields(tokens):
  *     def inner(tokens):
  *         for token in tokens:             # <<<<<<<<<<<<<<
@@ -2446,26 +2461,26 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_10
     __pyx_t_1 = __pyx_cur_scope->__pyx_v_tokens; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
     __pyx_t_3 = NULL;
   } else {
-    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_tokens); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
+    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_tokens); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 57, __pyx_L1_error)
+    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 59, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_3)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 57, __pyx_L1_error)
+        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 59, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 57, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 59, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       } else {
         if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 57, __pyx_L1_error)
+        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 59, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 57, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 59, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       }
@@ -2475,7 +2490,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_10
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 57, __pyx_L1_error)
+          else __PYX_ERR(0, 59, __pyx_L1_error)
         }
         break;
       }
@@ -2486,29 +2501,29 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_10
     __Pyx_GIVEREF(__pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":58
+    /* "mabel/data/readers/internals/inline_evaluator.py":60
  *     def inner(tokens):
  *         for token in tokens:
  *             if token["type"] in (TOKENS.EVERYTHING,):             # <<<<<<<<<<<<<<
  *                 yield "*"
  *             elif token["type"] in (TOKENS.FUNCTION, TOKENS.AGGREGATOR):
  */
-    __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_cur_scope->__pyx_v_token, __pyx_n_u_type); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 58, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_cur_scope->__pyx_v_token, __pyx_n_u_type); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 60, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 58, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 60, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_EVERYTHING); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 58, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_EVERYTHING); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 60, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyObject_RichCompare(__pyx_t_4, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 58, __pyx_L1_error)
+    __pyx_t_5 = PyObject_RichCompare(__pyx_t_4, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 60, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 58, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 60, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_8 = (__pyx_t_7 != 0);
     if (__pyx_t_8) {
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":59
+      /* "mabel/data/readers/internals/inline_evaluator.py":61
  *         for token in tokens:
  *             if token["type"] in (TOKENS.EVERYTHING,):
  *                 yield "*"             # <<<<<<<<<<<<<<
@@ -2533,9 +2548,9 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_10
       __Pyx_XGOTREF(__pyx_t_1);
       __pyx_t_2 = __pyx_cur_scope->__pyx_t_1;
       __pyx_t_3 = __pyx_cur_scope->__pyx_t_2;
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 59, __pyx_L1_error)
+      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 61, __pyx_L1_error)
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":58
+      /* "mabel/data/readers/internals/inline_evaluator.py":60
  *     def inner(tokens):
  *         for token in tokens:
  *             if token["type"] in (TOKENS.EVERYTHING,):             # <<<<<<<<<<<<<<
@@ -2545,37 +2560,37 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_10
       goto __pyx_L6;
     }
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":60
+    /* "mabel/data/readers/internals/inline_evaluator.py":62
  *             if token["type"] in (TOKENS.EVERYTHING,):
  *                 yield "*"
  *             elif token["type"] in (TOKENS.FUNCTION, TOKENS.AGGREGATOR):             # <<<<<<<<<<<<<<
  *                 if token["as"]:
  *                     yield token["as"]
  */
-    __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_cur_scope->__pyx_v_token, __pyx_n_u_type); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_cur_scope->__pyx_v_token, __pyx_n_u_type); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 62, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 62, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_FUNCTION); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_FUNCTION); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 62, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyObject_RichCompare(__pyx_t_4, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __pyx_t_5 = PyObject_RichCompare(__pyx_t_4, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 62, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 62, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     if (!__pyx_t_7) {
     } else {
       __pyx_t_8 = __pyx_t_7;
       goto __pyx_L8_bool_binop_done;
     }
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 62, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_AGGREGATOR); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_AGGREGATOR); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 62, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyObject_RichCompare(__pyx_t_4, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __pyx_t_5 = PyObject_RichCompare(__pyx_t_4, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 62, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 62, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_t_8 = __pyx_t_7;
     __pyx_L8_bool_binop_done:;
@@ -2583,27 +2598,27 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_10
     __pyx_t_7 = (__pyx_t_8 != 0);
     if (__pyx_t_7) {
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":61
+      /* "mabel/data/readers/internals/inline_evaluator.py":63
  *                 yield "*"
  *             elif token["type"] in (TOKENS.FUNCTION, TOKENS.AGGREGATOR):
  *                 if token["as"]:             # <<<<<<<<<<<<<<
  *                     yield token["as"]
  *                 else:
  */
-      __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_cur_scope->__pyx_v_token, __pyx_n_u_as); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 61, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_cur_scope->__pyx_v_token, __pyx_n_u_as); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 63, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 61, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 63, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       if (__pyx_t_7) {
 
-        /* "mabel/data/readers/internals/inline_evaluator.py":62
+        /* "mabel/data/readers/internals/inline_evaluator.py":64
  *             elif token["type"] in (TOKENS.FUNCTION, TOKENS.AGGREGATOR):
  *                 if token["as"]:
  *                     yield token["as"]             # <<<<<<<<<<<<<<
  *                 else:
  *                     yield get_function_name(token)
  */
-        __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_cur_scope->__pyx_v_token, __pyx_n_u_as); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 62, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_cur_scope->__pyx_v_token, __pyx_n_u_as); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 64, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __pyx_r = __pyx_t_4;
         __pyx_t_4 = 0;
@@ -2623,9 +2638,9 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_10
         __Pyx_XGOTREF(__pyx_t_1);
         __pyx_t_2 = __pyx_cur_scope->__pyx_t_1;
         __pyx_t_3 = __pyx_cur_scope->__pyx_t_2;
-        if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 62, __pyx_L1_error)
+        if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 64, __pyx_L1_error)
 
-        /* "mabel/data/readers/internals/inline_evaluator.py":61
+        /* "mabel/data/readers/internals/inline_evaluator.py":63
  *                 yield "*"
  *             elif token["type"] in (TOKENS.FUNCTION, TOKENS.AGGREGATOR):
  *                 if token["as"]:             # <<<<<<<<<<<<<<
@@ -2635,7 +2650,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_10
         goto __pyx_L10;
       }
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":64
+      /* "mabel/data/readers/internals/inline_evaluator.py":66
  *                     yield token["as"]
  *                 else:
  *                     yield get_function_name(token)             # <<<<<<<<<<<<<<
@@ -2643,7 +2658,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_10
  *                 TOKENS.VARIABLE,
  */
       /*else*/ {
-        __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_get_function_name); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 64, __pyx_L1_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_get_function_name); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 66, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __pyx_t_6 = NULL;
         if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
@@ -2657,7 +2672,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_10
         }
         __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_6, __pyx_cur_scope->__pyx_v_token) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_cur_scope->__pyx_v_token);
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 64, __pyx_L1_error)
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 66, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         __pyx_r = __pyx_t_4;
@@ -2678,11 +2693,11 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_10
         __Pyx_XGOTREF(__pyx_t_1);
         __pyx_t_2 = __pyx_cur_scope->__pyx_t_1;
         __pyx_t_3 = __pyx_cur_scope->__pyx_t_2;
-        if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 64, __pyx_L1_error)
+        if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 66, __pyx_L1_error)
       }
       __pyx_L10:;
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":60
+      /* "mabel/data/readers/internals/inline_evaluator.py":62
  *             if token["type"] in (TOKENS.EVERYTHING,):
  *                 yield "*"
  *             elif token["type"] in (TOKENS.FUNCTION, TOKENS.AGGREGATOR):             # <<<<<<<<<<<<<<
@@ -2692,99 +2707,39 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_10
       goto __pyx_L6;
     }
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":65
+    /* "mabel/data/readers/internals/inline_evaluator.py":67
  *                 else:
  *                     yield get_function_name(token)
  *             elif token["type"] in (             # <<<<<<<<<<<<<<
  *                 TOKENS.VARIABLE,
  *                 TOKENS.INTEGER,
  */
-    __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_cur_scope->__pyx_v_token, __pyx_n_u_type); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 65, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_cur_scope->__pyx_v_token, __pyx_n_u_type); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 67, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":66
+    /* "mabel/data/readers/internals/inline_evaluator.py":68
  *                     yield get_function_name(token)
  *             elif token["type"] in (
  *                 TOKENS.VARIABLE,             # <<<<<<<<<<<<<<
  *                 TOKENS.INTEGER,
  *                 TOKENS.LITERAL,
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 66, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_VARIABLE); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 66, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyObject_RichCompare(__pyx_t_4, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 65, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-
-    /* "mabel/data/readers/internals/inline_evaluator.py":65
- *                 else:
- *                     yield get_function_name(token)
- *             elif token["type"] in (             # <<<<<<<<<<<<<<
- *                 TOKENS.VARIABLE,
- *                 TOKENS.INTEGER,
- */
-    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 65, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (!__pyx_t_8) {
-    } else {
-      __pyx_t_7 = __pyx_t_8;
-      goto __pyx_L13_bool_binop_done;
-    }
-
-    /* "mabel/data/readers/internals/inline_evaluator.py":67
- *             elif token["type"] in (
- *                 TOKENS.VARIABLE,
- *                 TOKENS.INTEGER,             # <<<<<<<<<<<<<<
- *                 TOKENS.LITERAL,
- *                 TOKENS.DATE,
- */
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 67, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_INTEGER); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 67, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyObject_RichCompare(__pyx_t_4, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 65, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-
-    /* "mabel/data/readers/internals/inline_evaluator.py":65
- *                 else:
- *                     yield get_function_name(token)
- *             elif token["type"] in (             # <<<<<<<<<<<<<<
- *                 TOKENS.VARIABLE,
- *                 TOKENS.INTEGER,
- */
-    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 65, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (!__pyx_t_8) {
-    } else {
-      __pyx_t_7 = __pyx_t_8;
-      goto __pyx_L13_bool_binop_done;
-    }
-
-    /* "mabel/data/readers/internals/inline_evaluator.py":68
- *                 TOKENS.VARIABLE,
- *                 TOKENS.INTEGER,
- *                 TOKENS.LITERAL,             # <<<<<<<<<<<<<<
- *                 TOKENS.DATE,
- *                 TOKENS.FLOAT,
- */
     __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 68, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_LITERAL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 68, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_VARIABLE); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 68, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyObject_RichCompare(__pyx_t_4, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 65, __pyx_L1_error)
+    __pyx_t_5 = PyObject_RichCompare(__pyx_t_4, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 67, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":65
+    /* "mabel/data/readers/internals/inline_evaluator.py":67
  *                 else:
  *                     yield get_function_name(token)
  *             elif token["type"] in (             # <<<<<<<<<<<<<<
  *                 TOKENS.VARIABLE,
  *                 TOKENS.INTEGER,
  */
-    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 65, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 67, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     if (!__pyx_t_8) {
     } else {
@@ -2793,28 +2748,28 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_10
     }
 
     /* "mabel/data/readers/internals/inline_evaluator.py":69
- *                 TOKENS.INTEGER,
+ *             elif token["type"] in (
+ *                 TOKENS.VARIABLE,
+ *                 TOKENS.INTEGER,             # <<<<<<<<<<<<<<
  *                 TOKENS.LITERAL,
- *                 TOKENS.DATE,             # <<<<<<<<<<<<<<
- *                 TOKENS.FLOAT,
  *                 TOKENS.DATE,
  */
     __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 69, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_DATE); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 69, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_INTEGER); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 69, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyObject_RichCompare(__pyx_t_4, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 65, __pyx_L1_error)
+    __pyx_t_5 = PyObject_RichCompare(__pyx_t_4, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 67, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":65
+    /* "mabel/data/readers/internals/inline_evaluator.py":67
  *                 else:
  *                     yield get_function_name(token)
  *             elif token["type"] in (             # <<<<<<<<<<<<<<
  *                 TOKENS.VARIABLE,
  *                 TOKENS.INTEGER,
  */
-    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 65, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 67, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     if (!__pyx_t_8) {
     } else {
@@ -2823,28 +2778,28 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_10
     }
 
     /* "mabel/data/readers/internals/inline_evaluator.py":70
- *                 TOKENS.LITERAL,
+ *                 TOKENS.VARIABLE,
+ *                 TOKENS.INTEGER,
+ *                 TOKENS.LITERAL,             # <<<<<<<<<<<<<<
  *                 TOKENS.DATE,
- *                 TOKENS.FLOAT,             # <<<<<<<<<<<<<<
- *                 TOKENS.DATE,
- *             ):
+ *                 TOKENS.FLOAT,
  */
     __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 70, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_FLOAT); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 70, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_LITERAL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 70, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyObject_RichCompare(__pyx_t_4, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 65, __pyx_L1_error)
+    __pyx_t_5 = PyObject_RichCompare(__pyx_t_4, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 67, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":65
+    /* "mabel/data/readers/internals/inline_evaluator.py":67
  *                 else:
  *                     yield get_function_name(token)
  *             elif token["type"] in (             # <<<<<<<<<<<<<<
  *                 TOKENS.VARIABLE,
  *                 TOKENS.INTEGER,
  */
-    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 65, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 67, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     if (!__pyx_t_8) {
     } else {
@@ -2853,28 +2808,88 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_10
     }
 
     /* "mabel/data/readers/internals/inline_evaluator.py":71
- *                 TOKENS.DATE,
- *                 TOKENS.FLOAT,
+ *                 TOKENS.INTEGER,
+ *                 TOKENS.LITERAL,
  *                 TOKENS.DATE,             # <<<<<<<<<<<<<<
- *             ):
- *                 yield token["value"]
+ *                 TOKENS.FLOAT,
+ *                 TOKENS.DATE,
  */
     __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 71, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_DATE); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 71, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyObject_RichCompare(__pyx_t_4, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 65, __pyx_L1_error)
+    __pyx_t_5 = PyObject_RichCompare(__pyx_t_4, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 67, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":65
+    /* "mabel/data/readers/internals/inline_evaluator.py":67
  *                 else:
  *                     yield get_function_name(token)
  *             elif token["type"] in (             # <<<<<<<<<<<<<<
  *                 TOKENS.VARIABLE,
  *                 TOKENS.INTEGER,
  */
-    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 65, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 67, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    if (!__pyx_t_8) {
+    } else {
+      __pyx_t_7 = __pyx_t_8;
+      goto __pyx_L13_bool_binop_done;
+    }
+
+    /* "mabel/data/readers/internals/inline_evaluator.py":72
+ *                 TOKENS.LITERAL,
+ *                 TOKENS.DATE,
+ *                 TOKENS.FLOAT,             # <<<<<<<<<<<<<<
+ *                 TOKENS.DATE,
+ *             ):
+ */
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 72, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_FLOAT); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 72, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_5 = PyObject_RichCompare(__pyx_t_4, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 67, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+
+    /* "mabel/data/readers/internals/inline_evaluator.py":67
+ *                 else:
+ *                     yield get_function_name(token)
+ *             elif token["type"] in (             # <<<<<<<<<<<<<<
+ *                 TOKENS.VARIABLE,
+ *                 TOKENS.INTEGER,
+ */
+    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 67, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    if (!__pyx_t_8) {
+    } else {
+      __pyx_t_7 = __pyx_t_8;
+      goto __pyx_L13_bool_binop_done;
+    }
+
+    /* "mabel/data/readers/internals/inline_evaluator.py":73
+ *                 TOKENS.DATE,
+ *                 TOKENS.FLOAT,
+ *                 TOKENS.DATE,             # <<<<<<<<<<<<<<
+ *             ):
+ *                 if token["as"]:
+ */
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 73, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_DATE); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 73, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_5 = PyObject_RichCompare(__pyx_t_4, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 67, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+
+    /* "mabel/data/readers/internals/inline_evaluator.py":67
+ *                 else:
+ *                     yield get_function_name(token)
+ *             elif token["type"] in (             # <<<<<<<<<<<<<<
+ *                 TOKENS.VARIABLE,
+ *                 TOKENS.INTEGER,
+ */
+    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 67, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_t_7 = __pyx_t_8;
     __pyx_L13_bool_binop_done:;
@@ -2882,36 +2897,91 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_10
     __pyx_t_8 = (__pyx_t_7 != 0);
     if (__pyx_t_8) {
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":73
+      /* "mabel/data/readers/internals/inline_evaluator.py":75
  *                 TOKENS.DATE,
  *             ):
- *                 yield token["value"]             # <<<<<<<<<<<<<<
+ *                 if token["as"]:             # <<<<<<<<<<<<<<
+ *                     yield token["as"]
+ *                 else:
+ */
+      __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_cur_scope->__pyx_v_token, __pyx_n_u_as); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 75, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 75, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      if (__pyx_t_8) {
+
+        /* "mabel/data/readers/internals/inline_evaluator.py":76
+ *             ):
+ *                 if token["as"]:
+ *                     yield token["as"]             # <<<<<<<<<<<<<<
+ *                 else:
+ *                     yield token["value"]
+ */
+        __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_cur_scope->__pyx_v_token, __pyx_n_u_as); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 76, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        __pyx_r = __pyx_t_4;
+        __pyx_t_4 = 0;
+        __Pyx_XGIVEREF(__pyx_t_1);
+        __pyx_cur_scope->__pyx_t_0 = __pyx_t_1;
+        __pyx_cur_scope->__pyx_t_1 = __pyx_t_2;
+        __pyx_cur_scope->__pyx_t_2 = __pyx_t_3;
+        __Pyx_XGIVEREF(__pyx_r);
+        __Pyx_RefNannyFinishContext();
+        __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
+        /* return from generator, yielding value */
+        __pyx_generator->resume_label = 4;
+        return __pyx_r;
+        __pyx_L20_resume_from_yield:;
+        __pyx_t_1 = __pyx_cur_scope->__pyx_t_0;
+        __pyx_cur_scope->__pyx_t_0 = 0;
+        __Pyx_XGOTREF(__pyx_t_1);
+        __pyx_t_2 = __pyx_cur_scope->__pyx_t_1;
+        __pyx_t_3 = __pyx_cur_scope->__pyx_t_2;
+        if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 76, __pyx_L1_error)
+
+        /* "mabel/data/readers/internals/inline_evaluator.py":75
+ *                 TOKENS.DATE,
+ *             ):
+ *                 if token["as"]:             # <<<<<<<<<<<<<<
+ *                     yield token["as"]
+ *                 else:
+ */
+        goto __pyx_L19;
+      }
+
+      /* "mabel/data/readers/internals/inline_evaluator.py":78
+ *                     yield token["as"]
+ *                 else:
+ *                     yield token["value"]             # <<<<<<<<<<<<<<
  * 
  *     return list(inner(tokens))
  */
-      __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_cur_scope->__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 73, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      __pyx_r = __pyx_t_4;
-      __pyx_t_4 = 0;
-      __Pyx_XGIVEREF(__pyx_t_1);
-      __pyx_cur_scope->__pyx_t_0 = __pyx_t_1;
-      __pyx_cur_scope->__pyx_t_1 = __pyx_t_2;
-      __pyx_cur_scope->__pyx_t_2 = __pyx_t_3;
-      __Pyx_XGIVEREF(__pyx_r);
-      __Pyx_RefNannyFinishContext();
-      __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-      /* return from generator, yielding value */
-      __pyx_generator->resume_label = 4;
-      return __pyx_r;
-      __pyx_L19_resume_from_yield:;
-      __pyx_t_1 = __pyx_cur_scope->__pyx_t_0;
-      __pyx_cur_scope->__pyx_t_0 = 0;
-      __Pyx_XGOTREF(__pyx_t_1);
-      __pyx_t_2 = __pyx_cur_scope->__pyx_t_1;
-      __pyx_t_3 = __pyx_cur_scope->__pyx_t_2;
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 73, __pyx_L1_error)
+      /*else*/ {
+        __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_cur_scope->__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 78, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        __pyx_r = __pyx_t_4;
+        __pyx_t_4 = 0;
+        __Pyx_XGIVEREF(__pyx_t_1);
+        __pyx_cur_scope->__pyx_t_0 = __pyx_t_1;
+        __pyx_cur_scope->__pyx_t_1 = __pyx_t_2;
+        __pyx_cur_scope->__pyx_t_2 = __pyx_t_3;
+        __Pyx_XGIVEREF(__pyx_r);
+        __Pyx_RefNannyFinishContext();
+        __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
+        /* return from generator, yielding value */
+        __pyx_generator->resume_label = 5;
+        return __pyx_r;
+        __pyx_L21_resume_from_yield:;
+        __pyx_t_1 = __pyx_cur_scope->__pyx_t_0;
+        __pyx_cur_scope->__pyx_t_0 = 0;
+        __Pyx_XGOTREF(__pyx_t_1);
+        __pyx_t_2 = __pyx_cur_scope->__pyx_t_1;
+        __pyx_t_3 = __pyx_cur_scope->__pyx_t_2;
+        if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 78, __pyx_L1_error)
+      }
+      __pyx_L19:;
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":65
+      /* "mabel/data/readers/internals/inline_evaluator.py":67
  *                 else:
  *                     yield get_function_name(token)
  *             elif token["type"] in (             # <<<<<<<<<<<<<<
@@ -2921,7 +2991,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_10
     }
     __pyx_L6:;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":57
+    /* "mabel/data/readers/internals/inline_evaluator.py":59
  * def get_fields(tokens):
  *     def inner(tokens):
  *         for token in tokens:             # <<<<<<<<<<<<<<
@@ -2932,7 +3002,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_10
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":56
+  /* "mabel/data/readers/internals/inline_evaluator.py":58
  * 
  * def get_fields(tokens):
  *     def inner(tokens):             # <<<<<<<<<<<<<<
@@ -2960,7 +3030,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_10
   return __pyx_r;
 }
 
-/* "mabel/data/readers/internals/inline_evaluator.py":55
+/* "mabel/data/readers/internals/inline_evaluator.py":57
  * 
  * 
  * def get_fields(tokens):             # <<<<<<<<<<<<<<
@@ -2979,36 +3049,36 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_2g
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("get_fields", 0);
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":56
+  /* "mabel/data/readers/internals/inline_evaluator.py":58
  * 
  * def get_fields(tokens):
  *     def inner(tokens):             # <<<<<<<<<<<<<<
  *         for token in tokens:
  *             if token["type"] in (TOKENS.EVERYTHING,):
  */
-  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_10get_fields_1inner, 0, __pyx_n_s_get_fields_locals_inner, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__8)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_10get_fields_1inner, 0, __pyx_n_s_get_fields_locals_inner, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__8)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 58, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_inner = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":75
- *                 yield token["value"]
+  /* "mabel/data/readers/internals/inline_evaluator.py":80
+ *                     yield token["value"]
  * 
  *     return list(inner(tokens))             # <<<<<<<<<<<<<<
  * 
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_10get_fields_inner(__pyx_v_inner, __pyx_v_tokens); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_1 = __pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_10get_fields_inner(__pyx_v_inner, __pyx_v_tokens); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 80, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PySequence_List(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_2 = PySequence_List(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 80, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":55
+  /* "mabel/data/readers/internals/inline_evaluator.py":57
  * 
  * 
  * def get_fields(tokens):             # <<<<<<<<<<<<<<
@@ -3029,7 +3099,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_2g
   return __pyx_r;
 }
 
-/* "mabel/data/readers/internals/inline_evaluator.py":78
+/* "mabel/data/readers/internals/inline_evaluator.py":83
  * 
  * 
  * def build(tokens):             # <<<<<<<<<<<<<<
@@ -3071,40 +3141,40 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("build", 0);
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":79
+  /* "mabel/data/readers/internals/inline_evaluator.py":84
  * 
  * def build(tokens):
  *     response = []             # <<<<<<<<<<<<<<
  *     if not isinstance(tokens, TokenSet):
  *         ts = TokenSet(tokens)
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 79, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_response = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":80
+  /* "mabel/data/readers/internals/inline_evaluator.py":85
  * def build(tokens):
  *     response = []
  *     if not isinstance(tokens, TokenSet):             # <<<<<<<<<<<<<<
  *         ts = TokenSet(tokens)
  *     else:
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TokenSet); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 80, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TokenSet); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 85, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyObject_IsInstance(__pyx_v_tokens, __pyx_t_1); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 80, __pyx_L1_error)
+  __pyx_t_2 = PyObject_IsInstance(__pyx_v_tokens, __pyx_t_1); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 85, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = ((!(__pyx_t_2 != 0)) != 0);
   if (__pyx_t_3) {
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":81
+    /* "mabel/data/readers/internals/inline_evaluator.py":86
  *     response = []
  *     if not isinstance(tokens, TokenSet):
  *         ts = TokenSet(tokens)             # <<<<<<<<<<<<<<
  *     else:
  *         ts = tokens
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_TokenSet); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 81, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_TokenSet); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 86, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
@@ -3118,13 +3188,13 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
     }
     __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_5, __pyx_v_tokens) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_v_tokens);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 81, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 86, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_ts = __pyx_t_1;
     __pyx_t_1 = 0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":80
+    /* "mabel/data/readers/internals/inline_evaluator.py":85
  * def build(tokens):
  *     response = []
  *     if not isinstance(tokens, TokenSet):             # <<<<<<<<<<<<<<
@@ -3134,7 +3204,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
     goto __pyx_L3;
   }
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":83
+  /* "mabel/data/readers/internals/inline_evaluator.py":88
  *         ts = TokenSet(tokens)
  *     else:
  *         ts = tokens             # <<<<<<<<<<<<<<
@@ -3147,7 +3217,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
   }
   __pyx_L3:;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":84
+  /* "mabel/data/readers/internals/inline_evaluator.py":89
  *     else:
  *         ts = tokens
  *     while not ts.finished():             # <<<<<<<<<<<<<<
@@ -3155,7 +3225,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
  *         ts.step()  # move along
  */
   while (1) {
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_finished); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 84, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_finished); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 89, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -3169,22 +3239,22 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
     }
     __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 84, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_2 = ((!__pyx_t_3) != 0);
     if (!__pyx_t_2) break;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":85
+    /* "mabel/data/readers/internals/inline_evaluator.py":90
  *         ts = tokens
  *     while not ts.finished():
  *         token = ts.token()             # <<<<<<<<<<<<<<
  *         ts.step()  # move along
  *         if token["type"] in (TOKENS.FUNCTION, TOKENS.AGGREGATOR):
  */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_token); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 85, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_token); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 90, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -3198,20 +3268,20 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
     }
     __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 85, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 90, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_XDECREF_SET(__pyx_v_token, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":86
+    /* "mabel/data/readers/internals/inline_evaluator.py":91
  *     while not ts.finished():
  *         token = ts.token()
  *         ts.step()  # move along             # <<<<<<<<<<<<<<
  *         if token["type"] in (TOKENS.FUNCTION, TOKENS.AGGREGATOR):
  * 
  */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_step); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 86, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_step); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 91, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -3225,42 +3295,42 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
     }
     __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 86, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":87
+    /* "mabel/data/readers/internals/inline_evaluator.py":92
  *         token = ts.token()
  *         ts.step()  # move along
  *         if token["type"] in (TOKENS.FUNCTION, TOKENS.AGGREGATOR):             # <<<<<<<<<<<<<<
  * 
  *             token["value"] = token["value"].upper()
  */
-    __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 92, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 87, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 92, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_FUNCTION); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 87, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_FUNCTION); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 92, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = PyObject_RichCompare(__pyx_t_1, __pyx_t_5, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 87, __pyx_L1_error)
+    __pyx_t_4 = PyObject_RichCompare(__pyx_t_1, __pyx_t_5, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 92, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 87, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 92, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     if (!__pyx_t_3) {
     } else {
       __pyx_t_2 = __pyx_t_3;
       goto __pyx_L7_bool_binop_done;
     }
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 87, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 92, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_AGGREGATOR); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 87, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_AGGREGATOR); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 92, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = PyObject_RichCompare(__pyx_t_1, __pyx_t_5, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 87, __pyx_L1_error)
+    __pyx_t_4 = PyObject_RichCompare(__pyx_t_1, __pyx_t_5, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 92, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 87, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 92, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_2 = __pyx_t_3;
     __pyx_L7_bool_binop_done:;
@@ -3268,16 +3338,16 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
     __pyx_t_3 = (__pyx_t_2 != 0);
     if (__pyx_t_3) {
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":89
+      /* "mabel/data/readers/internals/inline_evaluator.py":94
  *         if token["type"] in (TOKENS.FUNCTION, TOKENS.AGGREGATOR):
  * 
  *             token["value"] = token["value"].upper()             # <<<<<<<<<<<<<<
  * 
  *             if not ts.token()["type"] == TOKENS.LEFTPARENTHESES:
  */
-      __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 89, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 94, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_upper); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 89, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_upper); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 94, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_t_4 = NULL;
@@ -3292,20 +3362,20 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
       }
       __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 94, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(PyObject_SetItem(__pyx_v_token, __pyx_n_u_value, __pyx_t_1) < 0)) __PYX_ERR(0, 89, __pyx_L1_error)
+      if (unlikely(PyObject_SetItem(__pyx_v_token, __pyx_n_u_value, __pyx_t_1) < 0)) __PYX_ERR(0, 94, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":91
+      /* "mabel/data/readers/internals/inline_evaluator.py":96
  *             token["value"] = token["value"].upper()
  * 
  *             if not ts.token()["type"] == TOKENS.LEFTPARENTHESES:             # <<<<<<<<<<<<<<
  *                 raise InvalidEvaluator("Invalid expression, missing expected `(` ")
  *             ts.step()  # step over the (
  */
-      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_token); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 91, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_token); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 96, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_t_4 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
@@ -3319,33 +3389,33 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
       }
       __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 96, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_t_5 = __Pyx_PyObject_Dict_GetItem(__pyx_t_1, __pyx_n_u_type); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 91, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_Dict_GetItem(__pyx_t_1, __pyx_n_u_type); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 96, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 96, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_LEFTPARENTHESES); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 91, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_LEFTPARENTHESES); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 96, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_1 = PyObject_RichCompare(__pyx_t_5, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
+      __pyx_t_1 = PyObject_RichCompare(__pyx_t_5, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 96, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 91, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 96, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_t_2 = ((!__pyx_t_3) != 0);
       if (unlikely(__pyx_t_2)) {
 
-        /* "mabel/data/readers/internals/inline_evaluator.py":92
+        /* "mabel/data/readers/internals/inline_evaluator.py":97
  * 
  *             if not ts.token()["type"] == TOKENS.LEFTPARENTHESES:
  *                 raise InvalidEvaluator("Invalid expression, missing expected `(` ")             # <<<<<<<<<<<<<<
  *             ts.step()  # step over the (
  * 
  */
-        __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_InvalidEvaluator); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 92, __pyx_L1_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_InvalidEvaluator); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 97, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __pyx_t_5 = NULL;
         if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
@@ -3359,14 +3429,14 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
         }
         __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_5, __pyx_kp_u_Invalid_expression_missing_expec) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_kp_u_Invalid_expression_missing_expec);
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 92, __pyx_L1_error)
+        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         __Pyx_Raise(__pyx_t_1, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __PYX_ERR(0, 92, __pyx_L1_error)
+        __PYX_ERR(0, 97, __pyx_L1_error)
 
-        /* "mabel/data/readers/internals/inline_evaluator.py":91
+        /* "mabel/data/readers/internals/inline_evaluator.py":96
  *             token["value"] = token["value"].upper()
  * 
  *             if not ts.token()["type"] == TOKENS.LEFTPARENTHESES:             # <<<<<<<<<<<<<<
@@ -3375,14 +3445,14 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
  */
       }
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":93
+      /* "mabel/data/readers/internals/inline_evaluator.py":98
  *             if not ts.token()["type"] == TOKENS.LEFTPARENTHESES:
  *                 raise InvalidEvaluator("Invalid expression, missing expected `(` ")
  *             ts.step()  # step over the (             # <<<<<<<<<<<<<<
  * 
  *             # collect all the tokens between the parentheses and 'build' them
  */
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_step); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 93, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_step); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 98, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_5 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -3396,12 +3466,12 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
       }
       __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 93, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 98, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":96
+      /* "mabel/data/readers/internals/inline_evaluator.py":101
  * 
  *             # collect all the tokens between the parentheses and 'build' them
  *             open_parentheses = 1             # <<<<<<<<<<<<<<
@@ -3411,19 +3481,19 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
       __Pyx_INCREF(__pyx_int_1);
       __Pyx_XDECREF_SET(__pyx_v_open_parentheses, __pyx_int_1);
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":97
+      /* "mabel/data/readers/internals/inline_evaluator.py":102
  *             # collect all the tokens between the parentheses and 'build' them
  *             open_parentheses = 1
  *             collector = []             # <<<<<<<<<<<<<<
  *             while open_parentheses > 0:
  *                 if ts.finished():
  */
-      __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L1_error)
+      __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 102, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_XDECREF_SET(__pyx_v_collector, ((PyObject*)__pyx_t_1));
       __pyx_t_1 = 0;
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":98
+      /* "mabel/data/readers/internals/inline_evaluator.py":103
  *             open_parentheses = 1
  *             collector = []
  *             while open_parentheses > 0:             # <<<<<<<<<<<<<<
@@ -3431,19 +3501,19 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
  *                     break
  */
       while (1) {
-        __pyx_t_1 = PyObject_RichCompare(__pyx_v_open_parentheses, __pyx_int_0, Py_GT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 98, __pyx_L1_error)
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 98, __pyx_L1_error)
+        __pyx_t_1 = PyObject_RichCompare(__pyx_v_open_parentheses, __pyx_int_0, Py_GT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 103, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 103, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         if (!__pyx_t_2) break;
 
-        /* "mabel/data/readers/internals/inline_evaluator.py":99
+        /* "mabel/data/readers/internals/inline_evaluator.py":104
  *             collector = []
  *             while open_parentheses > 0:
  *                 if ts.finished():             # <<<<<<<<<<<<<<
  *                     break
  * 
  */
-        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_finished); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 99, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_finished); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 104, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __pyx_t_5 = NULL;
         if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -3457,14 +3527,14 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
         }
         __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 99, __pyx_L1_error)
+        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 104, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 99, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 104, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         if (__pyx_t_2) {
 
-          /* "mabel/data/readers/internals/inline_evaluator.py":100
+          /* "mabel/data/readers/internals/inline_evaluator.py":105
  *             while open_parentheses > 0:
  *                 if ts.finished():
  *                     break             # <<<<<<<<<<<<<<
@@ -3473,7 +3543,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
  */
           goto __pyx_L11_break;
 
-          /* "mabel/data/readers/internals/inline_evaluator.py":99
+          /* "mabel/data/readers/internals/inline_evaluator.py":104
  *             collector = []
  *             while open_parentheses > 0:
  *                 if ts.finished():             # <<<<<<<<<<<<<<
@@ -3482,14 +3552,14 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
  */
         }
 
-        /* "mabel/data/readers/internals/inline_evaluator.py":102
+        /* "mabel/data/readers/internals/inline_evaluator.py":107
  *                     break
  * 
  *                 if ts.token()["type"] == TOKENS.RIGHTPARENTHESES:             # <<<<<<<<<<<<<<
  *                     open_parentheses -= 1
  *                     if open_parentheses != 0:
  */
-        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_token); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 102, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_token); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 107, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __pyx_t_5 = NULL;
         if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -3503,57 +3573,57 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
         }
         __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 102, __pyx_L1_error)
+        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_t_1, __pyx_n_u_type); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 102, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_t_1, __pyx_n_u_type); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 107, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 102, __pyx_L1_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_RIGHTPARENTHESES); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 102, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_RIGHTPARENTHESES); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 107, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __pyx_t_1 = PyObject_RichCompare(__pyx_t_4, __pyx_t_5, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 102, __pyx_L1_error)
+        __pyx_t_1 = PyObject_RichCompare(__pyx_t_4, __pyx_t_5, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 102, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 107, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         if (__pyx_t_2) {
 
-          /* "mabel/data/readers/internals/inline_evaluator.py":103
+          /* "mabel/data/readers/internals/inline_evaluator.py":108
  * 
  *                 if ts.token()["type"] == TOKENS.RIGHTPARENTHESES:
  *                     open_parentheses -= 1             # <<<<<<<<<<<<<<
  *                     if open_parentheses != 0:
  *                         collector.append(ts.token())
  */
-          __pyx_t_1 = __Pyx_PyInt_SubtractObjC(__pyx_v_open_parentheses, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 103, __pyx_L1_error)
+          __pyx_t_1 = __Pyx_PyInt_SubtractObjC(__pyx_v_open_parentheses, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 108, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_1);
           __Pyx_DECREF_SET(__pyx_v_open_parentheses, __pyx_t_1);
           __pyx_t_1 = 0;
 
-          /* "mabel/data/readers/internals/inline_evaluator.py":104
+          /* "mabel/data/readers/internals/inline_evaluator.py":109
  *                 if ts.token()["type"] == TOKENS.RIGHTPARENTHESES:
  *                     open_parentheses -= 1
  *                     if open_parentheses != 0:             # <<<<<<<<<<<<<<
  *                         collector.append(ts.token())
  *                 elif ts.token()["type"] == TOKENS.LEFTPARENTHESES:
  */
-          __pyx_t_1 = __Pyx_PyInt_NeObjC(__pyx_v_open_parentheses, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 104, __pyx_L1_error)
+          __pyx_t_1 = __Pyx_PyInt_NeObjC(__pyx_v_open_parentheses, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 109, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_1);
-          __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 104, __pyx_L1_error)
+          __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 109, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
           if (__pyx_t_2) {
 
-            /* "mabel/data/readers/internals/inline_evaluator.py":105
+            /* "mabel/data/readers/internals/inline_evaluator.py":110
  *                     open_parentheses -= 1
  *                     if open_parentheses != 0:
  *                         collector.append(ts.token())             # <<<<<<<<<<<<<<
  *                 elif ts.token()["type"] == TOKENS.LEFTPARENTHESES:
  *                     open_parentheses += 1
  */
-            __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_token); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 105, __pyx_L1_error)
+            __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_token); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 110, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_5);
             __pyx_t_4 = NULL;
             if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
@@ -3567,13 +3637,13 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
             }
             __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
             __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-            if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
+            if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 110, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_1);
             __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-            __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_collector, __pyx_t_1); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 105, __pyx_L1_error)
+            __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_collector, __pyx_t_1); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 110, __pyx_L1_error)
             __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-            /* "mabel/data/readers/internals/inline_evaluator.py":104
+            /* "mabel/data/readers/internals/inline_evaluator.py":109
  *                 if ts.token()["type"] == TOKENS.RIGHTPARENTHESES:
  *                     open_parentheses -= 1
  *                     if open_parentheses != 0:             # <<<<<<<<<<<<<<
@@ -3582,7 +3652,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
  */
           }
 
-          /* "mabel/data/readers/internals/inline_evaluator.py":102
+          /* "mabel/data/readers/internals/inline_evaluator.py":107
  *                     break
  * 
  *                 if ts.token()["type"] == TOKENS.RIGHTPARENTHESES:             # <<<<<<<<<<<<<<
@@ -3592,14 +3662,14 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
           goto __pyx_L13;
         }
 
-        /* "mabel/data/readers/internals/inline_evaluator.py":106
+        /* "mabel/data/readers/internals/inline_evaluator.py":111
  *                     if open_parentheses != 0:
  *                         collector.append(ts.token())
  *                 elif ts.token()["type"] == TOKENS.LEFTPARENTHESES:             # <<<<<<<<<<<<<<
  *                     open_parentheses += 1
  *                     collector.append(ts.token())
  */
-        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_token); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 106, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_token); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 111, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __pyx_t_4 = NULL;
         if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
@@ -3613,44 +3683,44 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
         }
         __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L1_error)
+        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 111, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __pyx_t_5 = __Pyx_PyObject_Dict_GetItem(__pyx_t_1, __pyx_n_u_type); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 106, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_PyObject_Dict_GetItem(__pyx_t_1, __pyx_n_u_type); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 111, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L1_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 111, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_LEFTPARENTHESES); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 106, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_LEFTPARENTHESES); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 111, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __pyx_t_1 = PyObject_RichCompare(__pyx_t_5, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L1_error)
+        __pyx_t_1 = PyObject_RichCompare(__pyx_t_5, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 111, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 106, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 111, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         if (__pyx_t_2) {
 
-          /* "mabel/data/readers/internals/inline_evaluator.py":107
+          /* "mabel/data/readers/internals/inline_evaluator.py":112
  *                         collector.append(ts.token())
  *                 elif ts.token()["type"] == TOKENS.LEFTPARENTHESES:
  *                     open_parentheses += 1             # <<<<<<<<<<<<<<
  *                     collector.append(ts.token())
  *                 else:
  */
-          __pyx_t_1 = __Pyx_PyInt_AddObjC(__pyx_v_open_parentheses, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
+          __pyx_t_1 = __Pyx_PyInt_AddObjC(__pyx_v_open_parentheses, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 112, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_1);
           __Pyx_DECREF_SET(__pyx_v_open_parentheses, __pyx_t_1);
           __pyx_t_1 = 0;
 
-          /* "mabel/data/readers/internals/inline_evaluator.py":108
+          /* "mabel/data/readers/internals/inline_evaluator.py":113
  *                 elif ts.token()["type"] == TOKENS.LEFTPARENTHESES:
  *                     open_parentheses += 1
  *                     collector.append(ts.token())             # <<<<<<<<<<<<<<
  *                 else:
  *                     collector.append(ts.token())
  */
-          __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_token); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 108, __pyx_L1_error)
+          __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_token); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 113, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_4);
           __pyx_t_5 = NULL;
           if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -3664,13 +3734,13 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
           }
           __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
           __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-          if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 108, __pyx_L1_error)
+          if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_1);
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_collector, __pyx_t_1); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 108, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_collector, __pyx_t_1); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 113, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-          /* "mabel/data/readers/internals/inline_evaluator.py":106
+          /* "mabel/data/readers/internals/inline_evaluator.py":111
  *                     if open_parentheses != 0:
  *                         collector.append(ts.token())
  *                 elif ts.token()["type"] == TOKENS.LEFTPARENTHESES:             # <<<<<<<<<<<<<<
@@ -3680,7 +3750,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
           goto __pyx_L13;
         }
 
-        /* "mabel/data/readers/internals/inline_evaluator.py":110
+        /* "mabel/data/readers/internals/inline_evaluator.py":115
  *                     collector.append(ts.token())
  *                 else:
  *                     collector.append(ts.token())             # <<<<<<<<<<<<<<
@@ -3688,7 +3758,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
  * 
  */
         /*else*/ {
-          __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_token); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 110, __pyx_L1_error)
+          __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_token); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 115, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_4);
           __pyx_t_5 = NULL;
           if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -3702,22 +3772,22 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
           }
           __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
           __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-          if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 110, __pyx_L1_error)
+          if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 115, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_1);
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_collector, __pyx_t_1); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 110, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_collector, __pyx_t_1); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 115, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         }
         __pyx_L13:;
 
-        /* "mabel/data/readers/internals/inline_evaluator.py":111
+        /* "mabel/data/readers/internals/inline_evaluator.py":116
  *                 else:
  *                     collector.append(ts.token())
  *                 ts.step()             # <<<<<<<<<<<<<<
  * 
  *             if open_parentheses != 0:
  */
-        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_step); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 111, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_step); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 116, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __pyx_t_5 = NULL;
         if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -3731,34 +3801,34 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
         }
         __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 111, __pyx_L1_error)
+        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 116, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       }
       __pyx_L11_break:;
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":113
+      /* "mabel/data/readers/internals/inline_evaluator.py":118
  *                 ts.step()
  * 
  *             if open_parentheses != 0:             # <<<<<<<<<<<<<<
  *                 raise InvalidEvaluator("Unbalanced parantheses")
  * 
  */
-      __pyx_t_1 = __Pyx_PyInt_NeObjC(__pyx_v_open_parentheses, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyInt_NeObjC(__pyx_v_open_parentheses, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 118, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 113, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 118, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       if (unlikely(__pyx_t_2)) {
 
-        /* "mabel/data/readers/internals/inline_evaluator.py":114
+        /* "mabel/data/readers/internals/inline_evaluator.py":119
  * 
  *             if open_parentheses != 0:
  *                 raise InvalidEvaluator("Unbalanced parantheses")             # <<<<<<<<<<<<<<
  * 
  *             token["parameters"] = build(collector)
  */
-        __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_InvalidEvaluator); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 114, __pyx_L1_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_InvalidEvaluator); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 119, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __pyx_t_5 = NULL;
         if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
@@ -3772,14 +3842,14 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
         }
         __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_5, __pyx_kp_u_Unbalanced_parantheses) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_kp_u_Unbalanced_parantheses);
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 114, __pyx_L1_error)
+        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 119, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         __Pyx_Raise(__pyx_t_1, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __PYX_ERR(0, 114, __pyx_L1_error)
+        __PYX_ERR(0, 119, __pyx_L1_error)
 
-        /* "mabel/data/readers/internals/inline_evaluator.py":113
+        /* "mabel/data/readers/internals/inline_evaluator.py":118
  *                 ts.step()
  * 
  *             if open_parentheses != 0:             # <<<<<<<<<<<<<<
@@ -3788,14 +3858,14 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
  */
       }
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":116
+      /* "mabel/data/readers/internals/inline_evaluator.py":121
  *                 raise InvalidEvaluator("Unbalanced parantheses")
  * 
  *             token["parameters"] = build(collector)             # <<<<<<<<<<<<<<
  * 
  *         if not ts.finished() and ts.token()["type"] == TOKENS.AS:
  */
-      __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_build); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 116, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_build); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 121, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_5 = NULL;
       if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
@@ -3809,13 +3879,13 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
       }
       __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_5, __pyx_v_collector) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_v_collector);
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 116, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 121, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(PyObject_SetItem(__pyx_v_token, __pyx_n_u_parameters, __pyx_t_1) < 0)) __PYX_ERR(0, 116, __pyx_L1_error)
+      if (unlikely(PyObject_SetItem(__pyx_v_token, __pyx_n_u_parameters, __pyx_t_1) < 0)) __PYX_ERR(0, 121, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":87
+      /* "mabel/data/readers/internals/inline_evaluator.py":92
  *         token = ts.token()
  *         ts.step()  # move along
  *         if token["type"] in (TOKENS.FUNCTION, TOKENS.AGGREGATOR):             # <<<<<<<<<<<<<<
@@ -3824,14 +3894,14 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
  */
     }
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":118
+    /* "mabel/data/readers/internals/inline_evaluator.py":123
  *             token["parameters"] = build(collector)
  * 
  *         if not ts.finished() and ts.token()["type"] == TOKENS.AS:             # <<<<<<<<<<<<<<
  *             ts.step()
  *             if ts.finished():
  */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_finished); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 118, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_finished); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 123, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -3845,10 +3915,10 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
     }
     __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 118, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 123, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 118, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 123, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_7 = ((!__pyx_t_3) != 0);
     if (__pyx_t_7) {
@@ -3856,7 +3926,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
       __pyx_t_2 = __pyx_t_7;
       goto __pyx_L17_bool_binop_done;
     }
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_token); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 118, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_token); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 123, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -3870,34 +3940,34 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
     }
     __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 118, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 123, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_t_1, __pyx_n_u_type); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 118, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_t_1, __pyx_n_u_type); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 123, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 118, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 123, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_AS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 118, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_AS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 123, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = PyObject_RichCompare(__pyx_t_4, __pyx_t_5, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 118, __pyx_L1_error)
+    __pyx_t_1 = PyObject_RichCompare(__pyx_t_4, __pyx_t_5, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 123, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 118, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 123, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_2 = __pyx_t_7;
     __pyx_L17_bool_binop_done:;
     if (__pyx_t_2) {
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":119
+      /* "mabel/data/readers/internals/inline_evaluator.py":124
  * 
  *         if not ts.finished() and ts.token()["type"] == TOKENS.AS:
  *             ts.step()             # <<<<<<<<<<<<<<
  *             if ts.finished():
  *                 raise InvalidEvaluator("Incomplete statement after AS")
  */
-      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_step); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 119, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_step); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 124, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_t_4 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
@@ -3911,19 +3981,19 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
       }
       __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 119, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 124, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":120
+      /* "mabel/data/readers/internals/inline_evaluator.py":125
  *         if not ts.finished() and ts.token()["type"] == TOKENS.AS:
  *             ts.step()
  *             if ts.finished():             # <<<<<<<<<<<<<<
  *                 raise InvalidEvaluator("Incomplete statement after AS")
  *             token["as"] = ts.token()["value"]
  */
-      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_finished); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 120, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_finished); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 125, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_t_4 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
@@ -3937,21 +4007,21 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
       }
       __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 120, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 125, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 120, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 125, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       if (unlikely(__pyx_t_2)) {
 
-        /* "mabel/data/readers/internals/inline_evaluator.py":121
+        /* "mabel/data/readers/internals/inline_evaluator.py":126
  *             ts.step()
  *             if ts.finished():
  *                 raise InvalidEvaluator("Incomplete statement after AS")             # <<<<<<<<<<<<<<
  *             token["as"] = ts.token()["value"]
  *             ts.step()
  */
-        __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_InvalidEvaluator); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 121, __pyx_L1_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_InvalidEvaluator); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 126, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __pyx_t_4 = NULL;
         if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
@@ -3965,14 +4035,14 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
         }
         __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_4, __pyx_kp_u_Incomplete_statement_after_AS) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_kp_u_Incomplete_statement_after_AS);
         __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 121, __pyx_L1_error)
+        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 126, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         __Pyx_Raise(__pyx_t_1, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __PYX_ERR(0, 121, __pyx_L1_error)
+        __PYX_ERR(0, 126, __pyx_L1_error)
 
-        /* "mabel/data/readers/internals/inline_evaluator.py":120
+        /* "mabel/data/readers/internals/inline_evaluator.py":125
  *         if not ts.finished() and ts.token()["type"] == TOKENS.AS:
  *             ts.step()
  *             if ts.finished():             # <<<<<<<<<<<<<<
@@ -3981,14 +4051,14 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
  */
       }
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":122
+      /* "mabel/data/readers/internals/inline_evaluator.py":127
  *             if ts.finished():
  *                 raise InvalidEvaluator("Incomplete statement after AS")
  *             token["as"] = ts.token()["value"]             # <<<<<<<<<<<<<<
  *             ts.step()
  * 
  */
-      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_token); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 122, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_token); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 127, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_t_4 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
@@ -4002,23 +4072,23 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
       }
       __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 122, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 127, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_t_5 = __Pyx_PyObject_Dict_GetItem(__pyx_t_1, __pyx_n_u_value); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 122, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_Dict_GetItem(__pyx_t_1, __pyx_n_u_value); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 127, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      if (unlikely(PyObject_SetItem(__pyx_v_token, __pyx_n_u_as, __pyx_t_5) < 0)) __PYX_ERR(0, 122, __pyx_L1_error)
+      if (unlikely(PyObject_SetItem(__pyx_v_token, __pyx_n_u_as, __pyx_t_5) < 0)) __PYX_ERR(0, 127, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":123
+      /* "mabel/data/readers/internals/inline_evaluator.py":128
  *                 raise InvalidEvaluator("Incomplete statement after AS")
  *             token["as"] = ts.token()["value"]
  *             ts.step()             # <<<<<<<<<<<<<<
  * 
  *         response.append(token)
  */
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_step); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 123, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_ts, __pyx_n_s_step); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 128, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __pyx_t_4 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -4032,12 +4102,12 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
       }
       __pyx_t_5 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_1);
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 123, __pyx_L1_error)
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 128, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":118
+      /* "mabel/data/readers/internals/inline_evaluator.py":123
  *             token["parameters"] = build(collector)
  * 
  *         if not ts.finished() and ts.token()["type"] == TOKENS.AS:             # <<<<<<<<<<<<<<
@@ -4046,17 +4116,17 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
  */
     }
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":125
+    /* "mabel/data/readers/internals/inline_evaluator.py":130
  *             ts.step()
  * 
  *         response.append(token)             # <<<<<<<<<<<<<<
  *     return response
  * 
  */
-    __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_response, __pyx_v_token); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 125, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyList_Append(__pyx_v_response, __pyx_v_token); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 130, __pyx_L1_error)
   }
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":126
+  /* "mabel/data/readers/internals/inline_evaluator.py":131
  * 
  *         response.append(token)
  *     return response             # <<<<<<<<<<<<<<
@@ -4068,7 +4138,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
   __pyx_r = __pyx_v_response;
   goto __pyx_L0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":78
+  /* "mabel/data/readers/internals/inline_evaluator.py":83
  * 
  * 
  * def build(tokens):             # <<<<<<<<<<<<<<
@@ -4094,7 +4164,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_4b
   return __pyx_r;
 }
 
-/* "mabel/data/readers/internals/inline_evaluator.py":129
+/* "mabel/data/readers/internals/inline_evaluator.py":134
  * 
  * 
  * def evaluate_field(dict, token):             # <<<<<<<<<<<<<<
@@ -4138,11 +4208,11 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_16inline_evaluator_7e
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_token)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("evaluate_field", 1, 2, 2, 1); __PYX_ERR(0, 129, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("evaluate_field", 1, 2, 2, 1); __PYX_ERR(0, 134, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "evaluate_field") < 0)) __PYX_ERR(0, 129, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "evaluate_field") < 0)) __PYX_ERR(0, 134, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -4155,7 +4225,7 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_16inline_evaluator_7e
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("evaluate_field", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 129, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("evaluate_field", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 134, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mabel.data.readers.internals.inline_evaluator.evaluate_field", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -4192,37 +4262,37 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("evaluate_field", 0);
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":133
+  /* "mabel/data/readers/internals/inline_evaluator.py":138
  *     Evaluate a single field
  *     """
  *     token_type = token["type"]             # <<<<<<<<<<<<<<
  *     if token_type == TOKENS.EVERYTHING:
  *         return (TOKENS.EVERYTHING, TOKENS.EVERYTHING)
  */
-  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 133, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_token_type = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":134
+  /* "mabel/data/readers/internals/inline_evaluator.py":139
  *     """
  *     token_type = token["type"]
  *     if token_type == TOKENS.EVERYTHING:             # <<<<<<<<<<<<<<
  *         return (TOKENS.EVERYTHING, TOKENS.EVERYTHING)
  *     if token_type == TOKENS.VARIABLE:
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 134, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_EVERYTHING); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 134, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_EVERYTHING); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_token_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 134, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_token_type, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 134, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_3) {
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":135
+    /* "mabel/data/readers/internals/inline_evaluator.py":140
  *     token_type = token["type"]
  *     if token_type == TOKENS.EVERYTHING:
  *         return (TOKENS.EVERYTHING, TOKENS.EVERYTHING)             # <<<<<<<<<<<<<<
@@ -4230,17 +4300,17 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
  *         variable = token["value"]
  */
     __Pyx_XDECREF(__pyx_r);
-    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 135, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 140, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_EVERYTHING); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 135, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_EVERYTHING); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 140, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 135, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 140, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_EVERYTHING); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 135, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_EVERYTHING); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 140, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 135, __pyx_L1_error)
+    __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 140, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_2);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
@@ -4252,7 +4322,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
     __pyx_t_1 = 0;
     goto __pyx_L0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":134
+    /* "mabel/data/readers/internals/inline_evaluator.py":139
  *     """
  *     token_type = token["type"]
  *     if token_type == TOKENS.EVERYTHING:             # <<<<<<<<<<<<<<
@@ -4261,71 +4331,71 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
  */
   }
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":136
+  /* "mabel/data/readers/internals/inline_evaluator.py":141
  *     if token_type == TOKENS.EVERYTHING:
  *         return (TOKENS.EVERYTHING, TOKENS.EVERYTHING)
  *     if token_type == TOKENS.VARIABLE:             # <<<<<<<<<<<<<<
  *         variable = token["value"]
  *         if variable[0] == variable[-1] == "`":
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_VARIABLE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_VARIABLE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_token_type, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_token_type, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_3) {
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":137
+    /* "mabel/data/readers/internals/inline_evaluator.py":142
  *         return (TOKENS.EVERYTHING, TOKENS.EVERYTHING)
  *     if token_type == TOKENS.VARIABLE:
  *         variable = token["value"]             # <<<<<<<<<<<<<<
  *         if variable[0] == variable[-1] == "`":
  *             variable = variable[1:-1]
  */
-    __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 137, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 142, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_v_variable = __pyx_t_1;
     __pyx_t_1 = 0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":138
+    /* "mabel/data/readers/internals/inline_evaluator.py":143
  *     if token_type == TOKENS.VARIABLE:
  *         variable = token["value"]
  *         if variable[0] == variable[-1] == "`":             # <<<<<<<<<<<<<<
  *             variable = variable[1:-1]
  *         return (
  */
-    __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_variable, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 138, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_variable, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 143, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_variable, -1L, long, 1, __Pyx_PyInt_From_long, 0, 1, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 138, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_variable, -1L, long, 1, __Pyx_PyInt_From_long, 0, 1, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 143, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_2 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 138, __pyx_L1_error)
+    __pyx_t_2 = PyObject_RichCompare(__pyx_t_1, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 143, __pyx_L1_error)
     if (__Pyx_PyObject_IsTrue(__pyx_t_2)) {
       __Pyx_DECREF(__pyx_t_2);
-      __pyx_t_2 = PyObject_RichCompare(__pyx_t_4, __pyx_kp_u__9, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 138, __pyx_L1_error)
+      __pyx_t_2 = PyObject_RichCompare(__pyx_t_4, __pyx_kp_u__9, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 143, __pyx_L1_error)
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 138, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 143, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (__pyx_t_3) {
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":139
+      /* "mabel/data/readers/internals/inline_evaluator.py":144
  *         variable = token["value"]
  *         if variable[0] == variable[-1] == "`":
  *             variable = variable[1:-1]             # <<<<<<<<<<<<<<
  *         return (
  *             token["value"],
  */
-      __pyx_t_2 = __Pyx_PyObject_GetSlice(__pyx_v_variable, 1, -1L, NULL, NULL, &__pyx_slice__10, 1, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 139, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_GetSlice(__pyx_v_variable, 1, -1L, NULL, NULL, &__pyx_slice__10, 1, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 144, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF_SET(__pyx_v_variable, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":138
+      /* "mabel/data/readers/internals/inline_evaluator.py":143
  *     if token_type == TOKENS.VARIABLE:
  *         variable = token["value"]
  *         if variable[0] == variable[-1] == "`":             # <<<<<<<<<<<<<<
@@ -4334,7 +4404,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
  */
     }
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":140
+    /* "mabel/data/readers/internals/inline_evaluator.py":145
  *         if variable[0] == variable[-1] == "`":
  *             variable = variable[1:-1]
  *         return (             # <<<<<<<<<<<<<<
@@ -4343,24 +4413,24 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
  */
     __Pyx_XDECREF(__pyx_r);
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":141
+    /* "mabel/data/readers/internals/inline_evaluator.py":146
  *             variable = variable[1:-1]
  *         return (
  *             token["value"],             # <<<<<<<<<<<<<<
  *             dict.get(variable),
  *         )
  */
-    __pyx_t_2 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 141, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 146, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":142
+    /* "mabel/data/readers/internals/inline_evaluator.py":147
  *         return (
  *             token["value"],
  *             dict.get(variable),             # <<<<<<<<<<<<<<
  *         )
  *     if token_type == TOKENS.FUNCTION:
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_dict, __pyx_n_s_get); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 142, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_dict, __pyx_n_s_get); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 147, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -4374,18 +4444,18 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
     }
     __pyx_t_4 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_5, __pyx_v_variable) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_v_variable);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 142, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 147, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":141
+    /* "mabel/data/readers/internals/inline_evaluator.py":146
  *             variable = variable[1:-1]
  *         return (
  *             token["value"],             # <<<<<<<<<<<<<<
  *             dict.get(variable),
  *         )
  */
-    __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 141, __pyx_L1_error)
+    __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 146, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_2);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
@@ -4397,7 +4467,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
     __pyx_t_1 = 0;
     goto __pyx_L0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":136
+    /* "mabel/data/readers/internals/inline_evaluator.py":141
  *     if token_type == TOKENS.EVERYTHING:
  *         return (TOKENS.EVERYTHING, TOKENS.EVERYTHING)
  *     if token_type == TOKENS.VARIABLE:             # <<<<<<<<<<<<<<
@@ -4406,48 +4476,48 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
  */
   }
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":144
+  /* "mabel/data/readers/internals/inline_evaluator.py":149
  *             dict.get(variable),
  *         )
  *     if token_type == TOKENS.FUNCTION:             # <<<<<<<<<<<<<<
  *         if not token["as"]:
  *             label = get_fields([token]).pop()
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 144, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 149, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_FUNCTION); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 144, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_FUNCTION); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 149, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_token_type, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 144, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_token_type, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 149, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 144, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 149, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_3) {
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":145
+    /* "mabel/data/readers/internals/inline_evaluator.py":150
  *         )
  *     if token_type == TOKENS.FUNCTION:
  *         if not token["as"]:             # <<<<<<<<<<<<<<
  *             label = get_fields([token]).pop()
  *             token["as"] = label
  */
-    __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_as); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 145, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_as); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 150, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 145, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 150, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_6 = ((!__pyx_t_3) != 0);
     if (__pyx_t_6) {
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":146
+      /* "mabel/data/readers/internals/inline_evaluator.py":151
  *     if token_type == TOKENS.FUNCTION:
  *         if not token["as"]:
  *             label = get_fields([token]).pop()             # <<<<<<<<<<<<<<
  *             token["as"] = label
  *         else:
  */
-      __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_get_fields); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 146, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_get_fields); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 151, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 146, __pyx_L1_error)
+      __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 151, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_INCREF(__pyx_v_token);
       __Pyx_GIVEREF(__pyx_v_token);
@@ -4465,25 +4535,25 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
       __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_5, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_2);
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 146, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 151, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_4 = __Pyx_PyObject_Pop(__pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 146, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_Pop(__pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 151, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_v_label = __pyx_t_4;
       __pyx_t_4 = 0;
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":147
+      /* "mabel/data/readers/internals/inline_evaluator.py":152
  *         if not token["as"]:
  *             label = get_fields([token]).pop()
  *             token["as"] = label             # <<<<<<<<<<<<<<
  *         else:
  *             label = token["as"]
  */
-      if (unlikely(PyObject_SetItem(__pyx_v_token, __pyx_n_u_as, __pyx_v_label) < 0)) __PYX_ERR(0, 147, __pyx_L1_error)
+      if (unlikely(PyObject_SetItem(__pyx_v_token, __pyx_n_u_as, __pyx_v_label) < 0)) __PYX_ERR(0, 152, __pyx_L1_error)
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":145
+      /* "mabel/data/readers/internals/inline_evaluator.py":150
  *         )
  *     if token_type == TOKENS.FUNCTION:
  *         if not token["as"]:             # <<<<<<<<<<<<<<
@@ -4493,7 +4563,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
       goto __pyx_L7;
     }
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":149
+    /* "mabel/data/readers/internals/inline_evaluator.py":154
  *             token["as"] = label
  *         else:
  *             label = token["as"]             # <<<<<<<<<<<<<<
@@ -4501,14 +4571,14 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
  *             label,
  */
     /*else*/ {
-      __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_as); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 149, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_as); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 154, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_v_label = __pyx_t_4;
       __pyx_t_4 = 0;
     }
     __pyx_L7:;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":150
+    /* "mabel/data/readers/internals/inline_evaluator.py":155
  *         else:
  *             label = token["as"]
  *         return (             # <<<<<<<<<<<<<<
@@ -4517,18 +4587,18 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
  */
     __Pyx_XDECREF(__pyx_r);
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":152
+    /* "mabel/data/readers/internals/inline_evaluator.py":157
  *         return (
  *             label,
  *             FUNCTIONS[token["value"].upper()](             # <<<<<<<<<<<<<<
  *                 *[evaluate_field(dict, t)[1] for t in token["parameters"]]
  *             ),
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_FUNCTIONS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 152, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_FUNCTIONS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 157, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_2 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 152, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 157, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_upper); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 152, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_upper); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 157, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_t_2 = NULL;
@@ -4543,33 +4613,33 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
     }
     __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 152, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 157, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_PyObject_GetItem(__pyx_t_4, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 152, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetItem(__pyx_t_4, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 157, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     { /* enter inner scope */
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":153
+      /* "mabel/data/readers/internals/inline_evaluator.py":158
  *             label,
  *             FUNCTIONS[token["value"].upper()](
  *                 *[evaluate_field(dict, t)[1] for t in token["parameters"]]             # <<<<<<<<<<<<<<
  *             ),
  *         )
  */
-      __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 153, __pyx_L10_error)
+      __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 158, __pyx_L10_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_parameters); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 153, __pyx_L10_error)
+      __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_parameters); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 158, __pyx_L10_error)
       __Pyx_GOTREF(__pyx_t_4);
       if (likely(PyList_CheckExact(__pyx_t_4)) || PyTuple_CheckExact(__pyx_t_4)) {
         __pyx_t_2 = __pyx_t_4; __Pyx_INCREF(__pyx_t_2); __pyx_t_7 = 0;
         __pyx_t_8 = NULL;
       } else {
-        __pyx_t_7 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 153, __pyx_L10_error)
+        __pyx_t_7 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 158, __pyx_L10_error)
         __Pyx_GOTREF(__pyx_t_2);
-        __pyx_t_8 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 153, __pyx_L10_error)
+        __pyx_t_8 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 158, __pyx_L10_error)
       }
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       for (;;) {
@@ -4577,17 +4647,17 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
           if (likely(PyList_CheckExact(__pyx_t_2))) {
             if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_2)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_4 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 153, __pyx_L10_error)
+            __pyx_t_4 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 158, __pyx_L10_error)
             #else
-            __pyx_t_4 = PySequence_ITEM(__pyx_t_2, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 153, __pyx_L10_error)
+            __pyx_t_4 = PySequence_ITEM(__pyx_t_2, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 158, __pyx_L10_error)
             __Pyx_GOTREF(__pyx_t_4);
             #endif
           } else {
             if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 153, __pyx_L10_error)
+            __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 158, __pyx_L10_error)
             #else
-            __pyx_t_4 = PySequence_ITEM(__pyx_t_2, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 153, __pyx_L10_error)
+            __pyx_t_4 = PySequence_ITEM(__pyx_t_2, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 158, __pyx_L10_error)
             __Pyx_GOTREF(__pyx_t_4);
             #endif
           }
@@ -4597,7 +4667,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
               if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-              else __PYX_ERR(0, 153, __pyx_L10_error)
+              else __PYX_ERR(0, 158, __pyx_L10_error)
             }
             break;
           }
@@ -4605,7 +4675,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
         }
         __Pyx_XDECREF_SET(__pyx_7genexpr__pyx_v_t, __pyx_t_4);
         __pyx_t_4 = 0;
-        __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_evaluate_field); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 153, __pyx_L10_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_evaluate_field); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 158, __pyx_L10_error)
         __Pyx_GOTREF(__pyx_t_9);
         __pyx_t_10 = NULL;
         __pyx_t_11 = 0;
@@ -4622,7 +4692,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
         #if CYTHON_FAST_PYCALL
         if (PyFunction_Check(__pyx_t_9)) {
           PyObject *__pyx_temp[3] = {__pyx_t_10, __pyx_v_dict, __pyx_7genexpr__pyx_v_t};
-          __pyx_t_4 = __Pyx_PyFunction_FastCall(__pyx_t_9, __pyx_temp+1-__pyx_t_11, 2+__pyx_t_11); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 153, __pyx_L10_error)
+          __pyx_t_4 = __Pyx_PyFunction_FastCall(__pyx_t_9, __pyx_temp+1-__pyx_t_11, 2+__pyx_t_11); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 158, __pyx_L10_error)
           __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
           __Pyx_GOTREF(__pyx_t_4);
         } else
@@ -4630,13 +4700,13 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
         #if CYTHON_FAST_PYCCALL
         if (__Pyx_PyFastCFunction_Check(__pyx_t_9)) {
           PyObject *__pyx_temp[3] = {__pyx_t_10, __pyx_v_dict, __pyx_7genexpr__pyx_v_t};
-          __pyx_t_4 = __Pyx_PyCFunction_FastCall(__pyx_t_9, __pyx_temp+1-__pyx_t_11, 2+__pyx_t_11); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 153, __pyx_L10_error)
+          __pyx_t_4 = __Pyx_PyCFunction_FastCall(__pyx_t_9, __pyx_temp+1-__pyx_t_11, 2+__pyx_t_11); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 158, __pyx_L10_error)
           __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
           __Pyx_GOTREF(__pyx_t_4);
         } else
         #endif
         {
-          __pyx_t_12 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 153, __pyx_L10_error)
+          __pyx_t_12 = PyTuple_New(2+__pyx_t_11); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 158, __pyx_L10_error)
           __Pyx_GOTREF(__pyx_t_12);
           if (__pyx_t_10) {
             __Pyx_GIVEREF(__pyx_t_10); PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_10); __pyx_t_10 = NULL;
@@ -4647,15 +4717,15 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
           __Pyx_INCREF(__pyx_7genexpr__pyx_v_t);
           __Pyx_GIVEREF(__pyx_7genexpr__pyx_v_t);
           PyTuple_SET_ITEM(__pyx_t_12, 1+__pyx_t_11, __pyx_7genexpr__pyx_v_t);
-          __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_9, __pyx_t_12, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 153, __pyx_L10_error)
+          __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_9, __pyx_t_12, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 158, __pyx_L10_error)
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
         }
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-        __pyx_t_9 = __Pyx_GetItemInt(__pyx_t_4, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 153, __pyx_L10_error)
+        __pyx_t_9 = __Pyx_GetItemInt(__pyx_t_4, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 158, __pyx_L10_error)
         __Pyx_GOTREF(__pyx_t_9);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_9))) __PYX_ERR(0, 153, __pyx_L10_error)
+        if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_9))) __PYX_ERR(0, 158, __pyx_L10_error)
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       }
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -4667,29 +4737,29 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
       __pyx_L13_exit_scope:;
     } /* exit inner scope */
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":152
+    /* "mabel/data/readers/internals/inline_evaluator.py":157
  *         return (
  *             label,
  *             FUNCTIONS[token["value"].upper()](             # <<<<<<<<<<<<<<
  *                 *[evaluate_field(dict, t)[1] for t in token["parameters"]]
  *             ),
  */
-    __pyx_t_2 = PySequence_Tuple(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 152, __pyx_L1_error)
+    __pyx_t_2 = PySequence_Tuple(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 157, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 152, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 157, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":151
+    /* "mabel/data/readers/internals/inline_evaluator.py":156
  *             label = token["as"]
  *         return (
  *             label,             # <<<<<<<<<<<<<<
  *             FUNCTIONS[token["value"].upper()](
  *                 *[evaluate_field(dict, t)[1] for t in token["parameters"]]
  */
-    __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 151, __pyx_L1_error)
+    __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 156, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_INCREF(__pyx_v_label);
     __Pyx_GIVEREF(__pyx_v_label);
@@ -4701,7 +4771,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
     __pyx_t_2 = 0;
     goto __pyx_L0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":144
+    /* "mabel/data/readers/internals/inline_evaluator.py":149
  *             dict.get(variable),
  *         )
  *     if token_type == TOKENS.FUNCTION:             # <<<<<<<<<<<<<<
@@ -4710,25 +4780,25 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
  */
   }
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":156
+  /* "mabel/data/readers/internals/inline_evaluator.py":161
  *             ),
  *         )
  *     if token_type == TOKENS.FLOAT:             # <<<<<<<<<<<<<<
  *         return (
  *             token["value"],
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 161, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_FLOAT); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_FLOAT); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 161, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyObject_RichCompare(__pyx_v_token_type, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __pyx_t_2 = PyObject_RichCompare(__pyx_v_token_type, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 161, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 161, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (__pyx_t_6) {
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":157
+    /* "mabel/data/readers/internals/inline_evaluator.py":162
  *         )
  *     if token_type == TOKENS.FLOAT:
  *         return (             # <<<<<<<<<<<<<<
@@ -4737,29 +4807,29 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
  */
     __Pyx_XDECREF(__pyx_r);
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":158
+    /* "mabel/data/readers/internals/inline_evaluator.py":163
  *     if token_type == TOKENS.FLOAT:
  *         return (
  *             token["value"],             # <<<<<<<<<<<<<<
  *             fastnumbers.fast_float(token["value"]),
  *         )
  */
-    __pyx_t_2 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 158, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 163, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":159
+    /* "mabel/data/readers/internals/inline_evaluator.py":164
  *         return (
  *             token["value"],
  *             fastnumbers.fast_float(token["value"]),             # <<<<<<<<<<<<<<
  *         )
  *     if token_type == TOKENS.INTEGER:
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_fastnumbers); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 159, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_fastnumbers); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 164, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_fast_float); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 159, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_fast_float); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 164, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 159, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 164, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_4 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_9))) {
@@ -4774,18 +4844,18 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
     __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_9, __pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallOneArg(__pyx_t_9, __pyx_t_5);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 159, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 164, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":158
+    /* "mabel/data/readers/internals/inline_evaluator.py":163
  *     if token_type == TOKENS.FLOAT:
  *         return (
  *             token["value"],             # <<<<<<<<<<<<<<
  *             fastnumbers.fast_float(token["value"]),
  *         )
  */
-    __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 158, __pyx_L1_error)
+    __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 163, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_GIVEREF(__pyx_t_2);
     PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_2);
@@ -4797,7 +4867,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
     __pyx_t_9 = 0;
     goto __pyx_L0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":156
+    /* "mabel/data/readers/internals/inline_evaluator.py":161
  *             ),
  *         )
  *     if token_type == TOKENS.FLOAT:             # <<<<<<<<<<<<<<
@@ -4806,25 +4876,25 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
  */
   }
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":161
+  /* "mabel/data/readers/internals/inline_evaluator.py":166
  *             fastnumbers.fast_float(token["value"]),
  *         )
  *     if token_type == TOKENS.INTEGER:             # <<<<<<<<<<<<<<
  *         return (
  *             token["value"],
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 166, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_INTEGER); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_INTEGER); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 166, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  __pyx_t_9 = PyObject_RichCompare(__pyx_v_token_type, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_9); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_9 = PyObject_RichCompare(__pyx_v_token_type, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_9); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 166, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 166, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
   if (__pyx_t_6) {
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":162
+    /* "mabel/data/readers/internals/inline_evaluator.py":167
  *         )
  *     if token_type == TOKENS.INTEGER:
  *         return (             # <<<<<<<<<<<<<<
@@ -4833,29 +4903,29 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
  */
     __Pyx_XDECREF(__pyx_r);
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":163
+    /* "mabel/data/readers/internals/inline_evaluator.py":168
  *     if token_type == TOKENS.INTEGER:
  *         return (
  *             token["value"],             # <<<<<<<<<<<<<<
  *             fastnumbers.fast_int(token["value"]),
  *         )
  */
-    __pyx_t_9 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 163, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 168, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":164
+    /* "mabel/data/readers/internals/inline_evaluator.py":169
  *         return (
  *             token["value"],
  *             fastnumbers.fast_int(token["value"]),             # <<<<<<<<<<<<<<
  *         )
  *     if token_type == TOKENS.LITERAL:
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_fastnumbers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 164, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_fastnumbers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 169, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_fast_int); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 164, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_fast_int); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 169, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 164, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 169, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_4 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
@@ -4870,18 +4940,18 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
     __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_4, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_2);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 164, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 169, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":163
+    /* "mabel/data/readers/internals/inline_evaluator.py":168
  *     if token_type == TOKENS.INTEGER:
  *         return (
  *             token["value"],             # <<<<<<<<<<<<<<
  *             fastnumbers.fast_int(token["value"]),
  *         )
  */
-    __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 163, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 168, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_9);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_9);
@@ -4893,7 +4963,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
     __pyx_t_5 = 0;
     goto __pyx_L0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":161
+    /* "mabel/data/readers/internals/inline_evaluator.py":166
  *             fastnumbers.fast_float(token["value"]),
  *         )
  *     if token_type == TOKENS.INTEGER:             # <<<<<<<<<<<<<<
@@ -4902,25 +4972,25 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
  */
   }
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":166
+  /* "mabel/data/readers/internals/inline_evaluator.py":171
  *             fastnumbers.fast_int(token["value"]),
  *         )
  *     if token_type == TOKENS.LITERAL:             # <<<<<<<<<<<<<<
  *         return (
  *             token["value"],
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 166, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 171, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_LITERAL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 166, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_LITERAL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 171, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = PyObject_RichCompare(__pyx_v_token_type, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 166, __pyx_L1_error)
+  __pyx_t_5 = PyObject_RichCompare(__pyx_v_token_type, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 171, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 166, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 171, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   if (__pyx_t_6) {
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":167
+    /* "mabel/data/readers/internals/inline_evaluator.py":172
  *         )
  *     if token_type == TOKENS.LITERAL:
  *         return (             # <<<<<<<<<<<<<<
@@ -4929,40 +4999,40 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
  */
     __Pyx_XDECREF(__pyx_r);
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":168
+    /* "mabel/data/readers/internals/inline_evaluator.py":173
  *     if token_type == TOKENS.LITERAL:
  *         return (
  *             token["value"],             # <<<<<<<<<<<<<<
  *             str(token["value"])[1:-1],
  *         )
  */
-    __pyx_t_5 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 168, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 173, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":169
+    /* "mabel/data/readers/internals/inline_evaluator.py":174
  *         return (
  *             token["value"],
  *             str(token["value"])[1:-1],             # <<<<<<<<<<<<<<
  *         )
  *     if token_type == TOKENS.DATE:
  */
-    __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 169, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 174, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_9 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 169, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 174, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyUnicode_Substring(__pyx_t_9, 1, -1L); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 169, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyUnicode_Substring(__pyx_t_9, 1, -1L); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 174, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":168
+    /* "mabel/data/readers/internals/inline_evaluator.py":173
  *     if token_type == TOKENS.LITERAL:
  *         return (
  *             token["value"],             # <<<<<<<<<<<<<<
  *             str(token["value"])[1:-1],
  *         )
  */
-    __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 168, __pyx_L1_error)
+    __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 173, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_GIVEREF(__pyx_t_5);
     PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_5);
@@ -4974,7 +5044,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
     __pyx_t_9 = 0;
     goto __pyx_L0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":166
+    /* "mabel/data/readers/internals/inline_evaluator.py":171
  *             fastnumbers.fast_int(token["value"]),
  *         )
  *     if token_type == TOKENS.LITERAL:             # <<<<<<<<<<<<<<
@@ -4983,25 +5053,25 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
  */
   }
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":171
+  /* "mabel/data/readers/internals/inline_evaluator.py":176
  *             str(token["value"])[1:-1],
  *         )
  *     if token_type == TOKENS.DATE:             # <<<<<<<<<<<<<<
  *         return (
  *             token["value"],
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 171, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 176, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_DATE); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 171, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_DATE); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 176, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  __pyx_t_9 = PyObject_RichCompare(__pyx_v_token_type, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_9); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 171, __pyx_L1_error)
+  __pyx_t_9 = PyObject_RichCompare(__pyx_v_token_type, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_9); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 176, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 171, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 176, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
   if (__pyx_t_6) {
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":172
+    /* "mabel/data/readers/internals/inline_evaluator.py":177
  *         )
  *     if token_type == TOKENS.DATE:
  *         return (             # <<<<<<<<<<<<<<
@@ -5010,28 +5080,28 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
  */
     __Pyx_XDECREF(__pyx_r);
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":173
+    /* "mabel/data/readers/internals/inline_evaluator.py":178
  *     if token_type == TOKENS.DATE:
  *         return (
  *             token["value"],             # <<<<<<<<<<<<<<
  *             parse_iso(token["value"][1:-1]),
  *         )
  */
-    __pyx_t_9 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 173, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 178, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":174
+    /* "mabel/data/readers/internals/inline_evaluator.py":179
  *         return (
  *             token["value"],
  *             parse_iso(token["value"][1:-1]),             # <<<<<<<<<<<<<<
  *         )
  *     if token_type == TOKENS.BOOLEAN:
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_parse_iso); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 174, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_parse_iso); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 179, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_2 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 174, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 179, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = __Pyx_PyObject_GetSlice(__pyx_t_2, 1, -1L, NULL, NULL, &__pyx_slice__10, 1, 1, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 174, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetSlice(__pyx_t_2, 1, -1L, NULL, NULL, &__pyx_slice__10, 1, 1, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 179, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_t_2 = NULL;
@@ -5047,18 +5117,18 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
     __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_2, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4);
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 174, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 179, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":173
+    /* "mabel/data/readers/internals/inline_evaluator.py":178
  *     if token_type == TOKENS.DATE:
  *         return (
  *             token["value"],             # <<<<<<<<<<<<<<
  *             parse_iso(token["value"][1:-1]),
  *         )
  */
-    __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 173, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 178, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_9);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_9);
@@ -5070,7 +5140,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
     __pyx_t_5 = 0;
     goto __pyx_L0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":171
+    /* "mabel/data/readers/internals/inline_evaluator.py":176
  *             str(token["value"])[1:-1],
  *         )
  *     if token_type == TOKENS.DATE:             # <<<<<<<<<<<<<<
@@ -5079,25 +5149,25 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
  */
   }
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":176
+  /* "mabel/data/readers/internals/inline_evaluator.py":181
  *             parse_iso(token["value"][1:-1]),
  *         )
  *     if token_type == TOKENS.BOOLEAN:             # <<<<<<<<<<<<<<
  *         return (
  *             token["value"],
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 176, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 181, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_BOOLEAN); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 176, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_BOOLEAN); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 181, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = PyObject_RichCompare(__pyx_v_token_type, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 176, __pyx_L1_error)
+  __pyx_t_5 = PyObject_RichCompare(__pyx_v_token_type, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 181, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 176, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 181, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   if (__pyx_t_6) {
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":177
+    /* "mabel/data/readers/internals/inline_evaluator.py":182
  *         )
  *     if token_type == TOKENS.BOOLEAN:
  *         return (             # <<<<<<<<<<<<<<
@@ -5106,29 +5176,29 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
  */
     __Pyx_XDECREF(__pyx_r);
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":178
+    /* "mabel/data/readers/internals/inline_evaluator.py":183
  *     if token_type == TOKENS.BOOLEAN:
  *         return (
  *             token["value"],             # <<<<<<<<<<<<<<
  *             str(token["value"]).upper() == "TRUE",
  *         )
  */
-    __pyx_t_5 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 178, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 183, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":179
+    /* "mabel/data/readers/internals/inline_evaluator.py":184
  *         return (
  *             token["value"],
  *             str(token["value"]).upper() == "TRUE",             # <<<<<<<<<<<<<<
  *         )
  *     if token_type == TOKENS.NULL:
  */
-    __pyx_t_9 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 179, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 184, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_4 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_9); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 179, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyUnicode_Type)), __pyx_t_9); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 184, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_upper); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 179, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_upper); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 184, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_4 = NULL;
@@ -5143,20 +5213,20 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
     }
     __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_9, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_9);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 179, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 184, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = PyObject_RichCompare(__pyx_t_1, __pyx_n_u_TRUE, Py_EQ); __Pyx_XGOTREF(__pyx_t_9); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 179, __pyx_L1_error)
+    __pyx_t_9 = PyObject_RichCompare(__pyx_t_1, __pyx_n_u_TRUE, Py_EQ); __Pyx_XGOTREF(__pyx_t_9); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 184, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":178
+    /* "mabel/data/readers/internals/inline_evaluator.py":183
  *     if token_type == TOKENS.BOOLEAN:
  *         return (
  *             token["value"],             # <<<<<<<<<<<<<<
  *             str(token["value"]).upper() == "TRUE",
  *         )
  */
-    __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 178, __pyx_L1_error)
+    __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 183, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_5);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_5);
@@ -5168,7 +5238,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
     __pyx_t_1 = 0;
     goto __pyx_L0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":176
+    /* "mabel/data/readers/internals/inline_evaluator.py":181
  *             parse_iso(token["value"][1:-1]),
  *         )
  *     if token_type == TOKENS.BOOLEAN:             # <<<<<<<<<<<<<<
@@ -5177,25 +5247,25 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
  */
   }
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":181
+  /* "mabel/data/readers/internals/inline_evaluator.py":186
  *             str(token["value"]).upper() == "TRUE",
  *         )
  *     if token_type == TOKENS.NULL:             # <<<<<<<<<<<<<<
  *         return (
  *             token["value"],
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 181, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 186, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_NULL); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 181, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_NULL); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 186, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyObject_RichCompare(__pyx_v_token_type, __pyx_t_9, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 181, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_v_token_type, __pyx_t_9, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 186, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 181, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 186, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_6) {
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":182
+    /* "mabel/data/readers/internals/inline_evaluator.py":187
  *         )
  *     if token_type == TOKENS.NULL:
  *         return (             # <<<<<<<<<<<<<<
@@ -5204,24 +5274,24 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
  */
     __Pyx_XDECREF(__pyx_r);
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":183
+    /* "mabel/data/readers/internals/inline_evaluator.py":188
  *     if token_type == TOKENS.NULL:
  *         return (
  *             token["value"],             # <<<<<<<<<<<<<<
  *             None,
  *         )
  */
-    __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 183, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 188, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":184
+    /* "mabel/data/readers/internals/inline_evaluator.py":189
  *         return (
  *             token["value"],
  *             None,             # <<<<<<<<<<<<<<
  *         )
  *     return (
  */
-    __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 183, __pyx_L1_error)
+    __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 188, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_GIVEREF(__pyx_t_1);
     PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_1);
@@ -5233,7 +5303,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
     __pyx_t_9 = 0;
     goto __pyx_L0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":181
+    /* "mabel/data/readers/internals/inline_evaluator.py":186
  *             str(token["value"]).upper() == "TRUE",
  *         )
  *     if token_type == TOKENS.NULL:             # <<<<<<<<<<<<<<
@@ -5242,7 +5312,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
  */
   }
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":186
+  /* "mabel/data/readers/internals/inline_evaluator.py":191
  *             None,
  *         )
  *     return (             # <<<<<<<<<<<<<<
@@ -5251,24 +5321,24 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
  */
   __Pyx_XDECREF(__pyx_r);
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":187
+  /* "mabel/data/readers/internals/inline_evaluator.py":192
  *         )
  *     return (
  *         token["value"],             # <<<<<<<<<<<<<<
  *         None,
  *     )
  */
-  __pyx_t_9 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 187, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_Dict_GetItem(__pyx_v_token, __pyx_n_u_value); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 192, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":188
+  /* "mabel/data/readers/internals/inline_evaluator.py":193
  *     return (
  *         token["value"],
  *         None,             # <<<<<<<<<<<<<<
  *     )
  * 
  */
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 187, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 192, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_9);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_9);
@@ -5280,7 +5350,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":129
+  /* "mabel/data/readers/internals/inline_evaluator.py":134
  * 
  * 
  * def evaluate_field(dict, token):             # <<<<<<<<<<<<<<
@@ -5309,7 +5379,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_6e
   return __pyx_r;
 }
 
-/* "mabel/data/readers/internals/inline_evaluator.py":193
+/* "mabel/data/readers/internals/inline_evaluator.py":198
  * 
  * class TokenSet(list):
  *     def __init__(self, tokens):             # <<<<<<<<<<<<<<
@@ -5352,11 +5422,11 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_16inline_evaluator_8T
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_tokens)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, 1); __PYX_ERR(0, 193, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, 1); __PYX_ERR(0, 198, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 193, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 198, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -5369,7 +5439,7 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_16inline_evaluator_8T
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 193, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 198, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mabel.data.readers.internals.inline_evaluator.TokenSet.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -5392,38 +5462,38 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_8T
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":194
+  /* "mabel/data/readers/internals/inline_evaluator.py":199
  * class TokenSet(list):
  *     def __init__(self, tokens):
  *         self._tokens = tokens             # <<<<<<<<<<<<<<
  *         self._index = 0
  *         self._max = len(tokens)
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_tokens_2, __pyx_v_tokens) < 0) __PYX_ERR(0, 194, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_tokens_2, __pyx_v_tokens) < 0) __PYX_ERR(0, 199, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":195
+  /* "mabel/data/readers/internals/inline_evaluator.py":200
  *     def __init__(self, tokens):
  *         self._tokens = tokens
  *         self._index = 0             # <<<<<<<<<<<<<<
  *         self._max = len(tokens)
  * 
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_index, __pyx_int_0) < 0) __PYX_ERR(0, 195, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_index, __pyx_int_0) < 0) __PYX_ERR(0, 200, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":196
+  /* "mabel/data/readers/internals/inline_evaluator.py":201
  *         self._tokens = tokens
  *         self._index = 0
  *         self._max = len(tokens)             # <<<<<<<<<<<<<<
  * 
  *     def token(self):
  */
-  __pyx_t_1 = PyObject_Length(__pyx_v_tokens); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 196, __pyx_L1_error)
-  __pyx_t_2 = PyInt_FromSsize_t(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_t_1 = PyObject_Length(__pyx_v_tokens); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 201, __pyx_L1_error)
+  __pyx_t_2 = PyInt_FromSsize_t(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 201, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_max, __pyx_t_2) < 0) __PYX_ERR(0, 196, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_max, __pyx_t_2) < 0) __PYX_ERR(0, 201, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":193
+  /* "mabel/data/readers/internals/inline_evaluator.py":198
  * 
  * class TokenSet(list):
  *     def __init__(self, tokens):             # <<<<<<<<<<<<<<
@@ -5444,7 +5514,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_8T
   return __pyx_r;
 }
 
-/* "mabel/data/readers/internals/inline_evaluator.py":198
+/* "mabel/data/readers/internals/inline_evaluator.py":203
  *         self._max = len(tokens)
  * 
  *     def token(self):             # <<<<<<<<<<<<<<
@@ -5481,25 +5551,25 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_8T
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("token", 0);
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":199
+  /* "mabel/data/readers/internals/inline_evaluator.py":204
  * 
  *     def token(self):
  *         token = self._tokens[self._index]             # <<<<<<<<<<<<<<
  *         if isinstance(token, dict):
  *             return token
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_tokens_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 199, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_tokens_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 204, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_index); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 199, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_index); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 204, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 199, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 204, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_token = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":200
+  /* "mabel/data/readers/internals/inline_evaluator.py":205
  *     def token(self):
  *         token = self._tokens[self._index]
  *         if isinstance(token, dict):             # <<<<<<<<<<<<<<
@@ -5510,7 +5580,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_8T
   __pyx_t_5 = (__pyx_t_4 != 0);
   if (__pyx_t_5) {
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":201
+    /* "mabel/data/readers/internals/inline_evaluator.py":206
  *         token = self._tokens[self._index]
  *         if isinstance(token, dict):
  *             return token             # <<<<<<<<<<<<<<
@@ -5522,7 +5592,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_8T
     __pyx_r = __pyx_v_token;
     goto __pyx_L0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":200
+    /* "mabel/data/readers/internals/inline_evaluator.py":205
  *     def token(self):
  *         token = self._tokens[self._index]
  *         if isinstance(token, dict):             # <<<<<<<<<<<<<<
@@ -5531,7 +5601,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_8T
  */
   }
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":202
+  /* "mabel/data/readers/internals/inline_evaluator.py":207
  *         if isinstance(token, dict):
  *             return token
  *         return {             # <<<<<<<<<<<<<<
@@ -5540,25 +5610,25 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_8T
  */
   __Pyx_XDECREF(__pyx_r);
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":203
+  /* "mabel/data/readers/internals/inline_evaluator.py":208
  *             return token
  *         return {
  *             "value": token,             # <<<<<<<<<<<<<<
  *             "type": get_token_type(token),
  *             "parameters": [],
  */
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 203, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 208, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_value, __pyx_v_token) < 0) __PYX_ERR(0, 203, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_value, __pyx_v_token) < 0) __PYX_ERR(0, 208, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":204
+  /* "mabel/data/readers/internals/inline_evaluator.py":209
  *         return {
  *             "value": token,
  *             "type": get_token_type(token),             # <<<<<<<<<<<<<<
  *             "parameters": [],
  *             "as": None,
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_get_token_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 204, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_get_token_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_6 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_1))) {
@@ -5572,37 +5642,37 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_8T
   }
   __pyx_t_2 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_6, __pyx_v_token) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_v_token);
   __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 204, __pyx_L1_error)
+  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_type, __pyx_t_2) < 0) __PYX_ERR(0, 203, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_type, __pyx_t_2) < 0) __PYX_ERR(0, 208, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":205
+  /* "mabel/data/readers/internals/inline_evaluator.py":210
  *             "value": token,
  *             "type": get_token_type(token),
  *             "parameters": [],             # <<<<<<<<<<<<<<
  *             "as": None,
  *         }
  */
-  __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 205, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 210, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_parameters, __pyx_t_2) < 0) __PYX_ERR(0, 203, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_parameters, __pyx_t_2) < 0) __PYX_ERR(0, 208, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":206
+  /* "mabel/data/readers/internals/inline_evaluator.py":211
  *             "type": get_token_type(token),
  *             "parameters": [],
  *             "as": None,             # <<<<<<<<<<<<<<
  *         }
  * 
  */
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_as, Py_None) < 0) __PYX_ERR(0, 203, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_u_as, Py_None) < 0) __PYX_ERR(0, 208, __pyx_L1_error)
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":198
+  /* "mabel/data/readers/internals/inline_evaluator.py":203
  *         self._max = len(tokens)
  * 
  *     def token(self):             # <<<<<<<<<<<<<<
@@ -5625,7 +5695,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_8T
   return __pyx_r;
 }
 
-/* "mabel/data/readers/internals/inline_evaluator.py":209
+/* "mabel/data/readers/internals/inline_evaluator.py":214
  *         }
  * 
  *     def step(self):             # <<<<<<<<<<<<<<
@@ -5659,40 +5729,40 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_8T
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("step", 0);
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":210
+  /* "mabel/data/readers/internals/inline_evaluator.py":215
  * 
  *     def step(self):
  *         if self._index < self._max:             # <<<<<<<<<<<<<<
  *             self._index += 1
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 215, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_max); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_max); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 215, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_2, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_2, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 215, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 215, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_4) {
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":211
+    /* "mabel/data/readers/internals/inline_evaluator.py":216
  *     def step(self):
  *         if self._index < self._max:
  *             self._index += 1             # <<<<<<<<<<<<<<
  * 
  *     def next(self):
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_index); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 211, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_index); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 216, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = __Pyx_PyInt_AddObjC(__pyx_t_3, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 211, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_AddObjC(__pyx_t_3, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 216, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_index, __pyx_t_2) < 0) __PYX_ERR(0, 211, __pyx_L1_error)
+    if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_index, __pyx_t_2) < 0) __PYX_ERR(0, 216, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":210
+    /* "mabel/data/readers/internals/inline_evaluator.py":215
  * 
  *     def step(self):
  *         if self._index < self._max:             # <<<<<<<<<<<<<<
@@ -5701,7 +5771,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_8T
  */
   }
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":209
+  /* "mabel/data/readers/internals/inline_evaluator.py":214
  *         }
  * 
  *     def step(self):             # <<<<<<<<<<<<<<
@@ -5724,7 +5794,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_8T
   return __pyx_r;
 }
 
-/* "mabel/data/readers/internals/inline_evaluator.py":213
+/* "mabel/data/readers/internals/inline_evaluator.py":218
  *             self._index += 1
  * 
  *     def next(self):             # <<<<<<<<<<<<<<
@@ -5759,60 +5829,60 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_8T
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("next", 0);
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":214
+  /* "mabel/data/readers/internals/inline_evaluator.py":219
  * 
  *     def next(self):
  *         self._index += 1             # <<<<<<<<<<<<<<
  *         ret = {"type": None}
  *         if self._index < self._max:
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 214, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 219, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_AddObjC(__pyx_t_1, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 214, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_AddObjC(__pyx_t_1, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 219, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_index, __pyx_t_2) < 0) __PYX_ERR(0, 214, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_index, __pyx_t_2) < 0) __PYX_ERR(0, 219, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":215
+  /* "mabel/data/readers/internals/inline_evaluator.py":220
  *     def next(self):
  *         self._index += 1
  *         ret = {"type": None}             # <<<<<<<<<<<<<<
  *         if self._index < self._max:
  *             ret = self.token()
  */
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 215, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 220, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_type, Py_None) < 0) __PYX_ERR(0, 215, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_type, Py_None) < 0) __PYX_ERR(0, 220, __pyx_L1_error)
   __pyx_v_ret = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":216
+  /* "mabel/data/readers/internals/inline_evaluator.py":221
  *         self._index += 1
  *         ret = {"type": None}
  *         if self._index < self._max:             # <<<<<<<<<<<<<<
  *             ret = self.token()
  *         self._index -= 1
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_index); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 216, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_index); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 221, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_max); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 216, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_max); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 221, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_1, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 216, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_2, __pyx_t_1, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 221, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 216, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 221, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_4) {
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":217
+    /* "mabel/data/readers/internals/inline_evaluator.py":222
  *         ret = {"type": None}
  *         if self._index < self._max:
  *             ret = self.token()             # <<<<<<<<<<<<<<
  *         self._index -= 1
  *         return ret
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_token); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 217, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_token); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 222, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_2 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -5826,13 +5896,13 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_8T
     }
     __pyx_t_3 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_1);
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 217, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 222, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF_SET(__pyx_v_ret, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":216
+    /* "mabel/data/readers/internals/inline_evaluator.py":221
  *         self._index += 1
  *         ret = {"type": None}
  *         if self._index < self._max:             # <<<<<<<<<<<<<<
@@ -5841,22 +5911,22 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_8T
  */
   }
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":218
+  /* "mabel/data/readers/internals/inline_evaluator.py":223
  *         if self._index < self._max:
  *             ret = self.token()
  *         self._index -= 1             # <<<<<<<<<<<<<<
  *         return ret
  * 
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_index); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 218, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_index); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 223, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = __Pyx_PyInt_SubtractObjC(__pyx_t_3, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 218, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_SubtractObjC(__pyx_t_3, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 223, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_index, __pyx_t_1) < 0) __PYX_ERR(0, 218, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_index, __pyx_t_1) < 0) __PYX_ERR(0, 223, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":219
+  /* "mabel/data/readers/internals/inline_evaluator.py":224
  *             ret = self.token()
  *         self._index -= 1
  *         return ret             # <<<<<<<<<<<<<<
@@ -5868,7 +5938,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_8T
   __pyx_r = __pyx_v_ret;
   goto __pyx_L0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":213
+  /* "mabel/data/readers/internals/inline_evaluator.py":218
  *             self._index += 1
  * 
  *     def next(self):             # <<<<<<<<<<<<<<
@@ -5890,7 +5960,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_8T
   return __pyx_r;
 }
 
-/* "mabel/data/readers/internals/inline_evaluator.py":221
+/* "mabel/data/readers/internals/inline_evaluator.py":226
  *         return ret
  * 
  *     def finished(self):             # <<<<<<<<<<<<<<
@@ -5923,7 +5993,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_8T
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("finished", 0);
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":222
+  /* "mabel/data/readers/internals/inline_evaluator.py":227
  * 
  *     def finished(self):
  *         return self._index == self._max             # <<<<<<<<<<<<<<
@@ -5931,18 +6001,18 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_8T
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 222, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 227, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_max); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 222, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_max); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 227, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 222, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 227, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":221
+  /* "mabel/data/readers/internals/inline_evaluator.py":226
  *         return ret
  * 
  *     def finished(self):             # <<<<<<<<<<<<<<
@@ -5963,7 +6033,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_8T
   return __pyx_r;
 }
 
-/* "mabel/data/readers/internals/inline_evaluator.py":226
+/* "mabel/data/readers/internals/inline_evaluator.py":231
  * 
  * class Evaluator:
  *     def __init__(self, proforma):             # <<<<<<<<<<<<<<
@@ -6006,11 +6076,11 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_16inline_evaluator_9E
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_proforma)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, 1); __PYX_ERR(0, 226, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, 1); __PYX_ERR(0, 231, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 226, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 231, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -6023,7 +6093,7 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_16inline_evaluator_9E
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 226, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 231, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mabel.data.readers.internals.inline_evaluator.Evaluator.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -6057,21 +6127,21 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":227
+  /* "mabel/data/readers/internals/inline_evaluator.py":232
  * class Evaluator:
  *     def __init__(self, proforma):
  *         reg = re.compile(r"(\(|\)|,|\bAS\b)", re.IGNORECASE)             # <<<<<<<<<<<<<<
  *         tokens = [t.strip() for t in reg.split(proforma) if t.strip() not in ("", ",")]
  *         self.tokens = build(tokens)
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_re); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 227, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_re); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 232, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_compile); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 227, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_compile); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 232, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_re); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 227, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_re); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 232, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_IGNORECASE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 227, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_IGNORECASE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 232, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = NULL;
@@ -6089,7 +6159,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_3)) {
     PyObject *__pyx_temp[3] = {__pyx_t_2, __pyx_kp_u_bAS_b, __pyx_t_4};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 227, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 232, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -6098,14 +6168,14 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
     PyObject *__pyx_temp[3] = {__pyx_t_2, __pyx_kp_u_bAS_b, __pyx_t_4};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 227, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 232, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   } else
   #endif
   {
-    __pyx_t_6 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 227, __pyx_L1_error)
+    __pyx_t_6 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 232, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     if (__pyx_t_2) {
       __Pyx_GIVEREF(__pyx_t_2); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_2); __pyx_t_2 = NULL;
@@ -6116,7 +6186,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
     __Pyx_GIVEREF(__pyx_t_4);
     PyTuple_SET_ITEM(__pyx_t_6, 1+__pyx_t_5, __pyx_t_4);
     __pyx_t_4 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 227, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 232, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   }
@@ -6124,7 +6194,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
   __pyx_v_reg = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":228
+  /* "mabel/data/readers/internals/inline_evaluator.py":233
  *     def __init__(self, proforma):
  *         reg = re.compile(r"(\(|\)|,|\bAS\b)", re.IGNORECASE)
  *         tokens = [t.strip() for t in reg.split(proforma) if t.strip() not in ("", ",")]             # <<<<<<<<<<<<<<
@@ -6132,9 +6202,9 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
  *         self._iter = None
  */
   { /* enter inner scope */
-    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 228, __pyx_L5_error)
+    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 233, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_reg, __pyx_n_s_split); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 228, __pyx_L5_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_reg, __pyx_n_s_split); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 233, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_4 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
@@ -6148,16 +6218,16 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
     }
     __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_4, __pyx_v_proforma) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_v_proforma);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 228, __pyx_L5_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 233, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
       __pyx_t_6 = __pyx_t_3; __Pyx_INCREF(__pyx_t_6); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
     } else {
-      __pyx_t_7 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 228, __pyx_L5_error)
+      __pyx_t_7 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 233, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_8 = Py_TYPE(__pyx_t_6)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 228, __pyx_L5_error)
+      __pyx_t_8 = Py_TYPE(__pyx_t_6)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 233, __pyx_L5_error)
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     for (;;) {
@@ -6165,17 +6235,17 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
         if (likely(PyList_CheckExact(__pyx_t_6))) {
           if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_6)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_3 = PyList_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 228, __pyx_L5_error)
+          __pyx_t_3 = PyList_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 233, __pyx_L5_error)
           #else
-          __pyx_t_3 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 228, __pyx_L5_error)
+          __pyx_t_3 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 233, __pyx_L5_error)
           __Pyx_GOTREF(__pyx_t_3);
           #endif
         } else {
           if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_6)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 228, __pyx_L5_error)
+          __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 233, __pyx_L5_error)
           #else
-          __pyx_t_3 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 228, __pyx_L5_error)
+          __pyx_t_3 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 233, __pyx_L5_error)
           __Pyx_GOTREF(__pyx_t_3);
           #endif
         }
@@ -6185,7 +6255,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 228, __pyx_L5_error)
+            else __PYX_ERR(0, 233, __pyx_L5_error)
           }
           break;
         }
@@ -6193,7 +6263,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
       }
       __Pyx_XDECREF_SET(__pyx_8genexpr1__pyx_v_t, __pyx_t_3);
       __pyx_t_3 = 0;
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr1__pyx_v_t, __pyx_n_s_strip); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 228, __pyx_L5_error)
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr1__pyx_v_t, __pyx_n_s_strip); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 233, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_2 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -6207,22 +6277,22 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
       }
       __pyx_t_3 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 228, __pyx_L5_error)
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 233, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_t_3, __pyx_kp_u__11, Py_NE)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 228, __pyx_L5_error)
+      __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_t_3, __pyx_kp_u__11, Py_NE)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 233, __pyx_L5_error)
       if (__pyx_t_10) {
       } else {
         __pyx_t_9 = __pyx_t_10;
         goto __pyx_L9_bool_binop_done;
       }
-      __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_t_3, __pyx_kp_u__3, Py_NE)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 228, __pyx_L5_error)
+      __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_t_3, __pyx_kp_u__3, Py_NE)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 233, __pyx_L5_error)
       __pyx_t_9 = __pyx_t_10;
       __pyx_L9_bool_binop_done:;
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_t_10 = (__pyx_t_9 != 0);
       if (__pyx_t_10) {
-        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr1__pyx_v_t, __pyx_n_s_strip); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 228, __pyx_L5_error)
+        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_8genexpr1__pyx_v_t, __pyx_n_s_strip); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 233, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_4);
         __pyx_t_2 = NULL;
         if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -6236,10 +6306,10 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
         }
         __pyx_t_3 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
         __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 228, __pyx_L5_error)
+        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 233, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_3))) __PYX_ERR(0, 228, __pyx_L5_error)
+        if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_3))) __PYX_ERR(0, 233, __pyx_L5_error)
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       }
     }
@@ -6254,14 +6324,14 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
   __pyx_v_tokens = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":229
+  /* "mabel/data/readers/internals/inline_evaluator.py":234
  *         reg = re.compile(r"(\(|\)|,|\bAS\b)", re.IGNORECASE)
  *         tokens = [t.strip() for t in reg.split(proforma) if t.strip() not in ("", ",")]
  *         self.tokens = build(tokens)             # <<<<<<<<<<<<<<
  *         self._iter = None
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_build); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 229, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_build); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 234, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_6))) {
@@ -6275,22 +6345,22 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_3, __pyx_v_tokens) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_v_tokens);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 229, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 234, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_tokens, __pyx_t_1) < 0) __PYX_ERR(0, 229, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_tokens, __pyx_t_1) < 0) __PYX_ERR(0, 234, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":230
+  /* "mabel/data/readers/internals/inline_evaluator.py":235
  *         tokens = [t.strip() for t in reg.split(proforma) if t.strip() not in ("", ",")]
  *         self.tokens = build(tokens)
  *         self._iter = None             # <<<<<<<<<<<<<<
  * 
  *     def __call__(self, dic):
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_iter, Py_None) < 0) __PYX_ERR(0, 230, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_iter, Py_None) < 0) __PYX_ERR(0, 235, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":226
+  /* "mabel/data/readers/internals/inline_evaluator.py":231
  * 
  * class Evaluator:
  *     def __init__(self, proforma):             # <<<<<<<<<<<<<<
@@ -6318,7 +6388,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
   return __pyx_r;
 }
 
-/* "mabel/data/readers/internals/inline_evaluator.py":232
+/* "mabel/data/readers/internals/inline_evaluator.py":237
  *         self._iter = None
  * 
  *     def __call__(self, dic):             # <<<<<<<<<<<<<<
@@ -6361,11 +6431,11 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_16inline_evaluator_9E
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dic)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__call__", 1, 2, 2, 1); __PYX_ERR(0, 232, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__call__", 1, 2, 2, 1); __PYX_ERR(0, 237, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__call__") < 0)) __PYX_ERR(0, 232, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__call__") < 0)) __PYX_ERR(0, 237, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -6378,7 +6448,7 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_16inline_evaluator_9E
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__call__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 232, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__call__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 237, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mabel.data.readers.internals.inline_evaluator.Evaluator.__call__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -6392,7 +6462,7 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_16inline_evaluator_9E
 }
 static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_9Evaluator_8__call___2generator1(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "mabel/data/readers/internals/inline_evaluator.py":234
+/* "mabel/data/readers/internals/inline_evaluator.py":239
  *     def __call__(self, dic):
  *         builder = {}
  *         if any(t["type"] == TOKENS.EVERYTHING for t in self.tokens):             # <<<<<<<<<<<<<<
@@ -6412,7 +6482,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_5mabel_4data_7readers_9internals_16inline_evaluator___pyx_scope_struct_2_genexpr *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 234, __pyx_L1_error)
+    __PYX_ERR(0, 239, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -6420,7 +6490,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
   __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope));
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_outer_scope);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_9Evaluator_8__call___2generator1, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_Evaluator___call___locals_genexp, __pyx_n_s_mabel_data_readers_internals_inl_2); if (unlikely(!gen)) __PYX_ERR(0, 234, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_9Evaluator_8__call___2generator1, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_Evaluator___call___locals_genexp, __pyx_n_s_mabel_data_readers_internals_inl_2); if (unlikely(!gen)) __PYX_ERR(0, 239, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -6459,17 +6529,17 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_9E
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 234, __pyx_L1_error)
-  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 234, __pyx_L1_error) }
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self, __pyx_n_s_tokens); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 234, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 239, __pyx_L1_error)
+  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 239, __pyx_L1_error) }
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_self, __pyx_n_s_tokens); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 239, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 234, __pyx_L1_error)
+    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 239, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 234, __pyx_L1_error)
+    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 239, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -6477,17 +6547,17 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_9E
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 234, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 239, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 234, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 239, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 234, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 239, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 234, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 239, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -6497,7 +6567,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_9E
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 234, __pyx_L1_error)
+          else __PYX_ERR(0, 239, __pyx_L1_error)
         }
         break;
       }
@@ -6507,17 +6577,17 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_9E
     __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_t, __pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_1);
     __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_cur_scope->__pyx_v_t, __pyx_n_u_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 234, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_cur_scope->__pyx_v_t, __pyx_n_u_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 239, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 234, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_TOKENS); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 239, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_EVERYTHING); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 234, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_EVERYTHING); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 239, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyObject_RichCompare(__pyx_t_1, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 234, __pyx_L1_error)
+    __pyx_t_5 = PyObject_RichCompare(__pyx_t_1, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 239, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 234, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 239, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     if (__pyx_t_7) {
       __Pyx_XDECREF(__pyx_r);
@@ -6556,7 +6626,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_16inline_evaluator_9E
   return __pyx_r;
 }
 
-/* "mabel/data/readers/internals/inline_evaluator.py":232
+/* "mabel/data/readers/internals/inline_evaluator.py":237
  *         self._iter = None
  * 
  *     def __call__(self, dic):             # <<<<<<<<<<<<<<
@@ -6591,7 +6661,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_5mabel_4data_7readers_9internals_16inline_evaluator___pyx_scope_struct_1___call__ *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 232, __pyx_L1_error)
+    __PYX_ERR(0, 237, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -6599,53 +6669,53 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_self);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_self);
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":233
+  /* "mabel/data/readers/internals/inline_evaluator.py":238
  * 
  *     def __call__(self, dic):
  *         builder = {}             # <<<<<<<<<<<<<<
  *         if any(t["type"] == TOKENS.EVERYTHING for t in self.tokens):
  *             if hasattr(dic, "as_dict"):
  */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 233, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 238, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_builder = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":234
+  /* "mabel/data/readers/internals/inline_evaluator.py":239
  *     def __call__(self, dic):
  *         builder = {}
  *         if any(t["type"] == TOKENS.EVERYTHING for t in self.tokens):             # <<<<<<<<<<<<<<
  *             if hasattr(dic, "as_dict"):
  *                 builder = dic.as_dict()
  */
-  __pyx_t_1 = __pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9Evaluator_8__call___genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 234, __pyx_L1_error)
+  __pyx_t_1 = __pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9Evaluator_8__call___genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 239, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_Generator_Next(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 234, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Generator_Next(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 239, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 234, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 239, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (__pyx_t_3) {
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":235
+    /* "mabel/data/readers/internals/inline_evaluator.py":240
  *         builder = {}
  *         if any(t["type"] == TOKENS.EVERYTHING for t in self.tokens):
  *             if hasattr(dic, "as_dict"):             # <<<<<<<<<<<<<<
  *                 builder = dic.as_dict()
  *             else:
  */
-    __pyx_t_3 = __Pyx_HasAttr(__pyx_v_dic, __pyx_n_u_as_dict); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 235, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_HasAttr(__pyx_v_dic, __pyx_n_u_as_dict); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 240, __pyx_L1_error)
     __pyx_t_4 = (__pyx_t_3 != 0);
     if (__pyx_t_4) {
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":236
+      /* "mabel/data/readers/internals/inline_evaluator.py":241
  *         if any(t["type"] == TOKENS.EVERYTHING for t in self.tokens):
  *             if hasattr(dic, "as_dict"):
  *                 builder = dic.as_dict()             # <<<<<<<<<<<<<<
  *             else:
  *                 builder = dic.copy()
  */
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_dic, __pyx_n_s_as_dict); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 236, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_dic, __pyx_n_s_as_dict); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 241, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __pyx_t_5 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -6659,13 +6729,13 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
       }
       __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_1);
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 236, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 241, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_DECREF_SET(__pyx_v_builder, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "mabel/data/readers/internals/inline_evaluator.py":235
+      /* "mabel/data/readers/internals/inline_evaluator.py":240
  *         builder = {}
  *         if any(t["type"] == TOKENS.EVERYTHING for t in self.tokens):
  *             if hasattr(dic, "as_dict"):             # <<<<<<<<<<<<<<
@@ -6675,7 +6745,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
       goto __pyx_L4;
     }
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":238
+    /* "mabel/data/readers/internals/inline_evaluator.py":243
  *                 builder = dic.as_dict()
  *             else:
  *                 builder = dic.copy()             # <<<<<<<<<<<<<<
@@ -6683,7 +6753,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
  *             (k, v) = evaluate_field(dic, field)
  */
     /*else*/ {
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_dic, __pyx_n_s_copy); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 238, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_dic, __pyx_n_s_copy); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 243, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __pyx_t_5 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -6697,7 +6767,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
       }
       __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_1);
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 238, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 243, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_DECREF_SET(__pyx_v_builder, __pyx_t_2);
@@ -6705,7 +6775,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
     }
     __pyx_L4:;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":234
+    /* "mabel/data/readers/internals/inline_evaluator.py":239
  *     def __call__(self, dic):
  *         builder = {}
  *         if any(t["type"] == TOKENS.EVERYTHING for t in self.tokens):             # <<<<<<<<<<<<<<
@@ -6714,22 +6784,22 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
  */
   }
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":239
+  /* "mabel/data/readers/internals/inline_evaluator.py":244
  *             else:
  *                 builder = dic.copy()
  *         for field in self.tokens:             # <<<<<<<<<<<<<<
  *             (k, v) = evaluate_field(dic, field)
  *             builder[k] = v
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_tokens); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 239, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_tokens); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 244, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   if (likely(PyList_CheckExact(__pyx_t_2)) || PyTuple_CheckExact(__pyx_t_2)) {
     __pyx_t_1 = __pyx_t_2; __Pyx_INCREF(__pyx_t_1); __pyx_t_6 = 0;
     __pyx_t_7 = NULL;
   } else {
-    __pyx_t_6 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 239, __pyx_L1_error)
+    __pyx_t_6 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 244, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_7 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 239, __pyx_L1_error)
+    __pyx_t_7 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 244, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   for (;;) {
@@ -6737,17 +6807,17 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_6 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_6); __Pyx_INCREF(__pyx_t_2); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 239, __pyx_L1_error)
+        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_6); __Pyx_INCREF(__pyx_t_2); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 244, __pyx_L1_error)
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 239, __pyx_L1_error)
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 244, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         #endif
       } else {
         if (__pyx_t_6 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_6); __Pyx_INCREF(__pyx_t_2); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 239, __pyx_L1_error)
+        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_6); __Pyx_INCREF(__pyx_t_2); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 244, __pyx_L1_error)
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 239, __pyx_L1_error)
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 244, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         #endif
       }
@@ -6757,7 +6827,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 239, __pyx_L1_error)
+          else __PYX_ERR(0, 244, __pyx_L1_error)
         }
         break;
       }
@@ -6766,14 +6836,14 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
     __Pyx_XDECREF_SET(__pyx_v_field, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":240
+    /* "mabel/data/readers/internals/inline_evaluator.py":245
  *                 builder = dic.copy()
  *         for field in self.tokens:
  *             (k, v) = evaluate_field(dic, field)             # <<<<<<<<<<<<<<
  *             builder[k] = v
  *         return builder
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_evaluate_field); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 240, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_evaluate_field); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 245, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_8 = NULL;
     __pyx_t_9 = 0;
@@ -6790,7 +6860,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_5)) {
       PyObject *__pyx_temp[3] = {__pyx_t_8, __pyx_v_dic, __pyx_v_field};
-      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 240, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 245, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else
@@ -6798,13 +6868,13 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_5)) {
       PyObject *__pyx_temp[3] = {__pyx_t_8, __pyx_v_dic, __pyx_v_field};
-      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 240, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 245, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else
     #endif
     {
-      __pyx_t_10 = PyTuple_New(2+__pyx_t_9); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 240, __pyx_L1_error)
+      __pyx_t_10 = PyTuple_New(2+__pyx_t_9); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 245, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       if (__pyx_t_8) {
         __Pyx_GIVEREF(__pyx_t_8); PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_t_8); __pyx_t_8 = NULL;
@@ -6815,7 +6885,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
       __Pyx_INCREF(__pyx_v_field);
       __Pyx_GIVEREF(__pyx_v_field);
       PyTuple_SET_ITEM(__pyx_t_10, 1+__pyx_t_9, __pyx_v_field);
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_10, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 240, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_10, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 245, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     }
@@ -6826,7 +6896,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 240, __pyx_L1_error)
+        __PYX_ERR(0, 245, __pyx_L1_error)
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -6839,15 +6909,15 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
       __Pyx_INCREF(__pyx_t_5);
       __Pyx_INCREF(__pyx_t_10);
       #else
-      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 240, __pyx_L1_error)
+      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 245, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_10 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 240, __pyx_L1_error)
+      __pyx_t_10 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 245, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       #endif
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_8 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 240, __pyx_L1_error)
+      __pyx_t_8 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 245, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __pyx_t_11 = Py_TYPE(__pyx_t_8)->tp_iternext;
@@ -6855,7 +6925,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
       __Pyx_GOTREF(__pyx_t_5);
       index = 1; __pyx_t_10 = __pyx_t_11(__pyx_t_8); if (unlikely(!__pyx_t_10)) goto __pyx_L7_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_10);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_11(__pyx_t_8), 2) < 0) __PYX_ERR(0, 240, __pyx_L1_error)
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_11(__pyx_t_8), 2) < 0) __PYX_ERR(0, 245, __pyx_L1_error)
       __pyx_t_11 = NULL;
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       goto __pyx_L8_unpacking_done;
@@ -6863,7 +6933,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       __pyx_t_11 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 240, __pyx_L1_error)
+      __PYX_ERR(0, 245, __pyx_L1_error)
       __pyx_L8_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_k, __pyx_t_5);
@@ -6871,16 +6941,16 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
     __Pyx_XDECREF_SET(__pyx_v_v, __pyx_t_10);
     __pyx_t_10 = 0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":241
+    /* "mabel/data/readers/internals/inline_evaluator.py":246
  *         for field in self.tokens:
  *             (k, v) = evaluate_field(dic, field)
  *             builder[k] = v             # <<<<<<<<<<<<<<
  *         return builder
  * 
  */
-    if (unlikely(PyObject_SetItem(__pyx_v_builder, __pyx_v_k, __pyx_v_v) < 0)) __PYX_ERR(0, 241, __pyx_L1_error)
+    if (unlikely(PyObject_SetItem(__pyx_v_builder, __pyx_v_k, __pyx_v_v) < 0)) __PYX_ERR(0, 246, __pyx_L1_error)
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":239
+    /* "mabel/data/readers/internals/inline_evaluator.py":244
  *             else:
  *                 builder = dic.copy()
  *         for field in self.tokens:             # <<<<<<<<<<<<<<
@@ -6890,7 +6960,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":242
+  /* "mabel/data/readers/internals/inline_evaluator.py":247
  *             (k, v) = evaluate_field(dic, field)
  *             builder[k] = v
  *         return builder             # <<<<<<<<<<<<<<
@@ -6902,7 +6972,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
   __pyx_r = __pyx_v_builder;
   goto __pyx_L0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":232
+  /* "mabel/data/readers/internals/inline_evaluator.py":237
  *         self._iter = None
  * 
  *     def __call__(self, dic):             # <<<<<<<<<<<<<<
@@ -6930,7 +7000,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
   return __pyx_r;
 }
 
-/* "mabel/data/readers/internals/inline_evaluator.py":244
+/* "mabel/data/readers/internals/inline_evaluator.py":249
  *         return builder
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
@@ -6957,7 +7027,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__iter__", 0);
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":245
+  /* "mabel/data/readers/internals/inline_evaluator.py":250
  * 
  *     def __iter__(self):
  *         return self             # <<<<<<<<<<<<<<
@@ -6969,7 +7039,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
   __pyx_r = __pyx_v_self;
   goto __pyx_L0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":244
+  /* "mabel/data/readers/internals/inline_evaluator.py":249
  *         return builder
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
@@ -6984,7 +7054,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
   return __pyx_r;
 }
 
-/* "mabel/data/readers/internals/inline_evaluator.py":247
+/* "mabel/data/readers/internals/inline_evaluator.py":252
  *         return self
  * 
  *     def __next__(self):             # <<<<<<<<<<<<<<
@@ -7018,36 +7088,36 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__next__", 0);
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":248
+  /* "mabel/data/readers/internals/inline_evaluator.py":253
  * 
  *     def __next__(self):
  *         if not self._iter:             # <<<<<<<<<<<<<<
  *             self._iter = iter(self.tokens)
  *         return next(self._iter)
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_iter); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 248, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_iter); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 253, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 248, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 253, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = ((!__pyx_t_2) != 0);
   if (__pyx_t_3) {
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":249
+    /* "mabel/data/readers/internals/inline_evaluator.py":254
  *     def __next__(self):
  *         if not self._iter:
  *             self._iter = iter(self.tokens)             # <<<<<<<<<<<<<<
  *         return next(self._iter)
  * 
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_tokens); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 249, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_tokens); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 254, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 249, __pyx_L1_error)
+    __pyx_t_4 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 254, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_iter, __pyx_t_4) < 0) __PYX_ERR(0, 249, __pyx_L1_error)
+    if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_iter, __pyx_t_4) < 0) __PYX_ERR(0, 254, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "mabel/data/readers/internals/inline_evaluator.py":248
+    /* "mabel/data/readers/internals/inline_evaluator.py":253
  * 
  *     def __next__(self):
  *         if not self._iter:             # <<<<<<<<<<<<<<
@@ -7056,7 +7126,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
  */
   }
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":250
+  /* "mabel/data/readers/internals/inline_evaluator.py":255
  *         if not self._iter:
  *             self._iter = iter(self.tokens)
  *         return next(self._iter)             # <<<<<<<<<<<<<<
@@ -7064,16 +7134,16 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
  *     def fields(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_iter); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 250, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_iter); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_1 = __Pyx_PyIter_Next(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 250, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyIter_Next(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":247
+  /* "mabel/data/readers/internals/inline_evaluator.py":252
  *         return self
  * 
  *     def __next__(self):             # <<<<<<<<<<<<<<
@@ -7093,7 +7163,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
   return __pyx_r;
 }
 
-/* "mabel/data/readers/internals/inline_evaluator.py":252
+/* "mabel/data/readers/internals/inline_evaluator.py":257
  *         return next(self._iter)
  * 
  *     def fields(self):             # <<<<<<<<<<<<<<
@@ -7126,15 +7196,15 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("fields", 0);
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":253
+  /* "mabel/data/readers/internals/inline_evaluator.py":258
  * 
  *     def fields(self):
  *         return get_fields(self.tokens)             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_get_fields); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 253, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_get_fields); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 258, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_tokens); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 253, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_tokens); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 258, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -7149,14 +7219,14 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_9E
   __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 253, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 258, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":252
+  /* "mabel/data/readers/internals/inline_evaluator.py":257
  *         return next(self._iter)
  * 
  *     def fields(self):             # <<<<<<<<<<<<<<
@@ -7707,26 +7777,26 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple_);
   __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(1, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_inner, 41, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) __PYX_ERR(0, 41, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":56
+  /* "mabel/data/readers/internals/inline_evaluator.py":58
  * 
  * def get_fields(tokens):
  *     def inner(tokens):             # <<<<<<<<<<<<<<
  *         for token in tokens:
  *             if token["type"] in (TOKENS.EVERYTHING,):
  */
-  __pyx_tuple__7 = PyTuple_Pack(2, __pyx_n_s_tokens, __pyx_n_s_token); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_tuple__7 = PyTuple_Pack(2, __pyx_n_s_tokens, __pyx_n_s_token); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 58, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__7);
   __Pyx_GIVEREF(__pyx_tuple__7);
-  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__7, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_inner_2, 56, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__7, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_inner_2, 58, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) __PYX_ERR(0, 58, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":139
+  /* "mabel/data/readers/internals/inline_evaluator.py":144
  *         variable = token["value"]
  *         if variable[0] == variable[-1] == "`":
  *             variable = variable[1:-1]             # <<<<<<<<<<<<<<
  *         return (
  *             token["value"],
  */
-  __pyx_slice__10 = PySlice_New(__pyx_int_1, __pyx_int_neg_1, Py_None); if (unlikely(!__pyx_slice__10)) __PYX_ERR(0, 139, __pyx_L1_error)
+  __pyx_slice__10 = PySlice_New(__pyx_int_1, __pyx_int_neg_1, Py_None); if (unlikely(!__pyx_slice__10)) __PYX_ERR(0, 144, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_slice__10);
   __Pyx_GIVEREF(__pyx_slice__10);
 
@@ -7742,160 +7812,160 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__12);
   __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(1, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__12, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_get_function_name, 36, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) __PYX_ERR(0, 36, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":55
+  /* "mabel/data/readers/internals/inline_evaluator.py":57
  * 
  * 
  * def get_fields(tokens):             # <<<<<<<<<<<<<<
  *     def inner(tokens):
  *         for token in tokens:
  */
-  __pyx_tuple__14 = PyTuple_Pack(3, __pyx_n_s_tokens, __pyx_n_s_inner_2, __pyx_n_s_inner_2); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __pyx_tuple__14 = PyTuple_Pack(3, __pyx_n_s_tokens, __pyx_n_s_inner_2, __pyx_n_s_inner_2); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__14);
   __Pyx_GIVEREF(__pyx_tuple__14);
-  __pyx_codeobj__15 = (PyObject*)__Pyx_PyCode_New(1, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_get_fields, 55, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__15)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __pyx_codeobj__15 = (PyObject*)__Pyx_PyCode_New(1, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_get_fields, 57, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__15)) __PYX_ERR(0, 57, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":78
+  /* "mabel/data/readers/internals/inline_evaluator.py":83
  * 
  * 
  * def build(tokens):             # <<<<<<<<<<<<<<
  *     response = []
  *     if not isinstance(tokens, TokenSet):
  */
-  __pyx_tuple__16 = PyTuple_Pack(6, __pyx_n_s_tokens, __pyx_n_s_response, __pyx_n_s_ts, __pyx_n_s_token, __pyx_n_s_open_parentheses, __pyx_n_s_collector); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 78, __pyx_L1_error)
+  __pyx_tuple__16 = PyTuple_Pack(6, __pyx_n_s_tokens, __pyx_n_s_response, __pyx_n_s_ts, __pyx_n_s_token, __pyx_n_s_open_parentheses, __pyx_n_s_collector); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 83, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__16);
   __Pyx_GIVEREF(__pyx_tuple__16);
-  __pyx_codeobj__17 = (PyObject*)__Pyx_PyCode_New(1, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__16, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_build, 78, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__17)) __PYX_ERR(0, 78, __pyx_L1_error)
+  __pyx_codeobj__17 = (PyObject*)__Pyx_PyCode_New(1, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__16, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_build, 83, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__17)) __PYX_ERR(0, 83, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":129
+  /* "mabel/data/readers/internals/inline_evaluator.py":134
  * 
  * 
  * def evaluate_field(dict, token):             # <<<<<<<<<<<<<<
  *     """
  *     Evaluate a single field
  */
-  __pyx_tuple__18 = PyTuple_Pack(6, __pyx_n_s_dict, __pyx_n_s_token, __pyx_n_s_token_type, __pyx_n_s_variable, __pyx_n_s_label, __pyx_n_s_t); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(0, 129, __pyx_L1_error)
+  __pyx_tuple__18 = PyTuple_Pack(6, __pyx_n_s_dict, __pyx_n_s_token, __pyx_n_s_token_type, __pyx_n_s_variable, __pyx_n_s_label, __pyx_n_s_t); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(0, 134, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__18);
   __Pyx_GIVEREF(__pyx_tuple__18);
-  __pyx_codeobj__19 = (PyObject*)__Pyx_PyCode_New(2, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_evaluate_field, 129, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__19)) __PYX_ERR(0, 129, __pyx_L1_error)
+  __pyx_codeobj__19 = (PyObject*)__Pyx_PyCode_New(2, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_evaluate_field, 134, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__19)) __PYX_ERR(0, 134, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":193
+  /* "mabel/data/readers/internals/inline_evaluator.py":198
  * 
  * class TokenSet(list):
  *     def __init__(self, tokens):             # <<<<<<<<<<<<<<
  *         self._tokens = tokens
  *         self._index = 0
  */
-  __pyx_tuple__20 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_tokens); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 193, __pyx_L1_error)
+  __pyx_tuple__20 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_tokens); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 198, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__20);
   __Pyx_GIVEREF(__pyx_tuple__20);
-  __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_init, 193, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) __PYX_ERR(0, 193, __pyx_L1_error)
+  __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_init, 198, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) __PYX_ERR(0, 198, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":198
+  /* "mabel/data/readers/internals/inline_evaluator.py":203
  *         self._max = len(tokens)
  * 
  *     def token(self):             # <<<<<<<<<<<<<<
  *         token = self._tokens[self._index]
  *         if isinstance(token, dict):
  */
-  __pyx_tuple__22 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_token); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(0, 198, __pyx_L1_error)
+  __pyx_tuple__22 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_token); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(0, 203, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__22);
   __Pyx_GIVEREF(__pyx_tuple__22);
-  __pyx_codeobj__23 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__22, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_token, 198, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__23)) __PYX_ERR(0, 198, __pyx_L1_error)
+  __pyx_codeobj__23 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__22, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_token, 203, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__23)) __PYX_ERR(0, 203, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":209
+  /* "mabel/data/readers/internals/inline_evaluator.py":214
  *         }
  * 
  *     def step(self):             # <<<<<<<<<<<<<<
  *         if self._index < self._max:
  *             self._index += 1
  */
-  __pyx_tuple__24 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(0, 209, __pyx_L1_error)
+  __pyx_tuple__24 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(0, 214, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__24);
   __Pyx_GIVEREF(__pyx_tuple__24);
-  __pyx_codeobj__25 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__24, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_step, 209, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__25)) __PYX_ERR(0, 209, __pyx_L1_error)
+  __pyx_codeobj__25 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__24, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_step, 214, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__25)) __PYX_ERR(0, 214, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":213
+  /* "mabel/data/readers/internals/inline_evaluator.py":218
  *             self._index += 1
  * 
  *     def next(self):             # <<<<<<<<<<<<<<
  *         self._index += 1
  *         ret = {"type": None}
  */
-  __pyx_tuple__26 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_ret); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(0, 213, __pyx_L1_error)
+  __pyx_tuple__26 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_ret); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(0, 218, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__26);
   __Pyx_GIVEREF(__pyx_tuple__26);
-  __pyx_codeobj__27 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__26, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_next, 213, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__27)) __PYX_ERR(0, 213, __pyx_L1_error)
+  __pyx_codeobj__27 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__26, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_next, 218, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__27)) __PYX_ERR(0, 218, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":221
+  /* "mabel/data/readers/internals/inline_evaluator.py":226
  *         return ret
  * 
  *     def finished(self):             # <<<<<<<<<<<<<<
  *         return self._index == self._max
  * 
  */
-  __pyx_tuple__28 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(0, 221, __pyx_L1_error)
+  __pyx_tuple__28 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(0, 226, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__28);
   __Pyx_GIVEREF(__pyx_tuple__28);
-  __pyx_codeobj__29 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_finished, 221, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__29)) __PYX_ERR(0, 221, __pyx_L1_error)
+  __pyx_codeobj__29 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_finished, 226, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__29)) __PYX_ERR(0, 226, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":226
+  /* "mabel/data/readers/internals/inline_evaluator.py":231
  * 
  * class Evaluator:
  *     def __init__(self, proforma):             # <<<<<<<<<<<<<<
  *         reg = re.compile(r"(\(|\)|,|\bAS\b)", re.IGNORECASE)
  *         tokens = [t.strip() for t in reg.split(proforma) if t.strip() not in ("", ",")]
  */
-  __pyx_tuple__30 = PyTuple_Pack(5, __pyx_n_s_self, __pyx_n_s_proforma, __pyx_n_s_reg, __pyx_n_s_tokens, __pyx_n_s_t); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(0, 226, __pyx_L1_error)
+  __pyx_tuple__30 = PyTuple_Pack(5, __pyx_n_s_self, __pyx_n_s_proforma, __pyx_n_s_reg, __pyx_n_s_tokens, __pyx_n_s_t); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(0, 231, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__30);
   __Pyx_GIVEREF(__pyx_tuple__30);
-  __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(2, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__30, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_init, 226, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(0, 226, __pyx_L1_error)
+  __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(2, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__30, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_init, 231, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(0, 231, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":232
+  /* "mabel/data/readers/internals/inline_evaluator.py":237
  *         self._iter = None
  * 
  *     def __call__(self, dic):             # <<<<<<<<<<<<<<
  *         builder = {}
  *         if any(t["type"] == TOKENS.EVERYTHING for t in self.tokens):
  */
-  __pyx_tuple__32 = PyTuple_Pack(8, __pyx_n_s_self, __pyx_n_s_dic, __pyx_n_s_builder, __pyx_n_s_field, __pyx_n_s_k, __pyx_n_s_v, __pyx_n_s_genexpr, __pyx_n_s_genexpr); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 232, __pyx_L1_error)
+  __pyx_tuple__32 = PyTuple_Pack(8, __pyx_n_s_self, __pyx_n_s_dic, __pyx_n_s_builder, __pyx_n_s_field, __pyx_n_s_k, __pyx_n_s_v, __pyx_n_s_genexpr, __pyx_n_s_genexpr); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 237, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__32);
   __Pyx_GIVEREF(__pyx_tuple__32);
-  __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(2, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_call, 232, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(0, 232, __pyx_L1_error)
+  __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(2, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_call, 237, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(0, 237, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":244
+  /* "mabel/data/readers/internals/inline_evaluator.py":249
  *         return builder
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
  *         return self
  * 
  */
-  __pyx_tuple__34 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(0, 244, __pyx_L1_error)
+  __pyx_tuple__34 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(0, 249, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__34);
   __Pyx_GIVEREF(__pyx_tuple__34);
-  __pyx_codeobj__35 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__34, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_iter_2, 244, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__35)) __PYX_ERR(0, 244, __pyx_L1_error)
+  __pyx_codeobj__35 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__34, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_iter_2, 249, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__35)) __PYX_ERR(0, 249, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":247
+  /* "mabel/data/readers/internals/inline_evaluator.py":252
  *         return self
  * 
  *     def __next__(self):             # <<<<<<<<<<<<<<
  *         if not self._iter:
  *             self._iter = iter(self.tokens)
  */
-  __pyx_tuple__36 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(0, 247, __pyx_L1_error)
+  __pyx_tuple__36 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(0, 252, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__36);
   __Pyx_GIVEREF(__pyx_tuple__36);
-  __pyx_codeobj__37 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__36, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_next_2, 247, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__37)) __PYX_ERR(0, 247, __pyx_L1_error)
+  __pyx_codeobj__37 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__36, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_next_2, 252, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__37)) __PYX_ERR(0, 252, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":252
+  /* "mabel/data/readers/internals/inline_evaluator.py":257
  *         return next(self._iter)
  * 
  *     def fields(self):             # <<<<<<<<<<<<<<
  *         return get_fields(self.tokens)
  */
-  __pyx_tuple__38 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__38)) __PYX_ERR(0, 252, __pyx_L1_error)
+  __pyx_tuple__38 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__38)) __PYX_ERR(0, 257, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__38);
   __Pyx_GIVEREF(__pyx_tuple__38);
-  __pyx_codeobj__39 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__38, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_fields, 252, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__39)) __PYX_ERR(0, 252, __pyx_L1_error)
+  __pyx_codeobj__39 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__38, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_inl, __pyx_n_s_fields, 257, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__39)) __PYX_ERR(0, 257, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -7953,7 +8023,7 @@ static int __Pyx_modinit_type_init_code(void) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
-  if (PyType_Ready(&__pyx_type_5mabel_4data_7readers_9internals_16inline_evaluator___pyx_scope_struct__inner) < 0) __PYX_ERR(0, 56, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5mabel_4data_7readers_9internals_16inline_evaluator___pyx_scope_struct__inner) < 0) __PYX_ERR(0, 58, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_5mabel_4data_7readers_9internals_16inline_evaluator___pyx_scope_struct__inner.tp_print = 0;
   #endif
@@ -7961,7 +8031,7 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_type_5mabel_4data_7readers_9internals_16inline_evaluator___pyx_scope_struct__inner.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_5mabel_4data_7readers_9internals_16inline_evaluator___pyx_scope_struct__inner = &__pyx_type_5mabel_4data_7readers_9internals_16inline_evaluator___pyx_scope_struct__inner;
-  if (PyType_Ready(&__pyx_type_5mabel_4data_7readers_9internals_16inline_evaluator___pyx_scope_struct_1___call__) < 0) __PYX_ERR(0, 232, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5mabel_4data_7readers_9internals_16inline_evaluator___pyx_scope_struct_1___call__) < 0) __PYX_ERR(0, 237, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_5mabel_4data_7readers_9internals_16inline_evaluator___pyx_scope_struct_1___call__.tp_print = 0;
   #endif
@@ -7969,7 +8039,7 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_type_5mabel_4data_7readers_9internals_16inline_evaluator___pyx_scope_struct_1___call__.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_5mabel_4data_7readers_9internals_16inline_evaluator___pyx_scope_struct_1___call__ = &__pyx_type_5mabel_4data_7readers_9internals_16inline_evaluator___pyx_scope_struct_1___call__;
-  if (PyType_Ready(&__pyx_type_5mabel_4data_7readers_9internals_16inline_evaluator___pyx_scope_struct_2_genexpr) < 0) __PYX_ERR(0, 234, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5mabel_4data_7readers_9internals_16inline_evaluator___pyx_scope_struct_2_genexpr) < 0) __PYX_ERR(0, 239, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_5mabel_4data_7readers_9internals_16inline_evaluator___pyx_scope_struct_2_genexpr.tp_print = 0;
   #endif
@@ -8343,213 +8413,213 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_get_function_name, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":55
+  /* "mabel/data/readers/internals/inline_evaluator.py":57
  * 
  * 
  * def get_fields(tokens):             # <<<<<<<<<<<<<<
  *     def inner(tokens):
  *         for token in tokens:
  */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_3get_fields, 0, __pyx_n_s_get_fields, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__15)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_3get_fields, 0, __pyx_n_s_get_fields, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__15)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_get_fields, __pyx_t_2) < 0) __PYX_ERR(0, 55, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_get_fields, __pyx_t_2) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":78
+  /* "mabel/data/readers/internals/inline_evaluator.py":83
  * 
  * 
  * def build(tokens):             # <<<<<<<<<<<<<<
  *     response = []
  *     if not isinstance(tokens, TokenSet):
  */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_5build, 0, __pyx_n_s_build, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__17)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 78, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_5build, 0, __pyx_n_s_build, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__17)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 83, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_build, __pyx_t_2) < 0) __PYX_ERR(0, 78, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_build, __pyx_t_2) < 0) __PYX_ERR(0, 83, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":129
+  /* "mabel/data/readers/internals/inline_evaluator.py":134
  * 
  * 
  * def evaluate_field(dict, token):             # <<<<<<<<<<<<<<
  *     """
  *     Evaluate a single field
  */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_7evaluate_field, 0, __pyx_n_s_evaluate_field, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__19)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 129, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_7evaluate_field, 0, __pyx_n_s_evaluate_field, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__19)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 134, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_evaluate_field, __pyx_t_2) < 0) __PYX_ERR(0, 129, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_evaluate_field, __pyx_t_2) < 0) __PYX_ERR(0, 134, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":192
+  /* "mabel/data/readers/internals/inline_evaluator.py":197
  * 
  * 
  * class TokenSet(list):             # <<<<<<<<<<<<<<
  *     def __init__(self, tokens):
  *         self._tokens = tokens
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 192, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 197, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(((PyObject *)(&PyList_Type)));
   __Pyx_GIVEREF(((PyObject *)(&PyList_Type)));
   PyTuple_SET_ITEM(__pyx_t_2, 0, ((PyObject *)(&PyList_Type)));
-  __pyx_t_1 = __Pyx_CalculateMetaclass(NULL, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 192, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_CalculateMetaclass(NULL, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 197, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_TokenSet, __pyx_n_s_TokenSet, (PyObject *) NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, (PyObject *) NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 192, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_TokenSet, __pyx_n_s_TokenSet, (PyObject *) NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, (PyObject *) NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 197, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":193
+  /* "mabel/data/readers/internals/inline_evaluator.py":198
  * 
  * class TokenSet(list):
  *     def __init__(self, tokens):             # <<<<<<<<<<<<<<
  *         self._tokens = tokens
  *         self._index = 0
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_8TokenSet_1__init__, 0, __pyx_n_s_TokenSet___init, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__21)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 193, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_8TokenSet_1__init__, 0, __pyx_n_s_TokenSet___init, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__21)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 198, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_init, __pyx_t_4) < 0) __PYX_ERR(0, 193, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_init, __pyx_t_4) < 0) __PYX_ERR(0, 198, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":198
+  /* "mabel/data/readers/internals/inline_evaluator.py":203
  *         self._max = len(tokens)
  * 
  *     def token(self):             # <<<<<<<<<<<<<<
  *         token = self._tokens[self._index]
  *         if isinstance(token, dict):
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_8TokenSet_3token, 0, __pyx_n_s_TokenSet_token, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__23)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 198, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_8TokenSet_3token, 0, __pyx_n_s_TokenSet_token, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__23)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 203, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_token, __pyx_t_4) < 0) __PYX_ERR(0, 198, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_token, __pyx_t_4) < 0) __PYX_ERR(0, 203, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":209
+  /* "mabel/data/readers/internals/inline_evaluator.py":214
  *         }
  * 
  *     def step(self):             # <<<<<<<<<<<<<<
  *         if self._index < self._max:
  *             self._index += 1
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_8TokenSet_5step, 0, __pyx_n_s_TokenSet_step, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__25)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 209, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_8TokenSet_5step, 0, __pyx_n_s_TokenSet_step, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__25)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 214, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_step, __pyx_t_4) < 0) __PYX_ERR(0, 209, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_step, __pyx_t_4) < 0) __PYX_ERR(0, 214, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":213
+  /* "mabel/data/readers/internals/inline_evaluator.py":218
  *             self._index += 1
  * 
  *     def next(self):             # <<<<<<<<<<<<<<
  *         self._index += 1
  *         ret = {"type": None}
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_8TokenSet_7next, 0, __pyx_n_s_TokenSet_next, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__27)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 213, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_8TokenSet_7next, 0, __pyx_n_s_TokenSet_next, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__27)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 218, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_next, __pyx_t_4) < 0) __PYX_ERR(0, 213, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_next, __pyx_t_4) < 0) __PYX_ERR(0, 218, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":221
+  /* "mabel/data/readers/internals/inline_evaluator.py":226
  *         return ret
  * 
  *     def finished(self):             # <<<<<<<<<<<<<<
  *         return self._index == self._max
  * 
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_8TokenSet_9finished, 0, __pyx_n_s_TokenSet_finished, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__29)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 221, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_8TokenSet_9finished, 0, __pyx_n_s_TokenSet_finished, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__29)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 226, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_finished, __pyx_t_4) < 0) __PYX_ERR(0, 221, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_finished, __pyx_t_4) < 0) __PYX_ERR(0, 226, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":192
+  /* "mabel/data/readers/internals/inline_evaluator.py":197
  * 
  * 
  * class TokenSet(list):             # <<<<<<<<<<<<<<
  *     def __init__(self, tokens):
  *         self._tokens = tokens
  */
-  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_1, __pyx_n_s_TokenSet, __pyx_t_2, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 192, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_1, __pyx_n_s_TokenSet, __pyx_t_2, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 197, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TokenSet, __pyx_t_4) < 0) __PYX_ERR(0, 192, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TokenSet, __pyx_t_4) < 0) __PYX_ERR(0, 197, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":225
+  /* "mabel/data/readers/internals/inline_evaluator.py":230
  * 
  * 
  * class Evaluator:             # <<<<<<<<<<<<<<
  *     def __init__(self, proforma):
  *         reg = re.compile(r"(\(|\)|,|\bAS\b)", re.IGNORECASE)
  */
-  __pyx_t_2 = __Pyx_Py3MetaclassPrepare((PyObject *) NULL, __pyx_empty_tuple, __pyx_n_s_Evaluator, __pyx_n_s_Evaluator, (PyObject *) NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, (PyObject *) NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Py3MetaclassPrepare((PyObject *) NULL, __pyx_empty_tuple, __pyx_n_s_Evaluator, __pyx_n_s_Evaluator, (PyObject *) NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, (PyObject *) NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 230, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":226
+  /* "mabel/data/readers/internals/inline_evaluator.py":231
  * 
  * class Evaluator:
  *     def __init__(self, proforma):             # <<<<<<<<<<<<<<
  *         reg = re.compile(r"(\(|\)|,|\bAS\b)", re.IGNORECASE)
  *         tokens = [t.strip() for t in reg.split(proforma) if t.strip() not in ("", ",")]
  */
-  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_9Evaluator_1__init__, 0, __pyx_n_s_Evaluator___init, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__31)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 226, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_9Evaluator_1__init__, 0, __pyx_n_s_Evaluator___init, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__31)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 231, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_init, __pyx_t_1) < 0) __PYX_ERR(0, 226, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_init, __pyx_t_1) < 0) __PYX_ERR(0, 231, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":232
+  /* "mabel/data/readers/internals/inline_evaluator.py":237
  *         self._iter = None
  * 
  *     def __call__(self, dic):             # <<<<<<<<<<<<<<
  *         builder = {}
  *         if any(t["type"] == TOKENS.EVERYTHING for t in self.tokens):
  */
-  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_9Evaluator_3__call__, 0, __pyx_n_s_Evaluator___call, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__33)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 232, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_9Evaluator_3__call__, 0, __pyx_n_s_Evaluator___call, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__33)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 237, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_call, __pyx_t_1) < 0) __PYX_ERR(0, 232, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_call, __pyx_t_1) < 0) __PYX_ERR(0, 237, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":244
+  /* "mabel/data/readers/internals/inline_evaluator.py":249
  *         return builder
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
  *         return self
  * 
  */
-  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_9Evaluator_5__iter__, 0, __pyx_n_s_Evaluator___iter, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__35)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 244, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_9Evaluator_5__iter__, 0, __pyx_n_s_Evaluator___iter, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__35)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 249, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_iter_2, __pyx_t_1) < 0) __PYX_ERR(0, 244, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_iter_2, __pyx_t_1) < 0) __PYX_ERR(0, 249, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":247
+  /* "mabel/data/readers/internals/inline_evaluator.py":252
  *         return self
  * 
  *     def __next__(self):             # <<<<<<<<<<<<<<
  *         if not self._iter:
  *             self._iter = iter(self.tokens)
  */
-  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_9Evaluator_7__next__, 0, __pyx_n_s_Evaluator___next, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__37)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 247, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_9Evaluator_7__next__, 0, __pyx_n_s_Evaluator___next, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__37)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 252, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_next_2, __pyx_t_1) < 0) __PYX_ERR(0, 247, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_next_2, __pyx_t_1) < 0) __PYX_ERR(0, 252, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":252
+  /* "mabel/data/readers/internals/inline_evaluator.py":257
  *         return next(self._iter)
  * 
  *     def fields(self):             # <<<<<<<<<<<<<<
  *         return get_fields(self.tokens)
  */
-  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_9Evaluator_9fields, 0, __pyx_n_s_Evaluator_fields, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__39)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 252, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_16inline_evaluator_9Evaluator_9fields, 0, __pyx_n_s_Evaluator_fields, NULL, __pyx_n_s_mabel_data_readers_internals_inl_2, __pyx_d, ((PyObject *)__pyx_codeobj__39)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 257, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_fields, __pyx_t_1) < 0) __PYX_ERR(0, 252, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_fields, __pyx_t_1) < 0) __PYX_ERR(0, 257, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/inline_evaluator.py":225
+  /* "mabel/data/readers/internals/inline_evaluator.py":230
  * 
  * 
  * class Evaluator:             # <<<<<<<<<<<<<<
  *     def __init__(self, proforma):
  *         reg = re.compile(r"(\(|\)|,|\bAS\b)", re.IGNORECASE)
  */
-  __pyx_t_1 = __Pyx_Py3ClassCreate(((PyObject*)&__Pyx_DefaultClassType), __pyx_n_s_Evaluator, __pyx_empty_tuple, __pyx_t_2, NULL, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 225, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Py3ClassCreate(((PyObject*)&__Pyx_DefaultClassType), __pyx_n_s_Evaluator, __pyx_empty_tuple, __pyx_t_2, NULL, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 230, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Evaluator, __pyx_t_1) < 0) __PYX_ERR(0, 225, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Evaluator, __pyx_t_1) < 0) __PYX_ERR(0, 230, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 

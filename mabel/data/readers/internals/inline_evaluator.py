@@ -50,6 +50,8 @@ def get_function_name(token):
     if token["type"] in (TOKENS.FUNCTION, TOKENS.AGGREGATOR):
         params = ",".join(_inner(token["parameters"]))
         return f"{token['value']}({params})"
+    else:
+        return token["value"]
 
 
 def get_fields(tokens):
@@ -70,7 +72,10 @@ def get_fields(tokens):
                 TOKENS.FLOAT,
                 TOKENS.DATE,
             ):
-                yield token["value"]
+                if token["as"]:
+                    yield token["as"]
+                else:
+                    yield token["value"]
 
     return list(inner(tokens))
 

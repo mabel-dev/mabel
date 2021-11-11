@@ -200,9 +200,14 @@ class Expression(object):
             return value
         if value.upper() in ("TRUE", "FALSE"):
             return value.upper() == "TRUE"
-        num = fastnumbers.fast_int(value)
-        if isinstance(num, (int, float)):
-            return num
+        try:
+            # there appears to be a race condition with this library
+            # so wrap in a SystemError
+            num = fastnumbers.fast_real(value)
+            if isinstance(num, (int, float)):
+                return num
+        except SystemError:
+            pass
         return parse_iso(value) or value
 
     def evaluate(self, variable_dict):
