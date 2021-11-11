@@ -21,7 +21,7 @@ END: Cython Metadata */
 #else
 #define CYTHON_ABI "0_29_21"
 #define CYTHON_HEX_VERSION 0x001D15F0
-#define CYTHON_FUTURE_DIVISION 0
+#define CYTHON_FUTURE_DIVISION 1
 #include <stddef.h>
 #ifndef offsetof
   #define offsetof(type, member) ( (size_t) & ((type*)0) -> member )
@@ -839,7 +839,7 @@ struct __pyx_defaults {
   PyObject *__pyx_arg_reducer;
 };
 
-/* "mabel/data/readers/internals/parallel_reader.py":137
+/* "mabel/data/readers/internals/parallel_reader.py":138
  *                 self.override_format = "." + self.override_format
  * 
  *     def pre_filter(self, blob_name, index_files):             # <<<<<<<<<<<<<<
@@ -855,7 +855,7 @@ struct __pyx_obj_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_
 };
 
 
-/* "mabel/data/readers/internals/parallel_reader.py":207
+/* "mabel/data/readers/internals/parallel_reader.py":208
  *         return False, []
  * 
  *     def _select(self, data_set, selector):             # <<<<<<<<<<<<<<
@@ -876,7 +876,7 @@ struct __pyx_obj_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_
 };
 
 
-/* "mabel/data/readers/internals/parallel_reader.py":212
+/* "mabel/data/readers/internals/parallel_reader.py":213
  *                 yield record
  * 
  *     def __call__(self, blob_name, index_files):             # <<<<<<<<<<<<<<
@@ -986,6 +986,9 @@ static CYTHON_INLINE PyObject *__Pyx_GetAttr(PyObject *, PyObject *);
 /* HasAttr.proto */
 static CYTHON_INLINE int __Pyx_HasAttr(PyObject *, PyObject *);
 
+/* IterFinish.proto */
+static CYTHON_INLINE int __Pyx_IterFinish(void);
+
 /* PyFunctionFastCall.proto */
 #if CYTHON_FAST_PYCALL
 #define __Pyx_PyFunction_FastCall(func, args, nargs)\
@@ -1038,17 +1041,44 @@ static CYTHON_INLINE PyObject *__Pyx_PyCFunction_FastCall(PyObject *func, PyObje
 /* PyObjectCallOneArg.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObject *arg);
 
-/* RaiseTooManyValuesToUnpack.proto */
-static CYTHON_INLINE void __Pyx_RaiseTooManyValuesError(Py_ssize_t expected);
+/* PyObjectGetMethod.proto */
+static int __Pyx_PyObject_GetMethod(PyObject *obj, PyObject *name, PyObject **method);
+
+/* PyObjectCallMethod0.proto */
+static PyObject* __Pyx_PyObject_CallMethod0(PyObject* obj, PyObject* method_name);
 
 /* RaiseNeedMoreValuesToUnpack.proto */
 static CYTHON_INLINE void __Pyx_RaiseNeedMoreValuesError(Py_ssize_t index);
 
-/* IterFinish.proto */
-static CYTHON_INLINE int __Pyx_IterFinish(void);
+/* RaiseTooManyValuesToUnpack.proto */
+static CYTHON_INLINE void __Pyx_RaiseTooManyValuesError(Py_ssize_t expected);
 
 /* UnpackItemEndCheck.proto */
 static int __Pyx_IternextUnpackEndCheck(PyObject *retval, Py_ssize_t expected);
+
+/* RaiseNoneIterError.proto */
+static CYTHON_INLINE void __Pyx_RaiseNoneNotIterableError(void);
+
+/* UnpackTupleError.proto */
+static void __Pyx_UnpackTupleError(PyObject *, Py_ssize_t index);
+
+/* UnpackTuple2.proto */
+#define __Pyx_unpack_tuple2(tuple, value1, value2, is_tuple, has_known_size, decref_tuple)\
+    (likely(is_tuple || PyTuple_Check(tuple)) ?\
+        (likely(has_known_size || PyTuple_GET_SIZE(tuple) == 2) ?\
+            __Pyx_unpack_tuple2_exact(tuple, value1, value2, decref_tuple) :\
+            (__Pyx_UnpackTupleError(tuple, 2), -1)) :\
+        __Pyx_unpack_tuple2_generic(tuple, value1, value2, has_known_size, decref_tuple))
+static CYTHON_INLINE int __Pyx_unpack_tuple2_exact(
+    PyObject* tuple, PyObject** value1, PyObject** value2, int decref_tuple);
+static int __Pyx_unpack_tuple2_generic(
+    PyObject* tuple, PyObject** value1, PyObject** value2, int has_known_size, int decref_tuple);
+
+/* dict_iter.proto */
+static CYTHON_INLINE PyObject* __Pyx_dict_iterator(PyObject* dict, int is_dict, PyObject* method_name,
+                                                   Py_ssize_t* p_orig_length, int* p_is_dict);
+static CYTHON_INLINE int __Pyx_dict_iter_next(PyObject* dict_or_iter, Py_ssize_t orig_length, Py_ssize_t* ppos,
+                                              PyObject** pkey, PyObject** pvalue, PyObject** pitem, int is_dict);
 
 /* ListCompAppend.proto */
 #if CYTHON_USE_PYLIST_INTERNALS && CYTHON_ASSUME_SAFE_MACROS
@@ -1168,13 +1198,6 @@ static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int eq
 
 /* UnicodeEquals.proto */
 static CYTHON_INLINE int __Pyx_PyUnicode_Equals(PyObject* s1, PyObject* s2, int equals);
-
-/* StrEquals.proto */
-#if PY_MAJOR_VERSION >= 3
-#define __Pyx_PyString_Equals __Pyx_PyUnicode_Equals
-#else
-#define __Pyx_PyString_Equals __Pyx_PyBytes_Equals
-#endif
 
 /* None.proto */
 static CYTHON_INLINE void __Pyx_RaiseClosureNameError(const char *varname);
@@ -1365,9 +1388,6 @@ static CYTHON_INLINE void __Pyx__ExceptionSwap(PyThreadState *tstate, PyObject *
 #else
 static CYTHON_INLINE void __Pyx_ExceptionSwap(PyObject **type, PyObject **value, PyObject **tb);
 #endif
-
-/* PyObjectGetMethod.proto */
-static int __Pyx_PyObject_GetMethod(PyObject *obj, PyObject *name, PyObject **method);
 
 /* PyObjectCallMethod1.proto */
 static PyObject* __Pyx_PyObject_CallMethod1(PyObject* obj, PyObject* method_name, PyObject* arg);
@@ -1719,15 +1739,17 @@ static const char __pyx_k_ParallelReader_pre_filter_locals[] = "ParallelReader.p
 static const char __pyx_k_mabel_data_readers_internals_par[] = "mabel.data.readers.internals.parallel_reader";
 static const char __pyx_k_ParallelReader_pre_filter_locals_2[] = "ParallelReader.pre_filter.<locals>._inner_prefilter";
 static const char __pyx_k_mabel_data_readers_internals_par_2[] = "mabel/data/readers/internals/parallel_reader.py";
-static PyObject *__pyx_kp_s_;
 static PyObject *__pyx_kp_u_;
 static PyObject *__pyx_n_s_CONTROL;
+static PyObject *__pyx_n_u_CONTROL;
 static PyObject *__pyx_n_s_DATA;
+static PyObject *__pyx_n_u_DATA;
 static PyObject *__pyx_n_s_DnfFilters;
 static PyObject *__pyx_n_s_EXTENSION_TYPE;
 static PyObject *__pyx_n_s_Enum;
 static PyObject *__pyx_n_s_Expression;
 static PyObject *__pyx_n_s_INDEX;
+static PyObject *__pyx_n_u_INDEX;
 static PyObject *__pyx_n_s_Index;
 static PyObject *__pyx_n_s_KNOWN_EXTENSIONS;
 static PyObject *__pyx_n_s_NOT_INDEXED;
@@ -1740,13 +1762,14 @@ static PyObject *__pyx_n_s_ParallelReader_pre_filter;
 static PyObject *__pyx_n_s_ParallelReader_pre_filter_locals;
 static PyObject *__pyx_n_s_ParallelReader_pre_filter_locals_2;
 static PyObject *__pyx_n_s__10;
-static PyObject *__pyx_kp_s__2;
-static PyObject *__pyx_kp_s__3;
-static PyObject *__pyx_kp_s__4;
+static PyObject *__pyx_kp_u__2;
+static PyObject *__pyx_kp_u__3;
+static PyObject *__pyx_kp_u__4;
 static PyObject *__pyx_kp_u__9;
 static PyObject *__pyx_n_s_all;
 static PyObject *__pyx_n_s_args;
 static PyObject *__pyx_n_s_as_dict;
+static PyObject *__pyx_n_u_as_dict;
 static PyObject *__pyx_n_s_blob_name;
 static PyObject *__pyx_n_s_block;
 static PyObject *__pyx_n_s_bucket;
@@ -1754,9 +1777,9 @@ static PyObject *__pyx_n_s_call;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_close;
 static PyObject *__pyx_n_s_columns;
-static PyObject *__pyx_kp_s_complete;
-static PyObject *__pyx_n_s_contains;
-static PyObject *__pyx_kp_s_csv;
+static PyObject *__pyx_kp_u_complete;
+static PyObject *__pyx_n_u_contains;
+static PyObject *__pyx_kp_u_csv;
 static PyObject *__pyx_n_s_csv_2;
 static PyObject *__pyx_n_s_data_internals_dnf_filters;
 static PyObject *__pyx_n_s_data_internals_expression;
@@ -1786,21 +1809,22 @@ static PyObject *__pyx_n_s_get_blob_stream;
 static PyObject *__pyx_n_s_get_logger;
 static PyObject *__pyx_n_s_get_parts;
 static PyObject *__pyx_kp_u_had_an_error;
-static PyObject *__pyx_kp_s_idx;
-static PyObject *__pyx_kp_s_ignore;
+static PyObject *__pyx_kp_u_idx;
+static PyObject *__pyx_kp_u_ignore;
 static PyObject *__pyx_n_s_import;
-static PyObject *__pyx_n_s_in;
+static PyObject *__pyx_n_u_in;
 static PyObject *__pyx_n_s_index;
 static PyObject *__pyx_n_s_index_file;
 static PyObject *__pyx_n_s_index_files;
 static PyObject *__pyx_n_s_index_filters;
 static PyObject *__pyx_n_s_init;
 static PyObject *__pyx_n_s_inner_prefilter;
-static PyObject *__pyx_n_s_is;
+static PyObject *__pyx_n_u_is;
 static PyObject *__pyx_n_s_items;
-static PyObject *__pyx_kp_s_json;
+static PyObject *__pyx_n_u_items;
+static PyObject *__pyx_kp_u_json;
 static PyObject *__pyx_n_s_json_2;
-static PyObject *__pyx_kp_s_jsonl;
+static PyObject *__pyx_kp_u_jsonl;
 static PyObject *__pyx_n_s_k;
 static PyObject *__pyx_n_s_key;
 static PyObject *__pyx_n_s_kwargs;
@@ -1809,8 +1833,8 @@ static PyObject *__pyx_n_s_lines;
 static PyObject *__pyx_n_s_logger;
 static PyObject *__pyx_n_s_logging;
 static PyObject *__pyx_n_s_lower;
-static PyObject *__pyx_kp_s_lxml;
-static PyObject *__pyx_kp_s_lzma;
+static PyObject *__pyx_kp_u_lxml;
+static PyObject *__pyx_kp_u_lzma;
 static PyObject *__pyx_n_s_lzma_2;
 static PyObject *__pyx_n_s_mabel;
 static PyObject *__pyx_n_s_mabel_data_readers_internals_par;
@@ -1824,7 +1848,7 @@ static PyObject *__pyx_n_s_no_filter;
 static PyObject *__pyx_n_s_operator;
 static PyObject *__pyx_n_s_override_format;
 static PyObject *__pyx_n_s_p;
-static PyObject *__pyx_kp_s_parquet;
+static PyObject *__pyx_kp_u_parquet;
 static PyObject *__pyx_n_s_parquet_2;
 static PyObject *__pyx_n_s_parser;
 static PyObject *__pyx_n_s_parsers;
@@ -1858,18 +1882,18 @@ static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_throw;
 static PyObject *__pyx_n_s_to_dnf;
 static PyObject *__pyx_n_s_traceback;
-static PyObject *__pyx_kp_s_txt;
+static PyObject *__pyx_kp_u_txt;
 static PyObject *__pyx_n_s_unzip;
 static PyObject *__pyx_n_s_update;
 static PyObject *__pyx_n_s_utils;
 static PyObject *__pyx_n_s_v;
 static PyObject *__pyx_n_s_values;
 static PyObject *__pyx_n_s_x;
-static PyObject *__pyx_kp_s_xml;
+static PyObject *__pyx_kp_u_xml;
 static PyObject *__pyx_n_s_xml_2;
 static PyObject *__pyx_n_s_y;
-static PyObject *__pyx_kp_s_zip;
-static PyObject *__pyx_kp_s_zstd;
+static PyObject *__pyx_kp_u_zip;
+static PyObject *__pyx_kp_u_zstd;
 static PyObject *__pyx_n_s_zstd_2;
 static PyObject *__pyx_lambda_funcdef_5mabel_4data_7readers_9internals_15parallel_reader_lambda(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_x); /* proto */
 static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_empty_list(CYTHON_UNUSED PyObject *__pyx_self, CYTHON_UNUSED PyObject *__pyx_v_x); /* proto */
@@ -1906,7 +1930,7 @@ static PyObject *__pyx_codeobj__18;
 static PyObject *__pyx_codeobj__20;
 /* Late includes */
 
-/* "mabel/data/readers/internals/parallel_reader.py":64
+/* "mabel/data/readers/internals/parallel_reader.py":65
  * 
  * 
  * pass_thru = lambda x: x             # <<<<<<<<<<<<<<
@@ -1944,7 +1968,7 @@ static PyObject *__pyx_lambda_funcdef_5mabel_4data_7readers_9internals_15paralle
   return __pyx_r;
 }
 
-/* "mabel/data/readers/internals/parallel_reader.py":36
+/* "mabel/data/readers/internals/parallel_reader.py":37
  * 
  * 
  * def empty_list(x):             # <<<<<<<<<<<<<<
@@ -1975,7 +1999,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_emp
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("empty_list", 0);
 
-  /* "mabel/data/readers/internals/parallel_reader.py":37
+  /* "mabel/data/readers/internals/parallel_reader.py":38
  * 
  * def empty_list(x):
  *     return []             # <<<<<<<<<<<<<<
@@ -1983,13 +2007,13 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_emp
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":36
+  /* "mabel/data/readers/internals/parallel_reader.py":37
  * 
  * 
  * def empty_list(x):             # <<<<<<<<<<<<<<
@@ -2008,7 +2032,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_emp
   return __pyx_r;
 }
 
-/* "mabel/data/readers/internals/parallel_reader.py":67
+/* "mabel/data/readers/internals/parallel_reader.py":68
  * 
  * 
  * def no_filter(x):             # <<<<<<<<<<<<<<
@@ -2035,7 +2059,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_2no
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("no_filter", 0);
 
-  /* "mabel/data/readers/internals/parallel_reader.py":68
+  /* "mabel/data/readers/internals/parallel_reader.py":69
  * 
  * def no_filter(x):
  *     return True             # <<<<<<<<<<<<<<
@@ -2047,7 +2071,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_2no
   __pyx_r = Py_True;
   goto __pyx_L0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":67
+  /* "mabel/data/readers/internals/parallel_reader.py":68
  * 
  * 
  * def no_filter(x):             # <<<<<<<<<<<<<<
@@ -2062,7 +2086,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_2no
   return __pyx_r;
 }
 
-/* "mabel/data/readers/internals/parallel_reader.py":71
+/* "mabel/data/readers/internals/parallel_reader.py":72
  * 
  * 
  * def expand_nested_json(row):             # <<<<<<<<<<<<<<
@@ -2087,172 +2111,99 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_15parallel_reader_5ex
 static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_4expand_nested_json(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_row) {
   PyObject *__pyx_v_k = NULL;
   PyObject *__pyx_v_v = NULL;
+  PyObject *__pyx_7genexpr__pyx_v_k = NULL;
+  PyObject *__pyx_7genexpr__pyx_v_v = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   int __pyx_t_2;
   PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
-  PyObject *__pyx_t_5 = NULL;
-  PyObject *__pyx_t_6 = NULL;
-  Py_ssize_t __pyx_t_7;
-  PyObject *(*__pyx_t_8)(PyObject *);
+  Py_ssize_t __pyx_t_5;
+  Py_ssize_t __pyx_t_6;
+  int __pyx_t_7;
+  PyObject *__pyx_t_8 = NULL;
   PyObject *__pyx_t_9 = NULL;
-  PyObject *__pyx_t_10 = NULL;
-  PyObject *(*__pyx_t_11)(PyObject *);
+  int __pyx_t_10;
+  PyObject *__pyx_t_11 = NULL;
+  PyObject *(*__pyx_t_12)(PyObject *);
+  PyObject *__pyx_t_13 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("expand_nested_json", 0);
   __Pyx_INCREF(__pyx_v_row);
 
-  /* "mabel/data/readers/internals/parallel_reader.py":73
+  /* "mabel/data/readers/internals/parallel_reader.py":74
  * def expand_nested_json(row):
  *     # this is really slow - on a simple read it's roughly 60% of the execution
  *     if hasattr(row, "items"):             # <<<<<<<<<<<<<<
  *         for k, v in [(k, v) for k, v in row.items()]:
  *             if hasattr(v, "items"):
  */
-  __pyx_t_1 = __Pyx_HasAttr(__pyx_v_row, __pyx_n_s_items); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 73, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_HasAttr(__pyx_v_row, __pyx_n_u_items); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 74, __pyx_L1_error)
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "mabel/data/readers/internals/parallel_reader.py":74
+    /* "mabel/data/readers/internals/parallel_reader.py":75
  *     # this is really slow - on a simple read it's roughly 60% of the execution
  *     if hasattr(row, "items"):
  *         for k, v in [(k, v) for k, v in row.items()]:             # <<<<<<<<<<<<<<
  *             if hasattr(v, "items"):
  *                 if hasattr(row, "as_dict"):
  */
-    __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 74, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_n_s_items); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 74, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
-      __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_5);
-      if (likely(__pyx_t_6)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
-        __Pyx_INCREF(__pyx_t_6);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_5, function);
+    { /* enter inner scope */
+      __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 75, __pyx_L8_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_5 = 0;
+      if (unlikely(__pyx_v_row == Py_None)) {
+        PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "items");
+        __PYX_ERR(0, 75, __pyx_L8_error)
       }
-    }
-    __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
-    __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 74, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (likely(PyList_CheckExact(__pyx_t_4)) || PyTuple_CheckExact(__pyx_t_4)) {
-      __pyx_t_5 = __pyx_t_4; __Pyx_INCREF(__pyx_t_5); __pyx_t_7 = 0;
-      __pyx_t_8 = NULL;
-    } else {
-      __pyx_t_7 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 74, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_8 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 74, __pyx_L1_error)
-    }
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    for (;;) {
-      if (likely(!__pyx_t_8)) {
-        if (likely(PyList_CheckExact(__pyx_t_5))) {
-          if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_5)) break;
-          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_4 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 74, __pyx_L1_error)
-          #else
-          __pyx_t_4 = PySequence_ITEM(__pyx_t_5, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 74, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_4);
-          #endif
-        } else {
-          if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_5)) break;
-          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 74, __pyx_L1_error)
-          #else
-          __pyx_t_4 = PySequence_ITEM(__pyx_t_5, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 74, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_4);
-          #endif
-        }
-      } else {
-        __pyx_t_4 = __pyx_t_8(__pyx_t_5);
-        if (unlikely(!__pyx_t_4)) {
-          PyObject* exc_type = PyErr_Occurred();
-          if (exc_type) {
-            if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 74, __pyx_L1_error)
-          }
-          break;
-        }
-        __Pyx_GOTREF(__pyx_t_4);
-      }
-      if ((likely(PyTuple_CheckExact(__pyx_t_4))) || (PyList_CheckExact(__pyx_t_4))) {
-        PyObject* sequence = __pyx_t_4;
-        Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
-        if (unlikely(size != 2)) {
-          if (size > 2) __Pyx_RaiseTooManyValuesError(2);
-          else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-          __PYX_ERR(0, 74, __pyx_L1_error)
-        }
-        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        if (likely(PyTuple_CheckExact(sequence))) {
-          __pyx_t_6 = PyTuple_GET_ITEM(sequence, 0); 
-          __pyx_t_9 = PyTuple_GET_ITEM(sequence, 1); 
-        } else {
-          __pyx_t_6 = PyList_GET_ITEM(sequence, 0); 
-          __pyx_t_9 = PyList_GET_ITEM(sequence, 1); 
-        }
-        __Pyx_INCREF(__pyx_t_6);
-        __Pyx_INCREF(__pyx_t_9);
-        #else
-        __pyx_t_6 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 74, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_9 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 74, __pyx_L1_error)
+      __pyx_t_8 = __Pyx_dict_iterator(__pyx_v_row, 0, __pyx_n_s_items, (&__pyx_t_6), (&__pyx_t_7)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 75, __pyx_L8_error)
+      __Pyx_GOTREF(__pyx_t_8);
+      __Pyx_XDECREF(__pyx_t_4);
+      __pyx_t_4 = __pyx_t_8;
+      __pyx_t_8 = 0;
+      while (1) {
+        __pyx_t_10 = __Pyx_dict_iter_next(__pyx_t_4, __pyx_t_6, &__pyx_t_5, &__pyx_t_8, &__pyx_t_9, NULL, __pyx_t_7);
+        if (unlikely(__pyx_t_10 == 0)) break;
+        if (unlikely(__pyx_t_10 == -1)) __PYX_ERR(0, 75, __pyx_L8_error)
+        __Pyx_GOTREF(__pyx_t_8);
         __Pyx_GOTREF(__pyx_t_9);
-        #endif
-        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      } else {
-        Py_ssize_t index = -1;
-        __pyx_t_10 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 74, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_10);
-        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __pyx_t_11 = Py_TYPE(__pyx_t_10)->tp_iternext;
-        index = 0; __pyx_t_6 = __pyx_t_11(__pyx_t_10); if (unlikely(!__pyx_t_6)) goto __pyx_L8_unpacking_failed;
-        __Pyx_GOTREF(__pyx_t_6);
-        index = 1; __pyx_t_9 = __pyx_t_11(__pyx_t_10); if (unlikely(!__pyx_t_9)) goto __pyx_L8_unpacking_failed;
+        __Pyx_XDECREF_SET(__pyx_7genexpr__pyx_v_k, __pyx_t_8);
+        __pyx_t_8 = 0;
+        __Pyx_XDECREF_SET(__pyx_7genexpr__pyx_v_v, __pyx_t_9);
+        __pyx_t_9 = 0;
+        __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 75, __pyx_L8_error)
         __Pyx_GOTREF(__pyx_t_9);
-        if (__Pyx_IternextUnpackEndCheck(__pyx_t_11(__pyx_t_10), 2) < 0) __PYX_ERR(0, 74, __pyx_L1_error)
-        __pyx_t_11 = NULL;
-        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-        goto __pyx_L9_unpacking_done;
-        __pyx_L8_unpacking_failed:;
-        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-        __pyx_t_11 = NULL;
-        if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-        __PYX_ERR(0, 74, __pyx_L1_error)
-        __pyx_L9_unpacking_done:;
+        __Pyx_INCREF(__pyx_7genexpr__pyx_v_k);
+        __Pyx_GIVEREF(__pyx_7genexpr__pyx_v_k);
+        PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_7genexpr__pyx_v_k);
+        __Pyx_INCREF(__pyx_7genexpr__pyx_v_v);
+        __Pyx_GIVEREF(__pyx_7genexpr__pyx_v_v);
+        PyTuple_SET_ITEM(__pyx_t_9, 1, __pyx_7genexpr__pyx_v_v);
+        if (unlikely(__Pyx_ListComp_Append(__pyx_t_3, (PyObject*)__pyx_t_9))) __PYX_ERR(0, 75, __pyx_L8_error)
+        __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       }
-      __Pyx_XDECREF_SET(__pyx_v_k, __pyx_t_6);
-      __pyx_t_6 = 0;
-      __Pyx_XDECREF_SET(__pyx_v_v, __pyx_t_9);
-      __pyx_t_9 = 0;
-      __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 74, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      __Pyx_INCREF(__pyx_v_k);
-      __Pyx_GIVEREF(__pyx_v_k);
-      PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_v_k);
-      __Pyx_INCREF(__pyx_v_v);
-      __Pyx_GIVEREF(__pyx_v_v);
-      PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_v_v);
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_3, (PyObject*)__pyx_t_4))) __PYX_ERR(0, 74, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    }
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __pyx_t_3; __Pyx_INCREF(__pyx_t_5); __pyx_t_7 = 0;
+      __Pyx_XDECREF(__pyx_7genexpr__pyx_v_k); __pyx_7genexpr__pyx_v_k = 0;
+      __Pyx_XDECREF(__pyx_7genexpr__pyx_v_v); __pyx_7genexpr__pyx_v_v = 0;
+      goto __pyx_L11_exit_scope;
+      __pyx_L8_error:;
+      __Pyx_XDECREF(__pyx_7genexpr__pyx_v_k); __pyx_7genexpr__pyx_v_k = 0;
+      __Pyx_XDECREF(__pyx_7genexpr__pyx_v_v); __pyx_7genexpr__pyx_v_v = 0;
+      goto __pyx_L1_error;
+      __pyx_L11_exit_scope:;
+    } /* exit inner scope */
+    __pyx_t_4 = __pyx_t_3; __Pyx_INCREF(__pyx_t_4); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     for (;;) {
-      if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_5)) break;
+      if (__pyx_t_6 >= PyList_GET_SIZE(__pyx_t_4)) break;
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-      __pyx_t_3 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 74, __pyx_L1_error)
+      __pyx_t_3 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_6); __Pyx_INCREF(__pyx_t_3); __pyx_t_6++; if (unlikely(0 < 0)) __PYX_ERR(0, 75, __pyx_L1_error)
       #else
-      __pyx_t_3 = PySequence_ITEM(__pyx_t_5, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 74, __pyx_L1_error)
+      __pyx_t_3 = PySequence_ITEM(__pyx_t_4, __pyx_t_6); __pyx_t_6++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 75, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       #endif
       if ((likely(PyTuple_CheckExact(__pyx_t_3))) || (PyList_CheckExact(__pyx_t_3))) {
@@ -2261,101 +2212,101 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_4ex
         if (unlikely(size != 2)) {
           if (size > 2) __Pyx_RaiseTooManyValuesError(2);
           else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-          __PYX_ERR(0, 74, __pyx_L1_error)
+          __PYX_ERR(0, 75, __pyx_L1_error)
         }
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
         if (likely(PyTuple_CheckExact(sequence))) {
-          __pyx_t_4 = PyTuple_GET_ITEM(sequence, 0); 
-          __pyx_t_9 = PyTuple_GET_ITEM(sequence, 1); 
+          __pyx_t_9 = PyTuple_GET_ITEM(sequence, 0); 
+          __pyx_t_8 = PyTuple_GET_ITEM(sequence, 1); 
         } else {
-          __pyx_t_4 = PyList_GET_ITEM(sequence, 0); 
-          __pyx_t_9 = PyList_GET_ITEM(sequence, 1); 
+          __pyx_t_9 = PyList_GET_ITEM(sequence, 0); 
+          __pyx_t_8 = PyList_GET_ITEM(sequence, 1); 
         }
-        __Pyx_INCREF(__pyx_t_4);
         __Pyx_INCREF(__pyx_t_9);
+        __Pyx_INCREF(__pyx_t_8);
         #else
-        __pyx_t_4 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 74, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_9 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 74, __pyx_L1_error)
+        __pyx_t_9 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 75, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_9);
+        __pyx_t_8 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 75, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_8);
         #endif
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       } else {
         Py_ssize_t index = -1;
-        __pyx_t_6 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 74, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_6);
+        __pyx_t_11 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 75, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_11);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __pyx_t_11 = Py_TYPE(__pyx_t_6)->tp_iternext;
-        index = 0; __pyx_t_4 = __pyx_t_11(__pyx_t_6); if (unlikely(!__pyx_t_4)) goto __pyx_L10_unpacking_failed;
-        __Pyx_GOTREF(__pyx_t_4);
-        index = 1; __pyx_t_9 = __pyx_t_11(__pyx_t_6); if (unlikely(!__pyx_t_9)) goto __pyx_L10_unpacking_failed;
+        __pyx_t_12 = Py_TYPE(__pyx_t_11)->tp_iternext;
+        index = 0; __pyx_t_9 = __pyx_t_12(__pyx_t_11); if (unlikely(!__pyx_t_9)) goto __pyx_L12_unpacking_failed;
         __Pyx_GOTREF(__pyx_t_9);
-        if (__Pyx_IternextUnpackEndCheck(__pyx_t_11(__pyx_t_6), 2) < 0) __PYX_ERR(0, 74, __pyx_L1_error)
-        __pyx_t_11 = NULL;
-        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-        goto __pyx_L11_unpacking_done;
-        __pyx_L10_unpacking_failed:;
-        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-        __pyx_t_11 = NULL;
+        index = 1; __pyx_t_8 = __pyx_t_12(__pyx_t_11); if (unlikely(!__pyx_t_8)) goto __pyx_L12_unpacking_failed;
+        __Pyx_GOTREF(__pyx_t_8);
+        if (__Pyx_IternextUnpackEndCheck(__pyx_t_12(__pyx_t_11), 2) < 0) __PYX_ERR(0, 75, __pyx_L1_error)
+        __pyx_t_12 = NULL;
+        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+        goto __pyx_L13_unpacking_done;
+        __pyx_L12_unpacking_failed:;
+        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+        __pyx_t_12 = NULL;
         if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-        __PYX_ERR(0, 74, __pyx_L1_error)
-        __pyx_L11_unpacking_done:;
+        __PYX_ERR(0, 75, __pyx_L1_error)
+        __pyx_L13_unpacking_done:;
       }
-      __Pyx_XDECREF_SET(__pyx_v_k, __pyx_t_4);
-      __pyx_t_4 = 0;
-      __Pyx_XDECREF_SET(__pyx_v_v, __pyx_t_9);
+      __Pyx_XDECREF_SET(__pyx_v_k, __pyx_t_9);
       __pyx_t_9 = 0;
+      __Pyx_XDECREF_SET(__pyx_v_v, __pyx_t_8);
+      __pyx_t_8 = 0;
 
-      /* "mabel/data/readers/internals/parallel_reader.py":75
+      /* "mabel/data/readers/internals/parallel_reader.py":76
  *     if hasattr(row, "items"):
  *         for k, v in [(k, v) for k, v in row.items()]:
  *             if hasattr(v, "items"):             # <<<<<<<<<<<<<<
  *                 if hasattr(row, "as_dict"):
  *                     row = row.as_dict()  # only convert if we really have to
  */
-      __pyx_t_2 = __Pyx_HasAttr(__pyx_v_v, __pyx_n_s_items); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 75, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_HasAttr(__pyx_v_v, __pyx_n_u_items); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 76, __pyx_L1_error)
       __pyx_t_1 = (__pyx_t_2 != 0);
       if (__pyx_t_1) {
 
-        /* "mabel/data/readers/internals/parallel_reader.py":76
+        /* "mabel/data/readers/internals/parallel_reader.py":77
  *         for k, v in [(k, v) for k, v in row.items()]:
  *             if hasattr(v, "items"):
  *                 if hasattr(row, "as_dict"):             # <<<<<<<<<<<<<<
  *                     row = row.as_dict()  # only convert if we really have to
  *                 row.update(flatten(dictionary={k: v}, separator="."))
  */
-        __pyx_t_1 = __Pyx_HasAttr(__pyx_v_row, __pyx_n_s_as_dict); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 76, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_HasAttr(__pyx_v_row, __pyx_n_u_as_dict); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 77, __pyx_L1_error)
         __pyx_t_2 = (__pyx_t_1 != 0);
         if (__pyx_t_2) {
 
-          /* "mabel/data/readers/internals/parallel_reader.py":77
+          /* "mabel/data/readers/internals/parallel_reader.py":78
  *             if hasattr(v, "items"):
  *                 if hasattr(row, "as_dict"):
  *                     row = row.as_dict()  # only convert if we really have to             # <<<<<<<<<<<<<<
  *                 row.update(flatten(dictionary={k: v}, separator="."))
  *                 row.pop(k)
  */
-          __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_n_s_as_dict); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 77, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_9);
-          __pyx_t_4 = NULL;
-          if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_9))) {
-            __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_9);
-            if (likely(__pyx_t_4)) {
-              PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_9);
-              __Pyx_INCREF(__pyx_t_4);
+          __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_n_s_as_dict); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 78, __pyx_L1_error)
+          __Pyx_GOTREF(__pyx_t_8);
+          __pyx_t_9 = NULL;
+          if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_8))) {
+            __pyx_t_9 = PyMethod_GET_SELF(__pyx_t_8);
+            if (likely(__pyx_t_9)) {
+              PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
+              __Pyx_INCREF(__pyx_t_9);
               __Pyx_INCREF(function);
-              __Pyx_DECREF_SET(__pyx_t_9, function);
+              __Pyx_DECREF_SET(__pyx_t_8, function);
             }
           }
-          __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_9, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_9);
-          __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 77, __pyx_L1_error)
+          __pyx_t_3 = (__pyx_t_9) ? __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_t_9) : __Pyx_PyObject_CallNoArg(__pyx_t_8);
+          __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
+          if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 78, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_3);
-          __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+          __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
           __Pyx_DECREF_SET(__pyx_v_row, __pyx_t_3);
           __pyx_t_3 = 0;
 
-          /* "mabel/data/readers/internals/parallel_reader.py":76
+          /* "mabel/data/readers/internals/parallel_reader.py":77
  *         for k, v in [(k, v) for k, v in row.items()]:
  *             if hasattr(v, "items"):
  *                 if hasattr(row, "as_dict"):             # <<<<<<<<<<<<<<
@@ -2364,74 +2315,74 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_4ex
  */
         }
 
-        /* "mabel/data/readers/internals/parallel_reader.py":78
+        /* "mabel/data/readers/internals/parallel_reader.py":79
  *                 if hasattr(row, "as_dict"):
  *                     row = row.as_dict()  # only convert if we really have to
  *                 row.update(flatten(dictionary={k: v}, separator="."))             # <<<<<<<<<<<<<<
  *                 row.pop(k)
  *     return row
  */
-        __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_n_s_update); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 78, __pyx_L1_error)
+        __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_n_s_update); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 79, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_8);
+        __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_flatten); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 79, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_9);
-        __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_flatten); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 78, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_6 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 78, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_10 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 78, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_10);
-        if (PyDict_SetItem(__pyx_t_10, __pyx_v_k, __pyx_v_v) < 0) __PYX_ERR(0, 78, __pyx_L1_error)
-        if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dictionary, __pyx_t_10) < 0) __PYX_ERR(0, 78, __pyx_L1_error)
-        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-        if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_separator, __pyx_kp_s_) < 0) __PYX_ERR(0, 78, __pyx_L1_error)
-        __pyx_t_10 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_empty_tuple, __pyx_t_6); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 78, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_10);
-        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-        __pyx_t_6 = NULL;
-        if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_9))) {
-          __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_9);
-          if (likely(__pyx_t_6)) {
-            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_9);
-            __Pyx_INCREF(__pyx_t_6);
+        __pyx_t_11 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 79, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_11);
+        __pyx_t_13 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 79, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_13);
+        if (PyDict_SetItem(__pyx_t_13, __pyx_v_k, __pyx_v_v) < 0) __PYX_ERR(0, 79, __pyx_L1_error)
+        if (PyDict_SetItem(__pyx_t_11, __pyx_n_s_dictionary, __pyx_t_13) < 0) __PYX_ERR(0, 79, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
+        if (PyDict_SetItem(__pyx_t_11, __pyx_n_s_separator, __pyx_kp_u_) < 0) __PYX_ERR(0, 79, __pyx_L1_error)
+        __pyx_t_13 = __Pyx_PyObject_Call(__pyx_t_9, __pyx_empty_tuple, __pyx_t_11); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 79, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_13);
+        __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+        __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+        __pyx_t_11 = NULL;
+        if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_8))) {
+          __pyx_t_11 = PyMethod_GET_SELF(__pyx_t_8);
+          if (likely(__pyx_t_11)) {
+            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
+            __Pyx_INCREF(__pyx_t_11);
             __Pyx_INCREF(function);
-            __Pyx_DECREF_SET(__pyx_t_9, function);
+            __Pyx_DECREF_SET(__pyx_t_8, function);
           }
         }
-        __pyx_t_3 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_9, __pyx_t_6, __pyx_t_10) : __Pyx_PyObject_CallOneArg(__pyx_t_9, __pyx_t_10);
-        __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 78, __pyx_L1_error)
+        __pyx_t_3 = (__pyx_t_11) ? __Pyx_PyObject_Call2Args(__pyx_t_8, __pyx_t_11, __pyx_t_13) : __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_t_13);
+        __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
+        __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
+        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 79, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
-        __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+        __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-        /* "mabel/data/readers/internals/parallel_reader.py":79
+        /* "mabel/data/readers/internals/parallel_reader.py":80
  *                     row = row.as_dict()  # only convert if we really have to
  *                 row.update(flatten(dictionary={k: v}, separator="."))
  *                 row.pop(k)             # <<<<<<<<<<<<<<
  *     return row
  * 
  */
-        __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_n_s_pop); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 79, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_9);
-        __pyx_t_10 = NULL;
-        if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_9))) {
-          __pyx_t_10 = PyMethod_GET_SELF(__pyx_t_9);
-          if (likely(__pyx_t_10)) {
-            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_9);
-            __Pyx_INCREF(__pyx_t_10);
+        __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_row, __pyx_n_s_pop); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 80, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_8);
+        __pyx_t_13 = NULL;
+        if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_8))) {
+          __pyx_t_13 = PyMethod_GET_SELF(__pyx_t_8);
+          if (likely(__pyx_t_13)) {
+            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
+            __Pyx_INCREF(__pyx_t_13);
             __Pyx_INCREF(function);
-            __Pyx_DECREF_SET(__pyx_t_9, function);
+            __Pyx_DECREF_SET(__pyx_t_8, function);
           }
         }
-        __pyx_t_3 = (__pyx_t_10) ? __Pyx_PyObject_Call2Args(__pyx_t_9, __pyx_t_10, __pyx_v_k) : __Pyx_PyObject_CallOneArg(__pyx_t_9, __pyx_v_k);
-        __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
-        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 79, __pyx_L1_error)
+        __pyx_t_3 = (__pyx_t_13) ? __Pyx_PyObject_Call2Args(__pyx_t_8, __pyx_t_13, __pyx_v_k) : __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_v_k);
+        __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
+        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 80, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
-        __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+        __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-        /* "mabel/data/readers/internals/parallel_reader.py":75
+        /* "mabel/data/readers/internals/parallel_reader.py":76
  *     if hasattr(row, "items"):
  *         for k, v in [(k, v) for k, v in row.items()]:
  *             if hasattr(v, "items"):             # <<<<<<<<<<<<<<
@@ -2440,7 +2391,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_4ex
  */
       }
 
-      /* "mabel/data/readers/internals/parallel_reader.py":74
+      /* "mabel/data/readers/internals/parallel_reader.py":75
  *     # this is really slow - on a simple read it's roughly 60% of the execution
  *     if hasattr(row, "items"):
  *         for k, v in [(k, v) for k, v in row.items()]:             # <<<<<<<<<<<<<<
@@ -2448,9 +2399,9 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_4ex
  *                 if hasattr(row, "as_dict"):
  */
     }
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "mabel/data/readers/internals/parallel_reader.py":73
+    /* "mabel/data/readers/internals/parallel_reader.py":74
  * def expand_nested_json(row):
  *     # this is really slow - on a simple read it's roughly 60% of the execution
  *     if hasattr(row, "items"):             # <<<<<<<<<<<<<<
@@ -2459,7 +2410,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_4ex
  */
   }
 
-  /* "mabel/data/readers/internals/parallel_reader.py":80
+  /* "mabel/data/readers/internals/parallel_reader.py":81
  *                 row.update(flatten(dictionary={k: v}, separator="."))
  *                 row.pop(k)
  *     return row             # <<<<<<<<<<<<<<
@@ -2471,7 +2422,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_4ex
   __pyx_r = __pyx_v_row;
   goto __pyx_L0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":71
+  /* "mabel/data/readers/internals/parallel_reader.py":72
  * 
  * 
  * def expand_nested_json(row):             # <<<<<<<<<<<<<<
@@ -2483,22 +2434,24 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_4ex
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_9);
-  __Pyx_XDECREF(__pyx_t_10);
+  __Pyx_XDECREF(__pyx_t_11);
+  __Pyx_XDECREF(__pyx_t_13);
   __Pyx_AddTraceback("mabel.data.readers.internals.parallel_reader.expand_nested_json", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_k);
   __Pyx_XDECREF(__pyx_v_v);
+  __Pyx_XDECREF(__pyx_7genexpr__pyx_v_k);
+  __Pyx_XDECREF(__pyx_7genexpr__pyx_v_v);
   __Pyx_XDECREF(__pyx_v_row);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "mabel/data/readers/internals/parallel_reader.py":87
+/* "mabel/data/readers/internals/parallel_reader.py":88
  *     NOT_INDEXED = {-1}
  * 
  *     def __init__(             # <<<<<<<<<<<<<<
@@ -2517,21 +2470,21 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_7__
   __Pyx_RefNannySetupContext("__defaults__", 0);
   __Pyx_XDECREF(__pyx_r);
 
-  /* "mabel/data/readers/internals/parallel_reader.py":93
+  /* "mabel/data/readers/internals/parallel_reader.py":94
  *         columns="*",
  *         reducer=pass_thru,
  *         override_format=None,             # <<<<<<<<<<<<<<
  *         **kwargs,
  *     ):
  */
-  __pyx_t_1 = PyTuple_New(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__Pyx_CyFunction_Defaults(__pyx_defaults, __pyx_self)->__pyx_arg_filters);
   __Pyx_GIVEREF(__Pyx_CyFunction_Defaults(__pyx_defaults, __pyx_self)->__pyx_arg_filters);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __Pyx_CyFunction_Defaults(__pyx_defaults, __pyx_self)->__pyx_arg_filters);
-  __Pyx_INCREF(((PyObject*)__pyx_kp_s__2));
-  __Pyx_GIVEREF(((PyObject*)__pyx_kp_s__2));
-  PyTuple_SET_ITEM(__pyx_t_1, 1, ((PyObject*)__pyx_kp_s__2));
+  __Pyx_INCREF(((PyObject*)__pyx_kp_u__2));
+  __Pyx_GIVEREF(((PyObject*)__pyx_kp_u__2));
+  PyTuple_SET_ITEM(__pyx_t_1, 1, ((PyObject*)__pyx_kp_u__2));
   __Pyx_INCREF(__Pyx_CyFunction_Defaults(__pyx_defaults, __pyx_self)->__pyx_arg_reducer);
   __Pyx_GIVEREF(__Pyx_CyFunction_Defaults(__pyx_defaults, __pyx_self)->__pyx_arg_reducer);
   PyTuple_SET_ITEM(__pyx_t_1, 2, __Pyx_CyFunction_Defaults(__pyx_defaults, __pyx_self)->__pyx_arg_reducer);
@@ -2539,14 +2492,14 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_7__
   __Pyx_GIVEREF(((PyObject *)Py_None));
   PyTuple_SET_ITEM(__pyx_t_1, 3, ((PyObject *)Py_None));
 
-  /* "mabel/data/readers/internals/parallel_reader.py":87
+  /* "mabel/data/readers/internals/parallel_reader.py":88
  *     NOT_INDEXED = {-1}
  * 
  *     def __init__(             # <<<<<<<<<<<<<<
  *         self,
  *         reader,
  */
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
@@ -2595,7 +2548,7 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_15parallel_reader_14P
     PyObject* values[6] = {0,0,0,0,0,0};
     __pyx_defaults *__pyx_dynamic_args = __Pyx_CyFunction_Defaults(__pyx_defaults, __pyx_self);
     values[2] = __pyx_dynamic_args->__pyx_arg_filters;
-    values[3] = ((PyObject *)((PyObject*)__pyx_kp_s__2));
+    values[3] = ((PyObject *)((PyObject*)__pyx_kp_u__2));
     values[4] = __pyx_dynamic_args->__pyx_arg_reducer;
     values[5] = ((PyObject *)((PyObject *)Py_None));
     if (unlikely(__pyx_kwds)) {
@@ -2626,7 +2579,7 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_15parallel_reader_14P
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_reader)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 6, 1); __PYX_ERR(0, 87, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 6, 1); __PYX_ERR(0, 88, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -2654,7 +2607,7 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_15parallel_reader_14P
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, __pyx_v_kwargs, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 87, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, __pyx_v_kwargs, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 88, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -2681,7 +2634,7 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_15parallel_reader_14P
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 87, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 88, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_DECREF(__pyx_v_kwargs); __pyx_v_kwargs = 0;
   __Pyx_AddTraceback("mabel.data.readers.internals.parallel_reader.ParallelReader.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -2711,30 +2664,30 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "mabel/data/readers/internals/parallel_reader.py":109
+  /* "mabel/data/readers/internals/parallel_reader.py":110
  *         # to apply any indicies to - we can convert Expressions to DNF but we can't
  *         # convert functions to DNF.
  *         if isinstance(filters, DnfFilters):             # <<<<<<<<<<<<<<
  *             self.dnf_filter = filters
  *         elif isinstance(filters, Expression):
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_DnfFilters); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_DnfFilters); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 110, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyObject_IsInstance(__pyx_v_filters, __pyx_t_1); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_2 = PyObject_IsInstance(__pyx_v_filters, __pyx_t_1); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 110, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = (__pyx_t_2 != 0);
   if (__pyx_t_3) {
 
-    /* "mabel/data/readers/internals/parallel_reader.py":110
+    /* "mabel/data/readers/internals/parallel_reader.py":111
  *         # convert functions to DNF.
  *         if isinstance(filters, DnfFilters):
  *             self.dnf_filter = filters             # <<<<<<<<<<<<<<
  *         elif isinstance(filters, Expression):
  *             self.dnf_filter = DnfFilters(filters.to_dnf())
  */
-    if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_dnf_filter, __pyx_v_filters) < 0) __PYX_ERR(0, 110, __pyx_L1_error)
+    if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_dnf_filter, __pyx_v_filters) < 0) __PYX_ERR(0, 111, __pyx_L1_error)
 
-    /* "mabel/data/readers/internals/parallel_reader.py":109
+    /* "mabel/data/readers/internals/parallel_reader.py":110
  *         # to apply any indicies to - we can convert Expressions to DNF but we can't
  *         # convert functions to DNF.
  *         if isinstance(filters, DnfFilters):             # <<<<<<<<<<<<<<
@@ -2744,30 +2697,30 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
     goto __pyx_L3;
   }
 
-  /* "mabel/data/readers/internals/parallel_reader.py":111
+  /* "mabel/data/readers/internals/parallel_reader.py":112
  *         if isinstance(filters, DnfFilters):
  *             self.dnf_filter = filters
  *         elif isinstance(filters, Expression):             # <<<<<<<<<<<<<<
  *             self.dnf_filter = DnfFilters(filters.to_dnf())
  *         else:
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_Expression); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 111, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_Expression); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = PyObject_IsInstance(__pyx_v_filters, __pyx_t_1); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 111, __pyx_L1_error)
+  __pyx_t_3 = PyObject_IsInstance(__pyx_v_filters, __pyx_t_1); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 112, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_2 = (__pyx_t_3 != 0);
   if (__pyx_t_2) {
 
-    /* "mabel/data/readers/internals/parallel_reader.py":112
+    /* "mabel/data/readers/internals/parallel_reader.py":113
  *             self.dnf_filter = filters
  *         elif isinstance(filters, Expression):
  *             self.dnf_filter = DnfFilters(filters.to_dnf())             # <<<<<<<<<<<<<<
  *         else:
  *             self.dnf_filter = None
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_DnfFilters); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 112, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_DnfFilters); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 113, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_filters, __pyx_n_s_to_dnf); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 112, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_filters, __pyx_n_s_to_dnf); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 113, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_7 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
@@ -2781,7 +2734,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
     }
     __pyx_t_5 = (__pyx_t_7) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_7) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 112, __pyx_L1_error)
+    if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 113, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_6 = NULL;
@@ -2797,13 +2750,13 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
     __pyx_t_1 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_6, __pyx_t_5) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5);
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 112, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_dnf_filter, __pyx_t_1) < 0) __PYX_ERR(0, 112, __pyx_L1_error)
+    if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_dnf_filter, __pyx_t_1) < 0) __PYX_ERR(0, 113, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "mabel/data/readers/internals/parallel_reader.py":111
+    /* "mabel/data/readers/internals/parallel_reader.py":112
  *         if isinstance(filters, DnfFilters):
  *             self.dnf_filter = filters
  *         elif isinstance(filters, Expression):             # <<<<<<<<<<<<<<
@@ -2813,7 +2766,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
     goto __pyx_L3;
   }
 
-  /* "mabel/data/readers/internals/parallel_reader.py":114
+  /* "mabel/data/readers/internals/parallel_reader.py":115
  *             self.dnf_filter = DnfFilters(filters.to_dnf())
  *         else:
  *             self.dnf_filter = None             # <<<<<<<<<<<<<<
@@ -2821,78 +2774,78 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
  *         # the reader gets the data from the storage platform e.g. read the file from
  */
   /*else*/ {
-    if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_dnf_filter, Py_None) < 0) __PYX_ERR(0, 114, __pyx_L1_error)
+    if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_dnf_filter, Py_None) < 0) __PYX_ERR(0, 115, __pyx_L1_error)
   }
   __pyx_L3:;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":118
+  /* "mabel/data/readers/internals/parallel_reader.py":119
  *         # the reader gets the data from the storage platform e.g. read the file from
  *         # disk or download the file
  *         self.reader = reader             # <<<<<<<<<<<<<<
  * 
  *         self.columns = columns
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_reader, __pyx_v_reader) < 0) __PYX_ERR(0, 118, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_reader, __pyx_v_reader) < 0) __PYX_ERR(0, 119, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/parallel_reader.py":120
+  /* "mabel/data/readers/internals/parallel_reader.py":121
  *         self.reader = reader
  * 
  *         self.columns = columns             # <<<<<<<<<<<<<<
  * 
  *         # this is the filter of the collected data, this can be used
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_columns, __pyx_v_columns) < 0) __PYX_ERR(0, 120, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_columns, __pyx_v_columns) < 0) __PYX_ERR(0, 121, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/parallel_reader.py":124
+  /* "mabel/data/readers/internals/parallel_reader.py":125
  *         # this is the filter of the collected data, this can be used
  *         # against more operators
  *         self.filters = filters             # <<<<<<<<<<<<<<
  * 
  *         # this is aggregation and reducers for the data
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_filters, __pyx_v_filters) < 0) __PYX_ERR(0, 124, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_filters, __pyx_v_filters) < 0) __PYX_ERR(0, 125, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/parallel_reader.py":127
+  /* "mabel/data/readers/internals/parallel_reader.py":128
  * 
  *         # this is aggregation and reducers for the data
  *         self.reducer = reducer             # <<<<<<<<<<<<<<
  * 
  *         # sometimes the user knows better
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_reducer, __pyx_v_reducer) < 0) __PYX_ERR(0, 127, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_reducer, __pyx_v_reducer) < 0) __PYX_ERR(0, 128, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/parallel_reader.py":130
+  /* "mabel/data/readers/internals/parallel_reader.py":131
  * 
  *         # sometimes the user knows better
  *         self.override_format = override_format             # <<<<<<<<<<<<<<
  * 
  *         if self.override_format:
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_override_format, __pyx_v_override_format) < 0) __PYX_ERR(0, 130, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_override_format, __pyx_v_override_format) < 0) __PYX_ERR(0, 131, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/parallel_reader.py":132
+  /* "mabel/data/readers/internals/parallel_reader.py":133
  *         self.override_format = override_format
  * 
  *         if self.override_format:             # <<<<<<<<<<<<<<
  *             self.override_format = self.override_format.lower()
  *             if not self.override_format[0] == ".":
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_override_format); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 132, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_override_format); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 133, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 132, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 133, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "mabel/data/readers/internals/parallel_reader.py":133
+    /* "mabel/data/readers/internals/parallel_reader.py":134
  * 
  *         if self.override_format:
  *             self.override_format = self.override_format.lower()             # <<<<<<<<<<<<<<
  *             if not self.override_format[0] == ".":
  *                 self.override_format = "." + self.override_format
  */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_override_format); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 133, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_override_format); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 134, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_lower); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 133, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_lower); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 134, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_4 = NULL;
@@ -2907,45 +2860,45 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
     }
     __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 133, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 134, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_override_format, __pyx_t_1) < 0) __PYX_ERR(0, 133, __pyx_L1_error)
+    if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_override_format, __pyx_t_1) < 0) __PYX_ERR(0, 134, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "mabel/data/readers/internals/parallel_reader.py":134
+    /* "mabel/data/readers/internals/parallel_reader.py":135
  *         if self.override_format:
  *             self.override_format = self.override_format.lower()
  *             if not self.override_format[0] == ".":             # <<<<<<<<<<<<<<
  *                 self.override_format = "." + self.override_format
  * 
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_override_format); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 134, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_override_format); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 135, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_5 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 134, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_GetItemInt(__pyx_t_1, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 135, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_2 = (__Pyx_PyString_Equals(__pyx_t_5, __pyx_kp_s_, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 134, __pyx_L1_error)
+    __pyx_t_2 = (__Pyx_PyUnicode_Equals(__pyx_t_5, __pyx_kp_u_, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 135, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_t_3 = ((!__pyx_t_2) != 0);
     if (__pyx_t_3) {
 
-      /* "mabel/data/readers/internals/parallel_reader.py":135
+      /* "mabel/data/readers/internals/parallel_reader.py":136
  *             self.override_format = self.override_format.lower()
  *             if not self.override_format[0] == ".":
  *                 self.override_format = "." + self.override_format             # <<<<<<<<<<<<<<
  * 
  *     def pre_filter(self, blob_name, index_files):
  */
-      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_override_format); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 135, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_override_format); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 136, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_1 = PyNumber_Add(__pyx_kp_s_, __pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 135, __pyx_L1_error)
+      __pyx_t_1 = PyNumber_Add(__pyx_kp_u_, __pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_override_format, __pyx_t_1) < 0) __PYX_ERR(0, 135, __pyx_L1_error)
+      if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_override_format, __pyx_t_1) < 0) __PYX_ERR(0, 136, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-      /* "mabel/data/readers/internals/parallel_reader.py":134
+      /* "mabel/data/readers/internals/parallel_reader.py":135
  *         if self.override_format:
  *             self.override_format = self.override_format.lower()
  *             if not self.override_format[0] == ".":             # <<<<<<<<<<<<<<
@@ -2954,7 +2907,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
  */
     }
 
-    /* "mabel/data/readers/internals/parallel_reader.py":132
+    /* "mabel/data/readers/internals/parallel_reader.py":133
  *         self.override_format = override_format
  * 
  *         if self.override_format:             # <<<<<<<<<<<<<<
@@ -2963,7 +2916,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
  */
   }
 
-  /* "mabel/data/readers/internals/parallel_reader.py":87
+  /* "mabel/data/readers/internals/parallel_reader.py":88
  *     NOT_INDEXED = {-1}
  * 
  *     def __init__(             # <<<<<<<<<<<<<<
@@ -2988,7 +2941,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
   return __pyx_r;
 }
 
-/* "mabel/data/readers/internals/parallel_reader.py":137
+/* "mabel/data/readers/internals/parallel_reader.py":138
  *                 self.override_format = "." + self.override_format
  * 
  *     def pre_filter(self, blob_name, index_files):             # <<<<<<<<<<<<<<
@@ -3035,17 +2988,17 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_15parallel_reader_14P
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_blob_name)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("pre_filter", 1, 3, 3, 1); __PYX_ERR(0, 137, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("pre_filter", 1, 3, 3, 1); __PYX_ERR(0, 138, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_index_files)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("pre_filter", 1, 3, 3, 2); __PYX_ERR(0, 137, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("pre_filter", 1, 3, 3, 2); __PYX_ERR(0, 138, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "pre_filter") < 0)) __PYX_ERR(0, 137, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "pre_filter") < 0)) __PYX_ERR(0, 138, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -3060,7 +3013,7 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_15parallel_reader_14P
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("pre_filter", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 137, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("pre_filter", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 138, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mabel.data.readers.internals.parallel_reader.ParallelReader.pre_filter", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3073,7 +3026,7 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_15parallel_reader_14P
   return __pyx_r;
 }
 
-/* "mabel/data/readers/internals/parallel_reader.py":151
+/* "mabel/data/readers/internals/parallel_reader.py":152
  *         PRE_FILTERABLE_OPERATORS = {"=", "==", "is", "in", "contains"}
  * 
  *         def _inner_prefilter(predicate):             # <<<<<<<<<<<<<<
@@ -3095,7 +3048,7 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_15parallel_reader_14P
   return __pyx_r;
 }
 
-/* "mabel/data/readers/internals/parallel_reader.py":194
+/* "mabel/data/readers/internals/parallel_reader.py":195
  *                         # join the data sets together by adding them
  *                         rows = reduce(
  *                             lambda x, y: x + _inner_prefilter(y), predicate, []             # <<<<<<<<<<<<<<
@@ -3138,11 +3091,11 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_15parallel_reader_14P
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("lambda1", 1, 2, 2, 1); __PYX_ERR(0, 194, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("lambda1", 1, 2, 2, 1); __PYX_ERR(0, 195, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "lambda1") < 0)) __PYX_ERR(0, 194, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "lambda1") < 0)) __PYX_ERR(0, 195, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -3155,7 +3108,7 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_15parallel_reader_14P
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("lambda1", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 194, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("lambda1", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 195, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mabel.data.readers.internals.parallel_reader.ParallelReader.pre_filter._inner_prefilter.lambda1", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3182,10 +3135,10 @@ static PyObject *__pyx_lambda_funcdef_lambda1(PyObject *__pyx_self, PyObject *__
   __pyx_outer_scope = (struct __pyx_obj_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct__pre_filter *) __Pyx_CyFunction_GetClosure(__pyx_self);
   __pyx_cur_scope = __pyx_outer_scope;
   __Pyx_XDECREF(__pyx_r);
-  if (unlikely(!__pyx_cur_scope->__pyx_v__inner_prefilter)) { __Pyx_RaiseClosureNameError("_inner_prefilter"); __PYX_ERR(0, 194, __pyx_L1_error) }
-  __pyx_t_1 = __pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_10pre_filter__inner_prefilter(__pyx_cur_scope->__pyx_v__inner_prefilter, __pyx_v_y); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 194, __pyx_L1_error)
+  if (unlikely(!__pyx_cur_scope->__pyx_v__inner_prefilter)) { __Pyx_RaiseClosureNameError("_inner_prefilter"); __PYX_ERR(0, 195, __pyx_L1_error) }
+  __pyx_t_1 = __pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_10pre_filter__inner_prefilter(__pyx_cur_scope->__pyx_v__inner_prefilter, __pyx_v_y); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 195, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyNumber_Add(__pyx_v_x, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 194, __pyx_L1_error)
+  __pyx_t_2 = PyNumber_Add(__pyx_v_x, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 195, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
@@ -3204,7 +3157,7 @@ static PyObject *__pyx_lambda_funcdef_lambda1(PyObject *__pyx_self, PyObject *__
   return __pyx_r;
 }
 
-/* "mabel/data/readers/internals/parallel_reader.py":151
+/* "mabel/data/readers/internals/parallel_reader.py":152
  *         PRE_FILTERABLE_OPERATORS = {"=", "==", "is", "in", "contains"}
  * 
  *         def _inner_prefilter(predicate):             # <<<<<<<<<<<<<<
@@ -3223,8 +3176,12 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
   PyObject *__pyx_v_rows = NULL;
   PyObject *__pyx_v_row = NULL;
   PyObject *__pyx_v_evaluations = NULL;
-  PyObject *__pyx_v_p = NULL;
-  PyObject *__pyx_v_e = NULL;
+  PyObject *__pyx_8genexpr1__pyx_v_index_file = NULL;
+  PyObject *__pyx_8genexpr2__pyx_v_p = NULL;
+  PyObject *__pyx_8genexpr3__pyx_v_p = NULL;
+  PyObject *__pyx_8genexpr4__pyx_v_p = NULL;
+  PyObject *__pyx_8genexpr5__pyx_v_p = NULL;
+  PyObject *__pyx_8genexpr6__pyx_v_e = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -3249,7 +3206,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
   __pyx_outer_scope = (struct __pyx_obj_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct__pre_filter *) __Pyx_CyFunction_GetClosure(__pyx_self);
   __pyx_cur_scope = __pyx_outer_scope;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":153
+  /* "mabel/data/readers/internals/parallel_reader.py":154
  *         def _inner_prefilter(predicate):
  *             # No filter doesn't filter
  *             if predicate is None:  # pragma: no cover             # <<<<<<<<<<<<<<
@@ -3260,7 +3217,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "mabel/data/readers/internals/parallel_reader.py":154
+    /* "mabel/data/readers/internals/parallel_reader.py":155
  *             # No filter doesn't filter
  *             if predicate is None:  # pragma: no cover
  *                 return None             # <<<<<<<<<<<<<<
@@ -3271,7 +3228,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
 
-    /* "mabel/data/readers/internals/parallel_reader.py":153
+    /* "mabel/data/readers/internals/parallel_reader.py":154
  *         def _inner_prefilter(predicate):
  *             # No filter doesn't filter
  *             if predicate is None:  # pragma: no cover             # <<<<<<<<<<<<<<
@@ -3280,7 +3237,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
  */
   }
 
-  /* "mabel/data/readers/internals/parallel_reader.py":159
+  /* "mabel/data/readers/internals/parallel_reader.py":160
  *             # Extract out the key, operator and value and look them up against the
  *             # index - if we can.
  *             if isinstance(predicate, tuple):             # <<<<<<<<<<<<<<
@@ -3291,7 +3248,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
   __pyx_t_1 = (__pyx_t_2 != 0);
   if (__pyx_t_1) {
 
-    /* "mabel/data/readers/internals/parallel_reader.py":160
+    /* "mabel/data/readers/internals/parallel_reader.py":161
  *             # index - if we can.
  *             if isinstance(predicate, tuple):
  *                 key, operator, values = predicate             # <<<<<<<<<<<<<<
@@ -3304,7 +3261,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
       if (unlikely(size != 3)) {
         if (size > 3) __Pyx_RaiseTooManyValuesError(3);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 160, __pyx_L1_error)
+        __PYX_ERR(0, 161, __pyx_L1_error)
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -3320,16 +3277,16 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
       __Pyx_INCREF(__pyx_t_4);
       __Pyx_INCREF(__pyx_t_5);
       #else
-      __pyx_t_3 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 160, __pyx_L1_error)
+      __pyx_t_3 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_4 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 160, __pyx_L1_error)
+      __pyx_t_4 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 161, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_5 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 160, __pyx_L1_error)
+      __pyx_t_5 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 161, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       #endif
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_6 = PyObject_GetIter(__pyx_v_predicate); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 160, __pyx_L1_error)
+      __pyx_t_6 = PyObject_GetIter(__pyx_v_predicate); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 161, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __pyx_t_7 = Py_TYPE(__pyx_t_6)->tp_iternext;
       index = 0; __pyx_t_3 = __pyx_t_7(__pyx_t_6); if (unlikely(!__pyx_t_3)) goto __pyx_L5_unpacking_failed;
@@ -3338,7 +3295,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
       __Pyx_GOTREF(__pyx_t_4);
       index = 2; __pyx_t_5 = __pyx_t_7(__pyx_t_6); if (unlikely(!__pyx_t_5)) goto __pyx_L5_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_5);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_7(__pyx_t_6), 3) < 0) __PYX_ERR(0, 160, __pyx_L1_error)
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_7(__pyx_t_6), 3) < 0) __PYX_ERR(0, 161, __pyx_L1_error)
       __pyx_t_7 = NULL;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       goto __pyx_L6_unpacking_done;
@@ -3346,7 +3303,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __pyx_t_7 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 160, __pyx_L1_error)
+      __PYX_ERR(0, 161, __pyx_L1_error)
       __pyx_L6_unpacking_done:;
     }
     __pyx_v_key = __pyx_t_3;
@@ -3356,145 +3313,153 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
     __pyx_v_values = __pyx_t_5;
     __pyx_t_5 = 0;
 
-    /* "mabel/data/readers/internals/parallel_reader.py":161
+    /* "mabel/data/readers/internals/parallel_reader.py":162
  *             if isinstance(predicate, tuple):
  *                 key, operator, values = predicate
  *                 if operator in PRE_FILTERABLE_OPERATORS:             # <<<<<<<<<<<<<<
  *                     # do I have an index for this field?
  *                     for index_file in [
  */
-    if (unlikely(!__pyx_cur_scope->__pyx_v_PRE_FILTERABLE_OPERATORS)) { __Pyx_RaiseClosureNameError("PRE_FILTERABLE_OPERATORS"); __PYX_ERR(0, 161, __pyx_L1_error) }
+    if (unlikely(!__pyx_cur_scope->__pyx_v_PRE_FILTERABLE_OPERATORS)) { __Pyx_RaiseClosureNameError("PRE_FILTERABLE_OPERATORS"); __PYX_ERR(0, 162, __pyx_L1_error) }
     if (unlikely(__pyx_cur_scope->__pyx_v_PRE_FILTERABLE_OPERATORS == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-      __PYX_ERR(0, 161, __pyx_L1_error)
+      __PYX_ERR(0, 162, __pyx_L1_error)
     }
-    __pyx_t_1 = (__Pyx_PySet_ContainsTF(__pyx_v_operator, __pyx_cur_scope->__pyx_v_PRE_FILTERABLE_OPERATORS, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 161, __pyx_L1_error)
+    __pyx_t_1 = (__Pyx_PySet_ContainsTF(__pyx_v_operator, __pyx_cur_scope->__pyx_v_PRE_FILTERABLE_OPERATORS, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 162, __pyx_L1_error)
     __pyx_t_2 = (__pyx_t_1 != 0);
     if (__pyx_t_2) {
 
-      /* "mabel/data/readers/internals/parallel_reader.py":163
+      /* "mabel/data/readers/internals/parallel_reader.py":164
  *                 if operator in PRE_FILTERABLE_OPERATORS:
  *                     # do I have an index for this field?
  *                     for index_file in [             # <<<<<<<<<<<<<<
  *                         index_file
  *                         for index_file in index_files
  */
-      __pyx_t_5 = PyList_New(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 163, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_5);
+      { /* enter inner scope */
+        __pyx_t_5 = PyList_New(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 164, __pyx_L12_error)
+        __Pyx_GOTREF(__pyx_t_5);
 
-      /* "mabel/data/readers/internals/parallel_reader.py":165
+        /* "mabel/data/readers/internals/parallel_reader.py":166
  *                     for index_file in [
  *                         index_file
  *                         for index_file in index_files             # <<<<<<<<<<<<<<
  *                         if f".{key}." in index_file
  *                     ]:
  */
-      if (unlikely(!__pyx_cur_scope->__pyx_v_index_files)) { __Pyx_RaiseClosureNameError("index_files"); __PYX_ERR(0, 165, __pyx_L1_error) }
-      if (likely(PyList_CheckExact(__pyx_cur_scope->__pyx_v_index_files)) || PyTuple_CheckExact(__pyx_cur_scope->__pyx_v_index_files)) {
-        __pyx_t_4 = __pyx_cur_scope->__pyx_v_index_files; __Pyx_INCREF(__pyx_t_4); __pyx_t_8 = 0;
-        __pyx_t_9 = NULL;
-      } else {
-        __pyx_t_8 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_index_files); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 165, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_9 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 165, __pyx_L1_error)
-      }
-      for (;;) {
-        if (likely(!__pyx_t_9)) {
-          if (likely(PyList_CheckExact(__pyx_t_4))) {
-            if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_4)) break;
-            #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_3 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_8); __Pyx_INCREF(__pyx_t_3); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 165, __pyx_L1_error)
-            #else
-            __pyx_t_3 = PySequence_ITEM(__pyx_t_4, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 165, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_3);
-            #endif
-          } else {
-            if (__pyx_t_8 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
-            #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_8); __Pyx_INCREF(__pyx_t_3); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 165, __pyx_L1_error)
-            #else
-            __pyx_t_3 = PySequence_ITEM(__pyx_t_4, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 165, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_3);
-            #endif
-          }
+        if (unlikely(!__pyx_cur_scope->__pyx_v_index_files)) { __Pyx_RaiseClosureNameError("index_files"); __PYX_ERR(0, 166, __pyx_L12_error) }
+        if (likely(PyList_CheckExact(__pyx_cur_scope->__pyx_v_index_files)) || PyTuple_CheckExact(__pyx_cur_scope->__pyx_v_index_files)) {
+          __pyx_t_4 = __pyx_cur_scope->__pyx_v_index_files; __Pyx_INCREF(__pyx_t_4); __pyx_t_8 = 0;
+          __pyx_t_9 = NULL;
         } else {
-          __pyx_t_3 = __pyx_t_9(__pyx_t_4);
-          if (unlikely(!__pyx_t_3)) {
-            PyObject* exc_type = PyErr_Occurred();
-            if (exc_type) {
-              if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-              else __PYX_ERR(0, 165, __pyx_L1_error)
-            }
-            break;
-          }
-          __Pyx_GOTREF(__pyx_t_3);
+          __pyx_t_8 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_index_files); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 166, __pyx_L12_error)
+          __Pyx_GOTREF(__pyx_t_4);
+          __pyx_t_9 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 166, __pyx_L12_error)
         }
-        __Pyx_XDECREF_SET(__pyx_v_index_file, __pyx_t_3);
-        __pyx_t_3 = 0;
+        for (;;) {
+          if (likely(!__pyx_t_9)) {
+            if (likely(PyList_CheckExact(__pyx_t_4))) {
+              if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_4)) break;
+              #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+              __pyx_t_3 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_8); __Pyx_INCREF(__pyx_t_3); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 166, __pyx_L12_error)
+              #else
+              __pyx_t_3 = PySequence_ITEM(__pyx_t_4, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 166, __pyx_L12_error)
+              __Pyx_GOTREF(__pyx_t_3);
+              #endif
+            } else {
+              if (__pyx_t_8 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
+              #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+              __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_8); __Pyx_INCREF(__pyx_t_3); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 166, __pyx_L12_error)
+              #else
+              __pyx_t_3 = PySequence_ITEM(__pyx_t_4, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 166, __pyx_L12_error)
+              __Pyx_GOTREF(__pyx_t_3);
+              #endif
+            }
+          } else {
+            __pyx_t_3 = __pyx_t_9(__pyx_t_4);
+            if (unlikely(!__pyx_t_3)) {
+              PyObject* exc_type = PyErr_Occurred();
+              if (exc_type) {
+                if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+                else __PYX_ERR(0, 166, __pyx_L12_error)
+              }
+              break;
+            }
+            __Pyx_GOTREF(__pyx_t_3);
+          }
+          __Pyx_XDECREF_SET(__pyx_8genexpr1__pyx_v_index_file, __pyx_t_3);
+          __pyx_t_3 = 0;
 
-        /* "mabel/data/readers/internals/parallel_reader.py":166
+          /* "mabel/data/readers/internals/parallel_reader.py":167
  *                         index_file
  *                         for index_file in index_files
  *                         if f".{key}." in index_file             # <<<<<<<<<<<<<<
  *                     ]:
  *                         index = Index(self.reader.get_blob_stream(index_file))
  */
-        __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 166, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_3);
-        __pyx_t_10 = 0;
-        __pyx_t_11 = 127;
-        __Pyx_INCREF(__pyx_kp_u_);
-        __pyx_t_10 += 1;
-        __Pyx_GIVEREF(__pyx_kp_u_);
-        PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_kp_u_);
-        __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_v_key, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 166, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_11 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_11) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_11;
-        __pyx_t_10 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
-        __Pyx_GIVEREF(__pyx_t_6);
-        PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_6);
-        __pyx_t_6 = 0;
-        __Pyx_INCREF(__pyx_kp_u_);
-        __pyx_t_10 += 1;
-        __Pyx_GIVEREF(__pyx_kp_u_);
-        PyTuple_SET_ITEM(__pyx_t_3, 2, __pyx_kp_u_);
-        __pyx_t_6 = __Pyx_PyUnicode_Join(__pyx_t_3, 3, __pyx_t_10, __pyx_t_11); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 166, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_6);
-        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __pyx_t_2 = (__Pyx_PySequence_ContainsTF(__pyx_t_6, __pyx_v_index_file, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 166, __pyx_L1_error)
-        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-        __pyx_t_1 = (__pyx_t_2 != 0);
-        if (__pyx_t_1) {
+          __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 167, __pyx_L12_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __pyx_t_10 = 0;
+          __pyx_t_11 = 127;
+          __Pyx_INCREF(__pyx_kp_u_);
+          __pyx_t_10 += 1;
+          __Pyx_GIVEREF(__pyx_kp_u_);
+          PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_kp_u_);
+          __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_v_key, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 167, __pyx_L12_error)
+          __Pyx_GOTREF(__pyx_t_6);
+          __pyx_t_11 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_11) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_11;
+          __pyx_t_10 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
+          __Pyx_GIVEREF(__pyx_t_6);
+          PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_6);
+          __pyx_t_6 = 0;
+          __Pyx_INCREF(__pyx_kp_u_);
+          __pyx_t_10 += 1;
+          __Pyx_GIVEREF(__pyx_kp_u_);
+          PyTuple_SET_ITEM(__pyx_t_3, 2, __pyx_kp_u_);
+          __pyx_t_6 = __Pyx_PyUnicode_Join(__pyx_t_3, 3, __pyx_t_10, __pyx_t_11); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 167, __pyx_L12_error)
+          __Pyx_GOTREF(__pyx_t_6);
+          __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+          __pyx_t_2 = (__Pyx_PySequence_ContainsTF(__pyx_t_6, __pyx_8genexpr1__pyx_v_index_file, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 167, __pyx_L12_error)
+          __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+          __pyx_t_1 = (__pyx_t_2 != 0);
+          if (__pyx_t_1) {
 
-          /* "mabel/data/readers/internals/parallel_reader.py":164
+            /* "mabel/data/readers/internals/parallel_reader.py":165
  *                     # do I have an index for this field?
  *                     for index_file in [
  *                         index_file             # <<<<<<<<<<<<<<
  *                         for index_file in index_files
  *                         if f".{key}." in index_file
  */
-          if (unlikely(__Pyx_ListComp_Append(__pyx_t_5, (PyObject*)__pyx_v_index_file))) __PYX_ERR(0, 163, __pyx_L1_error)
+            if (unlikely(__Pyx_ListComp_Append(__pyx_t_5, (PyObject*)__pyx_8genexpr1__pyx_v_index_file))) __PYX_ERR(0, 164, __pyx_L12_error)
 
-          /* "mabel/data/readers/internals/parallel_reader.py":166
+            /* "mabel/data/readers/internals/parallel_reader.py":167
  *                         index_file
  *                         for index_file in index_files
  *                         if f".{key}." in index_file             # <<<<<<<<<<<<<<
  *                     ]:
  *                         index = Index(self.reader.get_blob_stream(index_file))
  */
-        }
+          }
 
-        /* "mabel/data/readers/internals/parallel_reader.py":165
+          /* "mabel/data/readers/internals/parallel_reader.py":166
  *                     for index_file in [
  *                         index_file
  *                         for index_file in index_files             # <<<<<<<<<<<<<<
  *                         if f".{key}." in index_file
  *                     ]:
  */
-      }
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+        }
+        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+        __Pyx_XDECREF(__pyx_8genexpr1__pyx_v_index_file); __pyx_8genexpr1__pyx_v_index_file = 0;
+        goto __pyx_L16_exit_scope;
+        __pyx_L12_error:;
+        __Pyx_XDECREF(__pyx_8genexpr1__pyx_v_index_file); __pyx_8genexpr1__pyx_v_index_file = 0;
+        goto __pyx_L1_error;
+        __pyx_L16_exit_scope:;
+      } /* exit inner scope */
 
-      /* "mabel/data/readers/internals/parallel_reader.py":163
+      /* "mabel/data/readers/internals/parallel_reader.py":164
  *                 if operator in PRE_FILTERABLE_OPERATORS:
  *                     # do I have an index for this field?
  *                     for index_file in [             # <<<<<<<<<<<<<<
@@ -3506,27 +3471,27 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
       for (;;) {
         if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_4)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_5 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_8); __Pyx_INCREF(__pyx_t_5); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 163, __pyx_L1_error)
+        __pyx_t_5 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_8); __Pyx_INCREF(__pyx_t_5); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 164, __pyx_L1_error)
         #else
-        __pyx_t_5 = PySequence_ITEM(__pyx_t_4, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 163, __pyx_L1_error)
+        __pyx_t_5 = PySequence_ITEM(__pyx_t_4, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 164, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         #endif
-        __Pyx_XDECREF_SET(__pyx_v_index_file, __pyx_t_5);
+        __pyx_v_index_file = __pyx_t_5;
         __pyx_t_5 = 0;
 
-        /* "mabel/data/readers/internals/parallel_reader.py":168
+        /* "mabel/data/readers/internals/parallel_reader.py":169
  *                         if f".{key}." in index_file
  *                     ]:
  *                         index = Index(self.reader.get_blob_stream(index_file))             # <<<<<<<<<<<<<<
  *                         return index.search(values)
  * 
  */
-        __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_Index); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 168, __pyx_L1_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_Index); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 169, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 168, __pyx_L1_error) }
-        __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_reader); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 168, __pyx_L1_error)
+        if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 169, __pyx_L1_error) }
+        __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_reader); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 169, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_12);
-        __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_get_blob_stream); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 168, __pyx_L1_error)
+        __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_get_blob_stream); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 169, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_13);
         __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
         __pyx_t_12 = NULL;
@@ -3541,7 +3506,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
         }
         __pyx_t_3 = (__pyx_t_12) ? __Pyx_PyObject_Call2Args(__pyx_t_13, __pyx_t_12, __pyx_v_index_file) : __Pyx_PyObject_CallOneArg(__pyx_t_13, __pyx_v_index_file);
         __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
-        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 168, __pyx_L1_error)
+        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 169, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
         __pyx_t_13 = NULL;
@@ -3557,13 +3522,13 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
         __pyx_t_5 = (__pyx_t_13) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_13, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_3);
         __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 168, __pyx_L1_error)
+        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 169, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         __pyx_v_index = __pyx_t_5;
         __pyx_t_5 = 0;
 
-        /* "mabel/data/readers/internals/parallel_reader.py":169
+        /* "mabel/data/readers/internals/parallel_reader.py":170
  *                     ]:
  *                         index = Index(self.reader.get_blob_stream(index_file))
  *                         return index.search(values)             # <<<<<<<<<<<<<<
@@ -3571,7 +3536,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
  *                 return self.NOT_INDEXED
  */
         __Pyx_XDECREF(__pyx_r);
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_index, __pyx_n_s_search); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 169, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_index, __pyx_n_s_search); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 170, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_t_3 = NULL;
         if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
@@ -3585,7 +3550,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
         }
         __pyx_t_5 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_3, __pyx_v_values) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_v_values);
         __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 169, __pyx_L1_error)
+        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 170, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         __pyx_r = __pyx_t_5;
@@ -3593,7 +3558,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         goto __pyx_L0;
 
-        /* "mabel/data/readers/internals/parallel_reader.py":163
+        /* "mabel/data/readers/internals/parallel_reader.py":164
  *                 if operator in PRE_FILTERABLE_OPERATORS:
  *                     # do I have an index for this field?
  *                     for index_file in [             # <<<<<<<<<<<<<<
@@ -3603,7 +3568,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
       }
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-      /* "mabel/data/readers/internals/parallel_reader.py":161
+      /* "mabel/data/readers/internals/parallel_reader.py":162
  *             if isinstance(predicate, tuple):
  *                 key, operator, values = predicate
  *                 if operator in PRE_FILTERABLE_OPERATORS:             # <<<<<<<<<<<<<<
@@ -3612,7 +3577,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
  */
     }
 
-    /* "mabel/data/readers/internals/parallel_reader.py":171
+    /* "mabel/data/readers/internals/parallel_reader.py":172
  *                         return index.search(values)
  * 
  *                 return self.NOT_INDEXED             # <<<<<<<<<<<<<<
@@ -3620,14 +3585,14 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
  *             if isinstance(predicate, list):
  */
     __Pyx_XDECREF(__pyx_r);
-    if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 171, __pyx_L1_error) }
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_NOT_INDEXED); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 171, __pyx_L1_error)
+    if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 172, __pyx_L1_error) }
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_NOT_INDEXED); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 172, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
     goto __pyx_L0;
 
-    /* "mabel/data/readers/internals/parallel_reader.py":159
+    /* "mabel/data/readers/internals/parallel_reader.py":160
  *             # Extract out the key, operator and value and look them up against the
  *             # index - if we can.
  *             if isinstance(predicate, tuple):             # <<<<<<<<<<<<<<
@@ -3636,7 +3601,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
  */
   }
 
-  /* "mabel/data/readers/internals/parallel_reader.py":173
+  /* "mabel/data/readers/internals/parallel_reader.py":174
  *                 return self.NOT_INDEXED
  * 
  *             if isinstance(predicate, list):             # <<<<<<<<<<<<<<
@@ -3647,83 +3612,91 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "mabel/data/readers/internals/parallel_reader.py":175
+    /* "mabel/data/readers/internals/parallel_reader.py":176
  *             if isinstance(predicate, list):
  *                 # Are all of the entries tuples? These are ANDed together.
  *                 rows = []             # <<<<<<<<<<<<<<
  *                 if all([isinstance(p, tuple) for p in predicate]):
  *                     for index, row in enumerate(predicate):
  */
-    __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 175, __pyx_L1_error)
+    __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 176, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_v_rows = __pyx_t_4;
     __pyx_t_4 = 0;
 
-    /* "mabel/data/readers/internals/parallel_reader.py":176
+    /* "mabel/data/readers/internals/parallel_reader.py":177
  *                 # Are all of the entries tuples? These are ANDed together.
  *                 rows = []
  *                 if all([isinstance(p, tuple) for p in predicate]):             # <<<<<<<<<<<<<<
  *                     for index, row in enumerate(predicate):
  *                         if index == 0:
  */
-    __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 176, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    if (likely(PyList_CheckExact(__pyx_v_predicate)) || PyTuple_CheckExact(__pyx_v_predicate)) {
-      __pyx_t_5 = __pyx_v_predicate; __Pyx_INCREF(__pyx_t_5); __pyx_t_8 = 0;
-      __pyx_t_9 = NULL;
-    } else {
-      __pyx_t_8 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_v_predicate); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 176, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_9 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 176, __pyx_L1_error)
-    }
-    for (;;) {
-      if (likely(!__pyx_t_9)) {
-        if (likely(PyList_CheckExact(__pyx_t_5))) {
-          if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_5)) break;
-          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_6 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_8); __Pyx_INCREF(__pyx_t_6); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 176, __pyx_L1_error)
-          #else
-          __pyx_t_6 = PySequence_ITEM(__pyx_t_5, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 176, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_6);
-          #endif
-        } else {
-          if (__pyx_t_8 >= PyTuple_GET_SIZE(__pyx_t_5)) break;
-          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_6 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_8); __Pyx_INCREF(__pyx_t_6); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 176, __pyx_L1_error)
-          #else
-          __pyx_t_6 = PySequence_ITEM(__pyx_t_5, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 176, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_6);
-          #endif
-        }
+    { /* enter inner scope */
+      __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 177, __pyx_L21_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      if (likely(PyList_CheckExact(__pyx_v_predicate)) || PyTuple_CheckExact(__pyx_v_predicate)) {
+        __pyx_t_5 = __pyx_v_predicate; __Pyx_INCREF(__pyx_t_5); __pyx_t_8 = 0;
+        __pyx_t_9 = NULL;
       } else {
-        __pyx_t_6 = __pyx_t_9(__pyx_t_5);
-        if (unlikely(!__pyx_t_6)) {
-          PyObject* exc_type = PyErr_Occurred();
-          if (exc_type) {
-            if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 176, __pyx_L1_error)
-          }
-          break;
-        }
-        __Pyx_GOTREF(__pyx_t_6);
+        __pyx_t_8 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_v_predicate); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 177, __pyx_L21_error)
+        __Pyx_GOTREF(__pyx_t_5);
+        __pyx_t_9 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 177, __pyx_L21_error)
       }
-      __Pyx_XDECREF_SET(__pyx_v_p, __pyx_t_6);
-      __pyx_t_6 = 0;
-      __pyx_t_2 = PyTuple_Check(__pyx_v_p); 
-      __pyx_t_6 = __Pyx_PyBool_FromLong(__pyx_t_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 176, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_6);
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_4, (PyObject*)__pyx_t_6))) __PYX_ERR(0, 176, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    }
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_builtin_all, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 176, __pyx_L1_error)
+      for (;;) {
+        if (likely(!__pyx_t_9)) {
+          if (likely(PyList_CheckExact(__pyx_t_5))) {
+            if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_5)) break;
+            #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+            __pyx_t_6 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_8); __Pyx_INCREF(__pyx_t_6); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 177, __pyx_L21_error)
+            #else
+            __pyx_t_6 = PySequence_ITEM(__pyx_t_5, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 177, __pyx_L21_error)
+            __Pyx_GOTREF(__pyx_t_6);
+            #endif
+          } else {
+            if (__pyx_t_8 >= PyTuple_GET_SIZE(__pyx_t_5)) break;
+            #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+            __pyx_t_6 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_8); __Pyx_INCREF(__pyx_t_6); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 177, __pyx_L21_error)
+            #else
+            __pyx_t_6 = PySequence_ITEM(__pyx_t_5, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 177, __pyx_L21_error)
+            __Pyx_GOTREF(__pyx_t_6);
+            #endif
+          }
+        } else {
+          __pyx_t_6 = __pyx_t_9(__pyx_t_5);
+          if (unlikely(!__pyx_t_6)) {
+            PyObject* exc_type = PyErr_Occurred();
+            if (exc_type) {
+              if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+              else __PYX_ERR(0, 177, __pyx_L21_error)
+            }
+            break;
+          }
+          __Pyx_GOTREF(__pyx_t_6);
+        }
+        __Pyx_XDECREF_SET(__pyx_8genexpr2__pyx_v_p, __pyx_t_6);
+        __pyx_t_6 = 0;
+        __pyx_t_2 = PyTuple_Check(__pyx_8genexpr2__pyx_v_p); 
+        __pyx_t_6 = __Pyx_PyBool_FromLong(__pyx_t_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 177, __pyx_L21_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        if (unlikely(__Pyx_ListComp_Append(__pyx_t_4, (PyObject*)__pyx_t_6))) __PYX_ERR(0, 177, __pyx_L21_error)
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      }
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __Pyx_XDECREF(__pyx_8genexpr2__pyx_v_p); __pyx_8genexpr2__pyx_v_p = 0;
+      goto __pyx_L24_exit_scope;
+      __pyx_L21_error:;
+      __Pyx_XDECREF(__pyx_8genexpr2__pyx_v_p); __pyx_8genexpr2__pyx_v_p = 0;
+      goto __pyx_L1_error;
+      __pyx_L24_exit_scope:;
+    } /* exit inner scope */
+    __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_builtin_all, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 177, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 176, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 177, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     if (__pyx_t_2) {
 
-      /* "mabel/data/readers/internals/parallel_reader.py":177
+      /* "mabel/data/readers/internals/parallel_reader.py":178
  *                 rows = []
  *                 if all([isinstance(p, tuple) for p in predicate]):
  *                     for index, row in enumerate(predicate):             # <<<<<<<<<<<<<<
@@ -3736,26 +3709,26 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
         __pyx_t_4 = __pyx_v_predicate; __Pyx_INCREF(__pyx_t_4); __pyx_t_8 = 0;
         __pyx_t_9 = NULL;
       } else {
-        __pyx_t_8 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_v_predicate); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 177, __pyx_L1_error)
+        __pyx_t_8 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_v_predicate); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 178, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_9 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 177, __pyx_L1_error)
+        __pyx_t_9 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 178, __pyx_L1_error)
       }
       for (;;) {
         if (likely(!__pyx_t_9)) {
           if (likely(PyList_CheckExact(__pyx_t_4))) {
             if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_4)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_6 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_8); __Pyx_INCREF(__pyx_t_6); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 177, __pyx_L1_error)
+            __pyx_t_6 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_8); __Pyx_INCREF(__pyx_t_6); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 178, __pyx_L1_error)
             #else
-            __pyx_t_6 = PySequence_ITEM(__pyx_t_4, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 177, __pyx_L1_error)
+            __pyx_t_6 = PySequence_ITEM(__pyx_t_4, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 178, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_6);
             #endif
           } else {
             if (__pyx_t_8 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_6 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_8); __Pyx_INCREF(__pyx_t_6); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 177, __pyx_L1_error)
+            __pyx_t_6 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_8); __Pyx_INCREF(__pyx_t_6); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 178, __pyx_L1_error)
             #else
-            __pyx_t_6 = PySequence_ITEM(__pyx_t_4, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 177, __pyx_L1_error)
+            __pyx_t_6 = PySequence_ITEM(__pyx_t_4, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 178, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_6);
             #endif
           }
@@ -3765,7 +3738,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
               if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-              else __PYX_ERR(0, 177, __pyx_L1_error)
+              else __PYX_ERR(0, 178, __pyx_L1_error)
             }
             break;
           }
@@ -3775,49 +3748,49 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
         __pyx_t_6 = 0;
         __Pyx_INCREF(__pyx_t_5);
         __Pyx_XDECREF_SET(__pyx_v_index, __pyx_t_5);
-        __pyx_t_6 = __Pyx_PyInt_AddObjC(__pyx_t_5, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 177, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyInt_AddObjC(__pyx_t_5, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 178, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_DECREF(__pyx_t_5);
         __pyx_t_5 = __pyx_t_6;
         __pyx_t_6 = 0;
 
-        /* "mabel/data/readers/internals/parallel_reader.py":178
+        /* "mabel/data/readers/internals/parallel_reader.py":179
  *                 if all([isinstance(p, tuple) for p in predicate]):
  *                     for index, row in enumerate(predicate):
  *                         if index == 0:             # <<<<<<<<<<<<<<
  *                             rows = _inner_prefilter(row)
  *                         else:
  */
-        __pyx_t_6 = __Pyx_PyInt_EqObjC(__pyx_v_index, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 178, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyInt_EqObjC(__pyx_v_index, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 179, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 178, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 179, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         if (__pyx_t_2) {
 
-          /* "mabel/data/readers/internals/parallel_reader.py":179
+          /* "mabel/data/readers/internals/parallel_reader.py":180
  *                     for index, row in enumerate(predicate):
  *                         if index == 0:
  *                             rows = _inner_prefilter(row)             # <<<<<<<<<<<<<<
  *                         else:
  *                             rows = [p for p in _inner_prefilter(row) if p in rows]
  */
-          if (unlikely(!__pyx_cur_scope->__pyx_v__inner_prefilter)) { __Pyx_RaiseClosureNameError("_inner_prefilter"); __PYX_ERR(0, 179, __pyx_L1_error) }
-          __pyx_t_6 = __pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_10pre_filter__inner_prefilter(__pyx_cur_scope->__pyx_v__inner_prefilter, __pyx_v_row); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 179, __pyx_L1_error)
+          if (unlikely(!__pyx_cur_scope->__pyx_v__inner_prefilter)) { __Pyx_RaiseClosureNameError("_inner_prefilter"); __PYX_ERR(0, 180, __pyx_L1_error) }
+          __pyx_t_6 = __pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_10pre_filter__inner_prefilter(__pyx_cur_scope->__pyx_v__inner_prefilter, __pyx_v_row); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 180, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
           __Pyx_DECREF_SET(__pyx_v_rows, __pyx_t_6);
           __pyx_t_6 = 0;
 
-          /* "mabel/data/readers/internals/parallel_reader.py":178
+          /* "mabel/data/readers/internals/parallel_reader.py":179
  *                 if all([isinstance(p, tuple) for p in predicate]):
  *                     for index, row in enumerate(predicate):
  *                         if index == 0:             # <<<<<<<<<<<<<<
  *                             rows = _inner_prefilter(row)
  *                         else:
  */
-          goto __pyx_L19;
+          goto __pyx_L27;
         }
 
-        /* "mabel/data/readers/internals/parallel_reader.py":181
+        /* "mabel/data/readers/internals/parallel_reader.py":182
  *                             rows = _inner_prefilter(row)
  *                         else:
  *                             rows = [p for p in _inner_prefilter(row) if p in rows]             # <<<<<<<<<<<<<<
@@ -3825,66 +3798,74 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
  * 
  */
         /*else*/ {
-          __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 181, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_6);
-          if (unlikely(!__pyx_cur_scope->__pyx_v__inner_prefilter)) { __Pyx_RaiseClosureNameError("_inner_prefilter"); __PYX_ERR(0, 181, __pyx_L1_error) }
-          __pyx_t_3 = __pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_10pre_filter__inner_prefilter(__pyx_cur_scope->__pyx_v__inner_prefilter, __pyx_v_row); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 181, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_3);
-          if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
-            __pyx_t_13 = __pyx_t_3; __Pyx_INCREF(__pyx_t_13); __pyx_t_10 = 0;
-            __pyx_t_14 = NULL;
-          } else {
-            __pyx_t_10 = -1; __pyx_t_13 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 181, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_13);
-            __pyx_t_14 = Py_TYPE(__pyx_t_13)->tp_iternext; if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 181, __pyx_L1_error)
-          }
-          __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-          for (;;) {
-            if (likely(!__pyx_t_14)) {
-              if (likely(PyList_CheckExact(__pyx_t_13))) {
-                if (__pyx_t_10 >= PyList_GET_SIZE(__pyx_t_13)) break;
-                #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-                __pyx_t_3 = PyList_GET_ITEM(__pyx_t_13, __pyx_t_10); __Pyx_INCREF(__pyx_t_3); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 181, __pyx_L1_error)
-                #else
-                __pyx_t_3 = PySequence_ITEM(__pyx_t_13, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 181, __pyx_L1_error)
-                __Pyx_GOTREF(__pyx_t_3);
-                #endif
-              } else {
-                if (__pyx_t_10 >= PyTuple_GET_SIZE(__pyx_t_13)) break;
-                #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-                __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_13, __pyx_t_10); __Pyx_INCREF(__pyx_t_3); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 181, __pyx_L1_error)
-                #else
-                __pyx_t_3 = PySequence_ITEM(__pyx_t_13, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 181, __pyx_L1_error)
-                __Pyx_GOTREF(__pyx_t_3);
-                #endif
-              }
+          { /* enter inner scope */
+            __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 182, __pyx_L30_error)
+            __Pyx_GOTREF(__pyx_t_6);
+            if (unlikely(!__pyx_cur_scope->__pyx_v__inner_prefilter)) { __Pyx_RaiseClosureNameError("_inner_prefilter"); __PYX_ERR(0, 182, __pyx_L30_error) }
+            __pyx_t_3 = __pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_10pre_filter__inner_prefilter(__pyx_cur_scope->__pyx_v__inner_prefilter, __pyx_v_row); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 182, __pyx_L30_error)
+            __Pyx_GOTREF(__pyx_t_3);
+            if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
+              __pyx_t_13 = __pyx_t_3; __Pyx_INCREF(__pyx_t_13); __pyx_t_10 = 0;
+              __pyx_t_14 = NULL;
             } else {
-              __pyx_t_3 = __pyx_t_14(__pyx_t_13);
-              if (unlikely(!__pyx_t_3)) {
-                PyObject* exc_type = PyErr_Occurred();
-                if (exc_type) {
-                  if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-                  else __PYX_ERR(0, 181, __pyx_L1_error)
+              __pyx_t_10 = -1; __pyx_t_13 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 182, __pyx_L30_error)
+              __Pyx_GOTREF(__pyx_t_13);
+              __pyx_t_14 = Py_TYPE(__pyx_t_13)->tp_iternext; if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 182, __pyx_L30_error)
+            }
+            __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+            for (;;) {
+              if (likely(!__pyx_t_14)) {
+                if (likely(PyList_CheckExact(__pyx_t_13))) {
+                  if (__pyx_t_10 >= PyList_GET_SIZE(__pyx_t_13)) break;
+                  #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+                  __pyx_t_3 = PyList_GET_ITEM(__pyx_t_13, __pyx_t_10); __Pyx_INCREF(__pyx_t_3); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 182, __pyx_L30_error)
+                  #else
+                  __pyx_t_3 = PySequence_ITEM(__pyx_t_13, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 182, __pyx_L30_error)
+                  __Pyx_GOTREF(__pyx_t_3);
+                  #endif
+                } else {
+                  if (__pyx_t_10 >= PyTuple_GET_SIZE(__pyx_t_13)) break;
+                  #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+                  __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_13, __pyx_t_10); __Pyx_INCREF(__pyx_t_3); __pyx_t_10++; if (unlikely(0 < 0)) __PYX_ERR(0, 182, __pyx_L30_error)
+                  #else
+                  __pyx_t_3 = PySequence_ITEM(__pyx_t_13, __pyx_t_10); __pyx_t_10++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 182, __pyx_L30_error)
+                  __Pyx_GOTREF(__pyx_t_3);
+                  #endif
                 }
-                break;
+              } else {
+                __pyx_t_3 = __pyx_t_14(__pyx_t_13);
+                if (unlikely(!__pyx_t_3)) {
+                  PyObject* exc_type = PyErr_Occurred();
+                  if (exc_type) {
+                    if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+                    else __PYX_ERR(0, 182, __pyx_L30_error)
+                  }
+                  break;
+                }
+                __Pyx_GOTREF(__pyx_t_3);
               }
-              __Pyx_GOTREF(__pyx_t_3);
+              __Pyx_XDECREF_SET(__pyx_8genexpr3__pyx_v_p, __pyx_t_3);
+              __pyx_t_3 = 0;
+              __pyx_t_2 = (__Pyx_PySequence_ContainsTF(__pyx_8genexpr3__pyx_v_p, __pyx_v_rows, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 182, __pyx_L30_error)
+              __pyx_t_1 = (__pyx_t_2 != 0);
+              if (__pyx_t_1) {
+                if (unlikely(__Pyx_ListComp_Append(__pyx_t_6, (PyObject*)__pyx_8genexpr3__pyx_v_p))) __PYX_ERR(0, 182, __pyx_L30_error)
+              }
             }
-            __Pyx_XDECREF_SET(__pyx_v_p, __pyx_t_3);
-            __pyx_t_3 = 0;
-            __pyx_t_2 = (__Pyx_PySequence_ContainsTF(__pyx_v_p, __pyx_v_rows, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 181, __pyx_L1_error)
-            __pyx_t_1 = (__pyx_t_2 != 0);
-            if (__pyx_t_1) {
-              if (unlikely(__Pyx_ListComp_Append(__pyx_t_6, (PyObject*)__pyx_v_p))) __PYX_ERR(0, 181, __pyx_L1_error)
-            }
-          }
-          __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
+            __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
+            __Pyx_XDECREF(__pyx_8genexpr3__pyx_v_p); __pyx_8genexpr3__pyx_v_p = 0;
+            goto __pyx_L34_exit_scope;
+            __pyx_L30_error:;
+            __Pyx_XDECREF(__pyx_8genexpr3__pyx_v_p); __pyx_8genexpr3__pyx_v_p = 0;
+            goto __pyx_L1_error;
+            __pyx_L34_exit_scope:;
+          } /* exit inner scope */
           __Pyx_DECREF_SET(__pyx_v_rows, __pyx_t_6);
           __pyx_t_6 = 0;
         }
-        __pyx_L19:;
+        __pyx_L27:;
 
-        /* "mabel/data/readers/internals/parallel_reader.py":177
+        /* "mabel/data/readers/internals/parallel_reader.py":178
  *                 rows = []
  *                 if all([isinstance(p, tuple) for p in predicate]):
  *                     for index, row in enumerate(predicate):             # <<<<<<<<<<<<<<
@@ -3895,7 +3876,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-      /* "mabel/data/readers/internals/parallel_reader.py":182
+      /* "mabel/data/readers/internals/parallel_reader.py":183
  *                         else:
  *                             rows = [p for p in _inner_prefilter(row) if p in rows]
  *                     return rows             # <<<<<<<<<<<<<<
@@ -3907,7 +3888,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
       __pyx_r = __pyx_v_rows;
       goto __pyx_L0;
 
-      /* "mabel/data/readers/internals/parallel_reader.py":176
+      /* "mabel/data/readers/internals/parallel_reader.py":177
  *                 # Are all of the entries tuples? These are ANDed together.
  *                 rows = []
  *                 if all([isinstance(p, tuple) for p in predicate]):             # <<<<<<<<<<<<<<
@@ -3916,168 +3897,192 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
  */
     }
 
-    /* "mabel/data/readers/internals/parallel_reader.py":187
+    /* "mabel/data/readers/internals/parallel_reader.py":188
  *                 # All of the elements in an OR need to be indexable for use to be
  *                 # able to prefilter.
  *                 if all([isinstance(p, list) for p in predicate]):             # <<<<<<<<<<<<<<
  *                     evaluations = [_inner_prefilter(p) for p in predicate]
  *                     if not all([e == self.NOT_INDEXED for e in evaluations]):
  */
-    __pyx_t_5 = PyList_New(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 187, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    if (likely(PyList_CheckExact(__pyx_v_predicate)) || PyTuple_CheckExact(__pyx_v_predicate)) {
-      __pyx_t_4 = __pyx_v_predicate; __Pyx_INCREF(__pyx_t_4); __pyx_t_8 = 0;
-      __pyx_t_9 = NULL;
-    } else {
-      __pyx_t_8 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_v_predicate); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 187, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_9 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 187, __pyx_L1_error)
-    }
-    for (;;) {
-      if (likely(!__pyx_t_9)) {
-        if (likely(PyList_CheckExact(__pyx_t_4))) {
-          if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_4)) break;
-          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_6 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_8); __Pyx_INCREF(__pyx_t_6); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 187, __pyx_L1_error)
-          #else
-          __pyx_t_6 = PySequence_ITEM(__pyx_t_4, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 187, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_6);
-          #endif
-        } else {
-          if (__pyx_t_8 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
-          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_6 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_8); __Pyx_INCREF(__pyx_t_6); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 187, __pyx_L1_error)
-          #else
-          __pyx_t_6 = PySequence_ITEM(__pyx_t_4, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 187, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_6);
-          #endif
-        }
+    { /* enter inner scope */
+      __pyx_t_5 = PyList_New(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 188, __pyx_L38_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      if (likely(PyList_CheckExact(__pyx_v_predicate)) || PyTuple_CheckExact(__pyx_v_predicate)) {
+        __pyx_t_4 = __pyx_v_predicate; __Pyx_INCREF(__pyx_t_4); __pyx_t_8 = 0;
+        __pyx_t_9 = NULL;
       } else {
-        __pyx_t_6 = __pyx_t_9(__pyx_t_4);
-        if (unlikely(!__pyx_t_6)) {
-          PyObject* exc_type = PyErr_Occurred();
-          if (exc_type) {
-            if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 187, __pyx_L1_error)
-          }
-          break;
-        }
-        __Pyx_GOTREF(__pyx_t_6);
+        __pyx_t_8 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_v_predicate); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 188, __pyx_L38_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        __pyx_t_9 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 188, __pyx_L38_error)
       }
-      __Pyx_XDECREF_SET(__pyx_v_p, __pyx_t_6);
-      __pyx_t_6 = 0;
-      __pyx_t_1 = PyList_Check(__pyx_v_p); 
-      __pyx_t_6 = __Pyx_PyBool_FromLong(__pyx_t_1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 187, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_6);
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_5, (PyObject*)__pyx_t_6))) __PYX_ERR(0, 187, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    }
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_all, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 187, __pyx_L1_error)
+      for (;;) {
+        if (likely(!__pyx_t_9)) {
+          if (likely(PyList_CheckExact(__pyx_t_4))) {
+            if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_4)) break;
+            #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+            __pyx_t_6 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_8); __Pyx_INCREF(__pyx_t_6); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 188, __pyx_L38_error)
+            #else
+            __pyx_t_6 = PySequence_ITEM(__pyx_t_4, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 188, __pyx_L38_error)
+            __Pyx_GOTREF(__pyx_t_6);
+            #endif
+          } else {
+            if (__pyx_t_8 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
+            #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+            __pyx_t_6 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_8); __Pyx_INCREF(__pyx_t_6); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 188, __pyx_L38_error)
+            #else
+            __pyx_t_6 = PySequence_ITEM(__pyx_t_4, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 188, __pyx_L38_error)
+            __Pyx_GOTREF(__pyx_t_6);
+            #endif
+          }
+        } else {
+          __pyx_t_6 = __pyx_t_9(__pyx_t_4);
+          if (unlikely(!__pyx_t_6)) {
+            PyObject* exc_type = PyErr_Occurred();
+            if (exc_type) {
+              if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+              else __PYX_ERR(0, 188, __pyx_L38_error)
+            }
+            break;
+          }
+          __Pyx_GOTREF(__pyx_t_6);
+        }
+        __Pyx_XDECREF_SET(__pyx_8genexpr4__pyx_v_p, __pyx_t_6);
+        __pyx_t_6 = 0;
+        __pyx_t_1 = PyList_Check(__pyx_8genexpr4__pyx_v_p); 
+        __pyx_t_6 = __Pyx_PyBool_FromLong(__pyx_t_1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 188, __pyx_L38_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        if (unlikely(__Pyx_ListComp_Append(__pyx_t_5, (PyObject*)__pyx_t_6))) __PYX_ERR(0, 188, __pyx_L38_error)
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      }
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __Pyx_XDECREF(__pyx_8genexpr4__pyx_v_p); __pyx_8genexpr4__pyx_v_p = 0;
+      goto __pyx_L41_exit_scope;
+      __pyx_L38_error:;
+      __Pyx_XDECREF(__pyx_8genexpr4__pyx_v_p); __pyx_8genexpr4__pyx_v_p = 0;
+      goto __pyx_L1_error;
+      __pyx_L41_exit_scope:;
+    } /* exit inner scope */
+    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_all, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 188, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 187, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 188, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     if (__pyx_t_1) {
 
-      /* "mabel/data/readers/internals/parallel_reader.py":188
+      /* "mabel/data/readers/internals/parallel_reader.py":189
  *                 # able to prefilter.
  *                 if all([isinstance(p, list) for p in predicate]):
  *                     evaluations = [_inner_prefilter(p) for p in predicate]             # <<<<<<<<<<<<<<
  *                     if not all([e == self.NOT_INDEXED for e in evaluations]):
  *                         return self.NOT_INDEXED
  */
-      __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 188, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      if (likely(PyList_CheckExact(__pyx_v_predicate)) || PyTuple_CheckExact(__pyx_v_predicate)) {
-        __pyx_t_5 = __pyx_v_predicate; __Pyx_INCREF(__pyx_t_5); __pyx_t_8 = 0;
-        __pyx_t_9 = NULL;
-      } else {
-        __pyx_t_8 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_v_predicate); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 188, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_9 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 188, __pyx_L1_error)
-      }
-      for (;;) {
-        if (likely(!__pyx_t_9)) {
-          if (likely(PyList_CheckExact(__pyx_t_5))) {
-            if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_5)) break;
-            #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_6 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_8); __Pyx_INCREF(__pyx_t_6); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 188, __pyx_L1_error)
-            #else
-            __pyx_t_6 = PySequence_ITEM(__pyx_t_5, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 188, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_6);
-            #endif
-          } else {
-            if (__pyx_t_8 >= PyTuple_GET_SIZE(__pyx_t_5)) break;
-            #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_6 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_8); __Pyx_INCREF(__pyx_t_6); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 188, __pyx_L1_error)
-            #else
-            __pyx_t_6 = PySequence_ITEM(__pyx_t_5, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 188, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_6);
-            #endif
-          }
+      { /* enter inner scope */
+        __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 189, __pyx_L44_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        if (likely(PyList_CheckExact(__pyx_v_predicate)) || PyTuple_CheckExact(__pyx_v_predicate)) {
+          __pyx_t_5 = __pyx_v_predicate; __Pyx_INCREF(__pyx_t_5); __pyx_t_8 = 0;
+          __pyx_t_9 = NULL;
         } else {
-          __pyx_t_6 = __pyx_t_9(__pyx_t_5);
-          if (unlikely(!__pyx_t_6)) {
-            PyObject* exc_type = PyErr_Occurred();
-            if (exc_type) {
-              if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-              else __PYX_ERR(0, 188, __pyx_L1_error)
-            }
-            break;
-          }
-          __Pyx_GOTREF(__pyx_t_6);
+          __pyx_t_8 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_v_predicate); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 189, __pyx_L44_error)
+          __Pyx_GOTREF(__pyx_t_5);
+          __pyx_t_9 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 189, __pyx_L44_error)
         }
-        __Pyx_XDECREF_SET(__pyx_v_p, __pyx_t_6);
-        __pyx_t_6 = 0;
-        if (unlikely(!__pyx_cur_scope->__pyx_v__inner_prefilter)) { __Pyx_RaiseClosureNameError("_inner_prefilter"); __PYX_ERR(0, 188, __pyx_L1_error) }
-        __pyx_t_6 = __pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_10pre_filter__inner_prefilter(__pyx_cur_scope->__pyx_v__inner_prefilter, __pyx_v_p); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 188, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_6);
-        if (unlikely(__Pyx_ListComp_Append(__pyx_t_4, (PyObject*)__pyx_t_6))) __PYX_ERR(0, 188, __pyx_L1_error)
-        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      }
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+        for (;;) {
+          if (likely(!__pyx_t_9)) {
+            if (likely(PyList_CheckExact(__pyx_t_5))) {
+              if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_5)) break;
+              #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+              __pyx_t_6 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_8); __Pyx_INCREF(__pyx_t_6); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 189, __pyx_L44_error)
+              #else
+              __pyx_t_6 = PySequence_ITEM(__pyx_t_5, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 189, __pyx_L44_error)
+              __Pyx_GOTREF(__pyx_t_6);
+              #endif
+            } else {
+              if (__pyx_t_8 >= PyTuple_GET_SIZE(__pyx_t_5)) break;
+              #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+              __pyx_t_6 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_8); __Pyx_INCREF(__pyx_t_6); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 189, __pyx_L44_error)
+              #else
+              __pyx_t_6 = PySequence_ITEM(__pyx_t_5, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 189, __pyx_L44_error)
+              __Pyx_GOTREF(__pyx_t_6);
+              #endif
+            }
+          } else {
+            __pyx_t_6 = __pyx_t_9(__pyx_t_5);
+            if (unlikely(!__pyx_t_6)) {
+              PyObject* exc_type = PyErr_Occurred();
+              if (exc_type) {
+                if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+                else __PYX_ERR(0, 189, __pyx_L44_error)
+              }
+              break;
+            }
+            __Pyx_GOTREF(__pyx_t_6);
+          }
+          __Pyx_XDECREF_SET(__pyx_8genexpr5__pyx_v_p, __pyx_t_6);
+          __pyx_t_6 = 0;
+          if (unlikely(!__pyx_cur_scope->__pyx_v__inner_prefilter)) { __Pyx_RaiseClosureNameError("_inner_prefilter"); __PYX_ERR(0, 189, __pyx_L44_error) }
+          __pyx_t_6 = __pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_10pre_filter__inner_prefilter(__pyx_cur_scope->__pyx_v__inner_prefilter, __pyx_8genexpr5__pyx_v_p); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 189, __pyx_L44_error)
+          __Pyx_GOTREF(__pyx_t_6);
+          if (unlikely(__Pyx_ListComp_Append(__pyx_t_4, (PyObject*)__pyx_t_6))) __PYX_ERR(0, 189, __pyx_L44_error)
+          __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+        }
+        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+        __Pyx_XDECREF(__pyx_8genexpr5__pyx_v_p); __pyx_8genexpr5__pyx_v_p = 0;
+        goto __pyx_L47_exit_scope;
+        __pyx_L44_error:;
+        __Pyx_XDECREF(__pyx_8genexpr5__pyx_v_p); __pyx_8genexpr5__pyx_v_p = 0;
+        goto __pyx_L1_error;
+        __pyx_L47_exit_scope:;
+      } /* exit inner scope */
       __pyx_v_evaluations = ((PyObject*)__pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "mabel/data/readers/internals/parallel_reader.py":189
+      /* "mabel/data/readers/internals/parallel_reader.py":190
  *                 if all([isinstance(p, list) for p in predicate]):
  *                     evaluations = [_inner_prefilter(p) for p in predicate]
  *                     if not all([e == self.NOT_INDEXED for e in evaluations]):             # <<<<<<<<<<<<<<
  *                         return self.NOT_INDEXED
  *                     else:
  */
-      __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 189, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_5 = __pyx_v_evaluations; __Pyx_INCREF(__pyx_t_5); __pyx_t_8 = 0;
-      for (;;) {
-        if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_5)) break;
-        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_6 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_8); __Pyx_INCREF(__pyx_t_6); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 189, __pyx_L1_error)
-        #else
-        __pyx_t_6 = PySequence_ITEM(__pyx_t_5, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 189, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_6);
-        #endif
-        __Pyx_XDECREF_SET(__pyx_v_e, __pyx_t_6);
-        __pyx_t_6 = 0;
-        if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 189, __pyx_L1_error) }
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_NOT_INDEXED); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 189, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_13 = PyObject_RichCompare(__pyx_v_e, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_13); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 189, __pyx_L1_error)
-        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-        if (unlikely(__Pyx_ListComp_Append(__pyx_t_4, (PyObject*)__pyx_t_13))) __PYX_ERR(0, 189, __pyx_L1_error)
-        __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-      }
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_builtin_all, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 189, __pyx_L1_error)
+      { /* enter inner scope */
+        __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 190, __pyx_L51_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        __pyx_t_5 = __pyx_v_evaluations; __Pyx_INCREF(__pyx_t_5); __pyx_t_8 = 0;
+        for (;;) {
+          if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_5)) break;
+          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+          __pyx_t_6 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_8); __Pyx_INCREF(__pyx_t_6); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 190, __pyx_L51_error)
+          #else
+          __pyx_t_6 = PySequence_ITEM(__pyx_t_5, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 190, __pyx_L51_error)
+          __Pyx_GOTREF(__pyx_t_6);
+          #endif
+          __Pyx_XDECREF_SET(__pyx_8genexpr6__pyx_v_e, __pyx_t_6);
+          __pyx_t_6 = 0;
+          if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 190, __pyx_L51_error) }
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_NOT_INDEXED); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 190, __pyx_L51_error)
+          __Pyx_GOTREF(__pyx_t_6);
+          __pyx_t_13 = PyObject_RichCompare(__pyx_8genexpr6__pyx_v_e, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_13); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 190, __pyx_L51_error)
+          __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+          if (unlikely(__Pyx_ListComp_Append(__pyx_t_4, (PyObject*)__pyx_t_13))) __PYX_ERR(0, 190, __pyx_L51_error)
+          __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
+        }
+        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+        __Pyx_XDECREF(__pyx_8genexpr6__pyx_v_e); __pyx_8genexpr6__pyx_v_e = 0;
+        goto __pyx_L54_exit_scope;
+        __pyx_L51_error:;
+        __Pyx_XDECREF(__pyx_8genexpr6__pyx_v_e); __pyx_8genexpr6__pyx_v_e = 0;
+        goto __pyx_L1_error;
+        __pyx_L54_exit_scope:;
+      } /* exit inner scope */
+      __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_builtin_all, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 190, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 189, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 190, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __pyx_t_2 = ((!__pyx_t_1) != 0);
       if (__pyx_t_2) {
 
-        /* "mabel/data/readers/internals/parallel_reader.py":190
+        /* "mabel/data/readers/internals/parallel_reader.py":191
  *                     evaluations = [_inner_prefilter(p) for p in predicate]
  *                     if not all([e == self.NOT_INDEXED for e in evaluations]):
  *                         return self.NOT_INDEXED             # <<<<<<<<<<<<<<
@@ -4085,14 +4090,14 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
  *                         # join the data sets together by adding them
  */
         __Pyx_XDECREF(__pyx_r);
-        if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 190, __pyx_L1_error) }
-        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_NOT_INDEXED); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 190, __pyx_L1_error)
+        if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 191, __pyx_L1_error) }
+        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_NOT_INDEXED); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 191, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __pyx_r = __pyx_t_5;
         __pyx_t_5 = 0;
         goto __pyx_L0;
 
-        /* "mabel/data/readers/internals/parallel_reader.py":189
+        /* "mabel/data/readers/internals/parallel_reader.py":190
  *                 if all([isinstance(p, list) for p in predicate]):
  *                     evaluations = [_inner_prefilter(p) for p in predicate]
  *                     if not all([e == self.NOT_INDEXED for e in evaluations]):             # <<<<<<<<<<<<<<
@@ -4101,7 +4106,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
  */
       }
 
-      /* "mabel/data/readers/internals/parallel_reader.py":193
+      /* "mabel/data/readers/internals/parallel_reader.py":194
  *                     else:
  *                         # join the data sets together by adding them
  *                         rows = reduce(             # <<<<<<<<<<<<<<
@@ -4109,19 +4114,19 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
  *                         )
  */
       /*else*/ {
-        __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_reduce); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 193, __pyx_L1_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_reduce); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 194, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
 
-        /* "mabel/data/readers/internals/parallel_reader.py":194
+        /* "mabel/data/readers/internals/parallel_reader.py":195
  *                         # join the data sets together by adding them
  *                         rows = reduce(
  *                             lambda x, y: x + _inner_prefilter(y), predicate, []             # <<<<<<<<<<<<<<
  *                         )
  *                     return rows
  */
-        __pyx_t_13 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_10pre_filter_16_inner_prefilter_lambda1, 0, __pyx_n_s_ParallelReader_pre_filter_locals, ((PyObject*)__pyx_cur_scope), __pyx_n_s_mabel_data_readers_internals_par, __pyx_d, NULL); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 194, __pyx_L1_error)
+        __pyx_t_13 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_10pre_filter_16_inner_prefilter_lambda1, 0, __pyx_n_s_ParallelReader_pre_filter_locals, ((PyObject*)__pyx_cur_scope), __pyx_n_s_mabel_data_readers_internals_par, __pyx_d, NULL); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 195, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_13);
-        __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 194, __pyx_L1_error)
+        __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 195, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_t_3 = NULL;
         __pyx_t_15 = 0;
@@ -4138,7 +4143,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
         #if CYTHON_FAST_PYCALL
         if (PyFunction_Check(__pyx_t_4)) {
           PyObject *__pyx_temp[4] = {__pyx_t_3, __pyx_t_13, __pyx_v_predicate, __pyx_t_6};
-          __pyx_t_5 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_15, 3+__pyx_t_15); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 193, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_15, 3+__pyx_t_15); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 194, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_GOTREF(__pyx_t_5);
           __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
@@ -4148,7 +4153,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
         #if CYTHON_FAST_PYCCALL
         if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
           PyObject *__pyx_temp[4] = {__pyx_t_3, __pyx_t_13, __pyx_v_predicate, __pyx_t_6};
-          __pyx_t_5 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_15, 3+__pyx_t_15); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 193, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_15, 3+__pyx_t_15); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 194, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_GOTREF(__pyx_t_5);
           __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
@@ -4156,7 +4161,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
         } else
         #endif
         {
-          __pyx_t_12 = PyTuple_New(3+__pyx_t_15); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 193, __pyx_L1_error)
+          __pyx_t_12 = PyTuple_New(3+__pyx_t_15); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 194, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_12);
           if (__pyx_t_3) {
             __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -4170,7 +4175,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
           PyTuple_SET_ITEM(__pyx_t_12, 2+__pyx_t_15, __pyx_t_6);
           __pyx_t_13 = 0;
           __pyx_t_6 = 0;
-          __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_12, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 193, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_12, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 194, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_5);
           __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
         }
@@ -4179,7 +4184,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
         __pyx_t_5 = 0;
       }
 
-      /* "mabel/data/readers/internals/parallel_reader.py":196
+      /* "mabel/data/readers/internals/parallel_reader.py":197
  *                             lambda x, y: x + _inner_prefilter(y), predicate, []
  *                         )
  *                     return rows             # <<<<<<<<<<<<<<
@@ -4191,7 +4196,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
       __pyx_r = __pyx_v_rows;
       goto __pyx_L0;
 
-      /* "mabel/data/readers/internals/parallel_reader.py":187
+      /* "mabel/data/readers/internals/parallel_reader.py":188
  *                 # All of the elements in an OR need to be indexable for use to be
  *                 # able to prefilter.
  *                 if all([isinstance(p, list) for p in predicate]):             # <<<<<<<<<<<<<<
@@ -4200,7 +4205,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
  */
     }
 
-    /* "mabel/data/readers/internals/parallel_reader.py":199
+    /* "mabel/data/readers/internals/parallel_reader.py":200
  * 
  *                 # if we're here the structure of the filter is wrong
  *                 return self.NOT_INDEXED             # <<<<<<<<<<<<<<
@@ -4208,14 +4213,14 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
  * 
  */
     __Pyx_XDECREF(__pyx_r);
-    if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 199, __pyx_L1_error) }
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_NOT_INDEXED); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 199, __pyx_L1_error)
+    if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 200, __pyx_L1_error) }
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_NOT_INDEXED); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 200, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_r = __pyx_t_5;
     __pyx_t_5 = 0;
     goto __pyx_L0;
 
-    /* "mabel/data/readers/internals/parallel_reader.py":173
+    /* "mabel/data/readers/internals/parallel_reader.py":174
  *                 return self.NOT_INDEXED
  * 
  *             if isinstance(predicate, list):             # <<<<<<<<<<<<<<
@@ -4224,7 +4229,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
  */
   }
 
-  /* "mabel/data/readers/internals/parallel_reader.py":200
+  /* "mabel/data/readers/internals/parallel_reader.py":201
  *                 # if we're here the structure of the filter is wrong
  *                 return self.NOT_INDEXED
  *             return self.NOT_INDEXED             # <<<<<<<<<<<<<<
@@ -4232,14 +4237,14 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
  *         index_filters = _inner_prefilter(self.dnf_filter.predicates)
  */
   __Pyx_XDECREF(__pyx_r);
-  if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 200, __pyx_L1_error) }
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_NOT_INDEXED); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 200, __pyx_L1_error)
+  if (unlikely(!__pyx_cur_scope->__pyx_v_self)) { __Pyx_RaiseClosureNameError("self"); __PYX_ERR(0, 201, __pyx_L1_error) }
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_NOT_INDEXED); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 201, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_r = __pyx_t_5;
   __pyx_t_5 = 0;
   goto __pyx_L0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":151
+  /* "mabel/data/readers/internals/parallel_reader.py":152
  *         PRE_FILTERABLE_OPERATORS = {"=", "==", "is", "in", "contains"}
  * 
  *         def _inner_prefilter(predicate):             # <<<<<<<<<<<<<<
@@ -4266,14 +4271,18 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
   __Pyx_XDECREF(__pyx_v_rows);
   __Pyx_XDECREF(__pyx_v_row);
   __Pyx_XDECREF(__pyx_v_evaluations);
-  __Pyx_XDECREF(__pyx_v_p);
-  __Pyx_XDECREF(__pyx_v_e);
+  __Pyx_XDECREF(__pyx_8genexpr1__pyx_v_index_file);
+  __Pyx_XDECREF(__pyx_8genexpr2__pyx_v_p);
+  __Pyx_XDECREF(__pyx_8genexpr3__pyx_v_p);
+  __Pyx_XDECREF(__pyx_8genexpr4__pyx_v_p);
+  __Pyx_XDECREF(__pyx_8genexpr5__pyx_v_p);
+  __Pyx_XDECREF(__pyx_8genexpr6__pyx_v_e);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "mabel/data/readers/internals/parallel_reader.py":137
+/* "mabel/data/readers/internals/parallel_reader.py":138
  *                 self.override_format = "." + self.override_format
  * 
  *     def pre_filter(self, blob_name, index_files):             # <<<<<<<<<<<<<<
@@ -4297,7 +4306,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct__pre_filter *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 137, __pyx_L1_error)
+    __PYX_ERR(0, 138, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -4308,71 +4317,71 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_index_files);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_index_files);
 
-  /* "mabel/data/readers/internals/parallel_reader.py":149
+  /* "mabel/data/readers/internals/parallel_reader.py":150
  *         """
  * 
  *         PRE_FILTERABLE_OPERATORS = {"=", "==", "is", "in", "contains"}             # <<<<<<<<<<<<<<
  * 
  *         def _inner_prefilter(predicate):
  */
-  __pyx_t_1 = PySet_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __pyx_t_1 = PySet_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 150, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PySet_Add(__pyx_t_1, __pyx_kp_s__3) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PySet_Add(__pyx_t_1, __pyx_kp_s__4) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PySet_Add(__pyx_t_1, __pyx_n_s_is) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PySet_Add(__pyx_t_1, __pyx_n_s_in) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PySet_Add(__pyx_t_1, __pyx_n_s_contains) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
+  if (PySet_Add(__pyx_t_1, __pyx_kp_u__3) < 0) __PYX_ERR(0, 150, __pyx_L1_error)
+  if (PySet_Add(__pyx_t_1, __pyx_kp_u__4) < 0) __PYX_ERR(0, 150, __pyx_L1_error)
+  if (PySet_Add(__pyx_t_1, __pyx_n_u_is) < 0) __PYX_ERR(0, 150, __pyx_L1_error)
+  if (PySet_Add(__pyx_t_1, __pyx_n_u_in) < 0) __PYX_ERR(0, 150, __pyx_L1_error)
+  if (PySet_Add(__pyx_t_1, __pyx_n_u_contains) < 0) __PYX_ERR(0, 150, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
   __pyx_cur_scope->__pyx_v_PRE_FILTERABLE_OPERATORS = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":151
+  /* "mabel/data/readers/internals/parallel_reader.py":152
  *         PRE_FILTERABLE_OPERATORS = {"=", "==", "is", "in", "contains"}
  * 
  *         def _inner_prefilter(predicate):             # <<<<<<<<<<<<<<
  *             # No filter doesn't filter
  *             if predicate is None:  # pragma: no cover
  */
-  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_10pre_filter_1_inner_prefilter, 0, __pyx_n_s_ParallelReader_pre_filter_locals_2, ((PyObject*)__pyx_cur_scope), __pyx_n_s_mabel_data_readers_internals_par, __pyx_d, ((PyObject *)__pyx_codeobj__6)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_10pre_filter_1_inner_prefilter, 0, __pyx_n_s_ParallelReader_pre_filter_locals_2, ((PyObject*)__pyx_cur_scope), __pyx_n_s_mabel_data_readers_internals_par, __pyx_d, ((PyObject *)__pyx_codeobj__6)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 152, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __pyx_cur_scope->__pyx_v__inner_prefilter = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":202
+  /* "mabel/data/readers/internals/parallel_reader.py":203
  *             return self.NOT_INDEXED
  * 
  *         index_filters = _inner_prefilter(self.dnf_filter.predicates)             # <<<<<<<<<<<<<<
  *         if index_filters != self.NOT_INDEXED:
  *             return True, index_filters
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_dnf_filter); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 202, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_dnf_filter); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 203, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_predicates); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 202, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_predicates); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 203, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_10pre_filter__inner_prefilter(__pyx_cur_scope->__pyx_v__inner_prefilter, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 202, __pyx_L1_error)
+  __pyx_t_1 = __pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_10pre_filter__inner_prefilter(__pyx_cur_scope->__pyx_v__inner_prefilter, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 203, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_index_filters = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":203
+  /* "mabel/data/readers/internals/parallel_reader.py":204
  * 
  *         index_filters = _inner_prefilter(self.dnf_filter.predicates)
  *         if index_filters != self.NOT_INDEXED:             # <<<<<<<<<<<<<<
  *             return True, index_filters
  *         return False, []
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_NOT_INDEXED); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 203, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_NOT_INDEXED); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 204, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyObject_RichCompare(__pyx_v_index_filters, __pyx_t_1, Py_NE); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 203, __pyx_L1_error)
+  __pyx_t_2 = PyObject_RichCompare(__pyx_v_index_filters, __pyx_t_1, Py_NE); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 204, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 203, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 204, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (__pyx_t_3) {
 
-    /* "mabel/data/readers/internals/parallel_reader.py":204
+    /* "mabel/data/readers/internals/parallel_reader.py":205
  *         index_filters = _inner_prefilter(self.dnf_filter.predicates)
  *         if index_filters != self.NOT_INDEXED:
  *             return True, index_filters             # <<<<<<<<<<<<<<
@@ -4380,7 +4389,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
  * 
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 204, __pyx_L1_error)
+    __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 205, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_INCREF(Py_True);
     __Pyx_GIVEREF(Py_True);
@@ -4392,7 +4401,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
     __pyx_t_2 = 0;
     goto __pyx_L0;
 
-    /* "mabel/data/readers/internals/parallel_reader.py":203
+    /* "mabel/data/readers/internals/parallel_reader.py":204
  * 
  *         index_filters = _inner_prefilter(self.dnf_filter.predicates)
  *         if index_filters != self.NOT_INDEXED:             # <<<<<<<<<<<<<<
@@ -4401,7 +4410,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
  */
   }
 
-  /* "mabel/data/readers/internals/parallel_reader.py":205
+  /* "mabel/data/readers/internals/parallel_reader.py":206
  *         if index_filters != self.NOT_INDEXED:
  *             return True, index_filters
  *         return False, []             # <<<<<<<<<<<<<<
@@ -4409,9 +4418,9 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
  *     def _select(self, data_set, selector):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 205, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 206, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 205, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 206, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(Py_False);
   __Pyx_GIVEREF(Py_False);
@@ -4423,7 +4432,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":137
+  /* "mabel/data/readers/internals/parallel_reader.py":138
  *                 self.override_format = "." + self.override_format
  * 
  *     def pre_filter(self, blob_name, index_files):             # <<<<<<<<<<<<<<
@@ -4446,7 +4455,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
 }
 static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_6generator(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "mabel/data/readers/internals/parallel_reader.py":207
+/* "mabel/data/readers/internals/parallel_reader.py":208
  *         return False, []
  * 
  *     def _select(self, data_set, selector):             # <<<<<<<<<<<<<<
@@ -4492,17 +4501,17 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_15parallel_reader_14P
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_data_set)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_select", 1, 3, 3, 1); __PYX_ERR(0, 207, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_select", 1, 3, 3, 1); __PYX_ERR(0, 208, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_selector)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_select", 1, 3, 3, 2); __PYX_ERR(0, 207, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_select", 1, 3, 3, 2); __PYX_ERR(0, 208, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_select") < 0)) __PYX_ERR(0, 207, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_select") < 0)) __PYX_ERR(0, 208, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -4517,7 +4526,7 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_15parallel_reader_14P
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_select", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 207, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_select", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 208, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mabel.data.readers.internals.parallel_reader.ParallelReader._select", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -4542,7 +4551,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct_1__select *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 207, __pyx_L1_error)
+    __PYX_ERR(0, 208, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -4556,7 +4565,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_selector);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_selector);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_6generator, __pyx_codeobj__7, (PyObject *) __pyx_cur_scope, __pyx_n_s_select, __pyx_n_s_ParallelReader__select, __pyx_n_s_mabel_data_readers_internals_par); if (unlikely(!gen)) __PYX_ERR(0, 207, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_6generator, __pyx_codeobj__7, (PyObject *) __pyx_cur_scope, __pyx_n_s_select, __pyx_n_s_ParallelReader__select, __pyx_n_s_mabel_data_readers_internals_par); if (unlikely(!gen)) __PYX_ERR(0, 208, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -4596,9 +4605,9 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 207, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 208, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/parallel_reader.py":208
+  /* "mabel/data/readers/internals/parallel_reader.py":209
  * 
  *     def _select(self, data_set, selector):
  *         for index, record in enumerate(data_set):             # <<<<<<<<<<<<<<
@@ -4611,26 +4620,26 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
     __pyx_t_2 = __pyx_cur_scope->__pyx_v_data_set; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_data_set); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 208, __pyx_L1_error)
+    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_cur_scope->__pyx_v_data_set); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 209, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 208, __pyx_L1_error)
+    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 209, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_4)) {
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_5 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_5); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 208, __pyx_L1_error)
+        __pyx_t_5 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_5); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 209, __pyx_L1_error)
         #else
-        __pyx_t_5 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 208, __pyx_L1_error)
+        __pyx_t_5 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 209, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_5); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 208, __pyx_L1_error)
+        __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_5); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 209, __pyx_L1_error)
         #else
-        __pyx_t_5 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 208, __pyx_L1_error)
+        __pyx_t_5 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 209, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         #endif
       }
@@ -4640,7 +4649,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 208, __pyx_L1_error)
+          else __PYX_ERR(0, 209, __pyx_L1_error)
         }
         break;
       }
@@ -4654,24 +4663,24 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
     __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_index);
     __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_index, __pyx_t_1);
     __Pyx_GIVEREF(__pyx_t_1);
-    __pyx_t_5 = __Pyx_PyInt_AddObjC(__pyx_t_1, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 208, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_AddObjC(__pyx_t_1, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 209, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_1);
     __pyx_t_1 = __pyx_t_5;
     __pyx_t_5 = 0;
 
-    /* "mabel/data/readers/internals/parallel_reader.py":209
+    /* "mabel/data/readers/internals/parallel_reader.py":210
  *     def _select(self, data_set, selector):
  *         for index, record in enumerate(data_set):
  *             if index in selector:             # <<<<<<<<<<<<<<
  *                 yield record
  * 
  */
-    __pyx_t_6 = (__Pyx_PySequence_ContainsTF(__pyx_cur_scope->__pyx_v_index, __pyx_cur_scope->__pyx_v_selector, Py_EQ)); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 209, __pyx_L1_error)
+    __pyx_t_6 = (__Pyx_PySequence_ContainsTF(__pyx_cur_scope->__pyx_v_index, __pyx_cur_scope->__pyx_v_selector, Py_EQ)); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 210, __pyx_L1_error)
     __pyx_t_7 = (__pyx_t_6 != 0);
     if (__pyx_t_7) {
 
-      /* "mabel/data/readers/internals/parallel_reader.py":210
+      /* "mabel/data/readers/internals/parallel_reader.py":211
  *         for index, record in enumerate(data_set):
  *             if index in selector:
  *                 yield record             # <<<<<<<<<<<<<<
@@ -4701,9 +4710,9 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
       __Pyx_XGOTREF(__pyx_t_2);
       __pyx_t_3 = __pyx_cur_scope->__pyx_t_2;
       __pyx_t_4 = __pyx_cur_scope->__pyx_t_3;
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 210, __pyx_L1_error)
+      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 211, __pyx_L1_error)
 
-      /* "mabel/data/readers/internals/parallel_reader.py":209
+      /* "mabel/data/readers/internals/parallel_reader.py":210
  *     def _select(self, data_set, selector):
  *         for index, record in enumerate(data_set):
  *             if index in selector:             # <<<<<<<<<<<<<<
@@ -4712,7 +4721,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
  */
     }
 
-    /* "mabel/data/readers/internals/parallel_reader.py":208
+    /* "mabel/data/readers/internals/parallel_reader.py":209
  * 
  *     def _select(self, data_set, selector):
  *         for index, record in enumerate(data_set):             # <<<<<<<<<<<<<<
@@ -4724,7 +4733,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "mabel/data/readers/internals/parallel_reader.py":207
+  /* "mabel/data/readers/internals/parallel_reader.py":208
  *         return False, []
  * 
  *     def _select(self, data_set, selector):             # <<<<<<<<<<<<<<
@@ -4752,7 +4761,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
 }
 static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_9generator1(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "mabel/data/readers/internals/parallel_reader.py":212
+/* "mabel/data/readers/internals/parallel_reader.py":213
  *                 yield record
  * 
  *     def __call__(self, blob_name, index_files):             # <<<<<<<<<<<<<<
@@ -4798,17 +4807,17 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_15parallel_reader_14P
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_blob_name)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__call__", 1, 3, 3, 1); __PYX_ERR(0, 212, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__call__", 1, 3, 3, 1); __PYX_ERR(0, 213, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_index_files)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__call__", 1, 3, 3, 2); __PYX_ERR(0, 212, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__call__", 1, 3, 3, 2); __PYX_ERR(0, 213, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__call__") < 0)) __PYX_ERR(0, 212, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__call__") < 0)) __PYX_ERR(0, 213, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -4823,7 +4832,7 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_15parallel_reader_14P
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__call__", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 212, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__call__", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 213, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mabel.data.readers.internals.parallel_reader.ParallelReader.__call__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -4848,7 +4857,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct_2___call__ *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 212, __pyx_L1_error)
+    __PYX_ERR(0, 213, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -4862,7 +4871,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_index_files);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_index_files);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_9generator1, __pyx_codeobj__8, (PyObject *) __pyx_cur_scope, __pyx_n_s_call, __pyx_n_s_ParallelReader___call, __pyx_n_s_mabel_data_readers_internals_par); if (unlikely(!gen)) __PYX_ERR(0, 212, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_9generator1, __pyx_codeobj__8, (PyObject *) __pyx_cur_scope, __pyx_n_s_call, __pyx_n_s_ParallelReader___call, __pyx_n_s_mabel_data_readers_internals_par); if (unlikely(!gen)) __PYX_ERR(0, 213, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -4900,6 +4909,15 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
   PyObject *__pyx_t_16 = NULL;
   PyObject *__pyx_t_17 = NULL;
   PyObject *__pyx_t_18 = NULL;
+  int __pyx_t_19;
+  char const *__pyx_t_20;
+  PyObject *__pyx_t_21 = NULL;
+  PyObject *__pyx_t_22 = NULL;
+  PyObject *__pyx_t_23 = NULL;
+  PyObject *__pyx_t_24 = NULL;
+  PyObject *__pyx_t_25 = NULL;
+  PyObject *__pyx_t_26 = NULL;
+  PyObject *__pyx_t_27 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -4913,9 +4931,9 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 212, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 213, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/parallel_reader.py":214
+  /* "mabel/data/readers/internals/parallel_reader.py":215
  *     def __call__(self, blob_name, index_files):
  *         # print(blob_name, "in")
  *         try:             # <<<<<<<<<<<<<<
@@ -4929,33 +4947,33 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "mabel/data/readers/internals/parallel_reader.py":215
+      /* "mabel/data/readers/internals/parallel_reader.py":216
  *         # print(blob_name, "in")
  *         try:
  *             if self.override_format:             # <<<<<<<<<<<<<<
  *                 ext = self.override_format
  *             else:
  */
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_override_format); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 215, __pyx_L4_error)
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_override_format); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 216, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 215, __pyx_L4_error)
+      __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 216, __pyx_L4_error)
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       if (__pyx_t_5) {
 
-        /* "mabel/data/readers/internals/parallel_reader.py":216
+        /* "mabel/data/readers/internals/parallel_reader.py":217
  *         try:
  *             if self.override_format:
  *                 ext = self.override_format             # <<<<<<<<<<<<<<
  *             else:
  *                 bucket, path, stem, ext = paths.get_parts(blob_name)
  */
-        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_override_format); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 216, __pyx_L4_error)
+        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_override_format); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 217, __pyx_L4_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_GIVEREF(__pyx_t_4);
         __pyx_cur_scope->__pyx_v_ext = __pyx_t_4;
         __pyx_t_4 = 0;
 
-        /* "mabel/data/readers/internals/parallel_reader.py":215
+        /* "mabel/data/readers/internals/parallel_reader.py":216
  *         # print(blob_name, "in")
  *         try:
  *             if self.override_format:             # <<<<<<<<<<<<<<
@@ -4965,7 +4983,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
         goto __pyx_L10;
       }
 
-      /* "mabel/data/readers/internals/parallel_reader.py":218
+      /* "mabel/data/readers/internals/parallel_reader.py":219
  *                 ext = self.override_format
  *             else:
  *                 bucket, path, stem, ext = paths.get_parts(blob_name)             # <<<<<<<<<<<<<<
@@ -4973,9 +4991,9 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
  *             if ext not in KNOWN_EXTENSIONS:
  */
       /*else*/ {
-        __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_paths); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 218, __pyx_L4_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_paths); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 219, __pyx_L4_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_get_parts); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 218, __pyx_L4_error)
+        __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_get_parts); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 219, __pyx_L4_error)
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         __pyx_t_6 = NULL;
@@ -4990,7 +5008,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
         }
         __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_6, __pyx_cur_scope->__pyx_v_blob_name) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_cur_scope->__pyx_v_blob_name);
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 218, __pyx_L4_error)
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 219, __pyx_L4_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         if ((likely(PyTuple_CheckExact(__pyx_t_4))) || (PyList_CheckExact(__pyx_t_4))) {
@@ -4999,7 +5017,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
           if (unlikely(size != 4)) {
             if (size > 4) __Pyx_RaiseTooManyValuesError(4);
             else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-            __PYX_ERR(0, 218, __pyx_L4_error)
+            __PYX_ERR(0, 219, __pyx_L4_error)
           }
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
           if (likely(PyTuple_CheckExact(sequence))) {
@@ -5022,7 +5040,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
             Py_ssize_t i;
             PyObject** temps[4] = {&__pyx_t_7,&__pyx_t_6,&__pyx_t_8,&__pyx_t_9};
             for (i=0; i < 4; i++) {
-              PyObject* item = PySequence_ITEM(sequence, i); if (unlikely(!item)) __PYX_ERR(0, 218, __pyx_L4_error)
+              PyObject* item = PySequence_ITEM(sequence, i); if (unlikely(!item)) __PYX_ERR(0, 219, __pyx_L4_error)
               __Pyx_GOTREF(item);
               *(temps[i]) = item;
             }
@@ -5032,7 +5050,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
         } else {
           Py_ssize_t index = -1;
           PyObject** temps[4] = {&__pyx_t_7,&__pyx_t_6,&__pyx_t_8,&__pyx_t_9};
-          __pyx_t_10 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 218, __pyx_L4_error)
+          __pyx_t_10 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 219, __pyx_L4_error)
           __Pyx_GOTREF(__pyx_t_10);
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
           __pyx_t_11 = Py_TYPE(__pyx_t_10)->tp_iternext;
@@ -5041,7 +5059,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
             __Pyx_GOTREF(item);
             *(temps[index]) = item;
           }
-          if (__Pyx_IternextUnpackEndCheck(__pyx_t_11(__pyx_t_10), 4) < 0) __PYX_ERR(0, 218, __pyx_L4_error)
+          if (__Pyx_IternextUnpackEndCheck(__pyx_t_11(__pyx_t_10), 4) < 0) __PYX_ERR(0, 219, __pyx_L4_error)
           __pyx_t_11 = NULL;
           __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
           goto __pyx_L12_unpacking_done;
@@ -5049,7 +5067,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
           __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
           __pyx_t_11 = NULL;
           if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-          __PYX_ERR(0, 218, __pyx_L4_error)
+          __PYX_ERR(0, 219, __pyx_L4_error)
           __pyx_L12_unpacking_done:;
         }
         __Pyx_GIVEREF(__pyx_t_7);
@@ -5067,21 +5085,21 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
       }
       __pyx_L10:;
 
-      /* "mabel/data/readers/internals/parallel_reader.py":220
+      /* "mabel/data/readers/internals/parallel_reader.py":221
  *                 bucket, path, stem, ext = paths.get_parts(blob_name)
  * 
  *             if ext not in KNOWN_EXTENSIONS:             # <<<<<<<<<<<<<<
  *                 return []
  *             decompressor, parser, file_type = KNOWN_EXTENSIONS[ext]
  */
-      __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_KNOWN_EXTENSIONS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 220, __pyx_L4_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_KNOWN_EXTENSIONS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 221, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_5 = (__Pyx_PySequence_ContainsTF(__pyx_cur_scope->__pyx_v_ext, __pyx_t_4, Py_NE)); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 220, __pyx_L4_error)
+      __pyx_t_5 = (__Pyx_PySequence_ContainsTF(__pyx_cur_scope->__pyx_v_ext, __pyx_t_4, Py_NE)); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 221, __pyx_L4_error)
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_t_12 = (__pyx_t_5 != 0);
       if (__pyx_t_12) {
 
-        /* "mabel/data/readers/internals/parallel_reader.py":221
+        /* "mabel/data/readers/internals/parallel_reader.py":222
  * 
  *             if ext not in KNOWN_EXTENSIONS:
  *                 return []             # <<<<<<<<<<<<<<
@@ -5089,13 +5107,13 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
  * 
  */
         __Pyx_XDECREF(__pyx_r);
-        __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 221, __pyx_L4_error)
+        __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 222, __pyx_L4_error)
         __Pyx_GOTREF(__pyx_t_4);
         __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         goto __pyx_L8_try_return;
 
-        /* "mabel/data/readers/internals/parallel_reader.py":220
+        /* "mabel/data/readers/internals/parallel_reader.py":221
  *                 bucket, path, stem, ext = paths.get_parts(blob_name)
  * 
  *             if ext not in KNOWN_EXTENSIONS:             # <<<<<<<<<<<<<<
@@ -5104,16 +5122,16 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
  */
       }
 
-      /* "mabel/data/readers/internals/parallel_reader.py":222
+      /* "mabel/data/readers/internals/parallel_reader.py":223
  *             if ext not in KNOWN_EXTENSIONS:
  *                 return []
  *             decompressor, parser, file_type = KNOWN_EXTENSIONS[ext]             # <<<<<<<<<<<<<<
  * 
  *             # Pre-Filter
  */
-      __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_KNOWN_EXTENSIONS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 222, __pyx_L4_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_KNOWN_EXTENSIONS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 223, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_9 = __Pyx_PyObject_GetItem(__pyx_t_4, __pyx_cur_scope->__pyx_v_ext); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 222, __pyx_L4_error)
+      __pyx_t_9 = __Pyx_PyObject_GetItem(__pyx_t_4, __pyx_cur_scope->__pyx_v_ext); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 223, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       if ((likely(PyTuple_CheckExact(__pyx_t_9))) || (PyList_CheckExact(__pyx_t_9))) {
@@ -5122,7 +5140,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
         if (unlikely(size != 3)) {
           if (size > 3) __Pyx_RaiseTooManyValuesError(3);
           else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-          __PYX_ERR(0, 222, __pyx_L4_error)
+          __PYX_ERR(0, 223, __pyx_L4_error)
         }
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
         if (likely(PyTuple_CheckExact(sequence))) {
@@ -5138,17 +5156,17 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
         __Pyx_INCREF(__pyx_t_8);
         __Pyx_INCREF(__pyx_t_6);
         #else
-        __pyx_t_4 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 222, __pyx_L4_error)
+        __pyx_t_4 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 223, __pyx_L4_error)
         __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_8 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 222, __pyx_L4_error)
+        __pyx_t_8 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 223, __pyx_L4_error)
         __Pyx_GOTREF(__pyx_t_8);
-        __pyx_t_6 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 222, __pyx_L4_error)
+        __pyx_t_6 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 223, __pyx_L4_error)
         __Pyx_GOTREF(__pyx_t_6);
         #endif
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       } else {
         Py_ssize_t index = -1;
-        __pyx_t_7 = PyObject_GetIter(__pyx_t_9); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 222, __pyx_L4_error)
+        __pyx_t_7 = PyObject_GetIter(__pyx_t_9); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 223, __pyx_L4_error)
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
         __pyx_t_11 = Py_TYPE(__pyx_t_7)->tp_iternext;
@@ -5158,7 +5176,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
         __Pyx_GOTREF(__pyx_t_8);
         index = 2; __pyx_t_6 = __pyx_t_11(__pyx_t_7); if (unlikely(!__pyx_t_6)) goto __pyx_L14_unpacking_failed;
         __Pyx_GOTREF(__pyx_t_6);
-        if (__Pyx_IternextUnpackEndCheck(__pyx_t_11(__pyx_t_7), 3) < 0) __PYX_ERR(0, 222, __pyx_L4_error)
+        if (__Pyx_IternextUnpackEndCheck(__pyx_t_11(__pyx_t_7), 3) < 0) __PYX_ERR(0, 223, __pyx_L4_error)
         __pyx_t_11 = NULL;
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         goto __pyx_L15_unpacking_done;
@@ -5166,7 +5184,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         __pyx_t_11 = NULL;
         if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-        __PYX_ERR(0, 222, __pyx_L4_error)
+        __PYX_ERR(0, 223, __pyx_L4_error)
         __pyx_L15_unpacking_done:;
       }
       __Pyx_GIVEREF(__pyx_t_4);
@@ -5179,36 +5197,36 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
       __pyx_cur_scope->__pyx_v_file_type = __pyx_t_6;
       __pyx_t_6 = 0;
 
-      /* "mabel/data/readers/internals/parallel_reader.py":225
+      /* "mabel/data/readers/internals/parallel_reader.py":226
  * 
  *             # Pre-Filter
  *             if self.dnf_filter and len(index_files):             # <<<<<<<<<<<<<<
  *                 (row_selector, selected_rows) = self.pre_filter(blob_name, index_files)
  *             else:
  */
-      __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_dnf_filter); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 225, __pyx_L4_error)
+      __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_dnf_filter); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 226, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_9);
-      __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 225, __pyx_L4_error)
+      __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 226, __pyx_L4_error)
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       if (__pyx_t_5) {
       } else {
         __pyx_t_12 = __pyx_t_5;
         goto __pyx_L17_bool_binop_done;
       }
-      __pyx_t_13 = PyObject_Length(__pyx_cur_scope->__pyx_v_index_files); if (unlikely(__pyx_t_13 == ((Py_ssize_t)-1))) __PYX_ERR(0, 225, __pyx_L4_error)
+      __pyx_t_13 = PyObject_Length(__pyx_cur_scope->__pyx_v_index_files); if (unlikely(__pyx_t_13 == ((Py_ssize_t)-1))) __PYX_ERR(0, 226, __pyx_L4_error)
       __pyx_t_5 = (__pyx_t_13 != 0);
       __pyx_t_12 = __pyx_t_5;
       __pyx_L17_bool_binop_done:;
       if (__pyx_t_12) {
 
-        /* "mabel/data/readers/internals/parallel_reader.py":226
+        /* "mabel/data/readers/internals/parallel_reader.py":227
  *             # Pre-Filter
  *             if self.dnf_filter and len(index_files):
  *                 (row_selector, selected_rows) = self.pre_filter(blob_name, index_files)             # <<<<<<<<<<<<<<
  *             else:
  *                 row_selector = False
  */
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_pre_filter); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 226, __pyx_L4_error)
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_pre_filter); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 227, __pyx_L4_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_t_8 = NULL;
         __pyx_t_14 = 0;
@@ -5225,7 +5243,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
         #if CYTHON_FAST_PYCALL
         if (PyFunction_Check(__pyx_t_6)) {
           PyObject *__pyx_temp[3] = {__pyx_t_8, __pyx_cur_scope->__pyx_v_blob_name, __pyx_cur_scope->__pyx_v_index_files};
-          __pyx_t_9 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_14, 2+__pyx_t_14); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 226, __pyx_L4_error)
+          __pyx_t_9 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_14, 2+__pyx_t_14); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 227, __pyx_L4_error)
           __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
           __Pyx_GOTREF(__pyx_t_9);
         } else
@@ -5233,13 +5251,13 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
         #if CYTHON_FAST_PYCCALL
         if (__Pyx_PyFastCFunction_Check(__pyx_t_6)) {
           PyObject *__pyx_temp[3] = {__pyx_t_8, __pyx_cur_scope->__pyx_v_blob_name, __pyx_cur_scope->__pyx_v_index_files};
-          __pyx_t_9 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_14, 2+__pyx_t_14); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 226, __pyx_L4_error)
+          __pyx_t_9 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_14, 2+__pyx_t_14); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 227, __pyx_L4_error)
           __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
           __Pyx_GOTREF(__pyx_t_9);
         } else
         #endif
         {
-          __pyx_t_4 = PyTuple_New(2+__pyx_t_14); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 226, __pyx_L4_error)
+          __pyx_t_4 = PyTuple_New(2+__pyx_t_14); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 227, __pyx_L4_error)
           __Pyx_GOTREF(__pyx_t_4);
           if (__pyx_t_8) {
             __Pyx_GIVEREF(__pyx_t_8); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_8); __pyx_t_8 = NULL;
@@ -5250,7 +5268,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
           __Pyx_INCREF(__pyx_cur_scope->__pyx_v_index_files);
           __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_index_files);
           PyTuple_SET_ITEM(__pyx_t_4, 1+__pyx_t_14, __pyx_cur_scope->__pyx_v_index_files);
-          __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_4, NULL); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 226, __pyx_L4_error)
+          __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_4, NULL); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 227, __pyx_L4_error)
           __Pyx_GOTREF(__pyx_t_9);
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         }
@@ -5261,7 +5279,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
           if (unlikely(size != 2)) {
             if (size > 2) __Pyx_RaiseTooManyValuesError(2);
             else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-            __PYX_ERR(0, 226, __pyx_L4_error)
+            __PYX_ERR(0, 227, __pyx_L4_error)
           }
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
           if (likely(PyTuple_CheckExact(sequence))) {
@@ -5274,15 +5292,15 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
           __Pyx_INCREF(__pyx_t_6);
           __Pyx_INCREF(__pyx_t_4);
           #else
-          __pyx_t_6 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 226, __pyx_L4_error)
+          __pyx_t_6 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 227, __pyx_L4_error)
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_4 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 226, __pyx_L4_error)
+          __pyx_t_4 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 227, __pyx_L4_error)
           __Pyx_GOTREF(__pyx_t_4);
           #endif
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
         } else {
           Py_ssize_t index = -1;
-          __pyx_t_8 = PyObject_GetIter(__pyx_t_9); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 226, __pyx_L4_error)
+          __pyx_t_8 = PyObject_GetIter(__pyx_t_9); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 227, __pyx_L4_error)
           __Pyx_GOTREF(__pyx_t_8);
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
           __pyx_t_11 = Py_TYPE(__pyx_t_8)->tp_iternext;
@@ -5290,7 +5308,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
           __Pyx_GOTREF(__pyx_t_6);
           index = 1; __pyx_t_4 = __pyx_t_11(__pyx_t_8); if (unlikely(!__pyx_t_4)) goto __pyx_L19_unpacking_failed;
           __Pyx_GOTREF(__pyx_t_4);
-          if (__Pyx_IternextUnpackEndCheck(__pyx_t_11(__pyx_t_8), 2) < 0) __PYX_ERR(0, 226, __pyx_L4_error)
+          if (__Pyx_IternextUnpackEndCheck(__pyx_t_11(__pyx_t_8), 2) < 0) __PYX_ERR(0, 227, __pyx_L4_error)
           __pyx_t_11 = NULL;
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
           goto __pyx_L20_unpacking_done;
@@ -5298,7 +5316,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
           __pyx_t_11 = NULL;
           if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-          __PYX_ERR(0, 226, __pyx_L4_error)
+          __PYX_ERR(0, 227, __pyx_L4_error)
           __pyx_L20_unpacking_done:;
         }
         __Pyx_GIVEREF(__pyx_t_6);
@@ -5308,7 +5326,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
         __pyx_cur_scope->__pyx_v_selected_rows = __pyx_t_4;
         __pyx_t_4 = 0;
 
-        /* "mabel/data/readers/internals/parallel_reader.py":225
+        /* "mabel/data/readers/internals/parallel_reader.py":226
  * 
  *             # Pre-Filter
  *             if self.dnf_filter and len(index_files):             # <<<<<<<<<<<<<<
@@ -5318,7 +5336,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
         goto __pyx_L16;
       }
 
-      /* "mabel/data/readers/internals/parallel_reader.py":228
+      /* "mabel/data/readers/internals/parallel_reader.py":229
  *                 (row_selector, selected_rows) = self.pre_filter(blob_name, index_files)
  *             else:
  *                 row_selector = False             # <<<<<<<<<<<<<<
@@ -5330,14 +5348,14 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
         __Pyx_GIVEREF(Py_False);
         __pyx_cur_scope->__pyx_v_row_selector = Py_False;
 
-        /* "mabel/data/readers/internals/parallel_reader.py":229
+        /* "mabel/data/readers/internals/parallel_reader.py":230
  *             else:
  *                 row_selector = False
  *                 selected_rows = []             # <<<<<<<<<<<<<<
  * 
  *             # if the value isn't in the set, abort early
  */
-        __pyx_t_9 = PyList_New(0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 229, __pyx_L4_error)
+        __pyx_t_9 = PyList_New(0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 230, __pyx_L4_error)
         __Pyx_GOTREF(__pyx_t_9);
         __Pyx_GIVEREF(__pyx_t_9);
         __pyx_cur_scope->__pyx_v_selected_rows = __pyx_t_9;
@@ -5345,26 +5363,26 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
       }
       __pyx_L16:;
 
-      /* "mabel/data/readers/internals/parallel_reader.py":232
+      /* "mabel/data/readers/internals/parallel_reader.py":233
  * 
  *             # if the value isn't in the set, abort early
  *             if row_selector and len(selected_rows) == 0:             # <<<<<<<<<<<<<<
  *                 return None
  * 
  */
-      __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_cur_scope->__pyx_v_row_selector); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 232, __pyx_L4_error)
+      __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_cur_scope->__pyx_v_row_selector); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 233, __pyx_L4_error)
       if (__pyx_t_5) {
       } else {
         __pyx_t_12 = __pyx_t_5;
         goto __pyx_L22_bool_binop_done;
       }
-      __pyx_t_13 = PyObject_Length(__pyx_cur_scope->__pyx_v_selected_rows); if (unlikely(__pyx_t_13 == ((Py_ssize_t)-1))) __PYX_ERR(0, 232, __pyx_L4_error)
+      __pyx_t_13 = PyObject_Length(__pyx_cur_scope->__pyx_v_selected_rows); if (unlikely(__pyx_t_13 == ((Py_ssize_t)-1))) __PYX_ERR(0, 233, __pyx_L4_error)
       __pyx_t_5 = ((__pyx_t_13 == 0) != 0);
       __pyx_t_12 = __pyx_t_5;
       __pyx_L22_bool_binop_done:;
       if (__pyx_t_12) {
 
-        /* "mabel/data/readers/internals/parallel_reader.py":233
+        /* "mabel/data/readers/internals/parallel_reader.py":234
  *             # if the value isn't in the set, abort early
  *             if row_selector and len(selected_rows) == 0:
  *                 return None             # <<<<<<<<<<<<<<
@@ -5375,7 +5393,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
         __pyx_r = NULL;
         goto __pyx_L8_try_return;
 
-        /* "mabel/data/readers/internals/parallel_reader.py":232
+        /* "mabel/data/readers/internals/parallel_reader.py":233
  * 
  *             # if the value isn't in the set, abort early
  *             if row_selector and len(selected_rows) == 0:             # <<<<<<<<<<<<<<
@@ -5384,16 +5402,16 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
  */
       }
 
-      /* "mabel/data/readers/internals/parallel_reader.py":236
+      /* "mabel/data/readers/internals/parallel_reader.py":237
  * 
  *             # Read
  *             record_iterator = self.reader.read_blob(blob_name)             # <<<<<<<<<<<<<<
  *             # Decompress
  *             record_iterator = decompressor(record_iterator)
  */
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_reader); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 236, __pyx_L4_error)
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_reader); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 237, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_read_blob); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 236, __pyx_L4_error)
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_read_blob); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 237, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_t_4 = NULL;
@@ -5408,14 +5426,14 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
       }
       __pyx_t_9 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_4, __pyx_cur_scope->__pyx_v_blob_name) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_cur_scope->__pyx_v_blob_name);
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 236, __pyx_L4_error)
+      if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 237, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_GIVEREF(__pyx_t_9);
       __pyx_cur_scope->__pyx_v_record_iterator = __pyx_t_9;
       __pyx_t_9 = 0;
 
-      /* "mabel/data/readers/internals/parallel_reader.py":238
+      /* "mabel/data/readers/internals/parallel_reader.py":239
  *             record_iterator = self.reader.read_blob(blob_name)
  *             # Decompress
  *             record_iterator = decompressor(record_iterator)             # <<<<<<<<<<<<<<
@@ -5435,7 +5453,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
       }
       __pyx_t_9 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_4, __pyx_cur_scope->__pyx_v_record_iterator) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_cur_scope->__pyx_v_record_iterator);
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 238, __pyx_L4_error)
+      if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 239, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_GOTREF(__pyx_cur_scope->__pyx_v_record_iterator);
@@ -5443,24 +5461,24 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
       __Pyx_GIVEREF(__pyx_t_9);
       __pyx_t_9 = 0;
 
-      /* "mabel/data/readers/internals/parallel_reader.py":240
+      /* "mabel/data/readers/internals/parallel_reader.py":241
  *             record_iterator = decompressor(record_iterator)
  *             ### bypass rows which aren't selected
  *             if row_selector:             # <<<<<<<<<<<<<<
  *                 record_iterator = self._select(record_iterator, selected_rows)
  *             # Parse
  */
-      __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_cur_scope->__pyx_v_row_selector); if (unlikely(__pyx_t_12 < 0)) __PYX_ERR(0, 240, __pyx_L4_error)
+      __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_cur_scope->__pyx_v_row_selector); if (unlikely(__pyx_t_12 < 0)) __PYX_ERR(0, 241, __pyx_L4_error)
       if (__pyx_t_12) {
 
-        /* "mabel/data/readers/internals/parallel_reader.py":241
+        /* "mabel/data/readers/internals/parallel_reader.py":242
  *             ### bypass rows which aren't selected
  *             if row_selector:
  *                 record_iterator = self._select(record_iterator, selected_rows)             # <<<<<<<<<<<<<<
  *             # Parse
  *             record_iterator = map(parser, record_iterator)
  */
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_select); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 241, __pyx_L4_error)
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_select); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 242, __pyx_L4_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_t_4 = NULL;
         __pyx_t_14 = 0;
@@ -5477,7 +5495,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
         #if CYTHON_FAST_PYCALL
         if (PyFunction_Check(__pyx_t_6)) {
           PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_cur_scope->__pyx_v_record_iterator, __pyx_cur_scope->__pyx_v_selected_rows};
-          __pyx_t_9 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_14, 2+__pyx_t_14); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 241, __pyx_L4_error)
+          __pyx_t_9 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_14, 2+__pyx_t_14); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 242, __pyx_L4_error)
           __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
           __Pyx_GOTREF(__pyx_t_9);
         } else
@@ -5485,13 +5503,13 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
         #if CYTHON_FAST_PYCCALL
         if (__Pyx_PyFastCFunction_Check(__pyx_t_6)) {
           PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_cur_scope->__pyx_v_record_iterator, __pyx_cur_scope->__pyx_v_selected_rows};
-          __pyx_t_9 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_14, 2+__pyx_t_14); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 241, __pyx_L4_error)
+          __pyx_t_9 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_14, 2+__pyx_t_14); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 242, __pyx_L4_error)
           __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
           __Pyx_GOTREF(__pyx_t_9);
         } else
         #endif
         {
-          __pyx_t_8 = PyTuple_New(2+__pyx_t_14); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 241, __pyx_L4_error)
+          __pyx_t_8 = PyTuple_New(2+__pyx_t_14); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 242, __pyx_L4_error)
           __Pyx_GOTREF(__pyx_t_8);
           if (__pyx_t_4) {
             __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_4); __pyx_t_4 = NULL;
@@ -5502,7 +5520,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
           __Pyx_INCREF(__pyx_cur_scope->__pyx_v_selected_rows);
           __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_selected_rows);
           PyTuple_SET_ITEM(__pyx_t_8, 1+__pyx_t_14, __pyx_cur_scope->__pyx_v_selected_rows);
-          __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_8, NULL); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 241, __pyx_L4_error)
+          __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_8, NULL); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 242, __pyx_L4_error)
           __Pyx_GOTREF(__pyx_t_9);
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
         }
@@ -5512,7 +5530,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
         __Pyx_GIVEREF(__pyx_t_9);
         __pyx_t_9 = 0;
 
-        /* "mabel/data/readers/internals/parallel_reader.py":240
+        /* "mabel/data/readers/internals/parallel_reader.py":241
  *             record_iterator = decompressor(record_iterator)
  *             ### bypass rows which aren't selected
  *             if row_selector:             # <<<<<<<<<<<<<<
@@ -5521,14 +5539,14 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
  */
       }
 
-      /* "mabel/data/readers/internals/parallel_reader.py":243
+      /* "mabel/data/readers/internals/parallel_reader.py":244
  *                 record_iterator = self._select(record_iterator, selected_rows)
  *             # Parse
  *             record_iterator = map(parser, record_iterator)             # <<<<<<<<<<<<<<
  *             # Expand Nested JSON
  *             # record_iterator = map(expand_nested_json, record_iterator)
  */
-      __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 243, __pyx_L4_error)
+      __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 244, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_INCREF(__pyx_cur_scope->__pyx_v_parser);
       __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_parser);
@@ -5536,7 +5554,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
       __Pyx_INCREF(__pyx_cur_scope->__pyx_v_record_iterator);
       __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_record_iterator);
       PyTuple_SET_ITEM(__pyx_t_9, 1, __pyx_cur_scope->__pyx_v_record_iterator);
-      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_map, __pyx_t_9, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 243, __pyx_L4_error)
+      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_map, __pyx_t_9, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 244, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __Pyx_GOTREF(__pyx_cur_scope->__pyx_v_record_iterator);
@@ -5544,16 +5562,16 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
       __Pyx_GIVEREF(__pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "mabel/data/readers/internals/parallel_reader.py":247
+      /* "mabel/data/readers/internals/parallel_reader.py":248
  *             # record_iterator = map(expand_nested_json, record_iterator)
  *             # Transform
  *             record_iterator = map(self.columns, record_iterator)             # <<<<<<<<<<<<<<
  *             # Filter
  *             record_iterator = filter(self.filters, record_iterator)
  */
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_columns); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 247, __pyx_L4_error)
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_columns); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 248, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 247, __pyx_L4_error)
+      __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 248, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_GIVEREF(__pyx_t_6);
       PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_6);
@@ -5561,7 +5579,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
       __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_record_iterator);
       PyTuple_SET_ITEM(__pyx_t_9, 1, __pyx_cur_scope->__pyx_v_record_iterator);
       __pyx_t_6 = 0;
-      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_map, __pyx_t_9, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 247, __pyx_L4_error)
+      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_map, __pyx_t_9, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 248, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __Pyx_GOTREF(__pyx_cur_scope->__pyx_v_record_iterator);
@@ -5569,16 +5587,16 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
       __Pyx_GIVEREF(__pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "mabel/data/readers/internals/parallel_reader.py":249
+      /* "mabel/data/readers/internals/parallel_reader.py":250
  *             record_iterator = map(self.columns, record_iterator)
  *             # Filter
  *             record_iterator = filter(self.filters, record_iterator)             # <<<<<<<<<<<<<<
  *             # Reduce
  *             record_iterator = self.reducer(record_iterator)
  */
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_filters); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 249, __pyx_L4_error)
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_filters); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 250, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 249, __pyx_L4_error)
+      __pyx_t_9 = PyTuple_New(2); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 250, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_GIVEREF(__pyx_t_6);
       PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_6);
@@ -5586,7 +5604,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
       __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_record_iterator);
       PyTuple_SET_ITEM(__pyx_t_9, 1, __pyx_cur_scope->__pyx_v_record_iterator);
       __pyx_t_6 = 0;
-      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_filter, __pyx_t_9, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 249, __pyx_L4_error)
+      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_filter, __pyx_t_9, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 250, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __Pyx_GOTREF(__pyx_cur_scope->__pyx_v_record_iterator);
@@ -5594,14 +5612,14 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
       __Pyx_GIVEREF(__pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "mabel/data/readers/internals/parallel_reader.py":251
+      /* "mabel/data/readers/internals/parallel_reader.py":252
  *             record_iterator = filter(self.filters, record_iterator)
  *             # Reduce
  *             record_iterator = self.reducer(record_iterator)             # <<<<<<<<<<<<<<
  *             # Yield
  *             yield from record_iterator
  */
-      __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_reducer); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 251, __pyx_L4_error)
+      __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_reducer); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 252, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_9);
       __pyx_t_8 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_9))) {
@@ -5615,7 +5633,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
       }
       __pyx_t_6 = (__pyx_t_8) ? __Pyx_PyObject_Call2Args(__pyx_t_9, __pyx_t_8, __pyx_cur_scope->__pyx_v_record_iterator) : __Pyx_PyObject_CallOneArg(__pyx_t_9, __pyx_cur_scope->__pyx_v_record_iterator);
       __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
-      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 251, __pyx_L4_error)
+      if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 252, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __Pyx_GOTREF(__pyx_cur_scope->__pyx_v_record_iterator);
@@ -5623,7 +5641,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
       __Pyx_GIVEREF(__pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "mabel/data/readers/internals/parallel_reader.py":253
+      /* "mabel/data/readers/internals/parallel_reader.py":254
  *             record_iterator = self.reducer(record_iterator)
  *             # Yield
  *             yield from record_iterator             # <<<<<<<<<<<<<<
@@ -5655,16 +5673,16 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
         __pyx_t_3 = __pyx_cur_scope->__pyx_t_2;
         __pyx_cur_scope->__pyx_t_2 = 0;
         __Pyx_XGOTREF(__pyx_t_3);
-        if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 253, __pyx_L4_error)
+        if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 254, __pyx_L4_error)
       } else {
         PyObject* exc_type = __Pyx_PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || (exc_type != PyExc_GeneratorExit && __Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration)))) PyErr_Clear();
-          else __PYX_ERR(0, 253, __pyx_L4_error)
+          else __PYX_ERR(0, 254, __pyx_L4_error)
         }
       }
 
-      /* "mabel/data/readers/internals/parallel_reader.py":214
+      /* "mabel/data/readers/internals/parallel_reader.py":215
  *     def __call__(self, blob_name, index_files):
  *         # print(blob_name, "in")
  *         try:             # <<<<<<<<<<<<<<
@@ -5684,7 +5702,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
     __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-    /* "mabel/data/readers/internals/parallel_reader.py":255
+    /* "mabel/data/readers/internals/parallel_reader.py":256
  *             yield from record_iterator
  *             # print(blob_name, "out")
  *         except Exception as e:             # <<<<<<<<<<<<<<
@@ -5694,129 +5712,210 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
     __pyx_t_14 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
     if (__pyx_t_14) {
       __Pyx_AddTraceback("mabel.data.readers.internals.parallel_reader.ParallelReader.__call__", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_6, &__pyx_t_9, &__pyx_t_8) < 0) __PYX_ERR(0, 255, __pyx_L6_except_error)
+      if (__Pyx_GetException(&__pyx_t_6, &__pyx_t_9, &__pyx_t_8) < 0) __PYX_ERR(0, 256, __pyx_L6_except_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_INCREF(__pyx_t_9);
       __Pyx_GIVEREF(__pyx_t_9);
       __pyx_cur_scope->__pyx_v_e = __pyx_t_9;
+      /*try:*/ {
 
-      /* "mabel/data/readers/internals/parallel_reader.py":256
+        /* "mabel/data/readers/internals/parallel_reader.py":257
  *             # print(blob_name, "out")
  *         except Exception as e:
  *             import traceback             # <<<<<<<<<<<<<<
  * 
  *             logger.error(f"{blob_name} had an error - {e}\n{traceback.format_exc()}")
  */
-      __pyx_t_4 = __Pyx_Import(__pyx_n_s_traceback, 0, -1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 256, __pyx_L6_except_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      __Pyx_GIVEREF(__pyx_t_4);
-      __pyx_cur_scope->__pyx_v_traceback = __pyx_t_4;
-      __pyx_t_4 = 0;
+        __pyx_t_4 = __Pyx_Import(__pyx_n_s_traceback, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 257, __pyx_L31_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        __Pyx_GIVEREF(__pyx_t_4);
+        __pyx_cur_scope->__pyx_v_traceback = __pyx_t_4;
+        __pyx_t_4 = 0;
 
-      /* "mabel/data/readers/internals/parallel_reader.py":258
+        /* "mabel/data/readers/internals/parallel_reader.py":259
  *             import traceback
  * 
  *             logger.error(f"{blob_name} had an error - {e}\n{traceback.format_exc()}")             # <<<<<<<<<<<<<<
  *             return []
  */
-      __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_logger); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 258, __pyx_L6_except_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_error); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 258, __pyx_L6_except_error)
-      __Pyx_GOTREF(__pyx_t_10);
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __pyx_t_7 = PyTuple_New(5); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 258, __pyx_L6_except_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_13 = 0;
-      __pyx_t_15 = 127;
-      __pyx_t_16 = __Pyx_PyObject_FormatSimple(__pyx_cur_scope->__pyx_v_blob_name, __pyx_empty_unicode); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 258, __pyx_L6_except_error)
-      __Pyx_GOTREF(__pyx_t_16);
-      __pyx_t_15 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_16) > __pyx_t_15) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_16) : __pyx_t_15;
-      __pyx_t_13 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_16);
-      __Pyx_GIVEREF(__pyx_t_16);
-      PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_16);
-      __pyx_t_16 = 0;
-      __Pyx_INCREF(__pyx_kp_u_had_an_error);
-      __pyx_t_13 += 16;
-      __Pyx_GIVEREF(__pyx_kp_u_had_an_error);
-      PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_kp_u_had_an_error);
-      __pyx_t_16 = __Pyx_PyObject_FormatSimple(__pyx_cur_scope->__pyx_v_e, __pyx_empty_unicode); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 258, __pyx_L6_except_error)
-      __Pyx_GOTREF(__pyx_t_16);
-      __pyx_t_15 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_16) > __pyx_t_15) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_16) : __pyx_t_15;
-      __pyx_t_13 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_16);
-      __Pyx_GIVEREF(__pyx_t_16);
-      PyTuple_SET_ITEM(__pyx_t_7, 2, __pyx_t_16);
-      __pyx_t_16 = 0;
-      __Pyx_INCREF(__pyx_kp_u__9);
-      __pyx_t_13 += 1;
-      __Pyx_GIVEREF(__pyx_kp_u__9);
-      PyTuple_SET_ITEM(__pyx_t_7, 3, __pyx_kp_u__9);
-      __pyx_t_17 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_traceback, __pyx_n_s_format_exc); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 258, __pyx_L6_except_error)
-      __Pyx_GOTREF(__pyx_t_17);
-      __pyx_t_18 = NULL;
-      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_17))) {
-        __pyx_t_18 = PyMethod_GET_SELF(__pyx_t_17);
-        if (likely(__pyx_t_18)) {
-          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_17);
-          __Pyx_INCREF(__pyx_t_18);
-          __Pyx_INCREF(function);
-          __Pyx_DECREF_SET(__pyx_t_17, function);
+        __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_logger); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 259, __pyx_L31_error)
+        __Pyx_GOTREF(__pyx_t_7);
+        __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_error); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 259, __pyx_L31_error)
+        __Pyx_GOTREF(__pyx_t_10);
+        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+        __pyx_t_7 = PyTuple_New(5); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 259, __pyx_L31_error)
+        __Pyx_GOTREF(__pyx_t_7);
+        __pyx_t_13 = 0;
+        __pyx_t_15 = 127;
+        __pyx_t_16 = __Pyx_PyObject_FormatSimple(__pyx_cur_scope->__pyx_v_blob_name, __pyx_empty_unicode); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 259, __pyx_L31_error)
+        __Pyx_GOTREF(__pyx_t_16);
+        __pyx_t_15 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_16) > __pyx_t_15) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_16) : __pyx_t_15;
+        __pyx_t_13 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_16);
+        __Pyx_GIVEREF(__pyx_t_16);
+        PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_16);
+        __pyx_t_16 = 0;
+        __Pyx_INCREF(__pyx_kp_u_had_an_error);
+        __pyx_t_13 += 16;
+        __Pyx_GIVEREF(__pyx_kp_u_had_an_error);
+        PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_kp_u_had_an_error);
+        __pyx_t_16 = __Pyx_PyObject_FormatSimple(__pyx_cur_scope->__pyx_v_e, __pyx_empty_unicode); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 259, __pyx_L31_error)
+        __Pyx_GOTREF(__pyx_t_16);
+        __pyx_t_15 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_16) > __pyx_t_15) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_16) : __pyx_t_15;
+        __pyx_t_13 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_16);
+        __Pyx_GIVEREF(__pyx_t_16);
+        PyTuple_SET_ITEM(__pyx_t_7, 2, __pyx_t_16);
+        __pyx_t_16 = 0;
+        __Pyx_INCREF(__pyx_kp_u__9);
+        __pyx_t_13 += 1;
+        __Pyx_GIVEREF(__pyx_kp_u__9);
+        PyTuple_SET_ITEM(__pyx_t_7, 3, __pyx_kp_u__9);
+        __pyx_t_17 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_traceback, __pyx_n_s_format_exc); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 259, __pyx_L31_error)
+        __Pyx_GOTREF(__pyx_t_17);
+        __pyx_t_18 = NULL;
+        if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_17))) {
+          __pyx_t_18 = PyMethod_GET_SELF(__pyx_t_17);
+          if (likely(__pyx_t_18)) {
+            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_17);
+            __Pyx_INCREF(__pyx_t_18);
+            __Pyx_INCREF(function);
+            __Pyx_DECREF_SET(__pyx_t_17, function);
+          }
         }
-      }
-      __pyx_t_16 = (__pyx_t_18) ? __Pyx_PyObject_CallOneArg(__pyx_t_17, __pyx_t_18) : __Pyx_PyObject_CallNoArg(__pyx_t_17);
-      __Pyx_XDECREF(__pyx_t_18); __pyx_t_18 = 0;
-      if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 258, __pyx_L6_except_error)
-      __Pyx_GOTREF(__pyx_t_16);
-      __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-      __pyx_t_17 = __Pyx_PyObject_FormatSimple(__pyx_t_16, __pyx_empty_unicode); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 258, __pyx_L6_except_error)
-      __Pyx_GOTREF(__pyx_t_17);
-      __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
-      __pyx_t_15 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_17) > __pyx_t_15) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_17) : __pyx_t_15;
-      __pyx_t_13 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_17);
-      __Pyx_GIVEREF(__pyx_t_17);
-      PyTuple_SET_ITEM(__pyx_t_7, 4, __pyx_t_17);
-      __pyx_t_17 = 0;
-      __pyx_t_17 = __Pyx_PyUnicode_Join(__pyx_t_7, 5, __pyx_t_13, __pyx_t_15); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 258, __pyx_L6_except_error)
-      __Pyx_GOTREF(__pyx_t_17);
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __pyx_t_7 = NULL;
-      if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_10))) {
-        __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_10);
-        if (likely(__pyx_t_7)) {
-          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_10);
-          __Pyx_INCREF(__pyx_t_7);
-          __Pyx_INCREF(function);
-          __Pyx_DECREF_SET(__pyx_t_10, function);
+        __pyx_t_16 = (__pyx_t_18) ? __Pyx_PyObject_CallOneArg(__pyx_t_17, __pyx_t_18) : __Pyx_PyObject_CallNoArg(__pyx_t_17);
+        __Pyx_XDECREF(__pyx_t_18); __pyx_t_18 = 0;
+        if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 259, __pyx_L31_error)
+        __Pyx_GOTREF(__pyx_t_16);
+        __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
+        __pyx_t_17 = __Pyx_PyObject_FormatSimple(__pyx_t_16, __pyx_empty_unicode); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 259, __pyx_L31_error)
+        __Pyx_GOTREF(__pyx_t_17);
+        __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
+        __pyx_t_15 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_17) > __pyx_t_15) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_17) : __pyx_t_15;
+        __pyx_t_13 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_17);
+        __Pyx_GIVEREF(__pyx_t_17);
+        PyTuple_SET_ITEM(__pyx_t_7, 4, __pyx_t_17);
+        __pyx_t_17 = 0;
+        __pyx_t_17 = __Pyx_PyUnicode_Join(__pyx_t_7, 5, __pyx_t_13, __pyx_t_15); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 259, __pyx_L31_error)
+        __Pyx_GOTREF(__pyx_t_17);
+        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+        __pyx_t_7 = NULL;
+        if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_10))) {
+          __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_10);
+          if (likely(__pyx_t_7)) {
+            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_10);
+            __Pyx_INCREF(__pyx_t_7);
+            __Pyx_INCREF(function);
+            __Pyx_DECREF_SET(__pyx_t_10, function);
+          }
         }
-      }
-      __pyx_t_4 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_10, __pyx_t_7, __pyx_t_17) : __Pyx_PyObject_CallOneArg(__pyx_t_10, __pyx_t_17);
-      __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 258, __pyx_L6_except_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+        __pyx_t_4 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_10, __pyx_t_7, __pyx_t_17) : __Pyx_PyObject_CallOneArg(__pyx_t_10, __pyx_t_17);
+        __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+        __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 259, __pyx_L31_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-      /* "mabel/data/readers/internals/parallel_reader.py":259
+        /* "mabel/data/readers/internals/parallel_reader.py":260
  * 
  *             logger.error(f"{blob_name} had an error - {e}\n{traceback.format_exc()}")
  *             return []             # <<<<<<<<<<<<<<
  */
-      __Pyx_XDECREF(__pyx_r);
-      __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 259, __pyx_L6_except_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_t_4);
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-      goto __pyx_L7_except_return;
+        __Pyx_XDECREF(__pyx_r);
+        __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 260, __pyx_L31_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        __pyx_r = NULL; __Pyx_ReturnWithStopIteration(__pyx_t_4);
+        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+        __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
+        __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+        goto __pyx_L30_return;
+      }
+
+      /* "mabel/data/readers/internals/parallel_reader.py":256
+ *             yield from record_iterator
+ *             # print(blob_name, "out")
+ *         except Exception as e:             # <<<<<<<<<<<<<<
+ *             import traceback
+ * 
+ */
+      /*finally:*/ {
+        __pyx_L31_error:;
+        /*exception exit:*/{
+          __Pyx_PyThreadState_assign
+          __pyx_t_21 = 0; __pyx_t_22 = 0; __pyx_t_23 = 0; __pyx_t_24 = 0; __pyx_t_25 = 0; __pyx_t_26 = 0;
+          __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
+          __Pyx_XDECREF(__pyx_t_16); __pyx_t_16 = 0;
+          __Pyx_XDECREF(__pyx_t_17); __pyx_t_17 = 0;
+          __Pyx_XDECREF(__pyx_t_18); __pyx_t_18 = 0;
+          __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+          __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+          if (PY_MAJOR_VERSION >= 3) __Pyx_ExceptionSwap(&__pyx_t_24, &__pyx_t_25, &__pyx_t_26);
+          if ((PY_MAJOR_VERSION < 3) || unlikely(__Pyx_GetException(&__pyx_t_21, &__pyx_t_22, &__pyx_t_23) < 0)) __Pyx_ErrFetch(&__pyx_t_21, &__pyx_t_22, &__pyx_t_23);
+          __Pyx_XGOTREF(__pyx_t_21);
+          __Pyx_XGOTREF(__pyx_t_22);
+          __Pyx_XGOTREF(__pyx_t_23);
+          __Pyx_XGOTREF(__pyx_t_24);
+          __Pyx_XGOTREF(__pyx_t_25);
+          __Pyx_XGOTREF(__pyx_t_26);
+          __pyx_t_14 = __pyx_lineno; __pyx_t_19 = __pyx_clineno; __pyx_t_20 = __pyx_filename;
+          {
+            __Pyx_GOTREF(__pyx_cur_scope->__pyx_v_e);
+            __Pyx_DECREF(__pyx_cur_scope->__pyx_v_e);
+            __pyx_cur_scope->__pyx_v_e = NULL;
+          }
+          if (PY_MAJOR_VERSION >= 3) {
+            __Pyx_XGIVEREF(__pyx_t_24);
+            __Pyx_XGIVEREF(__pyx_t_25);
+            __Pyx_XGIVEREF(__pyx_t_26);
+            __Pyx_ExceptionReset(__pyx_t_24, __pyx_t_25, __pyx_t_26);
+          }
+          __Pyx_XGIVEREF(__pyx_t_21);
+          __Pyx_XGIVEREF(__pyx_t_22);
+          __Pyx_XGIVEREF(__pyx_t_23);
+          __Pyx_ErrRestore(__pyx_t_21, __pyx_t_22, __pyx_t_23);
+          __pyx_t_21 = 0; __pyx_t_22 = 0; __pyx_t_23 = 0; __pyx_t_24 = 0; __pyx_t_25 = 0; __pyx_t_26 = 0;
+          __pyx_lineno = __pyx_t_14; __pyx_clineno = __pyx_t_19; __pyx_filename = __pyx_t_20;
+          goto __pyx_L6_except_error;
+        }
+        __pyx_L30_return: {
+          __Pyx_PyThreadState_assign
+          __pyx_t_26 = 0; __pyx_t_25 = 0; __pyx_t_24 = 0; __pyx_t_23 = 0; __pyx_t_22 = 0; __pyx_t_21 = 0;
+          if (PY_MAJOR_VERSION >= 3) __Pyx_ExceptionSwap(&__pyx_t_23, &__pyx_t_22, &__pyx_t_21);
+          if ((PY_MAJOR_VERSION < 3) || unlikely(__Pyx_GetException(&__pyx_t_26, &__pyx_t_25, &__pyx_t_24) < 0)) __Pyx_ErrFetch(&__pyx_t_26, &__pyx_t_25, &__pyx_t_24);
+          __Pyx_XGOTREF(__pyx_t_26);
+          __Pyx_XGOTREF(__pyx_t_25);
+          __Pyx_XGOTREF(__pyx_t_24);
+          __Pyx_XGOTREF(__pyx_t_23);
+          __Pyx_XGOTREF(__pyx_t_22);
+          __Pyx_XGOTREF(__pyx_t_21);
+          __pyx_t_27 = __pyx_r;
+          __pyx_r = 0;
+          __Pyx_GOTREF(__pyx_cur_scope->__pyx_v_e);
+          __Pyx_DECREF(__pyx_cur_scope->__pyx_v_e);
+          __pyx_cur_scope->__pyx_v_e = NULL;
+          __pyx_r = __pyx_t_27;
+          __pyx_t_27 = 0;
+          if (PY_MAJOR_VERSION >= 3) {
+            __Pyx_XGIVEREF(__pyx_t_23);
+            __Pyx_XGIVEREF(__pyx_t_22);
+            __Pyx_XGIVEREF(__pyx_t_21);
+            __Pyx_ExceptionReset(__pyx_t_23, __pyx_t_22, __pyx_t_21);
+          }
+          __Pyx_XGIVEREF(__pyx_t_26);
+          __Pyx_XGIVEREF(__pyx_t_25);
+          __Pyx_XGIVEREF(__pyx_t_24);
+          __Pyx_ErrRestore(__pyx_t_26, __pyx_t_25, __pyx_t_24);
+          __pyx_t_26 = 0; __pyx_t_25 = 0; __pyx_t_24 = 0; __pyx_t_23 = 0; __pyx_t_22 = 0; __pyx_t_21 = 0;
+          goto __pyx_L7_except_return;
+        }
+      }
     }
     goto __pyx_L6_except_error;
     __pyx_L6_except_error:;
 
-    /* "mabel/data/readers/internals/parallel_reader.py":214
+    /* "mabel/data/readers/internals/parallel_reader.py":215
  *     def __call__(self, blob_name, index_files):
  *         # print(blob_name, "in")
  *         try:             # <<<<<<<<<<<<<<
@@ -5844,7 +5943,7 @@ static PyObject *__pyx_gb_5mabel_4data_7readers_9internals_15parallel_reader_14P
   }
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "mabel/data/readers/internals/parallel_reader.py":212
+  /* "mabel/data/readers/internals/parallel_reader.py":213
  *                 yield record
  * 
  *     def __call__(self, blob_name, index_files):             # <<<<<<<<<<<<<<
@@ -6363,15 +6462,17 @@ static struct PyModuleDef __pyx_moduledef = {
 #endif
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
-  {&__pyx_kp_s_, __pyx_k_, sizeof(__pyx_k_), 0, 0, 1, 0},
   {&__pyx_kp_u_, __pyx_k_, sizeof(__pyx_k_), 0, 1, 0, 0},
   {&__pyx_n_s_CONTROL, __pyx_k_CONTROL, sizeof(__pyx_k_CONTROL), 0, 0, 1, 1},
+  {&__pyx_n_u_CONTROL, __pyx_k_CONTROL, sizeof(__pyx_k_CONTROL), 0, 1, 0, 1},
   {&__pyx_n_s_DATA, __pyx_k_DATA, sizeof(__pyx_k_DATA), 0, 0, 1, 1},
+  {&__pyx_n_u_DATA, __pyx_k_DATA, sizeof(__pyx_k_DATA), 0, 1, 0, 1},
   {&__pyx_n_s_DnfFilters, __pyx_k_DnfFilters, sizeof(__pyx_k_DnfFilters), 0, 0, 1, 1},
   {&__pyx_n_s_EXTENSION_TYPE, __pyx_k_EXTENSION_TYPE, sizeof(__pyx_k_EXTENSION_TYPE), 0, 0, 1, 1},
   {&__pyx_n_s_Enum, __pyx_k_Enum, sizeof(__pyx_k_Enum), 0, 0, 1, 1},
   {&__pyx_n_s_Expression, __pyx_k_Expression, sizeof(__pyx_k_Expression), 0, 0, 1, 1},
   {&__pyx_n_s_INDEX, __pyx_k_INDEX, sizeof(__pyx_k_INDEX), 0, 0, 1, 1},
+  {&__pyx_n_u_INDEX, __pyx_k_INDEX, sizeof(__pyx_k_INDEX), 0, 1, 0, 1},
   {&__pyx_n_s_Index, __pyx_k_Index, sizeof(__pyx_k_Index), 0, 0, 1, 1},
   {&__pyx_n_s_KNOWN_EXTENSIONS, __pyx_k_KNOWN_EXTENSIONS, sizeof(__pyx_k_KNOWN_EXTENSIONS), 0, 0, 1, 1},
   {&__pyx_n_s_NOT_INDEXED, __pyx_k_NOT_INDEXED, sizeof(__pyx_k_NOT_INDEXED), 0, 0, 1, 1},
@@ -6384,13 +6485,14 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_ParallelReader_pre_filter_locals, __pyx_k_ParallelReader_pre_filter_locals, sizeof(__pyx_k_ParallelReader_pre_filter_locals), 0, 0, 1, 1},
   {&__pyx_n_s_ParallelReader_pre_filter_locals_2, __pyx_k_ParallelReader_pre_filter_locals_2, sizeof(__pyx_k_ParallelReader_pre_filter_locals_2), 0, 0, 1, 1},
   {&__pyx_n_s__10, __pyx_k__10, sizeof(__pyx_k__10), 0, 0, 1, 1},
-  {&__pyx_kp_s__2, __pyx_k__2, sizeof(__pyx_k__2), 0, 0, 1, 0},
-  {&__pyx_kp_s__3, __pyx_k__3, sizeof(__pyx_k__3), 0, 0, 1, 0},
-  {&__pyx_kp_s__4, __pyx_k__4, sizeof(__pyx_k__4), 0, 0, 1, 0},
+  {&__pyx_kp_u__2, __pyx_k__2, sizeof(__pyx_k__2), 0, 1, 0, 0},
+  {&__pyx_kp_u__3, __pyx_k__3, sizeof(__pyx_k__3), 0, 1, 0, 0},
+  {&__pyx_kp_u__4, __pyx_k__4, sizeof(__pyx_k__4), 0, 1, 0, 0},
   {&__pyx_kp_u__9, __pyx_k__9, sizeof(__pyx_k__9), 0, 1, 0, 0},
   {&__pyx_n_s_all, __pyx_k_all, sizeof(__pyx_k_all), 0, 0, 1, 1},
   {&__pyx_n_s_args, __pyx_k_args, sizeof(__pyx_k_args), 0, 0, 1, 1},
   {&__pyx_n_s_as_dict, __pyx_k_as_dict, sizeof(__pyx_k_as_dict), 0, 0, 1, 1},
+  {&__pyx_n_u_as_dict, __pyx_k_as_dict, sizeof(__pyx_k_as_dict), 0, 1, 0, 1},
   {&__pyx_n_s_blob_name, __pyx_k_blob_name, sizeof(__pyx_k_blob_name), 0, 0, 1, 1},
   {&__pyx_n_s_block, __pyx_k_block, sizeof(__pyx_k_block), 0, 0, 1, 1},
   {&__pyx_n_s_bucket, __pyx_k_bucket, sizeof(__pyx_k_bucket), 0, 0, 1, 1},
@@ -6398,9 +6500,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_close, __pyx_k_close, sizeof(__pyx_k_close), 0, 0, 1, 1},
   {&__pyx_n_s_columns, __pyx_k_columns, sizeof(__pyx_k_columns), 0, 0, 1, 1},
-  {&__pyx_kp_s_complete, __pyx_k_complete, sizeof(__pyx_k_complete), 0, 0, 1, 0},
-  {&__pyx_n_s_contains, __pyx_k_contains, sizeof(__pyx_k_contains), 0, 0, 1, 1},
-  {&__pyx_kp_s_csv, __pyx_k_csv, sizeof(__pyx_k_csv), 0, 0, 1, 0},
+  {&__pyx_kp_u_complete, __pyx_k_complete, sizeof(__pyx_k_complete), 0, 1, 0, 0},
+  {&__pyx_n_u_contains, __pyx_k_contains, sizeof(__pyx_k_contains), 0, 1, 0, 1},
+  {&__pyx_kp_u_csv, __pyx_k_csv, sizeof(__pyx_k_csv), 0, 1, 0, 0},
   {&__pyx_n_s_csv_2, __pyx_k_csv_2, sizeof(__pyx_k_csv_2), 0, 0, 1, 1},
   {&__pyx_n_s_data_internals_dnf_filters, __pyx_k_data_internals_dnf_filters, sizeof(__pyx_k_data_internals_dnf_filters), 0, 0, 1, 1},
   {&__pyx_n_s_data_internals_expression, __pyx_k_data_internals_expression, sizeof(__pyx_k_data_internals_expression), 0, 0, 1, 1},
@@ -6430,21 +6532,22 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_get_logger, __pyx_k_get_logger, sizeof(__pyx_k_get_logger), 0, 0, 1, 1},
   {&__pyx_n_s_get_parts, __pyx_k_get_parts, sizeof(__pyx_k_get_parts), 0, 0, 1, 1},
   {&__pyx_kp_u_had_an_error, __pyx_k_had_an_error, sizeof(__pyx_k_had_an_error), 0, 1, 0, 0},
-  {&__pyx_kp_s_idx, __pyx_k_idx, sizeof(__pyx_k_idx), 0, 0, 1, 0},
-  {&__pyx_kp_s_ignore, __pyx_k_ignore, sizeof(__pyx_k_ignore), 0, 0, 1, 0},
+  {&__pyx_kp_u_idx, __pyx_k_idx, sizeof(__pyx_k_idx), 0, 1, 0, 0},
+  {&__pyx_kp_u_ignore, __pyx_k_ignore, sizeof(__pyx_k_ignore), 0, 1, 0, 0},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
-  {&__pyx_n_s_in, __pyx_k_in, sizeof(__pyx_k_in), 0, 0, 1, 1},
+  {&__pyx_n_u_in, __pyx_k_in, sizeof(__pyx_k_in), 0, 1, 0, 1},
   {&__pyx_n_s_index, __pyx_k_index, sizeof(__pyx_k_index), 0, 0, 1, 1},
   {&__pyx_n_s_index_file, __pyx_k_index_file, sizeof(__pyx_k_index_file), 0, 0, 1, 1},
   {&__pyx_n_s_index_files, __pyx_k_index_files, sizeof(__pyx_k_index_files), 0, 0, 1, 1},
   {&__pyx_n_s_index_filters, __pyx_k_index_filters, sizeof(__pyx_k_index_filters), 0, 0, 1, 1},
   {&__pyx_n_s_init, __pyx_k_init, sizeof(__pyx_k_init), 0, 0, 1, 1},
   {&__pyx_n_s_inner_prefilter, __pyx_k_inner_prefilter, sizeof(__pyx_k_inner_prefilter), 0, 0, 1, 1},
-  {&__pyx_n_s_is, __pyx_k_is, sizeof(__pyx_k_is), 0, 0, 1, 1},
+  {&__pyx_n_u_is, __pyx_k_is, sizeof(__pyx_k_is), 0, 1, 0, 1},
   {&__pyx_n_s_items, __pyx_k_items, sizeof(__pyx_k_items), 0, 0, 1, 1},
-  {&__pyx_kp_s_json, __pyx_k_json, sizeof(__pyx_k_json), 0, 0, 1, 0},
+  {&__pyx_n_u_items, __pyx_k_items, sizeof(__pyx_k_items), 0, 1, 0, 1},
+  {&__pyx_kp_u_json, __pyx_k_json, sizeof(__pyx_k_json), 0, 1, 0, 0},
   {&__pyx_n_s_json_2, __pyx_k_json_2, sizeof(__pyx_k_json_2), 0, 0, 1, 1},
-  {&__pyx_kp_s_jsonl, __pyx_k_jsonl, sizeof(__pyx_k_jsonl), 0, 0, 1, 0},
+  {&__pyx_kp_u_jsonl, __pyx_k_jsonl, sizeof(__pyx_k_jsonl), 0, 1, 0, 0},
   {&__pyx_n_s_k, __pyx_k_k, sizeof(__pyx_k_k), 0, 0, 1, 1},
   {&__pyx_n_s_key, __pyx_k_key, sizeof(__pyx_k_key), 0, 0, 1, 1},
   {&__pyx_n_s_kwargs, __pyx_k_kwargs, sizeof(__pyx_k_kwargs), 0, 0, 1, 1},
@@ -6453,8 +6556,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_logger, __pyx_k_logger, sizeof(__pyx_k_logger), 0, 0, 1, 1},
   {&__pyx_n_s_logging, __pyx_k_logging, sizeof(__pyx_k_logging), 0, 0, 1, 1},
   {&__pyx_n_s_lower, __pyx_k_lower, sizeof(__pyx_k_lower), 0, 0, 1, 1},
-  {&__pyx_kp_s_lxml, __pyx_k_lxml, sizeof(__pyx_k_lxml), 0, 0, 1, 0},
-  {&__pyx_kp_s_lzma, __pyx_k_lzma, sizeof(__pyx_k_lzma), 0, 0, 1, 0},
+  {&__pyx_kp_u_lxml, __pyx_k_lxml, sizeof(__pyx_k_lxml), 0, 1, 0, 0},
+  {&__pyx_kp_u_lzma, __pyx_k_lzma, sizeof(__pyx_k_lzma), 0, 1, 0, 0},
   {&__pyx_n_s_lzma_2, __pyx_k_lzma_2, sizeof(__pyx_k_lzma_2), 0, 0, 1, 1},
   {&__pyx_n_s_mabel, __pyx_k_mabel, sizeof(__pyx_k_mabel), 0, 0, 1, 1},
   {&__pyx_n_s_mabel_data_readers_internals_par, __pyx_k_mabel_data_readers_internals_par, sizeof(__pyx_k_mabel_data_readers_internals_par), 0, 0, 1, 1},
@@ -6468,7 +6571,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_operator, __pyx_k_operator, sizeof(__pyx_k_operator), 0, 0, 1, 1},
   {&__pyx_n_s_override_format, __pyx_k_override_format, sizeof(__pyx_k_override_format), 0, 0, 1, 1},
   {&__pyx_n_s_p, __pyx_k_p, sizeof(__pyx_k_p), 0, 0, 1, 1},
-  {&__pyx_kp_s_parquet, __pyx_k_parquet, sizeof(__pyx_k_parquet), 0, 0, 1, 0},
+  {&__pyx_kp_u_parquet, __pyx_k_parquet, sizeof(__pyx_k_parquet), 0, 1, 0, 0},
   {&__pyx_n_s_parquet_2, __pyx_k_parquet_2, sizeof(__pyx_k_parquet_2), 0, 0, 1, 1},
   {&__pyx_n_s_parser, __pyx_k_parser, sizeof(__pyx_k_parser), 0, 0, 1, 1},
   {&__pyx_n_s_parsers, __pyx_k_parsers, sizeof(__pyx_k_parsers), 0, 0, 1, 1},
@@ -6502,26 +6605,26 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_throw, __pyx_k_throw, sizeof(__pyx_k_throw), 0, 0, 1, 1},
   {&__pyx_n_s_to_dnf, __pyx_k_to_dnf, sizeof(__pyx_k_to_dnf), 0, 0, 1, 1},
   {&__pyx_n_s_traceback, __pyx_k_traceback, sizeof(__pyx_k_traceback), 0, 0, 1, 1},
-  {&__pyx_kp_s_txt, __pyx_k_txt, sizeof(__pyx_k_txt), 0, 0, 1, 0},
+  {&__pyx_kp_u_txt, __pyx_k_txt, sizeof(__pyx_k_txt), 0, 1, 0, 0},
   {&__pyx_n_s_unzip, __pyx_k_unzip, sizeof(__pyx_k_unzip), 0, 0, 1, 1},
   {&__pyx_n_s_update, __pyx_k_update, sizeof(__pyx_k_update), 0, 0, 1, 1},
   {&__pyx_n_s_utils, __pyx_k_utils, sizeof(__pyx_k_utils), 0, 0, 1, 1},
   {&__pyx_n_s_v, __pyx_k_v, sizeof(__pyx_k_v), 0, 0, 1, 1},
   {&__pyx_n_s_values, __pyx_k_values, sizeof(__pyx_k_values), 0, 0, 1, 1},
   {&__pyx_n_s_x, __pyx_k_x, sizeof(__pyx_k_x), 0, 0, 1, 1},
-  {&__pyx_kp_s_xml, __pyx_k_xml, sizeof(__pyx_k_xml), 0, 0, 1, 0},
+  {&__pyx_kp_u_xml, __pyx_k_xml, sizeof(__pyx_k_xml), 0, 1, 0, 0},
   {&__pyx_n_s_xml_2, __pyx_k_xml_2, sizeof(__pyx_k_xml_2), 0, 0, 1, 1},
   {&__pyx_n_s_y, __pyx_k_y, sizeof(__pyx_k_y), 0, 0, 1, 1},
-  {&__pyx_kp_s_zip, __pyx_k_zip, sizeof(__pyx_k_zip), 0, 0, 1, 0},
-  {&__pyx_kp_s_zstd, __pyx_k_zstd, sizeof(__pyx_k_zstd), 0, 0, 1, 0},
+  {&__pyx_kp_u_zip, __pyx_k_zip, sizeof(__pyx_k_zip), 0, 1, 0, 0},
+  {&__pyx_kp_u_zstd, __pyx_k_zstd, sizeof(__pyx_k_zstd), 0, 1, 0, 0},
   {&__pyx_n_s_zstd_2, __pyx_k_zstd_2, sizeof(__pyx_k_zstd_2), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_all = __Pyx_GetBuiltinName(__pyx_n_s_all); if (!__pyx_builtin_all) __PYX_ERR(0, 176, __pyx_L1_error)
-  __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(0, 177, __pyx_L1_error)
-  __pyx_builtin_map = __Pyx_GetBuiltinName(__pyx_n_s_map); if (!__pyx_builtin_map) __PYX_ERR(0, 243, __pyx_L1_error)
-  __pyx_builtin_filter = __Pyx_GetBuiltinName(__pyx_n_s_filter); if (!__pyx_builtin_filter) __PYX_ERR(0, 249, __pyx_L1_error)
+  __pyx_builtin_all = __Pyx_GetBuiltinName(__pyx_n_s_all); if (!__pyx_builtin_all) __PYX_ERR(0, 177, __pyx_L1_error)
+  __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(0, 178, __pyx_L1_error)
+  __pyx_builtin_map = __Pyx_GetBuiltinName(__pyx_n_s_map); if (!__pyx_builtin_map) __PYX_ERR(0, 244, __pyx_L1_error)
+  __pyx_builtin_filter = __Pyx_GetBuiltinName(__pyx_n_s_filter); if (!__pyx_builtin_filter) __PYX_ERR(0, 250, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -6531,101 +6634,101 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "mabel/data/readers/internals/parallel_reader.py":151
+  /* "mabel/data/readers/internals/parallel_reader.py":152
  *         PRE_FILTERABLE_OPERATORS = {"=", "==", "is", "in", "contains"}
  * 
  *         def _inner_prefilter(predicate):             # <<<<<<<<<<<<<<
  *             # No filter doesn't filter
  *             if predicate is None:  # pragma: no cover
  */
-  __pyx_tuple__5 = PyTuple_Pack(11, __pyx_n_s_predicate, __pyx_n_s_key, __pyx_n_s_operator, __pyx_n_s_values, __pyx_n_s_index_file, __pyx_n_s_index, __pyx_n_s_rows, __pyx_n_s_row, __pyx_n_s_evaluations, __pyx_n_s_p, __pyx_n_s_e); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_tuple__5 = PyTuple_Pack(15, __pyx_n_s_predicate, __pyx_n_s_key, __pyx_n_s_operator, __pyx_n_s_values, __pyx_n_s_index_file, __pyx_n_s_index, __pyx_n_s_rows, __pyx_n_s_row, __pyx_n_s_evaluations, __pyx_n_s_index_file, __pyx_n_s_p, __pyx_n_s_p, __pyx_n_s_p, __pyx_n_s_p, __pyx_n_s_e); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 152, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
-  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(1, 0, 11, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_par_2, __pyx_n_s_inner_prefilter, 151, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(1, 0, 15, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_par_2, __pyx_n_s_inner_prefilter, 152, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(0, 152, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/parallel_reader.py":36
+  /* "mabel/data/readers/internals/parallel_reader.py":37
  * 
  * 
  * def empty_list(x):             # <<<<<<<<<<<<<<
  *     return []
  * 
  */
-  __pyx_tuple__11 = PyTuple_Pack(1, __pyx_n_s_x); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_tuple__11 = PyTuple_Pack(1, __pyx_n_s_x); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 37, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
-  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_par_2, __pyx_n_s_empty_list, 36, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_par_2, __pyx_n_s_empty_list, 37, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 37, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/parallel_reader.py":67
+  /* "mabel/data/readers/internals/parallel_reader.py":68
  * 
  * 
  * def no_filter(x):             # <<<<<<<<<<<<<<
  *     return True
  * 
  */
-  __pyx_tuple__13 = PyTuple_Pack(1, __pyx_n_s_x); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 67, __pyx_L1_error)
+  __pyx_tuple__13 = PyTuple_Pack(1, __pyx_n_s_x); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__13);
   __Pyx_GIVEREF(__pyx_tuple__13);
-  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_par_2, __pyx_n_s_no_filter, 67, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) __PYX_ERR(0, 67, __pyx_L1_error)
+  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_par_2, __pyx_n_s_no_filter, 68, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) __PYX_ERR(0, 68, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/parallel_reader.py":71
+  /* "mabel/data/readers/internals/parallel_reader.py":72
  * 
  * 
  * def expand_nested_json(row):             # <<<<<<<<<<<<<<
  *     # this is really slow - on a simple read it's roughly 60% of the execution
  *     if hasattr(row, "items"):
  */
-  __pyx_tuple__15 = PyTuple_Pack(3, __pyx_n_s_row, __pyx_n_s_k, __pyx_n_s_v); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_tuple__15 = PyTuple_Pack(5, __pyx_n_s_row, __pyx_n_s_k, __pyx_n_s_v, __pyx_n_s_k, __pyx_n_s_v); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 72, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__15);
   __Pyx_GIVEREF(__pyx_tuple__15);
-  __pyx_codeobj__16 = (PyObject*)__Pyx_PyCode_New(1, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__15, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_par_2, __pyx_n_s_expand_nested_json, 71, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__16)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_codeobj__16 = (PyObject*)__Pyx_PyCode_New(1, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__15, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_par_2, __pyx_n_s_expand_nested_json, 72, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__16)) __PYX_ERR(0, 72, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/parallel_reader.py":87
+  /* "mabel/data/readers/internals/parallel_reader.py":88
  *     NOT_INDEXED = {-1}
  * 
  *     def __init__(             # <<<<<<<<<<<<<<
  *         self,
  *         reader,
  */
-  __pyx_tuple__17 = PyTuple_Pack(7, __pyx_n_s_self, __pyx_n_s_reader, __pyx_n_s_filters, __pyx_n_s_columns, __pyx_n_s_reducer, __pyx_n_s_override_format, __pyx_n_s_kwargs); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __pyx_tuple__17 = PyTuple_Pack(7, __pyx_n_s_self, __pyx_n_s_reader, __pyx_n_s_filters, __pyx_n_s_columns, __pyx_n_s_reducer, __pyx_n_s_override_format, __pyx_n_s_kwargs); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__17);
   __Pyx_GIVEREF(__pyx_tuple__17);
-  __pyx_codeobj__18 = (PyObject*)__Pyx_PyCode_New(6, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__17, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_par_2, __pyx_n_s_init, 87, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__18)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __pyx_codeobj__18 = (PyObject*)__Pyx_PyCode_New(6, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_VARKEYWORDS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__17, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_par_2, __pyx_n_s_init, 88, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__18)) __PYX_ERR(0, 88, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/parallel_reader.py":137
+  /* "mabel/data/readers/internals/parallel_reader.py":138
  *                 self.override_format = "." + self.override_format
  * 
  *     def pre_filter(self, blob_name, index_files):             # <<<<<<<<<<<<<<
  *         """
  *         Select rows from the file based on the filters and indexes, this filters
  */
-  __pyx_tuple__19 = PyTuple_Pack(7, __pyx_n_s_self, __pyx_n_s_blob_name, __pyx_n_s_index_files, __pyx_n_s_PRE_FILTERABLE_OPERATORS, __pyx_n_s_inner_prefilter, __pyx_n_s_inner_prefilter, __pyx_n_s_index_filters); if (unlikely(!__pyx_tuple__19)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_tuple__19 = PyTuple_Pack(7, __pyx_n_s_self, __pyx_n_s_blob_name, __pyx_n_s_index_files, __pyx_n_s_PRE_FILTERABLE_OPERATORS, __pyx_n_s_inner_prefilter, __pyx_n_s_inner_prefilter, __pyx_n_s_index_filters); if (unlikely(!__pyx_tuple__19)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__19);
   __Pyx_GIVEREF(__pyx_tuple__19);
-  __pyx_codeobj__20 = (PyObject*)__Pyx_PyCode_New(3, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__19, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_par_2, __pyx_n_s_pre_filter, 137, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__20)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_codeobj__20 = (PyObject*)__Pyx_PyCode_New(3, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__19, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_par_2, __pyx_n_s_pre_filter, 138, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__20)) __PYX_ERR(0, 138, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/parallel_reader.py":207
+  /* "mabel/data/readers/internals/parallel_reader.py":208
  *         return False, []
  * 
  *     def _select(self, data_set, selector):             # <<<<<<<<<<<<<<
  *         for index, record in enumerate(data_set):
  *             if index in selector:
  */
-  __pyx_tuple__21 = PyTuple_Pack(5, __pyx_n_s_self, __pyx_n_s_data_set, __pyx_n_s_selector, __pyx_n_s_index, __pyx_n_s_record); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(0, 207, __pyx_L1_error)
+  __pyx_tuple__21 = PyTuple_Pack(5, __pyx_n_s_self, __pyx_n_s_data_set, __pyx_n_s_selector, __pyx_n_s_index, __pyx_n_s_record); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(0, 208, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__21);
   __Pyx_GIVEREF(__pyx_tuple__21);
-  __pyx_codeobj__7 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__21, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_par_2, __pyx_n_s_select, 207, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__7)) __PYX_ERR(0, 207, __pyx_L1_error)
+  __pyx_codeobj__7 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__21, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_par_2, __pyx_n_s_select, 208, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__7)) __PYX_ERR(0, 208, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/parallel_reader.py":212
+  /* "mabel/data/readers/internals/parallel_reader.py":213
  *                 yield record
  * 
  *     def __call__(self, blob_name, index_files):             # <<<<<<<<<<<<<<
  *         # print(blob_name, "in")
  *         try:
  */
-  __pyx_tuple__22 = PyTuple_Pack(15, __pyx_n_s_self, __pyx_n_s_blob_name, __pyx_n_s_index_files, __pyx_n_s_ext, __pyx_n_s_bucket, __pyx_n_s_path, __pyx_n_s_stem, __pyx_n_s_decompressor, __pyx_n_s_parser, __pyx_n_s_file_type, __pyx_n_s_row_selector, __pyx_n_s_selected_rows, __pyx_n_s_record_iterator, __pyx_n_s_e, __pyx_n_s_traceback); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(0, 212, __pyx_L1_error)
+  __pyx_tuple__22 = PyTuple_Pack(15, __pyx_n_s_self, __pyx_n_s_blob_name, __pyx_n_s_index_files, __pyx_n_s_ext, __pyx_n_s_bucket, __pyx_n_s_path, __pyx_n_s_stem, __pyx_n_s_decompressor, __pyx_n_s_parser, __pyx_n_s_file_type, __pyx_n_s_row_selector, __pyx_n_s_selected_rows, __pyx_n_s_record_iterator, __pyx_n_s_e, __pyx_n_s_traceback); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__22);
   __Pyx_GIVEREF(__pyx_tuple__22);
-  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(3, 0, 15, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__22, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_par_2, __pyx_n_s_call, 212, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) __PYX_ERR(0, 212, __pyx_L1_error)
+  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(3, 0, 15, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__22, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_par_2, __pyx_n_s_call, 213, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -6682,7 +6785,7 @@ static int __Pyx_modinit_type_init_code(void) {
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
-  if (PyType_Ready(&__pyx_type_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct__pre_filter) < 0) __PYX_ERR(0, 137, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct__pre_filter) < 0) __PYX_ERR(0, 138, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct__pre_filter.tp_print = 0;
   #endif
@@ -6690,7 +6793,7 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_type_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct__pre_filter.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct__pre_filter = &__pyx_type_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct__pre_filter;
-  if (PyType_Ready(&__pyx_type_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct_1__select) < 0) __PYX_ERR(0, 207, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct_1__select) < 0) __PYX_ERR(0, 208, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct_1__select.tp_print = 0;
   #endif
@@ -6698,7 +6801,7 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_type_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct_1__select.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct_1__select = &__pyx_type_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct_1__select;
-  if (PyType_Ready(&__pyx_type_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct_2___call__) < 0) __PYX_ERR(0, 212, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct_2___call__) < 0) __PYX_ERR(0, 213, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct_2___call__.tp_print = 0;
   #endif
@@ -6943,35 +7046,35 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "mabel/data/readers/internals/parallel_reader.py":23
+  /* "mabel/data/readers/internals/parallel_reader.py":24
  * 
  * """
  * from mabel import logging             # <<<<<<<<<<<<<<
  * from . import decompressors, parsers
  * from enum import Enum
  */
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_logging);
   __Pyx_GIVEREF(__pyx_n_s_logging);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_logging);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_mabel, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_mabel, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_logging); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_logging); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_logging, __pyx_t_1) < 0) __PYX_ERR(0, 23, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_logging, __pyx_t_1) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":24
+  /* "mabel/data/readers/internals/parallel_reader.py":25
  * """
  * from mabel import logging
  * from . import decompressors, parsers             # <<<<<<<<<<<<<<
  * from enum import Enum
  * from functools import reduce
  */
-  __pyx_t_2 = PyList_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_n_s_decompressors);
   __Pyx_GIVEREF(__pyx_n_s_decompressors);
@@ -6979,285 +7082,285 @@ if (!__Pyx_RefNanny) {
   __Pyx_INCREF(__pyx_n_s_parsers);
   __Pyx_GIVEREF(__pyx_n_s_parsers);
   PyList_SET_ITEM(__pyx_t_2, 1, __pyx_n_s_parsers);
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s__10, __pyx_t_2, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s__10, __pyx_t_2, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_decompressors); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_decompressors); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_decompressors, __pyx_t_2) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_decompressors, __pyx_t_2) < 0) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_parsers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_parsers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_parsers, __pyx_t_2) < 0) __PYX_ERR(0, 24, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_parsers, __pyx_t_2) < 0) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":25
+  /* "mabel/data/readers/internals/parallel_reader.py":26
  * from mabel import logging
  * from . import decompressors, parsers
  * from enum import Enum             # <<<<<<<<<<<<<<
  * from functools import reduce
  * from ....utils import paths
  */
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 26, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_Enum);
   __Pyx_GIVEREF(__pyx_n_s_Enum);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_Enum);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_enum, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 25, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_enum, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 26, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Enum); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Enum); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 26, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Enum, __pyx_t_1) < 0) __PYX_ERR(0, 25, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Enum, __pyx_t_1) < 0) __PYX_ERR(0, 26, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":26
+  /* "mabel/data/readers/internals/parallel_reader.py":27
  * from . import decompressors, parsers
  * from enum import Enum
  * from functools import reduce             # <<<<<<<<<<<<<<
  * from ....utils import paths
  * from ....data.internals.records import flatten
  */
-  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 26, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_n_s_reduce);
   __Pyx_GIVEREF(__pyx_n_s_reduce);
   PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_reduce);
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_functools, __pyx_t_2, -1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 26, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_functools, __pyx_t_2, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_reduce); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 26, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_reduce); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_reduce, __pyx_t_2) < 0) __PYX_ERR(0, 26, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_reduce, __pyx_t_2) < 0) __PYX_ERR(0, 27, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":27
+  /* "mabel/data/readers/internals/parallel_reader.py":28
  * from enum import Enum
  * from functools import reduce
  * from ....utils import paths             # <<<<<<<<<<<<<<
  * from ....data.internals.records import flatten
  * from ....data.internals.index import Index
  */
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_paths);
   __Pyx_GIVEREF(__pyx_n_s_paths);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_paths);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_utils, __pyx_t_1, 4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_utils, __pyx_t_1, 4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_paths); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_paths); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_paths, __pyx_t_1) < 0) __PYX_ERR(0, 27, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_paths, __pyx_t_1) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":28
+  /* "mabel/data/readers/internals/parallel_reader.py":29
  * from functools import reduce
  * from ....utils import paths
  * from ....data.internals.records import flatten             # <<<<<<<<<<<<<<
  * from ....data.internals.index import Index
  * from ....data.internals.expression import Expression
  */
-  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_n_s_flatten);
   __Pyx_GIVEREF(__pyx_n_s_flatten);
   PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_flatten);
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_data_internals_records, __pyx_t_2, 4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_data_internals_records, __pyx_t_2, 4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_flatten); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_flatten); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_flatten, __pyx_t_2) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_flatten, __pyx_t_2) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":29
+  /* "mabel/data/readers/internals/parallel_reader.py":30
  * from ....utils import paths
  * from ....data.internals.records import flatten
  * from ....data.internals.index import Index             # <<<<<<<<<<<<<<
  * from ....data.internals.expression import Expression
  * from ....data.internals.dnf_filters import DnfFilters
  */
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_Index);
   __Pyx_GIVEREF(__pyx_n_s_Index);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_Index);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_data_internals_index, __pyx_t_1, 4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_data_internals_index, __pyx_t_1, 4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 30, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_Index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Index, __pyx_t_1) < 0) __PYX_ERR(0, 29, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Index, __pyx_t_1) < 0) __PYX_ERR(0, 30, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":30
+  /* "mabel/data/readers/internals/parallel_reader.py":31
  * from ....data.internals.records import flatten
  * from ....data.internals.index import Index
  * from ....data.internals.expression import Expression             # <<<<<<<<<<<<<<
  * from ....data.internals.dnf_filters import DnfFilters
  * 
  */
-  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_n_s_Expression);
   __Pyx_GIVEREF(__pyx_n_s_Expression);
   PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_Expression);
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_data_internals_expression, __pyx_t_2, 4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_data_internals_expression, __pyx_t_2, 4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_Expression); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 30, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_Expression); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Expression, __pyx_t_2) < 0) __PYX_ERR(0, 30, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_Expression, __pyx_t_2) < 0) __PYX_ERR(0, 31, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":31
+  /* "mabel/data/readers/internals/parallel_reader.py":32
  * from ....data.internals.index import Index
  * from ....data.internals.expression import Expression
  * from ....data.internals.dnf_filters import DnfFilters             # <<<<<<<<<<<<<<
  * 
  * logger = logging.get_logger()
  */
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_DnfFilters);
   __Pyx_GIVEREF(__pyx_n_s_DnfFilters);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_DnfFilters);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_data_internals_dnf_filters, __pyx_t_1, 4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_data_internals_dnf_filters, __pyx_t_1, 4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_DnfFilters); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 31, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_DnfFilters); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_DnfFilters, __pyx_t_1) < 0) __PYX_ERR(0, 31, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_DnfFilters, __pyx_t_1) < 0) __PYX_ERR(0, 32, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":33
+  /* "mabel/data/readers/internals/parallel_reader.py":34
  * from ....data.internals.dnf_filters import DnfFilters
  * 
  * logger = logging.get_logger()             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_logging); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 33, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_logging); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 34, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_get_logger); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 33, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_get_logger); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 34, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_CallNoArg(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 33, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_CallNoArg(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 34, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_logger, __pyx_t_2) < 0) __PYX_ERR(0, 33, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_logger, __pyx_t_2) < 0) __PYX_ERR(0, 34, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":36
+  /* "mabel/data/readers/internals/parallel_reader.py":37
  * 
  * 
  * def empty_list(x):             # <<<<<<<<<<<<<<
  *     return []
  * 
  */
-  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_15parallel_reader_1empty_list, 0, __pyx_n_s_empty_list, NULL, __pyx_n_s_mabel_data_readers_internals_par, __pyx_d, ((PyObject *)__pyx_codeobj__12)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_15parallel_reader_1empty_list, 0, __pyx_n_s_empty_list, NULL, __pyx_n_s_mabel_data_readers_internals_par, __pyx_d, ((PyObject *)__pyx_codeobj__12)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 37, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_empty_list, __pyx_t_2) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_empty_list, __pyx_t_2) < 0) __PYX_ERR(0, 37, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":40
+  /* "mabel/data/readers/internals/parallel_reader.py":41
  * 
  * 
  * class EXTENSION_TYPE(str, Enum):             # <<<<<<<<<<<<<<
  *     # labels for the file extentions
  *     DATA = "DATA"
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_Enum); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_Enum); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(((PyObject *)(&PyString_Type)));
-  __Pyx_GIVEREF(((PyObject *)(&PyString_Type)));
-  PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)(&PyString_Type)));
+  __Pyx_INCREF(((PyObject *)(&PyUnicode_Type)));
+  __Pyx_GIVEREF(((PyObject *)(&PyUnicode_Type)));
+  PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)(&PyUnicode_Type)));
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_EXTENSION_TYPE, __pyx_n_s_EXTENSION_TYPE, (PyObject *) NULL, __pyx_n_s_mabel_data_readers_internals_par, (PyObject *) NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_EXTENSION_TYPE, __pyx_n_s_EXTENSION_TYPE, (PyObject *) NULL, __pyx_n_s_mabel_data_readers_internals_par, (PyObject *) NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
-  /* "mabel/data/readers/internals/parallel_reader.py":42
+  /* "mabel/data/readers/internals/parallel_reader.py":43
  * class EXTENSION_TYPE(str, Enum):
  *     # labels for the file extentions
  *     DATA = "DATA"             # <<<<<<<<<<<<<<
  *     CONTROL = "CONTROL"
  *     INDEX = "INDEX"
  */
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_DATA, __pyx_n_s_DATA) < 0) __PYX_ERR(0, 42, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_DATA, __pyx_n_u_DATA) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/parallel_reader.py":43
+  /* "mabel/data/readers/internals/parallel_reader.py":44
  *     # labels for the file extentions
  *     DATA = "DATA"
  *     CONTROL = "CONTROL"             # <<<<<<<<<<<<<<
  *     INDEX = "INDEX"
  * 
  */
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CONTROL, __pyx_n_s_CONTROL) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_CONTROL, __pyx_n_u_CONTROL) < 0) __PYX_ERR(0, 44, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/parallel_reader.py":44
+  /* "mabel/data/readers/internals/parallel_reader.py":45
  *     DATA = "DATA"
  *     CONTROL = "CONTROL"
  *     INDEX = "INDEX"             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_INDEX, __pyx_n_s_INDEX) < 0) __PYX_ERR(0, 44, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_3, __pyx_n_s_INDEX, __pyx_n_u_INDEX) < 0) __PYX_ERR(0, 45, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/parallel_reader.py":40
+  /* "mabel/data/readers/internals/parallel_reader.py":41
  * 
  * 
  * class EXTENSION_TYPE(str, Enum):             # <<<<<<<<<<<<<<
  *     # labels for the file extentions
  *     DATA = "DATA"
  */
-  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_EXTENSION_TYPE, __pyx_t_1, __pyx_t_3, NULL, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_EXTENSION_TYPE, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_EXTENSION_TYPE, __pyx_t_4) < 0) __PYX_ERR(0, 40, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_EXTENSION_TYPE, __pyx_t_4) < 0) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":48
+  /* "mabel/data/readers/internals/parallel_reader.py":49
  * 
  * KNOWN_EXTENSIONS = {
  *     ".txt": (decompressors.block, parsers.pass_thru, EXTENSION_TYPE.DATA),             # <<<<<<<<<<<<<<
  *     ".json": (decompressors.block, parsers.json, EXTENSION_TYPE.DATA),
  *     ".zstd": (decompressors.zstd, parsers.json, EXTENSION_TYPE.DATA),
  */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(13); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(13); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_decompressors); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_decompressors); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_block); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_block); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_parsers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_parsers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_pass_thru); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_pass_thru); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_EXTENSION_TYPE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_EXTENSION_TYPE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_DATA); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_DATA); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_3);
@@ -7268,56 +7371,20 @@ if (!__Pyx_RefNanny) {
   __pyx_t_3 = 0;
   __pyx_t_4 = 0;
   __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_txt, __pyx_t_2) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_u_txt, __pyx_t_2) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":49
+  /* "mabel/data/readers/internals/parallel_reader.py":50
  * KNOWN_EXTENSIONS = {
  *     ".txt": (decompressors.block, parsers.pass_thru, EXTENSION_TYPE.DATA),
  *     ".json": (decompressors.block, parsers.json, EXTENSION_TYPE.DATA),             # <<<<<<<<<<<<<<
  *     ".zstd": (decompressors.zstd, parsers.json, EXTENSION_TYPE.DATA),
  *     ".lzma": (decompressors.lzma, parsers.json, EXTENSION_TYPE.DATA),
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_decompressors); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_block); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 49, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_parsers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_json_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 49, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_EXTENSION_TYPE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_DATA); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 49, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 49, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_GIVEREF(__pyx_t_5);
-  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_5);
-  __Pyx_GIVEREF(__pyx_t_4);
-  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_4);
-  __Pyx_GIVEREF(__pyx_t_3);
-  PyTuple_SET_ITEM(__pyx_t_2, 2, __pyx_t_3);
-  __pyx_t_5 = 0;
-  __pyx_t_4 = 0;
-  __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_json, __pyx_t_2) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-
-  /* "mabel/data/readers/internals/parallel_reader.py":50
- *     ".txt": (decompressors.block, parsers.pass_thru, EXTENSION_TYPE.DATA),
- *     ".json": (decompressors.block, parsers.json, EXTENSION_TYPE.DATA),
- *     ".zstd": (decompressors.zstd, parsers.json, EXTENSION_TYPE.DATA),             # <<<<<<<<<<<<<<
- *     ".lzma": (decompressors.lzma, parsers.json, EXTENSION_TYPE.DATA),
- *     ".zip": (decompressors.unzip, parsers.pass_thru, EXTENSION_TYPE.DATA),
- */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_decompressors); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zstd_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 50, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_block); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 50, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_parsers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -7326,34 +7393,34 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_EXTENSION_TYPE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_DATA); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 50, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_DATA); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 50, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_GIVEREF(__pyx_t_3);
-  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_3);
+  __Pyx_GIVEREF(__pyx_t_5);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_4);
   PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_4);
-  __Pyx_GIVEREF(__pyx_t_5);
-  PyTuple_SET_ITEM(__pyx_t_2, 2, __pyx_t_5);
-  __pyx_t_3 = 0;
-  __pyx_t_4 = 0;
+  __Pyx_GIVEREF(__pyx_t_3);
+  PyTuple_SET_ITEM(__pyx_t_2, 2, __pyx_t_3);
   __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_zstd, __pyx_t_2) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_4 = 0;
+  __pyx_t_3 = 0;
+  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_u_json, __pyx_t_2) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "mabel/data/readers/internals/parallel_reader.py":51
+ *     ".txt": (decompressors.block, parsers.pass_thru, EXTENSION_TYPE.DATA),
  *     ".json": (decompressors.block, parsers.json, EXTENSION_TYPE.DATA),
- *     ".zstd": (decompressors.zstd, parsers.json, EXTENSION_TYPE.DATA),
- *     ".lzma": (decompressors.lzma, parsers.json, EXTENSION_TYPE.DATA),             # <<<<<<<<<<<<<<
+ *     ".zstd": (decompressors.zstd, parsers.json, EXTENSION_TYPE.DATA),             # <<<<<<<<<<<<<<
+ *     ".lzma": (decompressors.lzma, parsers.json, EXTENSION_TYPE.DATA),
  *     ".zip": (decompressors.unzip, parsers.pass_thru, EXTENSION_TYPE.DATA),
- *     ".jsonl": (decompressors.lines, parsers.json, EXTENSION_TYPE.DATA),
  */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_decompressors); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 51, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_lzma_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 51, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zstd_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_parsers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 51, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -7362,10 +7429,46 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_EXTENSION_TYPE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 51, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_DATA); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 51, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_DATA); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_3);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_3);
+  __Pyx_GIVEREF(__pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_4);
+  __Pyx_GIVEREF(__pyx_t_5);
+  PyTuple_SET_ITEM(__pyx_t_2, 2, __pyx_t_5);
+  __pyx_t_3 = 0;
+  __pyx_t_4 = 0;
+  __pyx_t_5 = 0;
+  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_u_zstd, __pyx_t_2) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "mabel/data/readers/internals/parallel_reader.py":52
+ *     ".json": (decompressors.block, parsers.json, EXTENSION_TYPE.DATA),
+ *     ".zstd": (decompressors.zstd, parsers.json, EXTENSION_TYPE.DATA),
+ *     ".lzma": (decompressors.lzma, parsers.json, EXTENSION_TYPE.DATA),             # <<<<<<<<<<<<<<
+ *     ".zip": (decompressors.unzip, parsers.pass_thru, EXTENSION_TYPE.DATA),
+ *     ".jsonl": (decompressors.lines, parsers.json, EXTENSION_TYPE.DATA),
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_decompressors); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_lzma_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_parsers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_json_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_EXTENSION_TYPE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_DATA); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_5);
@@ -7376,32 +7479,32 @@ if (!__Pyx_RefNanny) {
   __pyx_t_5 = 0;
   __pyx_t_4 = 0;
   __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_lzma, __pyx_t_2) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_u_lzma, __pyx_t_2) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":52
+  /* "mabel/data/readers/internals/parallel_reader.py":53
  *     ".zstd": (decompressors.zstd, parsers.json, EXTENSION_TYPE.DATA),
  *     ".lzma": (decompressors.lzma, parsers.json, EXTENSION_TYPE.DATA),
  *     ".zip": (decompressors.unzip, parsers.pass_thru, EXTENSION_TYPE.DATA),             # <<<<<<<<<<<<<<
  *     ".jsonl": (decompressors.lines, parsers.json, EXTENSION_TYPE.DATA),
  *     ".xml": (decompressors.block, parsers.xml, EXTENSION_TYPE.DATA),
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_decompressors); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_decompressors); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_unzip); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_unzip); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 53, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_parsers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_parsers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_pass_thru); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_pass_thru); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 53, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_EXTENSION_TYPE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_EXTENSION_TYPE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_DATA); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_DATA); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 53, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_3);
@@ -7412,32 +7515,32 @@ if (!__Pyx_RefNanny) {
   __pyx_t_3 = 0;
   __pyx_t_4 = 0;
   __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_zip, __pyx_t_2) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_u_zip, __pyx_t_2) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":53
+  /* "mabel/data/readers/internals/parallel_reader.py":54
  *     ".lzma": (decompressors.lzma, parsers.json, EXTENSION_TYPE.DATA),
  *     ".zip": (decompressors.unzip, parsers.pass_thru, EXTENSION_TYPE.DATA),
  *     ".jsonl": (decompressors.lines, parsers.json, EXTENSION_TYPE.DATA),             # <<<<<<<<<<<<<<
  *     ".xml": (decompressors.block, parsers.xml, EXTENSION_TYPE.DATA),
  *     ".lxml": (decompressors.lines, parsers.xml, EXTENSION_TYPE.DATA),
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_decompressors); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_decompressors); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_lines); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_lines); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_parsers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_parsers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_json_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_json_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_EXTENSION_TYPE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_EXTENSION_TYPE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_DATA); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_DATA); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_5);
@@ -7448,56 +7551,20 @@ if (!__Pyx_RefNanny) {
   __pyx_t_5 = 0;
   __pyx_t_4 = 0;
   __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_jsonl, __pyx_t_2) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_u_jsonl, __pyx_t_2) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":54
+  /* "mabel/data/readers/internals/parallel_reader.py":55
  *     ".zip": (decompressors.unzip, parsers.pass_thru, EXTENSION_TYPE.DATA),
  *     ".jsonl": (decompressors.lines, parsers.json, EXTENSION_TYPE.DATA),
  *     ".xml": (decompressors.block, parsers.xml, EXTENSION_TYPE.DATA),             # <<<<<<<<<<<<<<
  *     ".lxml": (decompressors.lines, parsers.xml, EXTENSION_TYPE.DATA),
  *     ".parquet": (decompressors.parquet, parsers.pass_thru, EXTENSION_TYPE.DATA),
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_decompressors); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_block); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 54, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_parsers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_xml_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 54, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_EXTENSION_TYPE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_DATA); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 54, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 54, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_GIVEREF(__pyx_t_3);
-  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_3);
-  __Pyx_GIVEREF(__pyx_t_4);
-  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_4);
-  __Pyx_GIVEREF(__pyx_t_5);
-  PyTuple_SET_ITEM(__pyx_t_2, 2, __pyx_t_5);
-  __pyx_t_3 = 0;
-  __pyx_t_4 = 0;
-  __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_xml, __pyx_t_2) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-
-  /* "mabel/data/readers/internals/parallel_reader.py":55
- *     ".jsonl": (decompressors.lines, parsers.json, EXTENSION_TYPE.DATA),
- *     ".xml": (decompressors.block, parsers.xml, EXTENSION_TYPE.DATA),
- *     ".lxml": (decompressors.lines, parsers.xml, EXTENSION_TYPE.DATA),             # <<<<<<<<<<<<<<
- *     ".parquet": (decompressors.parquet, parsers.pass_thru, EXTENSION_TYPE.DATA),
- *     ".csv": (decompressors.csv, parsers.pass_thru, EXTENSION_TYPE.DATA),
- */
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_decompressors); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_lines); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 55, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_block); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_parsers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -7506,46 +7573,10 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_EXTENSION_TYPE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_DATA); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 55, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_GIVEREF(__pyx_t_5);
-  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_5);
-  __Pyx_GIVEREF(__pyx_t_4);
-  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_4);
-  __Pyx_GIVEREF(__pyx_t_3);
-  PyTuple_SET_ITEM(__pyx_t_2, 2, __pyx_t_3);
-  __pyx_t_5 = 0;
-  __pyx_t_4 = 0;
-  __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_lxml, __pyx_t_2) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-
-  /* "mabel/data/readers/internals/parallel_reader.py":56
- *     ".xml": (decompressors.block, parsers.xml, EXTENSION_TYPE.DATA),
- *     ".lxml": (decompressors.lines, parsers.xml, EXTENSION_TYPE.DATA),
- *     ".parquet": (decompressors.parquet, parsers.pass_thru, EXTENSION_TYPE.DATA),             # <<<<<<<<<<<<<<
- *     ".csv": (decompressors.csv, parsers.pass_thru, EXTENSION_TYPE.DATA),
- *     ".ignore": (empty_list, empty_list, EXTENSION_TYPE.CONTROL),
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_decompressors); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_parquet_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 56, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_parsers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_pass_thru); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 56, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_EXTENSION_TYPE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_DATA); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_DATA); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_3);
@@ -7556,32 +7587,32 @@ if (!__Pyx_RefNanny) {
   __pyx_t_3 = 0;
   __pyx_t_4 = 0;
   __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_parquet, __pyx_t_2) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_u_xml, __pyx_t_2) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":57
- *     ".lxml": (decompressors.lines, parsers.xml, EXTENSION_TYPE.DATA),
+  /* "mabel/data/readers/internals/parallel_reader.py":56
+ *     ".jsonl": (decompressors.lines, parsers.json, EXTENSION_TYPE.DATA),
+ *     ".xml": (decompressors.block, parsers.xml, EXTENSION_TYPE.DATA),
+ *     ".lxml": (decompressors.lines, parsers.xml, EXTENSION_TYPE.DATA),             # <<<<<<<<<<<<<<
  *     ".parquet": (decompressors.parquet, parsers.pass_thru, EXTENSION_TYPE.DATA),
- *     ".csv": (decompressors.csv, parsers.pass_thru, EXTENSION_TYPE.DATA),             # <<<<<<<<<<<<<<
- *     ".ignore": (empty_list, empty_list, EXTENSION_TYPE.CONTROL),
- *     ".complete": (empty_list, empty_list, EXTENSION_TYPE.CONTROL),
+ *     ".csv": (decompressors.csv, parsers.pass_thru, EXTENSION_TYPE.DATA),
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_decompressors); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_decompressors); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_csv_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_lines); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 56, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_parsers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_parsers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_pass_thru); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_xml_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 56, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_EXTENSION_TYPE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_EXTENSION_TYPE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_DATA); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_DATA); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 56, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_5);
@@ -7592,26 +7623,98 @@ if (!__Pyx_RefNanny) {
   __pyx_t_5 = 0;
   __pyx_t_4 = 0;
   __pyx_t_3 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_csv, __pyx_t_2) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_u_lxml, __pyx_t_2) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "mabel/data/readers/internals/parallel_reader.py":57
+ *     ".xml": (decompressors.block, parsers.xml, EXTENSION_TYPE.DATA),
+ *     ".lxml": (decompressors.lines, parsers.xml, EXTENSION_TYPE.DATA),
+ *     ".parquet": (decompressors.parquet, parsers.pass_thru, EXTENSION_TYPE.DATA),             # <<<<<<<<<<<<<<
+ *     ".csv": (decompressors.csv, parsers.pass_thru, EXTENSION_TYPE.DATA),
+ *     ".ignore": (empty_list, empty_list, EXTENSION_TYPE.CONTROL),
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_decompressors); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_parquet_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_parsers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_pass_thru); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_EXTENSION_TYPE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_DATA); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_3);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_3);
+  __Pyx_GIVEREF(__pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_4);
+  __Pyx_GIVEREF(__pyx_t_5);
+  PyTuple_SET_ITEM(__pyx_t_2, 2, __pyx_t_5);
+  __pyx_t_3 = 0;
+  __pyx_t_4 = 0;
+  __pyx_t_5 = 0;
+  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_u_parquet, __pyx_t_2) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "mabel/data/readers/internals/parallel_reader.py":58
+ *     ".lxml": (decompressors.lines, parsers.xml, EXTENSION_TYPE.DATA),
+ *     ".parquet": (decompressors.parquet, parsers.pass_thru, EXTENSION_TYPE.DATA),
+ *     ".csv": (decompressors.csv, parsers.pass_thru, EXTENSION_TYPE.DATA),             # <<<<<<<<<<<<<<
+ *     ".ignore": (empty_list, empty_list, EXTENSION_TYPE.CONTROL),
+ *     ".complete": (empty_list, empty_list, EXTENSION_TYPE.CONTROL),
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_decompressors); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_csv_2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_parsers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_pass_thru); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_EXTENSION_TYPE); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_DATA); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_5);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_5);
+  __Pyx_GIVEREF(__pyx_t_4);
+  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_4);
+  __Pyx_GIVEREF(__pyx_t_3);
+  PyTuple_SET_ITEM(__pyx_t_2, 2, __pyx_t_3);
+  __pyx_t_5 = 0;
+  __pyx_t_4 = 0;
+  __pyx_t_3 = 0;
+  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_u_csv, __pyx_t_2) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "mabel/data/readers/internals/parallel_reader.py":59
  *     ".parquet": (decompressors.parquet, parsers.pass_thru, EXTENSION_TYPE.DATA),
  *     ".csv": (decompressors.csv, parsers.pass_thru, EXTENSION_TYPE.DATA),
  *     ".ignore": (empty_list, empty_list, EXTENSION_TYPE.CONTROL),             # <<<<<<<<<<<<<<
  *     ".complete": (empty_list, empty_list, EXTENSION_TYPE.CONTROL),
  *     ".idx": (empty_list, empty_list, EXTENSION_TYPE.INDEX),
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_empty_list); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_empty_list); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 59, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_empty_list); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_empty_list); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 59, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_EXTENSION_TYPE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_EXTENSION_TYPE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 59, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_CONTROL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_CONTROL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 59, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = PyTuple_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 59, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_2);
@@ -7622,26 +7725,26 @@ if (!__Pyx_RefNanny) {
   __pyx_t_2 = 0;
   __pyx_t_3 = 0;
   __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_ignore, __pyx_t_4) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_u_ignore, __pyx_t_4) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":59
+  /* "mabel/data/readers/internals/parallel_reader.py":60
  *     ".csv": (decompressors.csv, parsers.pass_thru, EXTENSION_TYPE.DATA),
  *     ".ignore": (empty_list, empty_list, EXTENSION_TYPE.CONTROL),
  *     ".complete": (empty_list, empty_list, EXTENSION_TYPE.CONTROL),             # <<<<<<<<<<<<<<
  *     ".idx": (empty_list, empty_list, EXTENSION_TYPE.INDEX),
  * }
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_empty_list); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 59, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_empty_list); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 60, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_empty_list); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 59, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_empty_list); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 60, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_EXTENSION_TYPE); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 59, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_EXTENSION_TYPE); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_CONTROL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_CONTROL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_4);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_4);
@@ -7652,26 +7755,26 @@ if (!__Pyx_RefNanny) {
   __pyx_t_4 = 0;
   __pyx_t_5 = 0;
   __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_complete, __pyx_t_3) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_u_complete, __pyx_t_3) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":60
+  /* "mabel/data/readers/internals/parallel_reader.py":61
  *     ".ignore": (empty_list, empty_list, EXTENSION_TYPE.CONTROL),
  *     ".complete": (empty_list, empty_list, EXTENSION_TYPE.CONTROL),
  *     ".idx": (empty_list, empty_list, EXTENSION_TYPE.INDEX),             # <<<<<<<<<<<<<<
  * }
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_empty_list); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_empty_list); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 61, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_empty_list); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_empty_list); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 61, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_EXTENSION_TYPE); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_EXTENSION_TYPE); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 61, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_INDEX); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_INDEX); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 61, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = PyTuple_New(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 61, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3);
@@ -7682,163 +7785,163 @@ if (!__Pyx_RefNanny) {
   __pyx_t_3 = 0;
   __pyx_t_2 = 0;
   __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_s_idx, __pyx_t_5) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_u_idx, __pyx_t_5) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_KNOWN_EXTENSIONS, __pyx_t_1) < 0) __PYX_ERR(0, 47, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_KNOWN_EXTENSIONS, __pyx_t_1) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":64
+  /* "mabel/data/readers/internals/parallel_reader.py":65
  * 
  * 
  * pass_thru = lambda x: x             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_15parallel_reader_6lambda, 0, __pyx_n_s_lambda, NULL, __pyx_n_s_mabel_data_readers_internals_par, __pyx_d, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_15parallel_reader_6lambda, 0, __pyx_n_s_lambda, NULL, __pyx_n_s_mabel_data_readers_internals_par, __pyx_d, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 65, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_pass_thru, __pyx_t_1) < 0) __PYX_ERR(0, 64, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_pass_thru, __pyx_t_1) < 0) __PYX_ERR(0, 65, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":67
+  /* "mabel/data/readers/internals/parallel_reader.py":68
  * 
  * 
  * def no_filter(x):             # <<<<<<<<<<<<<<
  *     return True
  * 
  */
-  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_15parallel_reader_3no_filter, 0, __pyx_n_s_no_filter, NULL, __pyx_n_s_mabel_data_readers_internals_par, __pyx_d, ((PyObject *)__pyx_codeobj__14)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 67, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_15parallel_reader_3no_filter, 0, __pyx_n_s_no_filter, NULL, __pyx_n_s_mabel_data_readers_internals_par, __pyx_d, ((PyObject *)__pyx_codeobj__14)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_no_filter, __pyx_t_1) < 0) __PYX_ERR(0, 67, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_no_filter, __pyx_t_1) < 0) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":71
+  /* "mabel/data/readers/internals/parallel_reader.py":72
  * 
  * 
  * def expand_nested_json(row):             # <<<<<<<<<<<<<<
  *     # this is really slow - on a simple read it's roughly 60% of the execution
  *     if hasattr(row, "items"):
  */
-  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_15parallel_reader_5expand_nested_json, 0, __pyx_n_s_expand_nested_json, NULL, __pyx_n_s_mabel_data_readers_internals_par, __pyx_d, ((PyObject *)__pyx_codeobj__16)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_15parallel_reader_5expand_nested_json, 0, __pyx_n_s_expand_nested_json, NULL, __pyx_n_s_mabel_data_readers_internals_par, __pyx_d, ((PyObject *)__pyx_codeobj__16)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 72, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_expand_nested_json, __pyx_t_1) < 0) __PYX_ERR(0, 71, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_expand_nested_json, __pyx_t_1) < 0) __PYX_ERR(0, 72, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":83
+  /* "mabel/data/readers/internals/parallel_reader.py":84
  * 
  * 
  * class ParallelReader:             # <<<<<<<<<<<<<<
  * 
  *     NOT_INDEXED = {-1}
  */
-  __pyx_t_1 = __Pyx_Py3MetaclassPrepare((PyObject *) NULL, __pyx_empty_tuple, __pyx_n_s_ParallelReader, __pyx_n_s_ParallelReader, (PyObject *) NULL, __pyx_n_s_mabel_data_readers_internals_par, (PyObject *) NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 83, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Py3MetaclassPrepare((PyObject *) NULL, __pyx_empty_tuple, __pyx_n_s_ParallelReader, __pyx_n_s_ParallelReader, (PyObject *) NULL, __pyx_n_s_mabel_data_readers_internals_par, (PyObject *) NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mabel/data/readers/internals/parallel_reader.py":85
+  /* "mabel/data/readers/internals/parallel_reader.py":86
  * class ParallelReader:
  * 
  *     NOT_INDEXED = {-1}             # <<<<<<<<<<<<<<
  * 
  *     def __init__(
  */
-  __pyx_t_5 = PySet_New(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 85, __pyx_L1_error)
+  __pyx_t_5 = PySet_New(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 86, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PySet_Add(__pyx_t_5, __pyx_int_neg_1) < 0) __PYX_ERR(0, 85, __pyx_L1_error)
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_NOT_INDEXED, __pyx_t_5) < 0) __PYX_ERR(0, 85, __pyx_L1_error)
+  if (PySet_Add(__pyx_t_5, __pyx_int_neg_1) < 0) __PYX_ERR(0, 86, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_NOT_INDEXED, __pyx_t_5) < 0) __PYX_ERR(0, 86, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":87
+  /* "mabel/data/readers/internals/parallel_reader.py":88
  *     NOT_INDEXED = {-1}
  * 
  *     def __init__(             # <<<<<<<<<<<<<<
  *         self,
  *         reader,
  */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_1__init__, 0, __pyx_n_s_ParallelReader___init, NULL, __pyx_n_s_mabel_data_readers_internals_par, __pyx_d, ((PyObject *)__pyx_codeobj__18)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_1__init__, 0, __pyx_n_s_ParallelReader___init, NULL, __pyx_n_s_mabel_data_readers_internals_par, __pyx_d, ((PyObject *)__pyx_codeobj__18)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (!__Pyx_CyFunction_InitDefaults(__pyx_t_5, sizeof(__pyx_defaults), 2)) __PYX_ERR(0, 87, __pyx_L1_error)
+  if (!__Pyx_CyFunction_InitDefaults(__pyx_t_5, sizeof(__pyx_defaults), 2)) __PYX_ERR(0, 88, __pyx_L1_error)
 
-  /* "mabel/data/readers/internals/parallel_reader.py":90
+  /* "mabel/data/readers/internals/parallel_reader.py":91
  *         self,
  *         reader,
  *         filters=no_filter,             # <<<<<<<<<<<<<<
  *         columns="*",
  *         reducer=pass_thru,
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_no_filter); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 90, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_no_filter); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 91, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_CyFunction_Defaults(__pyx_defaults, __pyx_t_5)->__pyx_arg_filters = __pyx_t_4;
   __Pyx_GIVEREF(__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":92
+  /* "mabel/data/readers/internals/parallel_reader.py":93
  *         filters=no_filter,
  *         columns="*",
  *         reducer=pass_thru,             # <<<<<<<<<<<<<<
  *         override_format=None,
  *         **kwargs,
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_pass_thru); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_pass_thru); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 93, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_CyFunction_Defaults(__pyx_defaults, __pyx_t_5)->__pyx_arg_reducer = __pyx_t_4;
   __Pyx_GIVEREF(__pyx_t_4);
   __pyx_t_4 = 0;
   __Pyx_CyFunction_SetDefaultsGetter(__pyx_t_5, __pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_7__defaults__);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_init, __pyx_t_5) < 0) __PYX_ERR(0, 87, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_init, __pyx_t_5) < 0) __PYX_ERR(0, 88, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":137
+  /* "mabel/data/readers/internals/parallel_reader.py":138
  *                 self.override_format = "." + self.override_format
  * 
  *     def pre_filter(self, blob_name, index_files):             # <<<<<<<<<<<<<<
  *         """
  *         Select rows from the file based on the filters and indexes, this filters
  */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_3pre_filter, 0, __pyx_n_s_ParallelReader_pre_filter, NULL, __pyx_n_s_mabel_data_readers_internals_par, __pyx_d, ((PyObject *)__pyx_codeobj__20)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_3pre_filter, 0, __pyx_n_s_ParallelReader_pre_filter, NULL, __pyx_n_s_mabel_data_readers_internals_par, __pyx_d, ((PyObject *)__pyx_codeobj__20)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_pre_filter, __pyx_t_5) < 0) __PYX_ERR(0, 137, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_pre_filter, __pyx_t_5) < 0) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":207
+  /* "mabel/data/readers/internals/parallel_reader.py":208
  *         return False, []
  * 
  *     def _select(self, data_set, selector):             # <<<<<<<<<<<<<<
  *         for index, record in enumerate(data_set):
  *             if index in selector:
  */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_5_select, 0, __pyx_n_s_ParallelReader__select, NULL, __pyx_n_s_mabel_data_readers_internals_par, __pyx_d, ((PyObject *)__pyx_codeobj__7)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 207, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_5_select, 0, __pyx_n_s_ParallelReader__select, NULL, __pyx_n_s_mabel_data_readers_internals_par, __pyx_d, ((PyObject *)__pyx_codeobj__7)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 208, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_select, __pyx_t_5) < 0) __PYX_ERR(0, 207, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_select, __pyx_t_5) < 0) __PYX_ERR(0, 208, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":212
+  /* "mabel/data/readers/internals/parallel_reader.py":213
  *                 yield record
  * 
  *     def __call__(self, blob_name, index_files):             # <<<<<<<<<<<<<<
  *         # print(blob_name, "in")
  *         try:
  */
-  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_8__call__, 0, __pyx_n_s_ParallelReader___call, NULL, __pyx_n_s_mabel_data_readers_internals_par, __pyx_d, ((PyObject *)__pyx_codeobj__8)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 212, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_7readers_9internals_15parallel_reader_14ParallelReader_8__call__, 0, __pyx_n_s_ParallelReader___call, NULL, __pyx_n_s_mabel_data_readers_internals_par, __pyx_d, ((PyObject *)__pyx_codeobj__8)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_call, __pyx_t_5) < 0) __PYX_ERR(0, 212, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_1, __pyx_n_s_call, __pyx_t_5) < 0) __PYX_ERR(0, 213, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "mabel/data/readers/internals/parallel_reader.py":83
+  /* "mabel/data/readers/internals/parallel_reader.py":84
  * 
  * 
  * class ParallelReader:             # <<<<<<<<<<<<<<
  * 
  *     NOT_INDEXED = {-1}
  */
-  __pyx_t_5 = __Pyx_Py3ClassCreate(((PyObject*)&__Pyx_DefaultClassType), __pyx_n_s_ParallelReader, __pyx_empty_tuple, __pyx_t_1, NULL, 0, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 83, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_Py3ClassCreate(((PyObject*)&__Pyx_DefaultClassType), __pyx_n_s_ParallelReader, __pyx_empty_tuple, __pyx_t_1, NULL, 0, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 84, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ParallelReader, __pyx_t_5) < 0) __PYX_ERR(0, 83, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ParallelReader, __pyx_t_5) < 0) __PYX_ERR(0, 84, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "mabel/data/readers/internals/parallel_reader.py":1
- * """             # <<<<<<<<<<<<<<
+ * # cython: language_level=3             # <<<<<<<<<<<<<<
+ * """
  * This is an contained reading pipeline, intended to be run in a thread/processes.
- * 
  */
   __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -7948,6 +8051,41 @@ static CYTHON_INLINE int __Pyx_HasAttr(PyObject *o, PyObject *n) {
         Py_DECREF(r);
         return 1;
     }
+}
+
+/* IterFinish */
+static CYTHON_INLINE int __Pyx_IterFinish(void) {
+#if CYTHON_FAST_THREAD_STATE
+    PyThreadState *tstate = __Pyx_PyThreadState_Current;
+    PyObject* exc_type = tstate->curexc_type;
+    if (unlikely(exc_type)) {
+        if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) {
+            PyObject *exc_value, *exc_tb;
+            exc_value = tstate->curexc_value;
+            exc_tb = tstate->curexc_traceback;
+            tstate->curexc_type = 0;
+            tstate->curexc_value = 0;
+            tstate->curexc_traceback = 0;
+            Py_DECREF(exc_type);
+            Py_XDECREF(exc_value);
+            Py_XDECREF(exc_tb);
+            return 0;
+        } else {
+            return -1;
+        }
+    }
+    return 0;
+#else
+    if (unlikely(PyErr_Occurred())) {
+        if (likely(PyErr_ExceptionMatches(PyExc_StopIteration))) {
+            PyErr_Clear();
+            return 0;
+        } else {
+            return -1;
+        }
+    }
+    return 0;
+#endif
 }
 
 /* PyFunctionFastCall */
@@ -8194,10 +8332,116 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObjec
 }
 #endif
 
-/* RaiseTooManyValuesToUnpack */
-static CYTHON_INLINE void __Pyx_RaiseTooManyValuesError(Py_ssize_t expected) {
-    PyErr_Format(PyExc_ValueError,
-                 "too many values to unpack (expected %" CYTHON_FORMAT_SSIZE_T "d)", expected);
+/* PyObjectGetMethod */
+static int __Pyx_PyObject_GetMethod(PyObject *obj, PyObject *name, PyObject **method) {
+    PyObject *attr;
+#if CYTHON_UNPACK_METHODS && CYTHON_COMPILING_IN_CPYTHON && CYTHON_USE_PYTYPE_LOOKUP
+    PyTypeObject *tp = Py_TYPE(obj);
+    PyObject *descr;
+    descrgetfunc f = NULL;
+    PyObject **dictptr, *dict;
+    int meth_found = 0;
+    assert (*method == NULL);
+    if (unlikely(tp->tp_getattro != PyObject_GenericGetAttr)) {
+        attr = __Pyx_PyObject_GetAttrStr(obj, name);
+        goto try_unpack;
+    }
+    if (unlikely(tp->tp_dict == NULL) && unlikely(PyType_Ready(tp) < 0)) {
+        return 0;
+    }
+    descr = _PyType_Lookup(tp, name);
+    if (likely(descr != NULL)) {
+        Py_INCREF(descr);
+#if PY_MAJOR_VERSION >= 3
+        #ifdef __Pyx_CyFunction_USED
+        if (likely(PyFunction_Check(descr) || (Py_TYPE(descr) == &PyMethodDescr_Type) || __Pyx_CyFunction_Check(descr)))
+        #else
+        if (likely(PyFunction_Check(descr) || (Py_TYPE(descr) == &PyMethodDescr_Type)))
+        #endif
+#else
+        #ifdef __Pyx_CyFunction_USED
+        if (likely(PyFunction_Check(descr) || __Pyx_CyFunction_Check(descr)))
+        #else
+        if (likely(PyFunction_Check(descr)))
+        #endif
+#endif
+        {
+            meth_found = 1;
+        } else {
+            f = Py_TYPE(descr)->tp_descr_get;
+            if (f != NULL && PyDescr_IsData(descr)) {
+                attr = f(descr, obj, (PyObject *)Py_TYPE(obj));
+                Py_DECREF(descr);
+                goto try_unpack;
+            }
+        }
+    }
+    dictptr = _PyObject_GetDictPtr(obj);
+    if (dictptr != NULL && (dict = *dictptr) != NULL) {
+        Py_INCREF(dict);
+        attr = __Pyx_PyDict_GetItemStr(dict, name);
+        if (attr != NULL) {
+            Py_INCREF(attr);
+            Py_DECREF(dict);
+            Py_XDECREF(descr);
+            goto try_unpack;
+        }
+        Py_DECREF(dict);
+    }
+    if (meth_found) {
+        *method = descr;
+        return 1;
+    }
+    if (f != NULL) {
+        attr = f(descr, obj, (PyObject *)Py_TYPE(obj));
+        Py_DECREF(descr);
+        goto try_unpack;
+    }
+    if (descr != NULL) {
+        *method = descr;
+        return 0;
+    }
+    PyErr_Format(PyExc_AttributeError,
+#if PY_MAJOR_VERSION >= 3
+                 "'%.50s' object has no attribute '%U'",
+                 tp->tp_name, name);
+#else
+                 "'%.50s' object has no attribute '%.400s'",
+                 tp->tp_name, PyString_AS_STRING(name));
+#endif
+    return 0;
+#else
+    attr = __Pyx_PyObject_GetAttrStr(obj, name);
+    goto try_unpack;
+#endif
+try_unpack:
+#if CYTHON_UNPACK_METHODS
+    if (likely(attr) && PyMethod_Check(attr) && likely(PyMethod_GET_SELF(attr) == obj)) {
+        PyObject *function = PyMethod_GET_FUNCTION(attr);
+        Py_INCREF(function);
+        Py_DECREF(attr);
+        *method = function;
+        return 1;
+    }
+#endif
+    *method = attr;
+    return 0;
+}
+
+/* PyObjectCallMethod0 */
+static PyObject* __Pyx_PyObject_CallMethod0(PyObject* obj, PyObject* method_name) {
+    PyObject *method = NULL, *result = NULL;
+    int is_method = __Pyx_PyObject_GetMethod(obj, method_name, &method);
+    if (likely(is_method)) {
+        result = __Pyx_PyObject_CallOneArg(method, obj);
+        Py_DECREF(method);
+        return result;
+    }
+    if (unlikely(!method)) goto bad;
+    result = __Pyx_PyObject_CallNoArg(method);
+    Py_DECREF(method);
+bad:
+    return result;
 }
 
 /* RaiseNeedMoreValuesToUnpack */
@@ -8207,39 +8451,10 @@ static CYTHON_INLINE void __Pyx_RaiseNeedMoreValuesError(Py_ssize_t index) {
                  index, (index == 1) ? "" : "s");
 }
 
-/* IterFinish */
-static CYTHON_INLINE int __Pyx_IterFinish(void) {
-#if CYTHON_FAST_THREAD_STATE
-    PyThreadState *tstate = __Pyx_PyThreadState_Current;
-    PyObject* exc_type = tstate->curexc_type;
-    if (unlikely(exc_type)) {
-        if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) {
-            PyObject *exc_value, *exc_tb;
-            exc_value = tstate->curexc_value;
-            exc_tb = tstate->curexc_traceback;
-            tstate->curexc_type = 0;
-            tstate->curexc_value = 0;
-            tstate->curexc_traceback = 0;
-            Py_DECREF(exc_type);
-            Py_XDECREF(exc_value);
-            Py_XDECREF(exc_tb);
-            return 0;
-        } else {
-            return -1;
-        }
-    }
-    return 0;
-#else
-    if (unlikely(PyErr_Occurred())) {
-        if (likely(PyErr_ExceptionMatches(PyExc_StopIteration))) {
-            PyErr_Clear();
-            return 0;
-        } else {
-            return -1;
-        }
-    }
-    return 0;
-#endif
+/* RaiseTooManyValuesToUnpack */
+static CYTHON_INLINE void __Pyx_RaiseTooManyValuesError(Py_ssize_t expected) {
+    PyErr_Format(PyExc_ValueError,
+                 "too many values to unpack (expected %" CYTHON_FORMAT_SSIZE_T "d)", expected);
 }
 
 /* UnpackItemEndCheck */
@@ -8252,6 +8467,187 @@ static int __Pyx_IternextUnpackEndCheck(PyObject *retval, Py_ssize_t expected) {
         return __Pyx_IterFinish();
     }
     return 0;
+}
+
+/* RaiseNoneIterError */
+static CYTHON_INLINE void __Pyx_RaiseNoneNotIterableError(void) {
+    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
+}
+
+/* UnpackTupleError */
+static void __Pyx_UnpackTupleError(PyObject *t, Py_ssize_t index) {
+    if (t == Py_None) {
+      __Pyx_RaiseNoneNotIterableError();
+    } else if (PyTuple_GET_SIZE(t) < index) {
+      __Pyx_RaiseNeedMoreValuesError(PyTuple_GET_SIZE(t));
+    } else {
+      __Pyx_RaiseTooManyValuesError(index);
+    }
+}
+
+/* UnpackTuple2 */
+static CYTHON_INLINE int __Pyx_unpack_tuple2_exact(
+        PyObject* tuple, PyObject** pvalue1, PyObject** pvalue2, int decref_tuple) {
+    PyObject *value1 = NULL, *value2 = NULL;
+#if CYTHON_COMPILING_IN_PYPY
+    value1 = PySequence_ITEM(tuple, 0);  if (unlikely(!value1)) goto bad;
+    value2 = PySequence_ITEM(tuple, 1);  if (unlikely(!value2)) goto bad;
+#else
+    value1 = PyTuple_GET_ITEM(tuple, 0);  Py_INCREF(value1);
+    value2 = PyTuple_GET_ITEM(tuple, 1);  Py_INCREF(value2);
+#endif
+    if (decref_tuple) {
+        Py_DECREF(tuple);
+    }
+    *pvalue1 = value1;
+    *pvalue2 = value2;
+    return 0;
+#if CYTHON_COMPILING_IN_PYPY
+bad:
+    Py_XDECREF(value1);
+    Py_XDECREF(value2);
+    if (decref_tuple) { Py_XDECREF(tuple); }
+    return -1;
+#endif
+}
+static int __Pyx_unpack_tuple2_generic(PyObject* tuple, PyObject** pvalue1, PyObject** pvalue2,
+                                       int has_known_size, int decref_tuple) {
+    Py_ssize_t index;
+    PyObject *value1 = NULL, *value2 = NULL, *iter = NULL;
+    iternextfunc iternext;
+    iter = PyObject_GetIter(tuple);
+    if (unlikely(!iter)) goto bad;
+    if (decref_tuple) { Py_DECREF(tuple); tuple = NULL; }
+    iternext = Py_TYPE(iter)->tp_iternext;
+    value1 = iternext(iter); if (unlikely(!value1)) { index = 0; goto unpacking_failed; }
+    value2 = iternext(iter); if (unlikely(!value2)) { index = 1; goto unpacking_failed; }
+    if (!has_known_size && unlikely(__Pyx_IternextUnpackEndCheck(iternext(iter), 2))) goto bad;
+    Py_DECREF(iter);
+    *pvalue1 = value1;
+    *pvalue2 = value2;
+    return 0;
+unpacking_failed:
+    if (!has_known_size && __Pyx_IterFinish() == 0)
+        __Pyx_RaiseNeedMoreValuesError(index);
+bad:
+    Py_XDECREF(iter);
+    Py_XDECREF(value1);
+    Py_XDECREF(value2);
+    if (decref_tuple) { Py_XDECREF(tuple); }
+    return -1;
+}
+
+/* dict_iter */
+static CYTHON_INLINE PyObject* __Pyx_dict_iterator(PyObject* iterable, int is_dict, PyObject* method_name,
+                                                   Py_ssize_t* p_orig_length, int* p_source_is_dict) {
+    is_dict = is_dict || likely(PyDict_CheckExact(iterable));
+    *p_source_is_dict = is_dict;
+    if (is_dict) {
+#if !CYTHON_COMPILING_IN_PYPY
+        *p_orig_length = PyDict_Size(iterable);
+        Py_INCREF(iterable);
+        return iterable;
+#elif PY_MAJOR_VERSION >= 3
+        static PyObject *py_items = NULL, *py_keys = NULL, *py_values = NULL;
+        PyObject **pp = NULL;
+        if (method_name) {
+            const char *name = PyUnicode_AsUTF8(method_name);
+            if (strcmp(name, "iteritems") == 0) pp = &py_items;
+            else if (strcmp(name, "iterkeys") == 0) pp = &py_keys;
+            else if (strcmp(name, "itervalues") == 0) pp = &py_values;
+            if (pp) {
+                if (!*pp) {
+                    *pp = PyUnicode_FromString(name + 4);
+                    if (!*pp)
+                        return NULL;
+                }
+                method_name = *pp;
+            }
+        }
+#endif
+    }
+    *p_orig_length = 0;
+    if (method_name) {
+        PyObject* iter;
+        iterable = __Pyx_PyObject_CallMethod0(iterable, method_name);
+        if (!iterable)
+            return NULL;
+#if !CYTHON_COMPILING_IN_PYPY
+        if (PyTuple_CheckExact(iterable) || PyList_CheckExact(iterable))
+            return iterable;
+#endif
+        iter = PyObject_GetIter(iterable);
+        Py_DECREF(iterable);
+        return iter;
+    }
+    return PyObject_GetIter(iterable);
+}
+static CYTHON_INLINE int __Pyx_dict_iter_next(
+        PyObject* iter_obj, CYTHON_NCP_UNUSED Py_ssize_t orig_length, CYTHON_NCP_UNUSED Py_ssize_t* ppos,
+        PyObject** pkey, PyObject** pvalue, PyObject** pitem, int source_is_dict) {
+    PyObject* next_item;
+#if !CYTHON_COMPILING_IN_PYPY
+    if (source_is_dict) {
+        PyObject *key, *value;
+        if (unlikely(orig_length != PyDict_Size(iter_obj))) {
+            PyErr_SetString(PyExc_RuntimeError, "dictionary changed size during iteration");
+            return -1;
+        }
+        if (unlikely(!PyDict_Next(iter_obj, ppos, &key, &value))) {
+            return 0;
+        }
+        if (pitem) {
+            PyObject* tuple = PyTuple_New(2);
+            if (unlikely(!tuple)) {
+                return -1;
+            }
+            Py_INCREF(key);
+            Py_INCREF(value);
+            PyTuple_SET_ITEM(tuple, 0, key);
+            PyTuple_SET_ITEM(tuple, 1, value);
+            *pitem = tuple;
+        } else {
+            if (pkey) {
+                Py_INCREF(key);
+                *pkey = key;
+            }
+            if (pvalue) {
+                Py_INCREF(value);
+                *pvalue = value;
+            }
+        }
+        return 1;
+    } else if (PyTuple_CheckExact(iter_obj)) {
+        Py_ssize_t pos = *ppos;
+        if (unlikely(pos >= PyTuple_GET_SIZE(iter_obj))) return 0;
+        *ppos = pos + 1;
+        next_item = PyTuple_GET_ITEM(iter_obj, pos);
+        Py_INCREF(next_item);
+    } else if (PyList_CheckExact(iter_obj)) {
+        Py_ssize_t pos = *ppos;
+        if (unlikely(pos >= PyList_GET_SIZE(iter_obj))) return 0;
+        *ppos = pos + 1;
+        next_item = PyList_GET_ITEM(iter_obj, pos);
+        Py_INCREF(next_item);
+    } else
+#endif
+    {
+        next_item = PyIter_Next(iter_obj);
+        if (unlikely(!next_item)) {
+            return __Pyx_IterFinish();
+        }
+    }
+    if (pitem) {
+        *pitem = next_item;
+    } else if (pkey && pvalue) {
+        if (__Pyx_unpack_tuple2(next_item, pkey, pvalue, source_is_dict, source_is_dict, 1))
+            return -1;
+    } else if (pkey) {
+        *pkey = next_item;
+    } else {
+        *pvalue = next_item;
+    }
+    return 1;
 }
 
 /* PyDictVersioning */
@@ -10048,102 +10444,6 @@ static CYTHON_INLINE void __Pyx_ExceptionSwap(PyObject **type, PyObject **value,
     *tb = tmp_tb;
 }
 #endif
-
-/* PyObjectGetMethod */
-static int __Pyx_PyObject_GetMethod(PyObject *obj, PyObject *name, PyObject **method) {
-    PyObject *attr;
-#if CYTHON_UNPACK_METHODS && CYTHON_COMPILING_IN_CPYTHON && CYTHON_USE_PYTYPE_LOOKUP
-    PyTypeObject *tp = Py_TYPE(obj);
-    PyObject *descr;
-    descrgetfunc f = NULL;
-    PyObject **dictptr, *dict;
-    int meth_found = 0;
-    assert (*method == NULL);
-    if (unlikely(tp->tp_getattro != PyObject_GenericGetAttr)) {
-        attr = __Pyx_PyObject_GetAttrStr(obj, name);
-        goto try_unpack;
-    }
-    if (unlikely(tp->tp_dict == NULL) && unlikely(PyType_Ready(tp) < 0)) {
-        return 0;
-    }
-    descr = _PyType_Lookup(tp, name);
-    if (likely(descr != NULL)) {
-        Py_INCREF(descr);
-#if PY_MAJOR_VERSION >= 3
-        #ifdef __Pyx_CyFunction_USED
-        if (likely(PyFunction_Check(descr) || (Py_TYPE(descr) == &PyMethodDescr_Type) || __Pyx_CyFunction_Check(descr)))
-        #else
-        if (likely(PyFunction_Check(descr) || (Py_TYPE(descr) == &PyMethodDescr_Type)))
-        #endif
-#else
-        #ifdef __Pyx_CyFunction_USED
-        if (likely(PyFunction_Check(descr) || __Pyx_CyFunction_Check(descr)))
-        #else
-        if (likely(PyFunction_Check(descr)))
-        #endif
-#endif
-        {
-            meth_found = 1;
-        } else {
-            f = Py_TYPE(descr)->tp_descr_get;
-            if (f != NULL && PyDescr_IsData(descr)) {
-                attr = f(descr, obj, (PyObject *)Py_TYPE(obj));
-                Py_DECREF(descr);
-                goto try_unpack;
-            }
-        }
-    }
-    dictptr = _PyObject_GetDictPtr(obj);
-    if (dictptr != NULL && (dict = *dictptr) != NULL) {
-        Py_INCREF(dict);
-        attr = __Pyx_PyDict_GetItemStr(dict, name);
-        if (attr != NULL) {
-            Py_INCREF(attr);
-            Py_DECREF(dict);
-            Py_XDECREF(descr);
-            goto try_unpack;
-        }
-        Py_DECREF(dict);
-    }
-    if (meth_found) {
-        *method = descr;
-        return 1;
-    }
-    if (f != NULL) {
-        attr = f(descr, obj, (PyObject *)Py_TYPE(obj));
-        Py_DECREF(descr);
-        goto try_unpack;
-    }
-    if (descr != NULL) {
-        *method = descr;
-        return 0;
-    }
-    PyErr_Format(PyExc_AttributeError,
-#if PY_MAJOR_VERSION >= 3
-                 "'%.50s' object has no attribute '%U'",
-                 tp->tp_name, name);
-#else
-                 "'%.50s' object has no attribute '%.400s'",
-                 tp->tp_name, PyString_AS_STRING(name));
-#endif
-    return 0;
-#else
-    attr = __Pyx_PyObject_GetAttrStr(obj, name);
-    goto try_unpack;
-#endif
-try_unpack:
-#if CYTHON_UNPACK_METHODS
-    if (likely(attr) && PyMethod_Check(attr) && likely(PyMethod_GET_SELF(attr) == obj)) {
-        PyObject *function = PyMethod_GET_FUNCTION(attr);
-        Py_INCREF(function);
-        Py_DECREF(attr);
-        *method = function;
-        return 1;
-    }
-#endif
-    *method = attr;
-    return 0;
-}
 
 /* PyObjectCallMethod1 */
 static PyObject* __Pyx__PyObject_CallMethod1(PyObject* method, PyObject* arg) {

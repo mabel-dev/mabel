@@ -1,3 +1,4 @@
+# cython: language_level=3
 """
 This is an contained reading pipeline, intended to be run in a thread/processes.
 
