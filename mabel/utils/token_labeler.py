@@ -23,6 +23,7 @@ REGEX_CHARACTERS = {ch: "\\" + ch for ch in ".^$*+?{}[]|()\\"}
 class TokenError(Exception):
     pass
 
+
 def interpret_value(value):
     if not isinstance(value, str):
         return value
@@ -39,8 +40,9 @@ def interpret_value(value):
     value = value[1:-1]
     return parse_iso(value) or value
 
+
 def function_in(x, y):
-    candidates = [interpret_value(i) for i in y if str(i).strip() != ',']
+    candidates = [interpret_value(i) for i in y if str(i).strip() != ","]
 
     return x in candidates
 
@@ -93,6 +95,7 @@ class TOKENS(int):
     SUBQUERY = 18
     EMPTY = 19
     LIST = 20
+
 
 @lru_cache(64)
 def get_token_type(token):

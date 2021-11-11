@@ -124,14 +124,18 @@ def ascii_table(dictset: Iterable[Dict[Any, Any]], limit: int = 5):
 
     # display headers
     result.append("┌" + "┬".join(bars) + "┐")
-    result.append("│" + "│".join([str(k).center(v + 2) for k, v in columns.items()]) + "│")
+    result.append(
+        "│" + "│".join([str(k).center(v + 2) for k, v in columns.items()]) + "│"
+    )
     result.append("├" + "┼".join(bars) + "┤")
 
     # display values
     for row in cache:
         result.append(
             "│"
-            + "│".join([str(format_value(v)).center(columns[k] + 2) for k, v in row.items()])
+            + "│".join(
+                [str(format_value(v)).center(columns[k] + 2) for k, v in row.items()]
+            )
             + "│"
         )
 

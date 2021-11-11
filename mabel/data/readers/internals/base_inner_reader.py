@@ -46,7 +46,7 @@ def memcached_server():
             memcached_config[1],
         ),
         connect_timeout=1,
-        timeout=1
+        timeout=1,
     )
 
 

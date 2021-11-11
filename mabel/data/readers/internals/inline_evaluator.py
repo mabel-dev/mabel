@@ -51,7 +51,7 @@ def get_function_name(token):
         params = ",".join(_inner(token["parameters"]))
         return f"{token['value']}({params})"
     else:
-        return token['value']
+        return token["value"]
 
 
 def get_fields(tokens):
