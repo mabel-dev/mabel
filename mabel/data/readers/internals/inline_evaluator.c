@@ -2251,7 +2251,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_ge
  *         params = ",".join(_inner(token["parameters"]))
  *         return f"{token['value']}({params})"             # <<<<<<<<<<<<<<
  *     else:
- *         return token['value']
+ *         return token["value"]
  */
     __Pyx_XDECREF(__pyx_r);
     __pyx_t_1 = PyTuple_New(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
@@ -2302,7 +2302,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_16inline_evaluator_ge
   /* "mabel/data/readers/internals/inline_evaluator.py":54
  *         return f"{token['value']}({params})"
  *     else:
- *         return token['value']             # <<<<<<<<<<<<<<
+ *         return token["value"]             # <<<<<<<<<<<<<<
  * 
  * 
  */

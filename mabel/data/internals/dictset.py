@@ -345,9 +345,7 @@ class DictSet(object):
             return
 
         # if the iterator allows us to access items directly, use that
-        if self.storage_class == STORAGE_CLASS.MEMORY or hasattr(
-            self._iterator, "__getitem__"
-        ):
+        if hasattr(self._iterator, "__getitem__"):
             yield from [self._iterator[i] for i in locations]
             return
 
@@ -527,7 +525,7 @@ class DictSet(object):
         """
 
         def sip(val):
-            return siphash("*", val)
+            return siphash("TheApolloMission", val)
 
         # The seed is the mission duration of the Apollo 11 mission.
         #   703115 = 8 days, 3 hours, 18 minutes, 35 seconds
