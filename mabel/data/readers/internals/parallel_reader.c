@@ -848,7 +848,7 @@ struct __pyx_defaults {
  */
 struct __pyx_obj_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct__pre_filter {
   PyObject_HEAD
-  PyObject *__pyx_v_PRE_FILTERABLE_OPERATORS;
+  PyObject *__pyx_v_SARGABLE_OPERATORS;
   PyObject *__pyx_v__inner_prefilter;
   PyObject *__pyx_v_index_files;
   PyObject *__pyx_v_self;
@@ -1723,6 +1723,7 @@ static const char __pyx_k_inner_prefilter[] = "_inner_prefilter";
 static const char __pyx_k_override_format[] = "override_format";
 static const char __pyx_k_record_iterator[] = "record_iterator";
 static const char __pyx_k_KNOWN_EXTENSIONS[] = "KNOWN_EXTENSIONS";
+static const char __pyx_k_SARGABLE_OPERATORS[] = "SARGABLE_OPERATORS";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_expand_nested_json[] = "expand_nested_json";
 static const char __pyx_k_data_internals_index[] = "data.internals.index";
@@ -1730,7 +1731,6 @@ static const char __pyx_k_ParallelReader___call[] = "ParallelReader.__call__";
 static const char __pyx_k_ParallelReader___init[] = "ParallelReader.__init__";
 static const char __pyx_k_ParallelReader__select[] = "ParallelReader._select";
 static const char __pyx_k_data_internals_records[] = "data.internals.records";
-static const char __pyx_k_PRE_FILTERABLE_OPERATORS[] = "PRE_FILTERABLE_OPERATORS";
 static const char __pyx_k_ParallelReader_pre_filter[] = "ParallelReader.pre_filter";
 static const char __pyx_k_data_internals_expression[] = "data.internals.expression";
 static const char __pyx_k_data_internals_dnf_filters[] = "data.internals.dnf_filters";
@@ -1753,7 +1753,6 @@ static PyObject *__pyx_n_u_INDEX;
 static PyObject *__pyx_n_s_Index;
 static PyObject *__pyx_n_s_KNOWN_EXTENSIONS;
 static PyObject *__pyx_n_s_NOT_INDEXED;
-static PyObject *__pyx_n_s_PRE_FILTERABLE_OPERATORS;
 static PyObject *__pyx_n_s_ParallelReader;
 static PyObject *__pyx_n_s_ParallelReader___call;
 static PyObject *__pyx_n_s_ParallelReader___init;
@@ -1761,6 +1760,7 @@ static PyObject *__pyx_n_s_ParallelReader__select;
 static PyObject *__pyx_n_s_ParallelReader_pre_filter;
 static PyObject *__pyx_n_s_ParallelReader_pre_filter_locals;
 static PyObject *__pyx_n_s_ParallelReader_pre_filter_locals_2;
+static PyObject *__pyx_n_s_SARGABLE_OPERATORS;
 static PyObject *__pyx_n_s__10;
 static PyObject *__pyx_kp_u__2;
 static PyObject *__pyx_kp_u__3;
@@ -3027,7 +3027,7 @@ static PyObject *__pyx_pw_5mabel_4data_7readers_9internals_15parallel_reader_14P
 }
 
 /* "mabel/data/readers/internals/parallel_reader.py":152
- *         PRE_FILTERABLE_OPERATORS = {"=", "==", "is", "in", "contains"}
+ *         SARGABLE_OPERATORS = {"=", "==", "is", "in", "contains"}
  * 
  *         def _inner_prefilter(predicate):             # <<<<<<<<<<<<<<
  *             # No filter doesn't filter
@@ -3158,7 +3158,7 @@ static PyObject *__pyx_lambda_funcdef_lambda1(PyObject *__pyx_self, PyObject *__
 }
 
 /* "mabel/data/readers/internals/parallel_reader.py":152
- *         PRE_FILTERABLE_OPERATORS = {"=", "==", "is", "in", "contains"}
+ *         SARGABLE_OPERATORS = {"=", "==", "is", "in", "contains"}
  * 
  *         def _inner_prefilter(predicate):             # <<<<<<<<<<<<<<
  *             # No filter doesn't filter
@@ -3242,7 +3242,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
  *             # index - if we can.
  *             if isinstance(predicate, tuple):             # <<<<<<<<<<<<<<
  *                 key, operator, values = predicate
- *                 if operator in PRE_FILTERABLE_OPERATORS:
+ *                 if operator in SARGABLE_OPERATORS:
  */
   __pyx_t_2 = PyTuple_Check(__pyx_v_predicate); 
   __pyx_t_1 = (__pyx_t_2 != 0);
@@ -3252,7 +3252,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
  *             # index - if we can.
  *             if isinstance(predicate, tuple):
  *                 key, operator, values = predicate             # <<<<<<<<<<<<<<
- *                 if operator in PRE_FILTERABLE_OPERATORS:
+ *                 if operator in SARGABLE_OPERATORS:
  *                     # do I have an index for this field?
  */
     if ((likely(PyTuple_CheckExact(__pyx_v_predicate))) || (PyList_CheckExact(__pyx_v_predicate))) {
@@ -3316,21 +3316,21 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
     /* "mabel/data/readers/internals/parallel_reader.py":162
  *             if isinstance(predicate, tuple):
  *                 key, operator, values = predicate
- *                 if operator in PRE_FILTERABLE_OPERATORS:             # <<<<<<<<<<<<<<
+ *                 if operator in SARGABLE_OPERATORS:             # <<<<<<<<<<<<<<
  *                     # do I have an index for this field?
  *                     for index_file in [
  */
-    if (unlikely(!__pyx_cur_scope->__pyx_v_PRE_FILTERABLE_OPERATORS)) { __Pyx_RaiseClosureNameError("PRE_FILTERABLE_OPERATORS"); __PYX_ERR(0, 162, __pyx_L1_error) }
-    if (unlikely(__pyx_cur_scope->__pyx_v_PRE_FILTERABLE_OPERATORS == Py_None)) {
+    if (unlikely(!__pyx_cur_scope->__pyx_v_SARGABLE_OPERATORS)) { __Pyx_RaiseClosureNameError("SARGABLE_OPERATORS"); __PYX_ERR(0, 162, __pyx_L1_error) }
+    if (unlikely(__pyx_cur_scope->__pyx_v_SARGABLE_OPERATORS == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
       __PYX_ERR(0, 162, __pyx_L1_error)
     }
-    __pyx_t_1 = (__Pyx_PySet_ContainsTF(__pyx_v_operator, __pyx_cur_scope->__pyx_v_PRE_FILTERABLE_OPERATORS, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 162, __pyx_L1_error)
+    __pyx_t_1 = (__Pyx_PySet_ContainsTF(__pyx_v_operator, __pyx_cur_scope->__pyx_v_SARGABLE_OPERATORS, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 162, __pyx_L1_error)
     __pyx_t_2 = (__pyx_t_1 != 0);
     if (__pyx_t_2) {
 
       /* "mabel/data/readers/internals/parallel_reader.py":164
- *                 if operator in PRE_FILTERABLE_OPERATORS:
+ *                 if operator in SARGABLE_OPERATORS:
  *                     # do I have an index for this field?
  *                     for index_file in [             # <<<<<<<<<<<<<<
  *                         index_file
@@ -3460,7 +3460,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
       } /* exit inner scope */
 
       /* "mabel/data/readers/internals/parallel_reader.py":164
- *                 if operator in PRE_FILTERABLE_OPERATORS:
+ *                 if operator in SARGABLE_OPERATORS:
  *                     # do I have an index for this field?
  *                     for index_file in [             # <<<<<<<<<<<<<<
  *                         index_file
@@ -3559,7 +3559,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
         goto __pyx_L0;
 
         /* "mabel/data/readers/internals/parallel_reader.py":164
- *                 if operator in PRE_FILTERABLE_OPERATORS:
+ *                 if operator in SARGABLE_OPERATORS:
  *                     # do I have an index for this field?
  *                     for index_file in [             # <<<<<<<<<<<<<<
  *                         index_file
@@ -3571,7 +3571,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
       /* "mabel/data/readers/internals/parallel_reader.py":162
  *             if isinstance(predicate, tuple):
  *                 key, operator, values = predicate
- *                 if operator in PRE_FILTERABLE_OPERATORS:             # <<<<<<<<<<<<<<
+ *                 if operator in SARGABLE_OPERATORS:             # <<<<<<<<<<<<<<
  *                     # do I have an index for this field?
  *                     for index_file in [
  */
@@ -3597,7 +3597,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
  *             # index - if we can.
  *             if isinstance(predicate, tuple):             # <<<<<<<<<<<<<<
  *                 key, operator, values = predicate
- *                 if operator in PRE_FILTERABLE_OPERATORS:
+ *                 if operator in SARGABLE_OPERATORS:
  */
   }
 
@@ -4245,7 +4245,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
   goto __pyx_L0;
 
   /* "mabel/data/readers/internals/parallel_reader.py":152
- *         PRE_FILTERABLE_OPERATORS = {"=", "==", "is", "in", "contains"}
+ *         SARGABLE_OPERATORS = {"=", "==", "is", "in", "contains"}
  * 
  *         def _inner_prefilter(predicate):             # <<<<<<<<<<<<<<
  *             # No filter doesn't filter
@@ -4320,7 +4320,7 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
   /* "mabel/data/readers/internals/parallel_reader.py":150
  *         """
  * 
- *         PRE_FILTERABLE_OPERATORS = {"=", "==", "is", "in", "contains"}             # <<<<<<<<<<<<<<
+ *         SARGABLE_OPERATORS = {"=", "==", "is", "in", "contains"}             # <<<<<<<<<<<<<<
  * 
  *         def _inner_prefilter(predicate):
  */
@@ -4332,11 +4332,11 @@ static PyObject *__pyx_pf_5mabel_4data_7readers_9internals_15parallel_reader_14P
   if (PySet_Add(__pyx_t_1, __pyx_n_u_in) < 0) __PYX_ERR(0, 150, __pyx_L1_error)
   if (PySet_Add(__pyx_t_1, __pyx_n_u_contains) < 0) __PYX_ERR(0, 150, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
-  __pyx_cur_scope->__pyx_v_PRE_FILTERABLE_OPERATORS = ((PyObject*)__pyx_t_1);
+  __pyx_cur_scope->__pyx_v_SARGABLE_OPERATORS = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
   /* "mabel/data/readers/internals/parallel_reader.py":152
- *         PRE_FILTERABLE_OPERATORS = {"=", "==", "is", "in", "contains"}
+ *         SARGABLE_OPERATORS = {"=", "==", "is", "in", "contains"}
  * 
  *         def _inner_prefilter(predicate):             # <<<<<<<<<<<<<<
  *             # No filter doesn't filter
@@ -5996,7 +5996,7 @@ static PyObject *__pyx_tp_new_5mabel_4data_7readers_9internals_15parallel_reader
 static void __pyx_tp_dealloc_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct__pre_filter(PyObject *o) {
   struct __pyx_obj_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct__pre_filter *p = (struct __pyx_obj_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct__pre_filter *)o;
   PyObject_GC_UnTrack(o);
-  Py_CLEAR(p->__pyx_v_PRE_FILTERABLE_OPERATORS);
+  Py_CLEAR(p->__pyx_v_SARGABLE_OPERATORS);
   Py_CLEAR(p->__pyx_v__inner_prefilter);
   Py_CLEAR(p->__pyx_v_index_files);
   Py_CLEAR(p->__pyx_v_self);
@@ -6010,8 +6010,8 @@ static void __pyx_tp_dealloc_5mabel_4data_7readers_9internals_15parallel_reader_
 static int __pyx_tp_traverse_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct__pre_filter(PyObject *o, visitproc v, void *a) {
   int e;
   struct __pyx_obj_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct__pre_filter *p = (struct __pyx_obj_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct__pre_filter *)o;
-  if (p->__pyx_v_PRE_FILTERABLE_OPERATORS) {
-    e = (*v)(p->__pyx_v_PRE_FILTERABLE_OPERATORS, a); if (e) return e;
+  if (p->__pyx_v_SARGABLE_OPERATORS) {
+    e = (*v)(p->__pyx_v_SARGABLE_OPERATORS, a); if (e) return e;
   }
   if (p->__pyx_v__inner_prefilter) {
     e = (*v)(p->__pyx_v__inner_prefilter, a); if (e) return e;
@@ -6028,8 +6028,8 @@ static int __pyx_tp_traverse_5mabel_4data_7readers_9internals_15parallel_reader_
 static int __pyx_tp_clear_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct__pre_filter(PyObject *o) {
   PyObject* tmp;
   struct __pyx_obj_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct__pre_filter *p = (struct __pyx_obj_5mabel_4data_7readers_9internals_15parallel_reader___pyx_scope_struct__pre_filter *)o;
-  tmp = ((PyObject*)p->__pyx_v_PRE_FILTERABLE_OPERATORS);
-  p->__pyx_v_PRE_FILTERABLE_OPERATORS = ((PyObject*)Py_None); Py_INCREF(Py_None);
+  tmp = ((PyObject*)p->__pyx_v_SARGABLE_OPERATORS);
+  p->__pyx_v_SARGABLE_OPERATORS = ((PyObject*)Py_None); Py_INCREF(Py_None);
   Py_XDECREF(tmp);
   tmp = ((PyObject*)p->__pyx_v__inner_prefilter);
   p->__pyx_v__inner_prefilter = Py_None; Py_INCREF(Py_None);
@@ -6476,7 +6476,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_Index, __pyx_k_Index, sizeof(__pyx_k_Index), 0, 0, 1, 1},
   {&__pyx_n_s_KNOWN_EXTENSIONS, __pyx_k_KNOWN_EXTENSIONS, sizeof(__pyx_k_KNOWN_EXTENSIONS), 0, 0, 1, 1},
   {&__pyx_n_s_NOT_INDEXED, __pyx_k_NOT_INDEXED, sizeof(__pyx_k_NOT_INDEXED), 0, 0, 1, 1},
-  {&__pyx_n_s_PRE_FILTERABLE_OPERATORS, __pyx_k_PRE_FILTERABLE_OPERATORS, sizeof(__pyx_k_PRE_FILTERABLE_OPERATORS), 0, 0, 1, 1},
   {&__pyx_n_s_ParallelReader, __pyx_k_ParallelReader, sizeof(__pyx_k_ParallelReader), 0, 0, 1, 1},
   {&__pyx_n_s_ParallelReader___call, __pyx_k_ParallelReader___call, sizeof(__pyx_k_ParallelReader___call), 0, 0, 1, 1},
   {&__pyx_n_s_ParallelReader___init, __pyx_k_ParallelReader___init, sizeof(__pyx_k_ParallelReader___init), 0, 0, 1, 1},
@@ -6484,6 +6483,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_ParallelReader_pre_filter, __pyx_k_ParallelReader_pre_filter, sizeof(__pyx_k_ParallelReader_pre_filter), 0, 0, 1, 1},
   {&__pyx_n_s_ParallelReader_pre_filter_locals, __pyx_k_ParallelReader_pre_filter_locals, sizeof(__pyx_k_ParallelReader_pre_filter_locals), 0, 0, 1, 1},
   {&__pyx_n_s_ParallelReader_pre_filter_locals_2, __pyx_k_ParallelReader_pre_filter_locals_2, sizeof(__pyx_k_ParallelReader_pre_filter_locals_2), 0, 0, 1, 1},
+  {&__pyx_n_s_SARGABLE_OPERATORS, __pyx_k_SARGABLE_OPERATORS, sizeof(__pyx_k_SARGABLE_OPERATORS), 0, 0, 1, 1},
   {&__pyx_n_s__10, __pyx_k__10, sizeof(__pyx_k__10), 0, 0, 1, 1},
   {&__pyx_kp_u__2, __pyx_k__2, sizeof(__pyx_k__2), 0, 1, 0, 0},
   {&__pyx_kp_u__3, __pyx_k__3, sizeof(__pyx_k__3), 0, 1, 0, 0},
@@ -6635,7 +6635,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
   /* "mabel/data/readers/internals/parallel_reader.py":152
- *         PRE_FILTERABLE_OPERATORS = {"=", "==", "is", "in", "contains"}
+ *         SARGABLE_OPERATORS = {"=", "==", "is", "in", "contains"}
  * 
  *         def _inner_prefilter(predicate):             # <<<<<<<<<<<<<<
  *             # No filter doesn't filter
@@ -6701,7 +6701,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Select rows from the file based on the filters and indexes, this filters
  */
-  __pyx_tuple__19 = PyTuple_Pack(7, __pyx_n_s_self, __pyx_n_s_blob_name, __pyx_n_s_index_files, __pyx_n_s_PRE_FILTERABLE_OPERATORS, __pyx_n_s_inner_prefilter, __pyx_n_s_inner_prefilter, __pyx_n_s_index_filters); if (unlikely(!__pyx_tuple__19)) __PYX_ERR(0, 138, __pyx_L1_error)
+  __pyx_tuple__19 = PyTuple_Pack(7, __pyx_n_s_self, __pyx_n_s_blob_name, __pyx_n_s_index_files, __pyx_n_s_SARGABLE_OPERATORS, __pyx_n_s_inner_prefilter, __pyx_n_s_inner_prefilter, __pyx_n_s_index_filters); if (unlikely(!__pyx_tuple__19)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__19);
   __Pyx_GIVEREF(__pyx_tuple__19);
   __pyx_codeobj__20 = (PyObject*)__Pyx_PyCode_New(3, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__19, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_readers_internals_par_2, __pyx_n_s_pre_filter, 138, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__20)) __PYX_ERR(0, 138, __pyx_L1_error)

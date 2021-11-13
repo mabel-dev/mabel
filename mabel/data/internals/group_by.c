@@ -4576,7 +4576,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
 
       /* "mabel/data/internals/group_by.py":139
  *                 # the last known value and the value currently seen. This means
- *                 # we don't need a full copy of the full in memory ever.
+ *                 # we don't need a full copy of the data in memory.
  *                 if existing:             # <<<<<<<<<<<<<<
  *                     if value or func == "COUNT":
  *                         value = AGGREGATORS[func](existing, value)
@@ -4585,7 +4585,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
       if (__pyx_t_2) {
 
         /* "mabel/data/internals/group_by.py":140
- *                 # we don't need a full copy of the full in memory ever.
+ *                 # we don't need a full copy of the data in memory.
  *                 if existing:
  *                     if value or func == "COUNT":             # <<<<<<<<<<<<<<
  *                         value = AGGREGATORS[func](existing, value)
@@ -4665,7 +4665,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
           __pyx_t_5 = 0;
 
           /* "mabel/data/internals/group_by.py":140
- *                 # we don't need a full copy of the full in memory ever.
+ *                 # we don't need a full copy of the data in memory.
  *                 if existing:
  *                     if value or func == "COUNT":             # <<<<<<<<<<<<<<
  *                         value = AGGREGATORS[func](existing, value)
@@ -4691,7 +4691,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_8group_by_7GroupBy_7generator1
 
         /* "mabel/data/internals/group_by.py":139
  *                 # the last known value and the value currently seen. This means
- *                 # we don't need a full copy of the full in memory ever.
+ *                 # we don't need a full copy of the data in memory.
  *                 if existing:             # <<<<<<<<<<<<<<
  *                     if value or func == "COUNT":
  *                         value = AGGREGATORS[func](existing, value)

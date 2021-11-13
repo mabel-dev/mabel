@@ -87,7 +87,7 @@ class validate:  # pragma: no cover
                             "error": "unknown parameter",
                             "function": func.__qualname__,
                             "parameter": not_on_list,
-                            "supported_options": valid_parameters,
+                            "supported_options": f"{valid_parameters}",
                         }
                     )
                 has_errors = True

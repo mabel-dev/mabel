@@ -491,9 +491,14 @@ class DictSet(object):
 
     def sort_and_take(self, column, take: int = 5000, descending: bool = False):
 
+        def safety_key(column):
+            # this returns a tuple where the first element is a boolean, and the
+            # second item is the value
+            return lambda x: (x.get(column) is not None, x.get(column), )
+
         if self.storage_class == STORAGE_CLASS.MEMORY:
             yield from sorted(
-                self._iterator, key=itemgetter(column), reverse=descending
+                self._iterator, key=safety_key(column), reverse=descending
             )[:take]
 
         else:
@@ -507,9 +512,9 @@ class DictSet(object):
             for record in iter(self._iterator):
                 cache.append(record)
                 if len(cache) > double_cache:
-                    cache.sort(key=itemgetter(column), reverse=descending)
+                    cache.sort(key=safety_key(column), reverse=descending)
                     del cache[take:]
-            cache.sort(key=itemgetter(column), reverse=descending)
+            cache.sort(key=safety_key(column), reverse=descending)
             yield from cache[:take]
 
     def __getitem__(self, columns):

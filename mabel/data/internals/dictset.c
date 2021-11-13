@@ -842,6 +842,7 @@ struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_9_inner_fil
 struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_10_select;
 struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_11_inner_select;
 struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_12_sort_and_take;
+struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key;
 struct __pyx_defaults;
 typedef struct __pyx_defaults __pyx_defaults;
 struct __pyx_defaults {
@@ -1059,7 +1060,7 @@ struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_11_inner_se
  * 
  *     def sort_and_take(self, column, take: int = 5000, descending: bool = False):             # <<<<<<<<<<<<<<
  * 
- *         if self.storage_class == STORAGE_CLASS.MEMORY:
+ *         def safety_key(column):
  */
 struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_12_sort_and_take {
   PyObject_HEAD
@@ -1068,8 +1069,22 @@ struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_12_sort_and
   PyObject *__pyx_v_descending;
   PyObject *__pyx_v_double_cache;
   PyObject *__pyx_v_record;
+  PyObject *__pyx_v_safety_key;
   PyObject *__pyx_v_self;
   PyObject *__pyx_v_take;
+};
+
+
+/* "mabel/data/internals/dictset.py":494
+ *     def sort_and_take(self, column, take: int = 5000, descending: bool = False):
+ * 
+ *         def safety_key(column):             # <<<<<<<<<<<<<<
+ *             # this returns a tuple where the first element is a boolean, and the
+ *             # second item is the value
+ */
+struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key {
+  PyObject_HEAD
+  PyObject *__pyx_v_column;
 };
 
 
@@ -1818,6 +1833,7 @@ static PyTypeObject *__pyx_ptype_5mabel_4data_9internals_7dictset___pyx_scope_st
 static PyTypeObject *__pyx_ptype_5mabel_4data_9internals_7dictset___pyx_scope_struct_10_select = 0;
 static PyTypeObject *__pyx_ptype_5mabel_4data_9internals_7dictset___pyx_scope_struct_11_inner_select = 0;
 static PyTypeObject *__pyx_ptype_5mabel_4data_9internals_7dictset___pyx_scope_struct_12_sort_and_take = 0;
+static PyTypeObject *__pyx_ptype_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key = 0;
 #define __Pyx_MODULE_NAME "mabel.data.internals.dictset"
 extern int __pyx_module_is_main_mabel__data__internals__dictset;
 int __pyx_module_is_main_mabel__data__internals__dictset = 0;
@@ -1981,6 +1997,7 @@ static const char __pyx_k_from_bytes[] = "from_bytes";
 static const char __pyx_k_html_table[] = "html_table";
 static const char __pyx_k_itemgetter[] = "itemgetter";
 static const char __pyx_k_iterator_2[] = "_iterator";
+static const char __pyx_k_safety_key[] = "safety_key";
 static const char __pyx_k_serialized[] = "serialized";
 static const char __pyx_k_statistics[] = "statistics";
 static const char __pyx_k_DictSet_max[] = "DictSet.max";
@@ -2072,7 +2089,9 @@ static const char __pyx_k_DictSet_distinct_locals_do_dedup[] = "DictSet.distinct
 static const char __pyx_k_DictSet_filter_locals_inner_filt[] = "DictSet.filter.<locals>.inner_filter_where";
 static const char __pyx_k_DictSet_sample_locals_inner_samp[] = "DictSet.sample.<locals>.inner_sampler";
 static const char __pyx_k_DictSet_select_locals_inner_sele[] = "DictSet.select.<locals>.inner_select";
+static const char __pyx_k_DictSet_sort_and_take_locals_saf[] = "DictSet.sort_and_take.<locals>.safety_key.<locals>.<lambda>";
 static const char __pyx_k_DictSet_filter_locals_inner_filt_2[] = "DictSet.filter.<locals>.inner_filter_callable";
+static const char __pyx_k_DictSet_sort_and_take_locals_saf_2[] = "DictSet.sort_and_take.<locals>.safety_key";
 static PyObject *__pyx_n_s_Any;
 static PyObject *__pyx_n_s_COMPRESSED_MEMORY;
 static PyObject *__pyx_n_s_CollectedSet;
@@ -2117,6 +2136,8 @@ static PyObject *__pyx_n_s_DictSet_sample_locals_inner_samp;
 static PyObject *__pyx_n_s_DictSet_select;
 static PyObject *__pyx_n_s_DictSet_select_locals_inner_sele;
 static PyObject *__pyx_n_s_DictSet_sort_and_take;
+static PyObject *__pyx_n_s_DictSet_sort_and_take_locals_saf;
+static PyObject *__pyx_n_s_DictSet_sort_and_take_locals_saf_2;
 static PyObject *__pyx_n_s_DictSet_standard_deviation;
 static PyObject *__pyx_n_s_DictSet_sum;
 static PyObject *__pyx_n_s_DictSet_sum_locals_lambda;
@@ -2282,6 +2303,7 @@ static PyObject *__pyx_n_s_return;
 static PyObject *__pyx_n_s_reverse;
 static PyObject *__pyx_n_s_row;
 static PyObject *__pyx_n_s_rows;
+static PyObject *__pyx_n_s_safety_key;
 static PyObject *__pyx_n_s_sample;
 static PyObject *__pyx_n_s_seed;
 static PyObject *__pyx_n_s_select;
@@ -2361,10 +2383,12 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_58cursor(CYT
 static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_6select_inner_select(PyObject *__pyx_self, PyObject *__pyx_v_it); /* proto */
 static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_60select(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_columns); /* proto */
 static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_62sort_and_take(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_column, PyObject *__pyx_v_take, PyObject *__pyx_v_descending); /* proto */
+static PyObject *__pyx_lambda_funcdef_lambda4(PyObject *__pyx_self, PyObject *__pyx_v_x); /* proto */
+static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_13sort_and_take_safety_key(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_column); /* proto */
 static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_65__getitem__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_columns); /* proto */
 static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_8__hash___sip(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_val); /* proto */
-static PyObject *__pyx_lambda_funcdef_lambda4(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_record); /* proto */
-static PyObject *__pyx_lambda_funcdef_lambda5(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_x, PyObject *__pyx_v_y); /* proto */
+static PyObject *__pyx_lambda_funcdef_lambda5(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_record); /* proto */
+static PyObject *__pyx_lambda_funcdef_lambda6(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_x, PyObject *__pyx_v_y); /* proto */
 static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_67__hash__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self, PyObject *__pyx_v_seed); /* proto */
 static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_69__repr__(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_self); /* proto */
 static PyObject *__pyx_tp_new_5mabel_4data_9internals_7dictset___pyx_scope_struct__sample(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -2380,6 +2404,7 @@ static PyObject *__pyx_tp_new_5mabel_4data_9internals_7dictset___pyx_scope_struc
 static PyObject *__pyx_tp_new_5mabel_4data_9internals_7dictset___pyx_scope_struct_10_select(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5mabel_4data_9internals_7dictset___pyx_scope_struct_11_inner_select(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5mabel_4data_9internals_7dictset___pyx_scope_struct_12_sort_and_take(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_int_0;
 static PyObject *__pyx_int_1;
 static PyObject *__pyx_int_2;
@@ -2400,7 +2425,7 @@ static PyObject *__pyx_tuple__16;
 static PyObject *__pyx_tuple__19;
 static PyObject *__pyx_tuple__22;
 static PyObject *__pyx_tuple__24;
-static PyObject *__pyx_tuple__25;
+static PyObject *__pyx_tuple__26;
 static PyObject *__pyx_tuple__27;
 static PyObject *__pyx_tuple__29;
 static PyObject *__pyx_tuple__31;
@@ -2408,11 +2433,11 @@ static PyObject *__pyx_tuple__33;
 static PyObject *__pyx_tuple__35;
 static PyObject *__pyx_tuple__37;
 static PyObject *__pyx_tuple__39;
-static PyObject *__pyx_tuple__40;
+static PyObject *__pyx_tuple__41;
 static PyObject *__pyx_tuple__42;
-static PyObject *__pyx_tuple__43;
+static PyObject *__pyx_tuple__44;
 static PyObject *__pyx_tuple__45;
-static PyObject *__pyx_tuple__46;
+static PyObject *__pyx_tuple__47;
 static PyObject *__pyx_tuple__48;
 static PyObject *__pyx_tuple__50;
 static PyObject *__pyx_tuple__52;
@@ -2424,24 +2449,25 @@ static PyObject *__pyx_tuple__62;
 static PyObject *__pyx_tuple__64;
 static PyObject *__pyx_tuple__66;
 static PyObject *__pyx_tuple__68;
-static PyObject *__pyx_tuple__69;
 static PyObject *__pyx_tuple__70;
+static PyObject *__pyx_tuple__71;
 static PyObject *__pyx_tuple__72;
-static PyObject *__pyx_tuple__73;
+static PyObject *__pyx_tuple__74;
 static PyObject *__pyx_tuple__75;
-static PyObject *__pyx_tuple__76;
+static PyObject *__pyx_tuple__77;
 static PyObject *__pyx_tuple__78;
 static PyObject *__pyx_tuple__80;
 static PyObject *__pyx_tuple__82;
-static PyObject *__pyx_tuple__83;
+static PyObject *__pyx_tuple__84;
 static PyObject *__pyx_tuple__85;
 static PyObject *__pyx_tuple__87;
 static PyObject *__pyx_tuple__89;
-static PyObject *__pyx_tuple__90;
 static PyObject *__pyx_tuple__91;
+static PyObject *__pyx_tuple__92;
 static PyObject *__pyx_tuple__93;
 static PyObject *__pyx_tuple__95;
-static PyObject *__pyx_tuple__96;
+static PyObject *__pyx_tuple__97;
+static PyObject *__pyx_tuple__98;
 static PyObject *__pyx_codeobj__2;
 static PyObject *__pyx_codeobj__4;
 static PyObject *__pyx_codeobj__6;
@@ -2453,16 +2479,16 @@ static PyObject *__pyx_codeobj__17;
 static PyObject *__pyx_codeobj__20;
 static PyObject *__pyx_codeobj__21;
 static PyObject *__pyx_codeobj__23;
-static PyObject *__pyx_codeobj__26;
+static PyObject *__pyx_codeobj__25;
 static PyObject *__pyx_codeobj__28;
 static PyObject *__pyx_codeobj__30;
 static PyObject *__pyx_codeobj__32;
 static PyObject *__pyx_codeobj__34;
 static PyObject *__pyx_codeobj__36;
 static PyObject *__pyx_codeobj__38;
-static PyObject *__pyx_codeobj__41;
-static PyObject *__pyx_codeobj__44;
-static PyObject *__pyx_codeobj__47;
+static PyObject *__pyx_codeobj__40;
+static PyObject *__pyx_codeobj__43;
+static PyObject *__pyx_codeobj__46;
 static PyObject *__pyx_codeobj__49;
 static PyObject *__pyx_codeobj__51;
 static PyObject *__pyx_codeobj__53;
@@ -2473,17 +2499,18 @@ static PyObject *__pyx_codeobj__61;
 static PyObject *__pyx_codeobj__63;
 static PyObject *__pyx_codeobj__65;
 static PyObject *__pyx_codeobj__67;
-static PyObject *__pyx_codeobj__71;
-static PyObject *__pyx_codeobj__74;
-static PyObject *__pyx_codeobj__77;
+static PyObject *__pyx_codeobj__69;
+static PyObject *__pyx_codeobj__73;
+static PyObject *__pyx_codeobj__76;
 static PyObject *__pyx_codeobj__79;
 static PyObject *__pyx_codeobj__81;
-static PyObject *__pyx_codeobj__84;
+static PyObject *__pyx_codeobj__83;
 static PyObject *__pyx_codeobj__86;
 static PyObject *__pyx_codeobj__88;
-static PyObject *__pyx_codeobj__92;
+static PyObject *__pyx_codeobj__90;
 static PyObject *__pyx_codeobj__94;
-static PyObject *__pyx_codeobj__97;
+static PyObject *__pyx_codeobj__96;
+static PyObject *__pyx_codeobj__99;
 /* Late includes */
 
 /* "mabel/data/internals/dictset.py":78
@@ -11942,7 +11969,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_7dictset_7DictSet_64generator2
  * 
  *     def sort_and_take(self, column, take: int = 5000, descending: bool = False):             # <<<<<<<<<<<<<<
  * 
- *         if self.storage_class == STORAGE_CLASS.MEMORY:
+ *         def safety_key(column):
  */
 
 /* Python wrapper */
@@ -12083,6 +12110,204 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_62sort_and_t
   return __pyx_r;
 }
 
+/* "mabel/data/internals/dictset.py":494
+ *     def sort_and_take(self, column, take: int = 5000, descending: bool = False):
+ * 
+ *         def safety_key(column):             # <<<<<<<<<<<<<<
+ *             # this returns a tuple where the first element is a boolean, and the
+ *             # second item is the value
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_13sort_and_take_1safety_key(PyObject *__pyx_self, PyObject *__pyx_v_column); /*proto*/
+static PyMethodDef __pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_13sort_and_take_1safety_key = {"safety_key", (PyCFunction)__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_13sort_and_take_1safety_key, METH_O, 0};
+static PyObject *__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_13sort_and_take_1safety_key(PyObject *__pyx_self, PyObject *__pyx_v_column) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("safety_key (wrapper)", 0);
+  __pyx_r = __pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_13sort_and_take_safety_key(__pyx_self, ((PyObject *)__pyx_v_column));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "mabel/data/internals/dictset.py":497
+ *             # this returns a tuple where the first element is a boolean, and the
+ *             # second item is the value
+ *             return lambda x: (x.get(column) is not None, x.get(column), )             # <<<<<<<<<<<<<<
+ * 
+ *         if self.storage_class == STORAGE_CLASS.MEMORY:
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_13sort_and_take_10safety_key_lambda4(PyObject *__pyx_self, PyObject *__pyx_v_x); /*proto*/
+static PyMethodDef __pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_13sort_and_take_10safety_key_lambda4 = {"lambda4", (PyCFunction)__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_13sort_and_take_10safety_key_lambda4, METH_O, 0};
+static PyObject *__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_13sort_and_take_10safety_key_lambda4(PyObject *__pyx_self, PyObject *__pyx_v_x) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("lambda4 (wrapper)", 0);
+  __pyx_r = __pyx_lambda_funcdef_lambda4(__pyx_self, ((PyObject *)__pyx_v_x));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_lambda_funcdef_lambda4(PyObject *__pyx_self, PyObject *__pyx_v_x) {
+  struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key *__pyx_cur_scope;
+  struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key *__pyx_outer_scope;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  int __pyx_t_4;
+  PyObject *__pyx_t_5 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("lambda4", 0);
+  __pyx_outer_scope = (struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key *) __Pyx_CyFunction_GetClosure(__pyx_self);
+  __pyx_cur_scope = __pyx_outer_scope;
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_x, __pyx_n_s_get); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 497, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (unlikely(!__pyx_cur_scope->__pyx_v_column)) { __Pyx_RaiseClosureNameError("column"); __PYX_ERR(0, 497, __pyx_L1_error) }
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, __pyx_cur_scope->__pyx_v_column) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_cur_scope->__pyx_v_column);
+  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 497, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_4 = (__pyx_t_1 != Py_None);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 497, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_x, __pyx_n_s_get); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 497, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  if (unlikely(!__pyx_cur_scope->__pyx_v_column)) { __Pyx_RaiseClosureNameError("column"); __PYX_ERR(0, 497, __pyx_L1_error) }
+  __pyx_t_5 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_5)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_5);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
+    }
+  }
+  __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_5, __pyx_cur_scope->__pyx_v_column) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_cur_scope->__pyx_v_column);
+  __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 497, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 497, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_2);
+  __pyx_t_1 = 0;
+  __pyx_t_2 = 0;
+  __pyx_r = __pyx_t_3;
+  __pyx_t_3 = 0;
+  goto __pyx_L0;
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_AddTraceback("mabel.data.internals.dictset.DictSet.sort_and_take.safety_key.lambda4", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "mabel/data/internals/dictset.py":494
+ *     def sort_and_take(self, column, take: int = 5000, descending: bool = False):
+ * 
+ *         def safety_key(column):             # <<<<<<<<<<<<<<
+ *             # this returns a tuple where the first element is a boolean, and the
+ *             # second item is the value
+ */
+
+static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_13sort_and_take_safety_key(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_column) {
+  struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key *__pyx_cur_scope;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("safety_key", 0);
+  __pyx_cur_scope = (struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key *)__pyx_tp_new_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key(__pyx_ptype_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key, __pyx_empty_tuple, NULL);
+  if (unlikely(!__pyx_cur_scope)) {
+    __pyx_cur_scope = ((struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key *)Py_None);
+    __Pyx_INCREF(Py_None);
+    __PYX_ERR(0, 494, __pyx_L1_error)
+  } else {
+    __Pyx_GOTREF(__pyx_cur_scope);
+  }
+  __pyx_cur_scope->__pyx_v_column = __pyx_v_column;
+  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_column);
+  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_column);
+
+  /* "mabel/data/internals/dictset.py":497
+ *             # this returns a tuple where the first element is a boolean, and the
+ *             # second item is the value
+ *             return lambda x: (x.get(column) is not None, x.get(column), )             # <<<<<<<<<<<<<<
+ * 
+ *         if self.storage_class == STORAGE_CLASS.MEMORY:
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_13sort_and_take_10safety_key_lambda4, 0, __pyx_n_s_DictSet_sort_and_take_locals_saf, ((PyObject*)__pyx_cur_scope), __pyx_n_s_mabel_data_internals_dictset, __pyx_d, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 497, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "mabel/data/internals/dictset.py":494
+ *     def sort_and_take(self, column, take: int = 5000, descending: bool = False):
+ * 
+ *         def safety_key(column):             # <<<<<<<<<<<<<<
+ *             # this returns a tuple where the first element is a boolean, and the
+ *             # second item is the value
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("mabel.data.internals.dictset.DictSet.sort_and_take.safety_key", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "mabel/data/internals/dictset.py":492
+ *         )
+ * 
+ *     def sort_and_take(self, column, take: int = 5000, descending: bool = False):             # <<<<<<<<<<<<<<
+ * 
+ *         def safety_key(column):
+ */
+
 static PyObject *__pyx_gb_5mabel_4data_9internals_7dictset_7DictSet_64generator2(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
 {
   struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_12_sort_and_take *__pyx_cur_scope = ((struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_12_sort_and_take *)__pyx_generator->closure);
@@ -12091,15 +12316,13 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_7dictset_7DictSet_64generator2
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
   int __pyx_t_4;
-  PyObject *__pyx_t_5 = NULL;
+  long __pyx_t_5;
   PyObject *__pyx_t_6 = NULL;
-  long __pyx_t_7;
-  Py_ssize_t __pyx_t_8;
-  PyObject *(*__pyx_t_9)(PyObject *);
-  int __pyx_t_10;
+  Py_ssize_t __pyx_t_7;
+  PyObject *(*__pyx_t_8)(PyObject *);
+  int __pyx_t_9;
+  Py_ssize_t __pyx_t_10;
   Py_ssize_t __pyx_t_11;
-  PyObject *__pyx_t_12 = NULL;
-  Py_ssize_t __pyx_t_13;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -12119,97 +12342,95 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_7dictset_7DictSet_64generator2
   /* "mabel/data/internals/dictset.py":494
  *     def sort_and_take(self, column, take: int = 5000, descending: bool = False):
  * 
+ *         def safety_key(column):             # <<<<<<<<<<<<<<
+ *             # this returns a tuple where the first element is a boolean, and the
+ *             # second item is the value
+ */
+  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_13sort_and_take_1safety_key, 0, __pyx_n_s_DictSet_sort_and_take_locals_saf_2, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__23)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 494, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_1);
+  __pyx_cur_scope->__pyx_v_safety_key = __pyx_t_1;
+  __pyx_t_1 = 0;
+
+  /* "mabel/data/internals/dictset.py":499
+ *             return lambda x: (x.get(column) is not None, x.get(column), )
+ * 
  *         if self.storage_class == STORAGE_CLASS.MEMORY:             # <<<<<<<<<<<<<<
  *             yield from sorted(
- *                 self._iterator, key=itemgetter(column), reverse=descending
+ *                 self._iterator, key=safety_key(column), reverse=descending
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_storage_class); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 494, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_storage_class); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 499, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_STORAGE_CLASS); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 494, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_STORAGE_CLASS); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 499, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_MEMORY); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 494, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_MEMORY); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 499, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 494, __pyx_L1_error)
+  __pyx_t_2 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 499, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 494, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 499, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (__pyx_t_4) {
 
-    /* "mabel/data/internals/dictset.py":496
+    /* "mabel/data/internals/dictset.py":501
  *         if self.storage_class == STORAGE_CLASS.MEMORY:
  *             yield from sorted(
- *                 self._iterator, key=itemgetter(column), reverse=descending             # <<<<<<<<<<<<<<
+ *                 self._iterator, key=safety_key(column), reverse=descending             # <<<<<<<<<<<<<<
  *             )[:take]
  * 
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_iterator_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 496, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_iterator_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 501, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
 
-    /* "mabel/data/internals/dictset.py":495
+    /* "mabel/data/internals/dictset.py":500
  * 
  *         if self.storage_class == STORAGE_CLASS.MEMORY:
  *             yield from sorted(             # <<<<<<<<<<<<<<
- *                 self._iterator, key=itemgetter(column), reverse=descending
+ *                 self._iterator, key=safety_key(column), reverse=descending
  *             )[:take]
  */
-    __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 495, __pyx_L1_error)
+    __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 500, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_GIVEREF(__pyx_t_2);
     PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "mabel/data/internals/dictset.py":496
+    /* "mabel/data/internals/dictset.py":501
  *         if self.storage_class == STORAGE_CLASS.MEMORY:
  *             yield from sorted(
- *                 self._iterator, key=itemgetter(column), reverse=descending             # <<<<<<<<<<<<<<
+ *                 self._iterator, key=safety_key(column), reverse=descending             # <<<<<<<<<<<<<<
  *             )[:take]
  * 
  */
-    __pyx_t_2 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 496, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 501, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_itemgetter); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 496, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = NULL;
-    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
-      __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_5);
-      if (likely(__pyx_t_6)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
-        __Pyx_INCREF(__pyx_t_6);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_5, function);
-      }
-    }
-    __pyx_t_1 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_6, __pyx_cur_scope->__pyx_v_column) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_cur_scope->__pyx_v_column);
-    __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 496, __pyx_L1_error)
+    __pyx_t_1 = __pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_13sort_and_take_safety_key(__pyx_cur_scope->__pyx_v_safety_key, __pyx_cur_scope->__pyx_v_column); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 501, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_key, __pyx_t_1) < 0) __PYX_ERR(0, 496, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_key, __pyx_t_1) < 0) __PYX_ERR(0, 501, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_reverse, __pyx_cur_scope->__pyx_v_descending) < 0) __PYX_ERR(0, 496, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_reverse, __pyx_cur_scope->__pyx_v_descending) < 0) __PYX_ERR(0, 501, __pyx_L1_error)
 
-    /* "mabel/data/internals/dictset.py":495
+    /* "mabel/data/internals/dictset.py":500
  * 
  *         if self.storage_class == STORAGE_CLASS.MEMORY:
  *             yield from sorted(             # <<<<<<<<<<<<<<
- *                 self._iterator, key=itemgetter(column), reverse=descending
+ *                 self._iterator, key=safety_key(column), reverse=descending
  *             )[:take]
  */
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_sorted, __pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 495, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_sorted, __pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 500, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "mabel/data/internals/dictset.py":497
+    /* "mabel/data/internals/dictset.py":502
  *             yield from sorted(
- *                 self._iterator, key=itemgetter(column), reverse=descending
+ *                 self._iterator, key=safety_key(column), reverse=descending
  *             )[:take]             # <<<<<<<<<<<<<<
  * 
  *         else:
  */
-    __pyx_t_2 = __Pyx_PyObject_GetSlice(__pyx_t_1, 0, 0, NULL, &__pyx_cur_scope->__pyx_v_take, NULL, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 497, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetSlice(__pyx_t_1, 0, 0, NULL, &__pyx_cur_scope->__pyx_v_take, NULL, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 502, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_r = __Pyx_Generator_Yield_From(__pyx_generator, __pyx_t_2);
@@ -12223,26 +12444,26 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_7dictset_7DictSet_64generator2
       __pyx_generator->resume_label = 1;
       return __pyx_r;
       __pyx_L5_resume_from_yield_from:;
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 495, __pyx_L1_error)
+      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 500, __pyx_L1_error)
     } else {
       PyObject* exc_type = __Pyx_PyErr_Occurred();
       if (exc_type) {
         if (likely(exc_type == PyExc_StopIteration || (exc_type != PyExc_GeneratorExit && __Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration)))) PyErr_Clear();
-        else __PYX_ERR(0, 495, __pyx_L1_error)
+        else __PYX_ERR(0, 500, __pyx_L1_error)
       }
     }
 
-    /* "mabel/data/internals/dictset.py":494
- *     def sort_and_take(self, column, take: int = 5000, descending: bool = False):
+    /* "mabel/data/internals/dictset.py":499
+ *             return lambda x: (x.get(column) is not None, x.get(column), )
  * 
  *         if self.storage_class == STORAGE_CLASS.MEMORY:             # <<<<<<<<<<<<<<
  *             yield from sorted(
- *                 self._iterator, key=itemgetter(column), reverse=descending
+ *                 self._iterator, key=safety_key(column), reverse=descending
  */
     goto __pyx_L4;
   }
 
-  /* "mabel/data/internals/dictset.py":505
+  /* "mabel/data/internals/dictset.py":510
  *             # implementation stores double and one records in memory as it collects
  *             # and sorts them.
  *             double_cache = max(take * 2, 1) + 1             # <<<<<<<<<<<<<<
@@ -12250,92 +12471,92 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_7dictset_7DictSet_64generator2
  *             for record in iter(self._iterator):
  */
   /*else*/ {
-    __pyx_t_7 = 1;
-    __pyx_t_2 = PyNumber_Multiply(__pyx_cur_scope->__pyx_v_take, __pyx_int_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 505, __pyx_L1_error)
+    __pyx_t_5 = 1;
+    __pyx_t_2 = PyNumber_Multiply(__pyx_cur_scope->__pyx_v_take, __pyx_int_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 510, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyInt_From_long(__pyx_t_7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 505, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_From_long(__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 510, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_5 = PyObject_RichCompare(__pyx_t_3, __pyx_t_2, Py_GT); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 505, __pyx_L1_error)
+    __pyx_t_6 = PyObject_RichCompare(__pyx_t_3, __pyx_t_2, Py_GT); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 510, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 505, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 510, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     if (__pyx_t_4) {
-      __pyx_t_5 = __Pyx_PyInt_From_long(__pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 505, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_1 = __pyx_t_5;
-      __pyx_t_5 = 0;
+      __pyx_t_6 = __Pyx_PyInt_From_long(__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 510, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __pyx_t_1 = __pyx_t_6;
+      __pyx_t_6 = 0;
     } else {
       __Pyx_INCREF(__pyx_t_2);
       __pyx_t_1 = __pyx_t_2;
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyInt_AddObjC(__pyx_t_1, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 505, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_AddObjC(__pyx_t_1, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 510, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_GIVEREF(__pyx_t_2);
     __pyx_cur_scope->__pyx_v_double_cache = __pyx_t_2;
     __pyx_t_2 = 0;
 
-    /* "mabel/data/internals/dictset.py":506
+    /* "mabel/data/internals/dictset.py":511
  *             # and sorts them.
  *             double_cache = max(take * 2, 1) + 1
  *             cache = []             # <<<<<<<<<<<<<<
  *             for record in iter(self._iterator):
  *                 cache.append(record)
  */
-    __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 506, __pyx_L1_error)
+    __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 511, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_GIVEREF(__pyx_t_2);
     __pyx_cur_scope->__pyx_v_cache = ((PyObject*)__pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "mabel/data/internals/dictset.py":507
+    /* "mabel/data/internals/dictset.py":512
  *             double_cache = max(take * 2, 1) + 1
  *             cache = []
  *             for record in iter(self._iterator):             # <<<<<<<<<<<<<<
  *                 cache.append(record)
  *                 if len(cache) > double_cache:
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_iterator_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 507, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_self, __pyx_n_s_iterator_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 512, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_1 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 507, __pyx_L1_error)
+    __pyx_t_1 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 512, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
-      __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_8 = 0;
-      __pyx_t_9 = NULL;
+      __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_7 = 0;
+      __pyx_t_8 = NULL;
     } else {
-      __pyx_t_8 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 507, __pyx_L1_error)
+      __pyx_t_7 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 512, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_9 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 507, __pyx_L1_error)
+      __pyx_t_8 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 512, __pyx_L1_error)
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     for (;;) {
-      if (likely(!__pyx_t_9)) {
+      if (likely(!__pyx_t_8)) {
         if (likely(PyList_CheckExact(__pyx_t_2))) {
-          if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_2)) break;
+          if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_2)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_8); __Pyx_INCREF(__pyx_t_1); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 507, __pyx_L1_error)
+          __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_7); __Pyx_INCREF(__pyx_t_1); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 512, __pyx_L1_error)
           #else
-          __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 507, __pyx_L1_error)
+          __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 512, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_1);
           #endif
         } else {
-          if (__pyx_t_8 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
+          if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_8); __Pyx_INCREF(__pyx_t_1); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 507, __pyx_L1_error)
+          __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_7); __Pyx_INCREF(__pyx_t_1); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 512, __pyx_L1_error)
           #else
-          __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 507, __pyx_L1_error)
+          __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 512, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_1);
           #endif
         }
       } else {
-        __pyx_t_1 = __pyx_t_9(__pyx_t_2);
+        __pyx_t_1 = __pyx_t_8(__pyx_t_2);
         if (unlikely(!__pyx_t_1)) {
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 507, __pyx_L1_error)
+            else __PYX_ERR(0, 512, __pyx_L1_error)
           }
           break;
         }
@@ -12346,97 +12567,82 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_7dictset_7DictSet_64generator2
       __Pyx_GIVEREF(__pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "mabel/data/internals/dictset.py":508
+      /* "mabel/data/internals/dictset.py":513
  *             cache = []
  *             for record in iter(self._iterator):
  *                 cache.append(record)             # <<<<<<<<<<<<<<
  *                 if len(cache) > double_cache:
- *                     cache.sort(key=itemgetter(column), reverse=descending)
+ *                     cache.sort(key=safety_key(column), reverse=descending)
  */
-      __pyx_t_10 = __Pyx_PyList_Append(__pyx_cur_scope->__pyx_v_cache, __pyx_cur_scope->__pyx_v_record); if (unlikely(__pyx_t_10 == ((int)-1))) __PYX_ERR(0, 508, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_PyList_Append(__pyx_cur_scope->__pyx_v_cache, __pyx_cur_scope->__pyx_v_record); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 513, __pyx_L1_error)
 
-      /* "mabel/data/internals/dictset.py":509
+      /* "mabel/data/internals/dictset.py":514
  *             for record in iter(self._iterator):
  *                 cache.append(record)
  *                 if len(cache) > double_cache:             # <<<<<<<<<<<<<<
- *                     cache.sort(key=itemgetter(column), reverse=descending)
+ *                     cache.sort(key=safety_key(column), reverse=descending)
  *                     del cache[take:]
  */
-      __pyx_t_11 = PyList_GET_SIZE(__pyx_cur_scope->__pyx_v_cache); if (unlikely(__pyx_t_11 == ((Py_ssize_t)-1))) __PYX_ERR(0, 509, __pyx_L1_error)
-      __pyx_t_1 = PyInt_FromSsize_t(__pyx_t_11); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 509, __pyx_L1_error)
+      __pyx_t_10 = PyList_GET_SIZE(__pyx_cur_scope->__pyx_v_cache); if (unlikely(__pyx_t_10 == ((Py_ssize_t)-1))) __PYX_ERR(0, 514, __pyx_L1_error)
+      __pyx_t_1 = PyInt_FromSsize_t(__pyx_t_10); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 514, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_5 = PyObject_RichCompare(__pyx_t_1, __pyx_cur_scope->__pyx_v_double_cache, Py_GT); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 509, __pyx_L1_error)
+      __pyx_t_6 = PyObject_RichCompare(__pyx_t_1, __pyx_cur_scope->__pyx_v_double_cache, Py_GT); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 514, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 509, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 514, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       if (__pyx_t_4) {
 
-        /* "mabel/data/internals/dictset.py":510
+        /* "mabel/data/internals/dictset.py":515
  *                 cache.append(record)
  *                 if len(cache) > double_cache:
- *                     cache.sort(key=itemgetter(column), reverse=descending)             # <<<<<<<<<<<<<<
+ *                     cache.sort(key=safety_key(column), reverse=descending)             # <<<<<<<<<<<<<<
  *                     del cache[take:]
- *             cache.sort(key=itemgetter(column), reverse=descending)
+ *             cache.sort(key=safety_key(column), reverse=descending)
  */
-        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_cache, __pyx_n_s_sort); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 510, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_1 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 510, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_1);
-        __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_itemgetter); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 510, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_cache, __pyx_n_s_sort); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 515, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_12 = NULL;
-        if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_6))) {
-          __pyx_t_12 = PyMethod_GET_SELF(__pyx_t_6);
-          if (likely(__pyx_t_12)) {
-            PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
-            __Pyx_INCREF(__pyx_t_12);
-            __Pyx_INCREF(function);
-            __Pyx_DECREF_SET(__pyx_t_6, function);
-          }
-        }
-        __pyx_t_3 = (__pyx_t_12) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_12, __pyx_cur_scope->__pyx_v_column) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_cur_scope->__pyx_v_column);
-        __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
-        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 510, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 515, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __pyx_t_3 = __pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_13sort_and_take_safety_key(__pyx_cur_scope->__pyx_v_safety_key, __pyx_cur_scope->__pyx_v_column); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 515, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_3);
+        if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_key, __pyx_t_3) < 0) __PYX_ERR(0, 515, __pyx_L1_error)
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+        if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_reverse, __pyx_cur_scope->__pyx_v_descending) < 0) __PYX_ERR(0, 515, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_empty_tuple, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 515, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-        if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_key, __pyx_t_3) < 0) __PYX_ERR(0, 510, __pyx_L1_error)
-        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_reverse, __pyx_cur_scope->__pyx_v_descending) < 0) __PYX_ERR(0, 510, __pyx_L1_error)
-        __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_empty_tuple, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 510, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_3);
-        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-        /* "mabel/data/internals/dictset.py":511
+        /* "mabel/data/internals/dictset.py":516
  *                 if len(cache) > double_cache:
- *                     cache.sort(key=itemgetter(column), reverse=descending)
+ *                     cache.sort(key=safety_key(column), reverse=descending)
  *                     del cache[take:]             # <<<<<<<<<<<<<<
- *             cache.sort(key=itemgetter(column), reverse=descending)
+ *             cache.sort(key=safety_key(column), reverse=descending)
  *             yield from cache[:take]
  */
         __Pyx_INCREF(__pyx_cur_scope->__pyx_v_take);
         __pyx_t_3 = __pyx_cur_scope->__pyx_v_take;
         __pyx_t_4 = (__pyx_t_3 == Py_None);
         if (__pyx_t_4) {
-          __pyx_t_11 = 0;
+          __pyx_t_10 = 0;
         } else {
-          __pyx_t_13 = __Pyx_PyIndex_AsSsize_t(__pyx_t_3); if (unlikely((__pyx_t_13 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 511, __pyx_L1_error)
-          __pyx_t_11 = __pyx_t_13;
+          __pyx_t_11 = __Pyx_PyIndex_AsSsize_t(__pyx_t_3); if (unlikely((__pyx_t_11 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 516, __pyx_L1_error)
+          __pyx_t_10 = __pyx_t_11;
         }
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        if (__Pyx_PyObject_DelSlice(__pyx_cur_scope->__pyx_v_cache, __pyx_t_11, 0, NULL, NULL, NULL, 1, 0, 1) < 0) __PYX_ERR(0, 511, __pyx_L1_error)
+        if (__Pyx_PyObject_DelSlice(__pyx_cur_scope->__pyx_v_cache, __pyx_t_10, 0, NULL, NULL, NULL, 1, 0, 1) < 0) __PYX_ERR(0, 516, __pyx_L1_error)
 
-        /* "mabel/data/internals/dictset.py":509
+        /* "mabel/data/internals/dictset.py":514
  *             for record in iter(self._iterator):
  *                 cache.append(record)
  *                 if len(cache) > double_cache:             # <<<<<<<<<<<<<<
- *                     cache.sort(key=itemgetter(column), reverse=descending)
+ *                     cache.sort(key=safety_key(column), reverse=descending)
  *                     del cache[take:]
  */
       }
 
-      /* "mabel/data/internals/dictset.py":507
+      /* "mabel/data/internals/dictset.py":512
  *             double_cache = max(take * 2, 1) + 1
  *             cache = []
  *             for record in iter(self._iterator):             # <<<<<<<<<<<<<<
@@ -12446,46 +12652,31 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_7dictset_7DictSet_64generator2
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "mabel/data/internals/dictset.py":512
- *                     cache.sort(key=itemgetter(column), reverse=descending)
+    /* "mabel/data/internals/dictset.py":517
+ *                     cache.sort(key=safety_key(column), reverse=descending)
  *                     del cache[take:]
- *             cache.sort(key=itemgetter(column), reverse=descending)             # <<<<<<<<<<<<<<
+ *             cache.sort(key=safety_key(column), reverse=descending)             # <<<<<<<<<<<<<<
  *             yield from cache[:take]
  * 
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_cache, __pyx_n_s_sort); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 512, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_cache, __pyx_n_s_sort); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 517, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 512, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 517, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_itemgetter); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 512, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = NULL;
-    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
-      __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_5);
-      if (likely(__pyx_t_6)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
-        __Pyx_INCREF(__pyx_t_6);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_5, function);
-      }
-    }
-    __pyx_t_1 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_6, __pyx_cur_scope->__pyx_v_column) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_cur_scope->__pyx_v_column);
-    __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 512, __pyx_L1_error)
+    __pyx_t_1 = __pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_13sort_and_take_safety_key(__pyx_cur_scope->__pyx_v_safety_key, __pyx_cur_scope->__pyx_v_column); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 517, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_key, __pyx_t_1) < 0) __PYX_ERR(0, 512, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_key, __pyx_t_1) < 0) __PYX_ERR(0, 517, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_reverse, __pyx_cur_scope->__pyx_v_descending) < 0) __PYX_ERR(0, 512, __pyx_L1_error)
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_empty_tuple, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 512, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_reverse, __pyx_cur_scope->__pyx_v_descending) < 0) __PYX_ERR(0, 517, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_empty_tuple, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 517, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "mabel/data/internals/dictset.py":513
+    /* "mabel/data/internals/dictset.py":518
  *                     del cache[take:]
- *             cache.sort(key=itemgetter(column), reverse=descending)
+ *             cache.sort(key=safety_key(column), reverse=descending)
  *             yield from cache[:take]             # <<<<<<<<<<<<<<
  * 
  *     def __getitem__(self, columns):
@@ -12494,13 +12685,13 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_7dictset_7DictSet_64generator2
     __pyx_t_1 = __pyx_cur_scope->__pyx_v_take;
     __pyx_t_4 = (__pyx_t_1 == Py_None);
     if (__pyx_t_4) {
-      __pyx_t_8 = PY_SSIZE_T_MAX;
+      __pyx_t_7 = PY_SSIZE_T_MAX;
     } else {
-      __pyx_t_11 = __Pyx_PyIndex_AsSsize_t(__pyx_t_1); if (unlikely((__pyx_t_11 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 513, __pyx_L1_error)
-      __pyx_t_8 = __pyx_t_11;
+      __pyx_t_10 = __Pyx_PyIndex_AsSsize_t(__pyx_t_1); if (unlikely((__pyx_t_10 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 518, __pyx_L1_error)
+      __pyx_t_7 = __pyx_t_10;
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyList_GetSlice(__pyx_cur_scope->__pyx_v_cache, 0, __pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 513, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyList_GetSlice(__pyx_cur_scope->__pyx_v_cache, 0, __pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 518, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_r = __Pyx_Generator_Yield_From(__pyx_generator, __pyx_t_1);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -12513,12 +12704,12 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_7dictset_7DictSet_64generator2
       __pyx_generator->resume_label = 2;
       return __pyx_r;
       __pyx_L9_resume_from_yield_from:;
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 513, __pyx_L1_error)
+      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 518, __pyx_L1_error)
     } else {
       PyObject* exc_type = __Pyx_PyErr_Occurred();
       if (exc_type) {
         if (likely(exc_type == PyExc_StopIteration || (exc_type != PyExc_GeneratorExit && __Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration)))) PyErr_Clear();
-        else __PYX_ERR(0, 513, __pyx_L1_error)
+        else __PYX_ERR(0, 518, __pyx_L1_error)
       }
     }
   }
@@ -12530,7 +12721,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_7dictset_7DictSet_64generator2
  * 
  *     def sort_and_take(self, column, take: int = 5000, descending: bool = False):             # <<<<<<<<<<<<<<
  * 
- *         if self.storage_class == STORAGE_CLASS.MEMORY:
+ *         def safety_key(column):
  */
 
   /* function exit code */
@@ -12540,9 +12731,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_7dictset_7DictSet_64generator2
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_XDECREF(__pyx_t_12);
   __Pyx_AddTraceback("sort_and_take", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_r); __pyx_r = 0;
@@ -12555,7 +12744,7 @@ static PyObject *__pyx_gb_5mabel_4data_9internals_7dictset_7DictSet_64generator2
   return __pyx_r;
 }
 
-/* "mabel/data/internals/dictset.py":515
+/* "mabel/data/internals/dictset.py":520
  *             yield from cache[:take]
  * 
  *     def __getitem__(self, columns):             # <<<<<<<<<<<<<<
@@ -12599,11 +12788,11 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_66__getitem_
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_columns)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__getitem__", 1, 2, 2, 1); __PYX_ERR(0, 515, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__getitem__", 1, 2, 2, 1); __PYX_ERR(0, 520, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__getitem__") < 0)) __PYX_ERR(0, 515, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__getitem__") < 0)) __PYX_ERR(0, 520, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -12616,7 +12805,7 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_66__getitem_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__getitem__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 515, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__getitem__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 520, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mabel.data.internals.dictset.DictSet.__getitem__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -12640,7 +12829,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_65__getitem_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__getitem__", 0);
 
-  /* "mabel/data/internals/dictset.py":519
+  /* "mabel/data/internals/dictset.py":524
  *         Select the columns from the _DictSet_, alias for .select
  *         """
  *         return self.select(columns)             # <<<<<<<<<<<<<<
@@ -12648,7 +12837,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_65__getitem_
  *     def __hash__(self, seed: int = 703115) -> int:
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_select); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 519, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_select); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 524, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -12662,14 +12851,14 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_65__getitem_
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, __pyx_v_columns) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_columns);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 519, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 524, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mabel/data/internals/dictset.py":515
+  /* "mabel/data/internals/dictset.py":520
  *             yield from cache[:take]
  * 
  *     def __getitem__(self, columns):             # <<<<<<<<<<<<<<
@@ -12690,7 +12879,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_65__getitem_
   return __pyx_r;
 }
 
-/* "mabel/data/internals/dictset.py":521
+/* "mabel/data/internals/dictset.py":526
  *         return self.select(columns)
  * 
  *     def __hash__(self, seed: int = 703115) -> int:             # <<<<<<<<<<<<<<
@@ -12739,7 +12928,7 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_68__hash__(P
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__hash__") < 0)) __PYX_ERR(0, 521, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__hash__") < 0)) __PYX_ERR(0, 526, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -12755,7 +12944,7 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_68__hash__(P
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__hash__", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 521, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__hash__", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 526, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mabel.data.internals.dictset.DictSet.__hash__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -12768,7 +12957,7 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_68__hash__(P
   return __pyx_r;
 }
 
-/* "mabel/data/internals/dictset.py":527
+/* "mabel/data/internals/dictset.py":532
  *         """
  * 
  *         def sip(val):             # <<<<<<<<<<<<<<
@@ -12803,7 +12992,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_8__hash___si
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("sip", 0);
 
-  /* "mabel/data/internals/dictset.py":528
+  /* "mabel/data/internals/dictset.py":533
  * 
  *         def sip(val):
  *             return siphash("TheApolloMission", val)             # <<<<<<<<<<<<<<
@@ -12811,7 +13000,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_8__hash___si
  *         # The seed is the mission duration of the Apollo 11 mission.
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_siphash); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 528, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_siphash); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 533, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -12828,7 +13017,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_8__hash___si
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_n_u_TheApolloMission, __pyx_v_val};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 528, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 533, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
@@ -12836,13 +13025,13 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_8__hash___si
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_n_u_TheApolloMission, __pyx_v_val};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 528, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 533, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   {
-    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 528, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 533, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     if (__pyx_t_3) {
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -12853,7 +13042,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_8__hash___si
     __Pyx_INCREF(__pyx_v_val);
     __Pyx_GIVEREF(__pyx_v_val);
     PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, __pyx_v_val);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 528, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 533, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
@@ -12862,7 +13051,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_8__hash___si
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mabel/data/internals/dictset.py":527
+  /* "mabel/data/internals/dictset.py":532
  *         """
  * 
  *         def sip(val):             # <<<<<<<<<<<<<<
@@ -12884,7 +13073,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_8__hash___si
   return __pyx_r;
 }
 
-/* "mabel/data/internals/dictset.py":532
+/* "mabel/data/internals/dictset.py":537
  *         # The seed is the mission duration of the Apollo 11 mission.
  *         #   703115 = 8 days, 3 hours, 18 minutes, 35 seconds
  *         ordered = map(lambda record: dict(sorted(record.items())), iter(self._iterator))             # <<<<<<<<<<<<<<
@@ -12893,20 +13082,20 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_8__hash___si
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_8__hash___2lambda4(PyObject *__pyx_self, PyObject *__pyx_v_record); /*proto*/
-static PyMethodDef __pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_8__hash___2lambda4 = {"lambda4", (PyCFunction)__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_8__hash___2lambda4, METH_O, 0};
-static PyObject *__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_8__hash___2lambda4(PyObject *__pyx_self, PyObject *__pyx_v_record) {
+static PyObject *__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_8__hash___2lambda5(PyObject *__pyx_self, PyObject *__pyx_v_record); /*proto*/
+static PyMethodDef __pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_8__hash___2lambda5 = {"lambda5", (PyCFunction)__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_8__hash___2lambda5, METH_O, 0};
+static PyObject *__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_8__hash___2lambda5(PyObject *__pyx_self, PyObject *__pyx_v_record) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("lambda4 (wrapper)", 0);
-  __pyx_r = __pyx_lambda_funcdef_lambda4(__pyx_self, ((PyObject *)__pyx_v_record));
+  __Pyx_RefNannySetupContext("lambda5 (wrapper)", 0);
+  __pyx_r = __pyx_lambda_funcdef_lambda5(__pyx_self, ((PyObject *)__pyx_v_record));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_lambda_funcdef_lambda4(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_record) {
+static PyObject *__pyx_lambda_funcdef_lambda5(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_record) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -12917,9 +13106,9 @@ static PyObject *__pyx_lambda_funcdef_lambda4(CYTHON_UNUSED PyObject *__pyx_self
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("lambda4", 0);
+  __Pyx_RefNannySetupContext("lambda5", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_record, __pyx_n_s_items); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 532, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_record, __pyx_n_s_items); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 537, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -12933,16 +13122,16 @@ static PyObject *__pyx_lambda_funcdef_lambda4(CYTHON_UNUSED PyObject *__pyx_self
   }
   __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 532, __pyx_L1_error)
+  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 537, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PySequence_List(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 532, __pyx_L1_error)
+  __pyx_t_3 = PySequence_List(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 537, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_1 = ((PyObject*)__pyx_t_3);
   __pyx_t_3 = 0;
-  __pyx_t_5 = PyList_Sort(__pyx_t_1); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 532, __pyx_L1_error)
-  __pyx_t_3 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyDict_Type)), __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 532, __pyx_L1_error)
+  __pyx_t_5 = PyList_Sort(__pyx_t_1); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 537, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyDict_Type)), __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 537, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_3;
@@ -12955,7 +13144,7 @@ static PyObject *__pyx_lambda_funcdef_lambda4(CYTHON_UNUSED PyObject *__pyx_self
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("mabel.data.internals.dictset.DictSet.__hash__.lambda4", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("mabel.data.internals.dictset.DictSet.__hash__.lambda5", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -12963,7 +13152,7 @@ static PyObject *__pyx_lambda_funcdef_lambda4(CYTHON_UNUSED PyObject *__pyx_self
   return __pyx_r;
 }
 
-/* "mabel/data/internals/dictset.py":535
+/* "mabel/data/internals/dictset.py":540
  *         serialized = map(orjson.dumps, ordered)
  *         hashed = map(sip, serialized)
  *         return reduce(lambda x, y: x ^ y, hashed, seed)             # <<<<<<<<<<<<<<
@@ -12972,9 +13161,9 @@ static PyObject *__pyx_lambda_funcdef_lambda4(CYTHON_UNUSED PyObject *__pyx_self
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_8__hash___3lambda5(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_8__hash___3lambda5 = {"lambda5", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_8__hash___3lambda5, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_8__hash___3lambda5(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_8__hash___3lambda6(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_8__hash___3lambda6 = {"lambda6", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_8__hash___3lambda6, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_8__hash___3lambda6(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_x = 0;
   PyObject *__pyx_v_y = 0;
   int __pyx_lineno = 0;
@@ -12982,7 +13171,7 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_8__hash___3l
   int __pyx_clineno = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("lambda5 (wrapper)", 0);
+  __Pyx_RefNannySetupContext("lambda6 (wrapper)", 0);
   {
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_x,&__pyx_n_s_y,0};
     PyObject* values[2] = {0,0};
@@ -13006,11 +13195,11 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_8__hash___3l
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("lambda5", 1, 2, 2, 1); __PYX_ERR(0, 535, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("lambda6", 1, 2, 2, 1); __PYX_ERR(0, 540, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "lambda5") < 0)) __PYX_ERR(0, 535, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "lambda6") < 0)) __PYX_ERR(0, 540, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -13023,29 +13212,29 @@ static PyObject *__pyx_pw_5mabel_4data_9internals_7dictset_7DictSet_8__hash___3l
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("lambda5", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 535, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("lambda6", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 540, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("mabel.data.internals.dictset.DictSet.__hash__.lambda5", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("mabel.data.internals.dictset.DictSet.__hash__.lambda6", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_lambda_funcdef_lambda5(__pyx_self, __pyx_v_x, __pyx_v_y);
+  __pyx_r = __pyx_lambda_funcdef_lambda6(__pyx_self, __pyx_v_x, __pyx_v_y);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_lambda_funcdef_lambda5(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_x, PyObject *__pyx_v_y) {
+static PyObject *__pyx_lambda_funcdef_lambda6(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_x, PyObject *__pyx_v_y) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("lambda5", 0);
+  __Pyx_RefNannySetupContext("lambda6", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyNumber_Xor(__pyx_v_x, __pyx_v_y); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 535, __pyx_L1_error)
+  __pyx_t_1 = PyNumber_Xor(__pyx_v_x, __pyx_v_y); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 540, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -13054,7 +13243,7 @@ static PyObject *__pyx_lambda_funcdef_lambda5(CYTHON_UNUSED PyObject *__pyx_self
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("mabel.data.internals.dictset.DictSet.__hash__.lambda5", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("mabel.data.internals.dictset.DictSet.__hash__.lambda6", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -13062,7 +13251,7 @@ static PyObject *__pyx_lambda_funcdef_lambda5(CYTHON_UNUSED PyObject *__pyx_self
   return __pyx_r;
 }
 
-/* "mabel/data/internals/dictset.py":521
+/* "mabel/data/internals/dictset.py":526
  *         return self.select(columns)
  * 
  *     def __hash__(self, seed: int = 703115) -> int:             # <<<<<<<<<<<<<<
@@ -13088,33 +13277,33 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_67__hash__(C
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__hash__", 0);
 
-  /* "mabel/data/internals/dictset.py":527
+  /* "mabel/data/internals/dictset.py":532
  *         """
  * 
  *         def sip(val):             # <<<<<<<<<<<<<<
  *             return siphash("TheApolloMission", val)
  * 
  */
-  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_8__hash___1sip, 0, __pyx_n_s_DictSet___hash___locals_sip, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__23)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 527, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_8__hash___1sip, 0, __pyx_n_s_DictSet___hash___locals_sip, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__25)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 532, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_sip = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mabel/data/internals/dictset.py":532
+  /* "mabel/data/internals/dictset.py":537
  *         # The seed is the mission duration of the Apollo 11 mission.
  *         #   703115 = 8 days, 3 hours, 18 minutes, 35 seconds
  *         ordered = map(lambda record: dict(sorted(record.items())), iter(self._iterator))             # <<<<<<<<<<<<<<
  *         serialized = map(orjson.dumps, ordered)
  *         hashed = map(sip, serialized)
  */
-  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_8__hash___2lambda4, 0, __pyx_n_s_DictSet___hash___locals_lambda, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 532, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_8__hash___2lambda5, 0, __pyx_n_s_DictSet___hash___locals_lambda, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 537, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_iterator_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 532, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_iterator_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 537, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 532, __pyx_L1_error)
+  __pyx_t_3 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 537, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 532, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 537, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
@@ -13122,25 +13311,25 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_67__hash__(C
   PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_3);
   __pyx_t_1 = 0;
   __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_map, __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 532, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_map, __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 537, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_ordered = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "mabel/data/internals/dictset.py":533
+  /* "mabel/data/internals/dictset.py":538
  *         #   703115 = 8 days, 3 hours, 18 minutes, 35 seconds
  *         ordered = map(lambda record: dict(sorted(record.items())), iter(self._iterator))
  *         serialized = map(orjson.dumps, ordered)             # <<<<<<<<<<<<<<
  *         hashed = map(sip, serialized)
  *         return reduce(lambda x, y: x ^ y, hashed, seed)
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_orjson); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 533, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_orjson); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 538, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_dumps); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 533, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_dumps); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 538, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 533, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 538, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_2);
@@ -13148,20 +13337,20 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_67__hash__(C
   __Pyx_GIVEREF(__pyx_v_ordered);
   PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_v_ordered);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_map, __pyx_t_3, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 533, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_map, __pyx_t_3, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 538, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_serialized = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "mabel/data/internals/dictset.py":534
+  /* "mabel/data/internals/dictset.py":539
  *         ordered = map(lambda record: dict(sorted(record.items())), iter(self._iterator))
  *         serialized = map(orjson.dumps, ordered)
  *         hashed = map(sip, serialized)             # <<<<<<<<<<<<<<
  *         return reduce(lambda x, y: x ^ y, hashed, seed)
  * 
  */
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 534, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 539, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_v_sip);
   __Pyx_GIVEREF(__pyx_v_sip);
@@ -13169,13 +13358,13 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_67__hash__(C
   __Pyx_INCREF(__pyx_v_serialized);
   __Pyx_GIVEREF(__pyx_v_serialized);
   PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_v_serialized);
-  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_map, __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 534, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_map, __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 539, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_hashed = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "mabel/data/internals/dictset.py":535
+  /* "mabel/data/internals/dictset.py":540
  *         serialized = map(orjson.dumps, ordered)
  *         hashed = map(sip, serialized)
  *         return reduce(lambda x, y: x ^ y, hashed, seed)             # <<<<<<<<<<<<<<
@@ -13183,9 +13372,9 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_67__hash__(C
  *     def __repr__(self):  # pragma: no cover
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_reduce); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 535, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_reduce); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 540, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_8__hash___3lambda5, 0, __pyx_n_s_DictSet___hash___locals_lambda, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 535, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_8__hash___3lambda6, 0, __pyx_n_s_DictSet___hash___locals_lambda, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 540, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_4 = NULL;
   __pyx_t_5 = 0;
@@ -13202,7 +13391,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_67__hash__(C
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[4] = {__pyx_t_4, __pyx_t_1, __pyx_v_hashed, __pyx_v_seed};
-    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 3+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 535, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 3+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 540, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -13211,14 +13400,14 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_67__hash__(C
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[4] = {__pyx_t_4, __pyx_t_1, __pyx_v_hashed, __pyx_v_seed};
-    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 3+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 535, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 3+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 540, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   } else
   #endif
   {
-    __pyx_t_6 = PyTuple_New(3+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 535, __pyx_L1_error)
+    __pyx_t_6 = PyTuple_New(3+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 540, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     if (__pyx_t_4) {
       __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_4); __pyx_t_4 = NULL;
@@ -13232,7 +13421,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_67__hash__(C
     __Pyx_GIVEREF(__pyx_v_seed);
     PyTuple_SET_ITEM(__pyx_t_6, 2+__pyx_t_5, __pyx_v_seed);
     __pyx_t_1 = 0;
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_6, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 535, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_6, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 540, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   }
@@ -13241,7 +13430,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_67__hash__(C
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "mabel/data/internals/dictset.py":521
+  /* "mabel/data/internals/dictset.py":526
  *         return self.select(columns)
  * 
  *     def __hash__(self, seed: int = 703115) -> int:             # <<<<<<<<<<<<<<
@@ -13268,7 +13457,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_67__hash__(C
   return __pyx_r;
 }
 
-/* "mabel/data/internals/dictset.py":537
+/* "mabel/data/internals/dictset.py":542
  *         return reduce(lambda x, y: x ^ y, hashed, seed)
  * 
  *     def __repr__(self):  # pragma: no cover             # <<<<<<<<<<<<<<
@@ -13308,14 +13497,14 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_69__repr__(C
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__repr__", 0);
 
-  /* "mabel/data/internals/dictset.py":538
+  /* "mabel/data/internals/dictset.py":543
  * 
  *     def __repr__(self):  # pragma: no cover
  *         if is_running_from_ipython():             # <<<<<<<<<<<<<<
  *             from IPython.display import HTML, display  # type:ignore
  * 
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_is_running_from_ipython); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 538, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_is_running_from_ipython); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 543, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -13329,21 +13518,21 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_69__repr__(C
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 538, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 543, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 538, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 543, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_4) {
 
-    /* "mabel/data/internals/dictset.py":539
+    /* "mabel/data/internals/dictset.py":544
  *     def __repr__(self):  # pragma: no cover
  *         if is_running_from_ipython():
  *             from IPython.display import HTML, display  # type:ignore             # <<<<<<<<<<<<<<
  * 
  *             html = html_table(iter(self._iterator), 10)
  */
-    __pyx_t_1 = PyList_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 539, __pyx_L1_error)
+    __pyx_t_1 = PyList_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 544, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_n_s_HTML);
     __Pyx_GIVEREF(__pyx_n_s_HTML);
@@ -13351,33 +13540,33 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_69__repr__(C
     __Pyx_INCREF(__pyx_n_s_display);
     __Pyx_GIVEREF(__pyx_n_s_display);
     PyList_SET_ITEM(__pyx_t_1, 1, __pyx_n_s_display);
-    __pyx_t_2 = __Pyx_Import(__pyx_n_s_IPython_display, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 539, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_Import(__pyx_n_s_IPython_display, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 544, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_HTML); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 539, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_HTML); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 544, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_t_1);
     __pyx_v_HTML = __pyx_t_1;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_display); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 539, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_display); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 544, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_t_1);
     __pyx_v_display = __pyx_t_1;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "mabel/data/internals/dictset.py":541
+    /* "mabel/data/internals/dictset.py":546
  *             from IPython.display import HTML, display  # type:ignore
  * 
  *             html = html_table(iter(self._iterator), 10)             # <<<<<<<<<<<<<<
  *             display(HTML(html))
  *             return ""  # __repr__ must return something
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_html_table); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 541, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_html_table); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 546, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_iterator_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 541, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_iterator_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 546, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_5 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 541, __pyx_L1_error)
+    __pyx_t_5 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 546, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_3 = NULL;
@@ -13395,7 +13584,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_69__repr__(C
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_1)) {
       PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_t_5, __pyx_int_10};
-      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 541, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 546, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -13404,14 +13593,14 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_69__repr__(C
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_1)) {
       PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_t_5, __pyx_int_10};
-      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 541, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 546, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     } else
     #endif
     {
-      __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 541, __pyx_L1_error)
+      __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 546, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       if (__pyx_t_3) {
         __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -13422,7 +13611,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_69__repr__(C
       __Pyx_GIVEREF(__pyx_int_10);
       PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_6, __pyx_int_10);
       __pyx_t_5 = 0;
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_7, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 541, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_7, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 546, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     }
@@ -13430,7 +13619,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_69__repr__(C
     __pyx_v_html = __pyx_t_2;
     __pyx_t_2 = 0;
 
-    /* "mabel/data/internals/dictset.py":542
+    /* "mabel/data/internals/dictset.py":547
  * 
  *             html = html_table(iter(self._iterator), 10)
  *             display(HTML(html))             # <<<<<<<<<<<<<<
@@ -13450,7 +13639,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_69__repr__(C
     }
     __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_5, __pyx_v_html) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_v_html);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 542, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 547, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_INCREF(__pyx_v_display);
@@ -13467,12 +13656,12 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_69__repr__(C
     __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_7, __pyx_t_5, __pyx_t_1) : __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_1);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 542, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 547, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "mabel/data/internals/dictset.py":543
+    /* "mabel/data/internals/dictset.py":548
  *             html = html_table(iter(self._iterator), 10)
  *             display(HTML(html))
  *             return ""  # __repr__ must return something             # <<<<<<<<<<<<<<
@@ -13484,7 +13673,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_69__repr__(C
     __pyx_r = __pyx_kp_u__7;
     goto __pyx_L0;
 
-    /* "mabel/data/internals/dictset.py":538
+    /* "mabel/data/internals/dictset.py":543
  * 
  *     def __repr__(self):  # pragma: no cover
  *         if is_running_from_ipython():             # <<<<<<<<<<<<<<
@@ -13493,18 +13682,18 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_69__repr__(C
  */
   }
 
-  /* "mabel/data/internals/dictset.py":545
+  /* "mabel/data/internals/dictset.py":550
  *             return ""  # __repr__ must return something
  *         else:
  *             return ascii_table(iter(self._iterator), 10)             # <<<<<<<<<<<<<<
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
-    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_ascii_table); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 545, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_ascii_table); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 550, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_iterator_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 545, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_iterator_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 550, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_5 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 545, __pyx_L1_error)
+    __pyx_t_5 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 550, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_1 = NULL;
@@ -13522,7 +13711,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_69__repr__(C
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_7)) {
       PyObject *__pyx_temp[3] = {__pyx_t_1, __pyx_t_5, __pyx_int_10};
-      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 545, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 550, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -13531,14 +13720,14 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_69__repr__(C
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_7)) {
       PyObject *__pyx_temp[3] = {__pyx_t_1, __pyx_t_5, __pyx_int_10};
-      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 545, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 550, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     } else
     #endif
     {
-      __pyx_t_3 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 545, __pyx_L1_error)
+      __pyx_t_3 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 550, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       if (__pyx_t_1) {
         __Pyx_GIVEREF(__pyx_t_1); PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1); __pyx_t_1 = NULL;
@@ -13549,7 +13738,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_69__repr__(C
       __Pyx_GIVEREF(__pyx_int_10);
       PyTuple_SET_ITEM(__pyx_t_3, 1+__pyx_t_6, __pyx_int_10);
       __pyx_t_5 = 0;
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_3, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 545, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_3, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 550, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     }
@@ -13559,7 +13748,7 @@ static PyObject *__pyx_pf_5mabel_4data_9internals_7dictset_7DictSet_69__repr__(C
     goto __pyx_L0;
   }
 
-  /* "mabel/data/internals/dictset.py":537
+  /* "mabel/data/internals/dictset.py":542
  *         return reduce(lambda x, y: x ^ y, hashed, seed)
  * 
  *     def __repr__(self):  # pragma: no cover             # <<<<<<<<<<<<<<
@@ -15031,6 +15220,7 @@ static void __pyx_tp_dealloc_5mabel_4data_9internals_7dictset___pyx_scope_struct
   Py_CLEAR(p->__pyx_v_descending);
   Py_CLEAR(p->__pyx_v_double_cache);
   Py_CLEAR(p->__pyx_v_record);
+  Py_CLEAR(p->__pyx_v_safety_key);
   Py_CLEAR(p->__pyx_v_self);
   Py_CLEAR(p->__pyx_v_take);
   if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_5mabel_4data_9internals_7dictset___pyx_scope_struct_12_sort_and_take < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_12_sort_and_take)))) {
@@ -15057,6 +15247,9 @@ static int __pyx_tp_traverse_5mabel_4data_9internals_7dictset___pyx_scope_struct
   }
   if (p->__pyx_v_record) {
     e = (*v)(p->__pyx_v_record, a); if (e) return e;
+  }
+  if (p->__pyx_v_safety_key) {
+    e = (*v)(p->__pyx_v_safety_key, a); if (e) return e;
   }
   if (p->__pyx_v_self) {
     e = (*v)(p->__pyx_v_self, a); if (e) return e;
@@ -15116,6 +15309,121 @@ static PyTypeObject __pyx_type_5mabel_4data_9internals_7dictset___pyx_scope_stru
   0, /*tp_init*/
   0, /*tp_alloc*/
   __pyx_tp_new_5mabel_4data_9internals_7dictset___pyx_scope_struct_12_sort_and_take, /*tp_new*/
+  0, /*tp_free*/
+  0, /*tp_is_gc*/
+  0, /*tp_bases*/
+  0, /*tp_mro*/
+  0, /*tp_cache*/
+  0, /*tp_subclasses*/
+  0, /*tp_weaklist*/
+  0, /*tp_del*/
+  0, /*tp_version_tag*/
+  #if PY_VERSION_HEX >= 0x030400a1
+  0, /*tp_finalize*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b1
+  0, /*tp_vectorcall*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b4 && PY_VERSION_HEX < 0x03090000
+  0, /*tp_print*/
+  #endif
+};
+
+static struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key *__pyx_freelist_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key[8];
+static int __pyx_freecount_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key = 0;
+
+static PyObject *__pyx_tp_new_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+  PyObject *o;
+  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key)))) {
+    o = (PyObject*)__pyx_freelist_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key[--__pyx_freecount_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key];
+    memset(o, 0, sizeof(struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key));
+    (void) PyObject_INIT(o, t);
+    PyObject_GC_Track(o);
+  } else {
+    o = (*t->tp_alloc)(t, 0);
+    if (unlikely(!o)) return 0;
+  }
+  return o;
+}
+
+static void __pyx_tp_dealloc_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key(PyObject *o) {
+  struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key *p = (struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key *)o;
+  PyObject_GC_UnTrack(o);
+  Py_CLEAR(p->__pyx_v_column);
+  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key)))) {
+    __pyx_freelist_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key[__pyx_freecount_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key++] = ((struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key *)o);
+  } else {
+    (*Py_TYPE(o)->tp_free)(o);
+  }
+}
+
+static int __pyx_tp_traverse_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key(PyObject *o, visitproc v, void *a) {
+  int e;
+  struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key *p = (struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key *)o;
+  if (p->__pyx_v_column) {
+    e = (*v)(p->__pyx_v_column, a); if (e) return e;
+  }
+  return 0;
+}
+
+static int __pyx_tp_clear_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key(PyObject *o) {
+  PyObject* tmp;
+  struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key *p = (struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key *)o;
+  tmp = ((PyObject*)p->__pyx_v_column);
+  p->__pyx_v_column = Py_None; Py_INCREF(Py_None);
+  Py_XDECREF(tmp);
+  return 0;
+}
+
+static PyTypeObject __pyx_type_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key = {
+  PyVarObject_HEAD_INIT(0, 0)
+  "mabel.data.internals.dictset.__pyx_scope_struct_13_safety_key", /*tp_name*/
+  sizeof(struct __pyx_obj_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key), /*tp_basicsize*/
+  0, /*tp_itemsize*/
+  __pyx_tp_dealloc_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key, /*tp_dealloc*/
+  #if PY_VERSION_HEX < 0x030800b4
+  0, /*tp_print*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b4
+  0, /*tp_vectorcall_offset*/
+  #endif
+  0, /*tp_getattr*/
+  0, /*tp_setattr*/
+  #if PY_MAJOR_VERSION < 3
+  0, /*tp_compare*/
+  #endif
+  #if PY_MAJOR_VERSION >= 3
+  0, /*tp_as_async*/
+  #endif
+  0, /*tp_repr*/
+  0, /*tp_as_number*/
+  0, /*tp_as_sequence*/
+  0, /*tp_as_mapping*/
+  0, /*tp_hash*/
+  0, /*tp_call*/
+  0, /*tp_str*/
+  0, /*tp_getattro*/
+  0, /*tp_setattro*/
+  0, /*tp_as_buffer*/
+  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
+  0, /*tp_doc*/
+  __pyx_tp_traverse_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key, /*tp_traverse*/
+  __pyx_tp_clear_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key, /*tp_clear*/
+  0, /*tp_richcompare*/
+  0, /*tp_weaklistoffset*/
+  0, /*tp_iter*/
+  0, /*tp_iternext*/
+  0, /*tp_methods*/
+  0, /*tp_members*/
+  0, /*tp_getset*/
+  0, /*tp_base*/
+  0, /*tp_dict*/
+  0, /*tp_descr_get*/
+  0, /*tp_descr_set*/
+  0, /*tp_dictoffset*/
+  0, /*tp_init*/
+  0, /*tp_alloc*/
+  __pyx_tp_new_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -15226,6 +15534,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_DictSet_select, __pyx_k_DictSet_select, sizeof(__pyx_k_DictSet_select), 0, 0, 1, 1},
   {&__pyx_n_s_DictSet_select_locals_inner_sele, __pyx_k_DictSet_select_locals_inner_sele, sizeof(__pyx_k_DictSet_select_locals_inner_sele), 0, 0, 1, 1},
   {&__pyx_n_s_DictSet_sort_and_take, __pyx_k_DictSet_sort_and_take, sizeof(__pyx_k_DictSet_sort_and_take), 0, 0, 1, 1},
+  {&__pyx_n_s_DictSet_sort_and_take_locals_saf, __pyx_k_DictSet_sort_and_take_locals_saf, sizeof(__pyx_k_DictSet_sort_and_take_locals_saf), 0, 0, 1, 1},
+  {&__pyx_n_s_DictSet_sort_and_take_locals_saf_2, __pyx_k_DictSet_sort_and_take_locals_saf_2, sizeof(__pyx_k_DictSet_sort_and_take_locals_saf_2), 0, 0, 1, 1},
   {&__pyx_n_s_DictSet_standard_deviation, __pyx_k_DictSet_standard_deviation, sizeof(__pyx_k_DictSet_standard_deviation), 0, 0, 1, 1},
   {&__pyx_n_s_DictSet_sum, __pyx_k_DictSet_sum, sizeof(__pyx_k_DictSet_sum), 0, 0, 1, 1},
   {&__pyx_n_s_DictSet_sum_locals_lambda, __pyx_k_DictSet_sum_locals_lambda, sizeof(__pyx_k_DictSet_sum_locals_lambda), 0, 0, 1, 1},
@@ -15391,6 +15701,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_reverse, __pyx_k_reverse, sizeof(__pyx_k_reverse), 0, 0, 1, 1},
   {&__pyx_n_s_row, __pyx_k_row, sizeof(__pyx_k_row), 0, 0, 1, 1},
   {&__pyx_n_s_rows, __pyx_k_rows, sizeof(__pyx_k_rows), 0, 0, 1, 1},
+  {&__pyx_n_s_safety_key, __pyx_k_safety_key, sizeof(__pyx_k_safety_key), 0, 0, 1, 1},
   {&__pyx_n_s_sample, __pyx_k_sample, sizeof(__pyx_k_sample), 0, 0, 1, 1},
   {&__pyx_n_s_seed, __pyx_k_seed, sizeof(__pyx_k_seed), 0, 0, 1, 1},
   {&__pyx_n_s_select, __pyx_k_select, sizeof(__pyx_k_select), 0, 0, 1, 1},
@@ -15437,7 +15748,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_min = __Pyx_GetBuiltinName(__pyx_n_s_min); if (!__pyx_builtin_min) __PYX_ERR(0, 234, __pyx_L1_error)
   __pyx_builtin_ImportError = __Pyx_GetBuiltinName(__pyx_n_s_ImportError); if (!__pyx_builtin_ImportError) __PYX_ERR(0, 384, __pyx_L1_error)
   __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(0, 412, __pyx_L1_error)
-  __pyx_builtin_sorted = __Pyx_GetBuiltinName(__pyx_n_s_sorted); if (!__pyx_builtin_sorted) __PYX_ERR(0, 495, __pyx_L1_error)
+  __pyx_builtin_sorted = __Pyx_GetBuiltinName(__pyx_n_s_sorted); if (!__pyx_builtin_sorted) __PYX_ERR(0, 500, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -15531,17 +15842,29 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GIVEREF(__pyx_tuple__19);
   __pyx_codeobj__20 = (PyObject*)__Pyx_PyCode_New(1, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__19, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_inner_select, 484, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__20)) __PYX_ERR(0, 484, __pyx_L1_error)
 
-  /* "mabel/data/internals/dictset.py":527
+  /* "mabel/data/internals/dictset.py":494
+ *     def sort_and_take(self, column, take: int = 5000, descending: bool = False):
+ * 
+ *         def safety_key(column):             # <<<<<<<<<<<<<<
+ *             # this returns a tuple where the first element is a boolean, and the
+ *             # second item is the value
+ */
+  __pyx_tuple__22 = PyTuple_Pack(1, __pyx_n_s_column); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(0, 494, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__22);
+  __Pyx_GIVEREF(__pyx_tuple__22);
+  __pyx_codeobj__23 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__22, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_safety_key, 494, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__23)) __PYX_ERR(0, 494, __pyx_L1_error)
+
+  /* "mabel/data/internals/dictset.py":532
  *         """
  * 
  *         def sip(val):             # <<<<<<<<<<<<<<
  *             return siphash("TheApolloMission", val)
  * 
  */
-  __pyx_tuple__22 = PyTuple_Pack(1, __pyx_n_s_val); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(0, 527, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__22);
-  __Pyx_GIVEREF(__pyx_tuple__22);
-  __pyx_codeobj__23 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__22, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_sip, 527, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__23)) __PYX_ERR(0, 527, __pyx_L1_error)
+  __pyx_tuple__24 = PyTuple_Pack(1, __pyx_n_s_val); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(0, 532, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__24);
+  __Pyx_GIVEREF(__pyx_tuple__24);
+  __pyx_codeobj__25 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__24, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_sip, 532, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__25)) __PYX_ERR(0, 532, __pyx_L1_error)
 
   /* "mabel/data/internals/dictset.py":77
  * 
@@ -15550,9 +15873,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *     def __init__(
  *         self,
  */
-  __pyx_tuple__24 = PyTuple_Pack(1, __pyx_builtin_object); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(0, 77, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__24);
-  __Pyx_GIVEREF(__pyx_tuple__24);
+  __pyx_tuple__26 = PyTuple_Pack(1, __pyx_builtin_object); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(0, 77, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__26);
+  __Pyx_GIVEREF(__pyx_tuple__26);
 
   /* "mabel/data/internals/dictset.py":78
  * 
@@ -15561,10 +15884,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         self,
  *         iterator: Iterable[Dict[Any, Any]],
  */
-  __pyx_tuple__25 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_iterator, __pyx_n_s_storage_class); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(0, 78, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__25);
-  __Pyx_GIVEREF(__pyx_tuple__25);
-  __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(2, 1, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_init, 78, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) __PYX_ERR(0, 78, __pyx_L1_error)
+  __pyx_tuple__27 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_iterator, __pyx_n_s_storage_class); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(0, 78, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__27);
+  __Pyx_GIVEREF(__pyx_tuple__27);
+  __pyx_codeobj__28 = (PyObject*)__Pyx_PyCode_New(2, 1, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__27, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_init, 78, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__28)) __PYX_ERR(0, 78, __pyx_L1_error)
 
   /* "mabel/data/internals/dictset.py":116
  *             self._iterator = DumbIterator(self._iterator)
@@ -15573,10 +15896,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Wrap the iterator in a Iterable object
  */
-  __pyx_tuple__27 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(0, 116, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__27);
-  __Pyx_GIVEREF(__pyx_tuple__27);
-  __pyx_codeobj__28 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__27, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_iter, 116, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__28)) __PYX_ERR(0, 116, __pyx_L1_error)
+  __pyx_tuple__29 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__29)) __PYX_ERR(0, 116, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__29);
+  __Pyx_GIVEREF(__pyx_tuple__29);
+  __pyx_codeobj__30 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__29, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_iter, 116, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__30)) __PYX_ERR(0, 116, __pyx_L1_error)
 
   /* "mabel/data/internals/dictset.py":124
  *         return self
@@ -15585,10 +15908,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         return next(self._iterator)
  * 
  */
-  __pyx_tuple__29 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__29)) __PYX_ERR(0, 124, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__29);
-  __Pyx_GIVEREF(__pyx_tuple__29);
-  __pyx_codeobj__30 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__29, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_next, 124, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__30)) __PYX_ERR(0, 124, __pyx_L1_error)
+  __pyx_tuple__31 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__31)) __PYX_ERR(0, 124, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__31);
+  __Pyx_GIVEREF(__pyx_tuple__31);
+  __pyx_codeobj__32 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__31, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_next, 124, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__32)) __PYX_ERR(0, 124, __pyx_L1_error)
 
   /* "mabel/data/internals/dictset.py":127
  *         return next(self._iterator)
@@ -15597,10 +15920,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         return self
  * 
  */
-  __pyx_tuple__31 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__31)) __PYX_ERR(0, 127, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__31);
-  __Pyx_GIVEREF(__pyx_tuple__31);
-  __pyx_codeobj__32 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__31, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_enter, 127, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__32)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __pyx_tuple__33 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__33)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__33);
+  __Pyx_GIVEREF(__pyx_tuple__33);
+  __pyx_codeobj__34 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__33, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_enter, 127, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__34)) __PYX_ERR(0, 127, __pyx_L1_error)
 
   /* "mabel/data/internals/dictset.py":130
  *         return self
@@ -15609,10 +15932,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         pass  # exist needs to exist to be a context manager
  * 
  */
-  __pyx_tuple__33 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_exc_type, __pyx_n_s_exc_val, __pyx_n_s_exc_tb); if (unlikely(!__pyx_tuple__33)) __PYX_ERR(0, 130, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__33);
-  __Pyx_GIVEREF(__pyx_tuple__33);
-  __pyx_codeobj__34 = (PyObject*)__Pyx_PyCode_New(4, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__33, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_exit, 130, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__34)) __PYX_ERR(0, 130, __pyx_L1_error)
+  __pyx_tuple__35 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_exc_type, __pyx_n_s_exc_val, __pyx_n_s_exc_tb); if (unlikely(!__pyx_tuple__35)) __PYX_ERR(0, 130, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__35);
+  __Pyx_GIVEREF(__pyx_tuple__35);
+  __pyx_codeobj__36 = (PyObject*)__Pyx_PyCode_New(4, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__35, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_exit, 130, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__36)) __PYX_ERR(0, 130, __pyx_L1_error)
 
   /* "mabel/data/internals/dictset.py":133
  *         pass  # exist needs to exist to be a context manager
@@ -15621,10 +15944,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Select a random sample of records, fraction indicates the portion of
  */
-  __pyx_tuple__35 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_fraction, __pyx_n_s_inner_sampler, __pyx_n_s_inner_sampler); if (unlikely(!__pyx_tuple__35)) __PYX_ERR(0, 133, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__35);
-  __Pyx_GIVEREF(__pyx_tuple__35);
-  __pyx_codeobj__36 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__35, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_sample, 133, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__36)) __PYX_ERR(0, 133, __pyx_L1_error)
+  __pyx_tuple__37 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_fraction, __pyx_n_s_inner_sampler, __pyx_n_s_inner_sampler); if (unlikely(!__pyx_tuple__37)) __PYX_ERR(0, 133, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__37);
+  __Pyx_GIVEREF(__pyx_tuple__37);
+  __pyx_codeobj__38 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__37, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_sample, 133, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__38)) __PYX_ERR(0, 133, __pyx_L1_error)
 
   /* "mabel/data/internals/dictset.py":153
  *         )
@@ -15633,13 +15956,13 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Convert a _DictSet_ to a list, optionally, but probably usually, just extract
  */
-  __pyx_tuple__37 = PyTuple_Pack(5, __pyx_n_s_self, __pyx_n_s_key, __pyx_n_s_asdic, __pyx_n_s_asdic, __pyx_n_s_record); if (unlikely(!__pyx_tuple__37)) __PYX_ERR(0, 153, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__37);
-  __Pyx_GIVEREF(__pyx_tuple__37);
-  __pyx_codeobj__38 = (PyObject*)__Pyx_PyCode_New(2, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__37, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_collect_list, 153, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__38)) __PYX_ERR(0, 153, __pyx_L1_error)
-  __pyx_tuple__39 = PyTuple_Pack(1, ((PyObject *)Py_None)); if (unlikely(!__pyx_tuple__39)) __PYX_ERR(0, 153, __pyx_L1_error)
+  __pyx_tuple__39 = PyTuple_Pack(5, __pyx_n_s_self, __pyx_n_s_key, __pyx_n_s_asdic, __pyx_n_s_asdic, __pyx_n_s_record); if (unlikely(!__pyx_tuple__39)) __PYX_ERR(0, 153, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__39);
   __Pyx_GIVEREF(__pyx_tuple__39);
+  __pyx_codeobj__40 = (PyObject*)__Pyx_PyCode_New(2, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__39, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_collect_list, 153, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__40)) __PYX_ERR(0, 153, __pyx_L1_error)
+  __pyx_tuple__41 = PyTuple_Pack(1, ((PyObject *)Py_None)); if (unlikely(!__pyx_tuple__41)) __PYX_ERR(0, 153, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__41);
+  __Pyx_GIVEREF(__pyx_tuple__41);
 
   /* "mabel/data/internals/dictset.py":173
  *         return [record[key] for record in iter(self._iterator) if key in record]
@@ -15648,13 +15971,13 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Get all of the keys from the _DictSet_. This iterates the entire
  */
-  __pyx_tuple__40 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_number_of_rows, __pyx_n_s_rows); if (unlikely(!__pyx_tuple__40)) __PYX_ERR(0, 173, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__40);
-  __Pyx_GIVEREF(__pyx_tuple__40);
-  __pyx_codeobj__41 = (PyObject*)__Pyx_PyCode_New(2, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__40, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_keys, 173, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__41)) __PYX_ERR(0, 173, __pyx_L1_error)
-  __pyx_tuple__42 = PyTuple_Pack(1, ((PyObject *)__pyx_int_0)); if (unlikely(!__pyx_tuple__42)) __PYX_ERR(0, 173, __pyx_L1_error)
+  __pyx_tuple__42 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_number_of_rows, __pyx_n_s_rows); if (unlikely(!__pyx_tuple__42)) __PYX_ERR(0, 173, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__42);
   __Pyx_GIVEREF(__pyx_tuple__42);
+  __pyx_codeobj__43 = (PyObject*)__Pyx_PyCode_New(2, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__42, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_keys, 173, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__43)) __PYX_ERR(0, 173, __pyx_L1_error)
+  __pyx_tuple__44 = PyTuple_Pack(1, ((PyObject *)__pyx_int_0)); if (unlikely(!__pyx_tuple__44)) __PYX_ERR(0, 173, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__44);
+  __Pyx_GIVEREF(__pyx_tuple__44);
 
   /* "mabel/data/internals/dictset.py":189
  *         )
@@ -15663,13 +15986,13 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         top = self.take(number_of_rows)
  *         response = {}
  */
-  __pyx_tuple__43 = PyTuple_Pack(7, __pyx_n_s_self, __pyx_n_s_number_of_rows, __pyx_n_s_top, __pyx_n_s_response, __pyx_n_s_key, __pyx_n_s_key_type, __pyx_n_s_val); if (unlikely(!__pyx_tuple__43)) __PYX_ERR(0, 189, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__43);
-  __Pyx_GIVEREF(__pyx_tuple__43);
-  __pyx_codeobj__44 = (PyObject*)__Pyx_PyCode_New(2, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__43, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_types, 189, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__44)) __PYX_ERR(0, 189, __pyx_L1_error)
-  __pyx_tuple__45 = PyTuple_Pack(1, ((PyObject *)__pyx_int_100)); if (unlikely(!__pyx_tuple__45)) __PYX_ERR(0, 189, __pyx_L1_error)
+  __pyx_tuple__45 = PyTuple_Pack(7, __pyx_n_s_self, __pyx_n_s_number_of_rows, __pyx_n_s_top, __pyx_n_s_response, __pyx_n_s_key, __pyx_n_s_key_type, __pyx_n_s_val); if (unlikely(!__pyx_tuple__45)) __PYX_ERR(0, 189, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__45);
   __Pyx_GIVEREF(__pyx_tuple__45);
+  __pyx_codeobj__46 = (PyObject*)__Pyx_PyCode_New(2, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__45, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_types, 189, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__46)) __PYX_ERR(0, 189, __pyx_L1_error)
+  __pyx_tuple__47 = PyTuple_Pack(1, ((PyObject *)__pyx_int_100)); if (unlikely(!__pyx_tuple__47)) __PYX_ERR(0, 189, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__47);
+  __Pyx_GIVEREF(__pyx_tuple__47);
 
   /* "mabel/data/internals/dictset.py":206
  *         return response
@@ -15678,10 +16001,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Find the maximum in a column of this _DictSet_.
  */
-  __pyx_tuple__46 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_key); if (unlikely(!__pyx_tuple__46)) __PYX_ERR(0, 206, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__46);
-  __Pyx_GIVEREF(__pyx_tuple__46);
-  __pyx_codeobj__47 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__46, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_max, 206, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__47)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __pyx_tuple__48 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_key); if (unlikely(!__pyx_tuple__48)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__48);
+  __Pyx_GIVEREF(__pyx_tuple__48);
+  __pyx_codeobj__49 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__48, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_max, 206, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__49)) __PYX_ERR(0, 206, __pyx_L1_error)
 
   /* "mabel/data/internals/dictset.py":216
  *         return reduce(max, self.collect_list(key))
@@ -15690,10 +16013,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Find the sum of a column of this _DictSet_.
  */
-  __pyx_tuple__48 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_key); if (unlikely(!__pyx_tuple__48)) __PYX_ERR(0, 216, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__48);
-  __Pyx_GIVEREF(__pyx_tuple__48);
-  __pyx_codeobj__49 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__48, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_sum, 216, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__49)) __PYX_ERR(0, 216, __pyx_L1_error)
+  __pyx_tuple__50 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_key); if (unlikely(!__pyx_tuple__50)) __PYX_ERR(0, 216, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__50);
+  __Pyx_GIVEREF(__pyx_tuple__50);
+  __pyx_codeobj__51 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__50, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_sum, 216, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__51)) __PYX_ERR(0, 216, __pyx_L1_error)
 
   /* "mabel/data/internals/dictset.py":226
  *         return reduce(lambda x, y: x + y, self.collect_list(key), 0)
@@ -15702,10 +16025,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Find the minimum in a column of this _DictSet_.
  */
-  __pyx_tuple__50 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_key); if (unlikely(!__pyx_tuple__50)) __PYX_ERR(0, 226, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__50);
-  __Pyx_GIVEREF(__pyx_tuple__50);
-  __pyx_codeobj__51 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__50, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_min, 226, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__51)) __PYX_ERR(0, 226, __pyx_L1_error)
+  __pyx_tuple__52 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_key); if (unlikely(!__pyx_tuple__52)) __PYX_ERR(0, 226, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__52);
+  __Pyx_GIVEREF(__pyx_tuple__52);
+  __pyx_codeobj__53 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__52, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_min, 226, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__53)) __PYX_ERR(0, 226, __pyx_L1_error)
 
   /* "mabel/data/internals/dictset.py":236
  *         return reduce(min, self.collect_list(key))
@@ -15714,10 +16037,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Find the minimum and maximum of a column at the same time.
  */
-  __pyx_tuple__52 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_key, __pyx_n_s_minmax, __pyx_n_s_minmax); if (unlikely(!__pyx_tuple__52)) __PYX_ERR(0, 236, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__52);
-  __Pyx_GIVEREF(__pyx_tuple__52);
-  __pyx_codeobj__53 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__52, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_min_max, 236, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__53)) __PYX_ERR(0, 236, __pyx_L1_error)
+  __pyx_tuple__54 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_key, __pyx_n_s_minmax, __pyx_n_s_minmax); if (unlikely(!__pyx_tuple__54)) __PYX_ERR(0, 236, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__54);
+  __Pyx_GIVEREF(__pyx_tuple__54);
+  __pyx_codeobj__55 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__54, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_min_max, 236, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__55)) __PYX_ERR(0, 236, __pyx_L1_error)
 
   /* "mabel/data/internals/dictset.py":253
  *         return reduce(minmax, map(lambda x: (x, x), self.collect_list(key)))
@@ -15726,10 +16049,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Find the mean in a column of this _DictSet_.
  */
-  __pyx_tuple__54 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_key); if (unlikely(!__pyx_tuple__54)) __PYX_ERR(0, 253, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__54);
-  __Pyx_GIVEREF(__pyx_tuple__54);
-  __pyx_codeobj__55 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__54, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_mean, 253, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__55)) __PYX_ERR(0, 253, __pyx_L1_error)
+  __pyx_tuple__56 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_key); if (unlikely(!__pyx_tuple__56)) __PYX_ERR(0, 253, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__56);
+  __Pyx_GIVEREF(__pyx_tuple__56);
+  __pyx_codeobj__57 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__56, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_mean, 253, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__57)) __PYX_ERR(0, 253, __pyx_L1_error)
 
   /* "mabel/data/internals/dictset.py":263
  *         return statistics.mean(self.collect_list(key))
@@ -15738,10 +16061,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Find the variance in a column of this _DictSet_.
  */
-  __pyx_tuple__56 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_key); if (unlikely(!__pyx_tuple__56)) __PYX_ERR(0, 263, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__56);
-  __Pyx_GIVEREF(__pyx_tuple__56);
-  __pyx_codeobj__57 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__56, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_variance, 263, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__57)) __PYX_ERR(0, 263, __pyx_L1_error)
+  __pyx_tuple__58 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_key); if (unlikely(!__pyx_tuple__58)) __PYX_ERR(0, 263, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__58);
+  __Pyx_GIVEREF(__pyx_tuple__58);
+  __pyx_codeobj__59 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__58, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_variance, 263, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__59)) __PYX_ERR(0, 263, __pyx_L1_error)
 
   /* "mabel/data/internals/dictset.py":273
  *         return statistics.variance(self.collect_list(key))
@@ -15750,10 +16073,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Find the standard deviation in a column of this _DictSet_.
  */
-  __pyx_tuple__58 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_key); if (unlikely(!__pyx_tuple__58)) __PYX_ERR(0, 273, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__58);
-  __Pyx_GIVEREF(__pyx_tuple__58);
-  __pyx_codeobj__59 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__58, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_standard_deviation, 273, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__59)) __PYX_ERR(0, 273, __pyx_L1_error)
+  __pyx_tuple__60 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_key); if (unlikely(!__pyx_tuple__60)) __PYX_ERR(0, 273, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__60);
+  __Pyx_GIVEREF(__pyx_tuple__60);
+  __pyx_codeobj__61 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__60, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_standard_deviation, 273, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__61)) __PYX_ERR(0, 273, __pyx_L1_error)
 
   /* "mabel/data/internals/dictset.py":283
  *         return statistics.stdev(self.collect_list(key))
@@ -15762,10 +16085,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Count the number of items in the _DictSet_.
  */
-  __pyx_tuple__60 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__60)) __PYX_ERR(0, 283, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__60);
-  __Pyx_GIVEREF(__pyx_tuple__60);
-  __pyx_codeobj__61 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__60, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_count, 283, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__61)) __PYX_ERR(0, 283, __pyx_L1_error)
+  __pyx_tuple__62 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__62)) __PYX_ERR(0, 283, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__62);
+  __Pyx_GIVEREF(__pyx_tuple__62);
+  __pyx_codeobj__63 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__62, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_count, 283, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__63)) __PYX_ERR(0, 283, __pyx_L1_error)
 
   /* "mabel/data/internals/dictset.py":293
  *             return -1
@@ -15774,10 +16097,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Remove duplicates from a _DictSet_. This creates a list of the items
  */
-  __pyx_tuple__62 = PyTuple_Pack(5, __pyx_n_s_self, __pyx_n_s_columns, __pyx_n_s_hash_list, __pyx_n_s_do_dedupe, __pyx_n_s_do_dedupe); if (unlikely(!__pyx_tuple__62)) __PYX_ERR(0, 293, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__62);
-  __Pyx_GIVEREF(__pyx_tuple__62);
-  __pyx_codeobj__63 = (PyObject*)__Pyx_PyCode_New(1, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_VARARGS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__62, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_distinct, 293, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__63)) __PYX_ERR(0, 293, __pyx_L1_error)
+  __pyx_tuple__64 = PyTuple_Pack(5, __pyx_n_s_self, __pyx_n_s_columns, __pyx_n_s_hash_list, __pyx_n_s_do_dedupe, __pyx_n_s_do_dedupe); if (unlikely(!__pyx_tuple__64)) __PYX_ERR(0, 293, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__64);
+  __Pyx_GIVEREF(__pyx_tuple__64);
+  __pyx_codeobj__65 = (PyObject*)__Pyx_PyCode_New(1, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_VARARGS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__64, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_distinct, 293, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__65)) __PYX_ERR(0, 293, __pyx_L1_error)
 
   /* "mabel/data/internals/dictset.py":323
  *         )
@@ -15786,10 +16109,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Group a dictset by a column or group of columns. Returns a GroupBy object.
  */
-  __pyx_tuple__64 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_group_by_columns); if (unlikely(!__pyx_tuple__64)) __PYX_ERR(0, 323, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__64);
-  __Pyx_GIVEREF(__pyx_tuple__64);
-  __pyx_codeobj__65 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__64, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_group_by, 323, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__65)) __PYX_ERR(0, 323, __pyx_L1_error)
+  __pyx_tuple__66 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_group_by_columns); if (unlikely(!__pyx_tuple__66)) __PYX_ERR(0, 323, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__66);
+  __Pyx_GIVEREF(__pyx_tuple__66);
+  __pyx_codeobj__67 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__66, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_group_by, 323, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__67)) __PYX_ERR(0, 323, __pyx_L1_error)
 
   /* "mabel/data/internals/dictset.py":329
  *         return GroupBy(iter(self._iterator), group_by_columns)
@@ -15798,13 +16121,13 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         from .collected_set import CollectedSet
  * 
  */
-  __pyx_tuple__66 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_column, __pyx_n_s_dedupe, __pyx_n_s_CollectedSet); if (unlikely(!__pyx_tuple__66)) __PYX_ERR(0, 329, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__66);
-  __Pyx_GIVEREF(__pyx_tuple__66);
-  __pyx_codeobj__67 = (PyObject*)__Pyx_PyCode_New(3, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__66, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_collect_set, 329, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__67)) __PYX_ERR(0, 329, __pyx_L1_error)
-  __pyx_tuple__68 = PyTuple_Pack(1, ((PyObject *)Py_False)); if (unlikely(!__pyx_tuple__68)) __PYX_ERR(0, 329, __pyx_L1_error)
+  __pyx_tuple__68 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_column, __pyx_n_s_dedupe, __pyx_n_s_CollectedSet); if (unlikely(!__pyx_tuple__68)) __PYX_ERR(0, 329, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__68);
   __Pyx_GIVEREF(__pyx_tuple__68);
+  __pyx_codeobj__69 = (PyObject*)__Pyx_PyCode_New(3, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__68, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_collect_set, 329, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__69)) __PYX_ERR(0, 329, __pyx_L1_error)
+  __pyx_tuple__70 = PyTuple_Pack(1, ((PyObject *)Py_False)); if (unlikely(!__pyx_tuple__70)) __PYX_ERR(0, 329, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__70);
+  __Pyx_GIVEREF(__pyx_tuple__70);
 
   /* "mabel/data/internals/dictset.py":334
  *         return CollectedSet(self, column, dedupe=dedupe)
@@ -15813,10 +16136,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Get items from the DictSet at a set of indicies, try to find the fastest
  */
-  __pyx_tuple__69 = PyTuple_Pack(5, __pyx_n_s_self, __pyx_n_s_locations, __pyx_n_s_r, __pyx_n_s_i, __pyx_n_s_i); if (unlikely(!__pyx_tuple__69)) __PYX_ERR(0, 334, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__69);
-  __Pyx_GIVEREF(__pyx_tuple__69);
-  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(1, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_VARARGS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__69, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_get_items, 334, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 334, __pyx_L1_error)
+  __pyx_tuple__71 = PyTuple_Pack(5, __pyx_n_s_self, __pyx_n_s_locations, __pyx_n_s_r, __pyx_n_s_i, __pyx_n_s_i); if (unlikely(!__pyx_tuple__71)) __PYX_ERR(0, 334, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__71);
+  __Pyx_GIVEREF(__pyx_tuple__71);
+  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(1, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS|CO_VARARGS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__71, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_get_items, 334, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 334, __pyx_L1_error)
 
   /* "mabel/data/internals/dictset.py":357
  *                     yield r
@@ -15825,13 +16148,13 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Return the top `limit` rows from a _DictSet_ as an ASCII table.
  */
-  __pyx_tuple__70 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_limit); if (unlikely(!__pyx_tuple__70)) __PYX_ERR(0, 357, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__70);
-  __Pyx_GIVEREF(__pyx_tuple__70);
-  __pyx_codeobj__71 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__70, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_to_ascii_table, 357, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__71)) __PYX_ERR(0, 357, __pyx_L1_error)
-  __pyx_tuple__72 = PyTuple_Pack(1, ((PyObject *)__pyx_int_5)); if (unlikely(!__pyx_tuple__72)) __PYX_ERR(0, 357, __pyx_L1_error)
+  __pyx_tuple__72 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_limit); if (unlikely(!__pyx_tuple__72)) __PYX_ERR(0, 357, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__72);
   __Pyx_GIVEREF(__pyx_tuple__72);
+  __pyx_codeobj__73 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__72, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_to_ascii_table, 357, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__73)) __PYX_ERR(0, 357, __pyx_L1_error)
+  __pyx_tuple__74 = PyTuple_Pack(1, ((PyObject *)__pyx_int_5)); if (unlikely(!__pyx_tuple__74)) __PYX_ERR(0, 357, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__74);
+  __Pyx_GIVEREF(__pyx_tuple__74);
 
   /* "mabel/data/internals/dictset.py":366
  *         return ascii_table(iter(self._iterator), limit)
@@ -15840,13 +16163,13 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Return the top `limit` rows from a _DictSet_ as a HTML table.
  */
-  __pyx_tuple__73 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_limit); if (unlikely(!__pyx_tuple__73)) __PYX_ERR(0, 366, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__73);
-  __Pyx_GIVEREF(__pyx_tuple__73);
-  __pyx_codeobj__74 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__73, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_to_html_table, 366, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__74)) __PYX_ERR(0, 366, __pyx_L1_error)
-  __pyx_tuple__75 = PyTuple_Pack(1, ((PyObject *)__pyx_int_5)); if (unlikely(!__pyx_tuple__75)) __PYX_ERR(0, 366, __pyx_L1_error)
+  __pyx_tuple__75 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_limit); if (unlikely(!__pyx_tuple__75)) __PYX_ERR(0, 366, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__75);
   __Pyx_GIVEREF(__pyx_tuple__75);
+  __pyx_codeobj__76 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__75, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_to_html_table, 366, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__76)) __PYX_ERR(0, 366, __pyx_L1_error)
+  __pyx_tuple__77 = PyTuple_Pack(1, ((PyObject *)__pyx_int_5)); if (unlikely(!__pyx_tuple__77)) __PYX_ERR(0, 366, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__77);
+  __Pyx_GIVEREF(__pyx_tuple__77);
 
   /* "mabel/data/internals/dictset.py":375
  *         return html_table(DumbIterator(self._iterator), limit)
@@ -15855,10 +16178,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Load the contents of the _DictSet_ to a _Pandas_ DataFrame.
  */
-  __pyx_tuple__76 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_pandas); if (unlikely(!__pyx_tuple__76)) __PYX_ERR(0, 375, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__76);
-  __Pyx_GIVEREF(__pyx_tuple__76);
-  __pyx_codeobj__77 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__76, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_to_pandas, 375, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__77)) __PYX_ERR(0, 375, __pyx_L1_error)
+  __pyx_tuple__78 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_pandas); if (unlikely(!__pyx_tuple__78)) __PYX_ERR(0, 375, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__78);
+  __Pyx_GIVEREF(__pyx_tuple__78);
+  __pyx_codeobj__79 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__78, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_to_pandas, 375, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__79)) __PYX_ERR(0, 375, __pyx_L1_error)
 
   /* "mabel/data/internals/dictset.py":390
  *         return pandas.DataFrame(iter(self._iterator))
@@ -15867,10 +16190,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Retun the first item in the DictSet
  */
-  __pyx_tuple__78 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_oneth); if (unlikely(!__pyx_tuple__78)) __PYX_ERR(0, 390, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__78);
-  __Pyx_GIVEREF(__pyx_tuple__78);
-  __pyx_codeobj__79 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__78, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_first, 390, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__79)) __PYX_ERR(0, 390, __pyx_L1_error)
+  __pyx_tuple__80 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_oneth); if (unlikely(!__pyx_tuple__80)) __PYX_ERR(0, 390, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__80);
+  __Pyx_GIVEREF(__pyx_tuple__80);
+  __pyx_codeobj__81 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__80, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_first, 390, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__81)) __PYX_ERR(0, 390, __pyx_L1_error)
 
   /* "mabel/data/internals/dictset.py":399
  *         return oneth  # type:ignore
@@ -15879,10 +16202,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Return the first _items_ number of items from the _DictSet_. This loads
  */
-  __pyx_tuple__80 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_items); if (unlikely(!__pyx_tuple__80)) __PYX_ERR(0, 399, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__80);
-  __Pyx_GIVEREF(__pyx_tuple__80);
-  __pyx_codeobj__81 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__80, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_take, 399, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__81)) __PYX_ERR(0, 399, __pyx_L1_error)
+  __pyx_tuple__82 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_items); if (unlikely(!__pyx_tuple__82)) __PYX_ERR(0, 399, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__82);
+  __Pyx_GIVEREF(__pyx_tuple__82);
+  __pyx_codeobj__83 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__82, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_take, 399, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__83)) __PYX_ERR(0, 399, __pyx_L1_error)
 
   /* "mabel/data/internals/dictset.py":406
  *         return DictSet(self.itake(items), storage_class=self.storage_class)
@@ -15891,10 +16214,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Return the first _items_ number of items from the _DictSet_.
  */
-  __pyx_tuple__82 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_items, __pyx_n_s_count, __pyx_n_s_item); if (unlikely(!__pyx_tuple__82)) __PYX_ERR(0, 406, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__82);
-  __Pyx_GIVEREF(__pyx_tuple__82);
-  __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__82, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_itake, 406, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) __PYX_ERR(0, 406, __pyx_L1_error)
+  __pyx_tuple__84 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_items, __pyx_n_s_count, __pyx_n_s_item); if (unlikely(!__pyx_tuple__84)) __PYX_ERR(0, 406, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__84);
+  __Pyx_GIVEREF(__pyx_tuple__84);
+  __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__84, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_itake, 406, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) __PYX_ERR(0, 406, __pyx_L1_error)
 
   /* "mabel/data/internals/dictset.py":420
  *                 yield item.as_dict()
@@ -15903,10 +16226,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Filter a _DictSet_ returning only the items that match the predicate.
  */
-  __pyx_tuple__83 = PyTuple_Pack(8, __pyx_n_s_self, __pyx_n_s_filters, __pyx_n_s_inner_filter_where, __pyx_n_s_inner_filter_where, __pyx_n_s_q, __pyx_n_s_filter_set, __pyx_n_s_inner_filter_callable, __pyx_n_s_inner_filter_callable); if (unlikely(!__pyx_tuple__83)) __PYX_ERR(0, 420, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__83);
-  __Pyx_GIVEREF(__pyx_tuple__83);
-  __pyx_codeobj__84 = (PyObject*)__Pyx_PyCode_New(2, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__83, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_filter, 420, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__84)) __PYX_ERR(0, 420, __pyx_L1_error)
+  __pyx_tuple__85 = PyTuple_Pack(8, __pyx_n_s_self, __pyx_n_s_filters, __pyx_n_s_inner_filter_where, __pyx_n_s_inner_filter_where, __pyx_n_s_q, __pyx_n_s_filter_set, __pyx_n_s_inner_filter_callable, __pyx_n_s_inner_filter_callable); if (unlikely(!__pyx_tuple__85)) __PYX_ERR(0, 420, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__85);
+  __Pyx_GIVEREF(__pyx_tuple__85);
+  __pyx_codeobj__86 = (PyObject*)__Pyx_PyCode_New(2, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__85, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_filter, 420, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__86)) __PYX_ERR(0, 420, __pyx_L1_error)
 
   /* "mabel/data/internals/dictset.py":465
  * 
@@ -15915,10 +16238,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         If the DictSet supports cursors, return the cursor.
  */
-  __pyx_tuple__85 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__85)) __PYX_ERR(0, 465, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__85);
-  __Pyx_GIVEREF(__pyx_tuple__85);
-  __pyx_codeobj__86 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__85, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_cursor, 465, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__86)) __PYX_ERR(0, 465, __pyx_L1_error)
+  __pyx_tuple__87 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__87)) __PYX_ERR(0, 465, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__87);
+  __Pyx_GIVEREF(__pyx_tuple__87);
+  __pyx_codeobj__88 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__87, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_cursor, 465, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__88)) __PYX_ERR(0, 465, __pyx_L1_error)
 
   /* "mabel/data/internals/dictset.py":473
  *         return None
@@ -15927,64 +16250,64 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         """
  *         Selects columns from a _DictSet_. If the column doesn't exist it is populated
  */
-  __pyx_tuple__87 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_columns, __pyx_n_s_inner_select, __pyx_n_s_inner_select); if (unlikely(!__pyx_tuple__87)) __PYX_ERR(0, 473, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__87);
-  __Pyx_GIVEREF(__pyx_tuple__87);
-  __pyx_codeobj__88 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__87, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_select, 473, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__88)) __PYX_ERR(0, 473, __pyx_L1_error)
+  __pyx_tuple__89 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_columns, __pyx_n_s_inner_select, __pyx_n_s_inner_select); if (unlikely(!__pyx_tuple__89)) __PYX_ERR(0, 473, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__89);
+  __Pyx_GIVEREF(__pyx_tuple__89);
+  __pyx_codeobj__90 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__89, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_select, 473, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__90)) __PYX_ERR(0, 473, __pyx_L1_error)
 
   /* "mabel/data/internals/dictset.py":492
  *         )
  * 
  *     def sort_and_take(self, column, take: int = 5000, descending: bool = False):             # <<<<<<<<<<<<<<
  * 
- *         if self.storage_class == STORAGE_CLASS.MEMORY:
+ *         def safety_key(column):
  */
-  __pyx_tuple__89 = PyTuple_Pack(7, __pyx_n_s_self, __pyx_n_s_column, __pyx_n_s_take, __pyx_n_s_descending, __pyx_n_s_double_cache, __pyx_n_s_cache, __pyx_n_s_record); if (unlikely(!__pyx_tuple__89)) __PYX_ERR(0, 492, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__89);
-  __Pyx_GIVEREF(__pyx_tuple__89);
-  __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(4, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__89, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_sort_and_take, 492, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) __PYX_ERR(0, 492, __pyx_L1_error)
-  __pyx_tuple__90 = PyTuple_Pack(2, ((PyObject *)__pyx_int_5000), ((PyObject *)Py_False)); if (unlikely(!__pyx_tuple__90)) __PYX_ERR(0, 492, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__90);
-  __Pyx_GIVEREF(__pyx_tuple__90);
+  __pyx_tuple__91 = PyTuple_Pack(9, __pyx_n_s_self, __pyx_n_s_column, __pyx_n_s_take, __pyx_n_s_descending, __pyx_n_s_safety_key, __pyx_n_s_safety_key, __pyx_n_s_double_cache, __pyx_n_s_cache, __pyx_n_s_record); if (unlikely(!__pyx_tuple__91)) __PYX_ERR(0, 492, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__91);
+  __Pyx_GIVEREF(__pyx_tuple__91);
+  __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(4, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__91, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_sort_and_take, 492, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) __PYX_ERR(0, 492, __pyx_L1_error)
+  __pyx_tuple__92 = PyTuple_Pack(2, ((PyObject *)__pyx_int_5000), ((PyObject *)Py_False)); if (unlikely(!__pyx_tuple__92)) __PYX_ERR(0, 492, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__92);
+  __Pyx_GIVEREF(__pyx_tuple__92);
 
-  /* "mabel/data/internals/dictset.py":515
+  /* "mabel/data/internals/dictset.py":520
  *             yield from cache[:take]
  * 
  *     def __getitem__(self, columns):             # <<<<<<<<<<<<<<
  *         """
  *         Select the columns from the _DictSet_, alias for .select
  */
-  __pyx_tuple__91 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_columns); if (unlikely(!__pyx_tuple__91)) __PYX_ERR(0, 515, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__91);
-  __Pyx_GIVEREF(__pyx_tuple__91);
-  __pyx_codeobj__92 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__91, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_getitem, 515, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__92)) __PYX_ERR(0, 515, __pyx_L1_error)
+  __pyx_tuple__93 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_columns); if (unlikely(!__pyx_tuple__93)) __PYX_ERR(0, 520, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__93);
+  __Pyx_GIVEREF(__pyx_tuple__93);
+  __pyx_codeobj__94 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__93, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_getitem, 520, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__94)) __PYX_ERR(0, 520, __pyx_L1_error)
 
-  /* "mabel/data/internals/dictset.py":521
+  /* "mabel/data/internals/dictset.py":526
  *         return self.select(columns)
  * 
  *     def __hash__(self, seed: int = 703115) -> int:             # <<<<<<<<<<<<<<
  *         """
  *         Creates a consistent hash of the _DictSet_ regardless of the order of
  */
-  __pyx_tuple__93 = PyTuple_Pack(7, __pyx_n_s_self, __pyx_n_s_seed, __pyx_n_s_sip, __pyx_n_s_sip, __pyx_n_s_ordered, __pyx_n_s_serialized, __pyx_n_s_hashed); if (unlikely(!__pyx_tuple__93)) __PYX_ERR(0, 521, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__93);
-  __Pyx_GIVEREF(__pyx_tuple__93);
-  __pyx_codeobj__94 = (PyObject*)__Pyx_PyCode_New(2, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__93, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_hash, 521, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__94)) __PYX_ERR(0, 521, __pyx_L1_error)
-  __pyx_tuple__95 = PyTuple_Pack(1, ((PyObject *)__pyx_int_703115)); if (unlikely(!__pyx_tuple__95)) __PYX_ERR(0, 521, __pyx_L1_error)
+  __pyx_tuple__95 = PyTuple_Pack(7, __pyx_n_s_self, __pyx_n_s_seed, __pyx_n_s_sip, __pyx_n_s_sip, __pyx_n_s_ordered, __pyx_n_s_serialized, __pyx_n_s_hashed); if (unlikely(!__pyx_tuple__95)) __PYX_ERR(0, 526, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__95);
   __Pyx_GIVEREF(__pyx_tuple__95);
+  __pyx_codeobj__96 = (PyObject*)__Pyx_PyCode_New(2, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__95, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_hash, 526, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__96)) __PYX_ERR(0, 526, __pyx_L1_error)
+  __pyx_tuple__97 = PyTuple_Pack(1, ((PyObject *)__pyx_int_703115)); if (unlikely(!__pyx_tuple__97)) __PYX_ERR(0, 526, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__97);
+  __Pyx_GIVEREF(__pyx_tuple__97);
 
-  /* "mabel/data/internals/dictset.py":537
+  /* "mabel/data/internals/dictset.py":542
  *         return reduce(lambda x, y: x ^ y, hashed, seed)
  * 
  *     def __repr__(self):  # pragma: no cover             # <<<<<<<<<<<<<<
  *         if is_running_from_ipython():
  *             from IPython.display import HTML, display  # type:ignore
  */
-  __pyx_tuple__96 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_HTML, __pyx_n_s_display, __pyx_n_s_html); if (unlikely(!__pyx_tuple__96)) __PYX_ERR(0, 537, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__96);
-  __Pyx_GIVEREF(__pyx_tuple__96);
-  __pyx_codeobj__97 = (PyObject*)__Pyx_PyCode_New(1, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__96, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_repr, 537, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__97)) __PYX_ERR(0, 537, __pyx_L1_error)
+  __pyx_tuple__98 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_HTML, __pyx_n_s_display, __pyx_n_s_html); if (unlikely(!__pyx_tuple__98)) __PYX_ERR(0, 542, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__98);
+  __Pyx_GIVEREF(__pyx_tuple__98);
+  __pyx_codeobj__99 = (PyObject*)__Pyx_PyCode_New(1, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__98, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_mabel_data_internals_dictset_py, __pyx_n_s_repr, 542, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__99)) __PYX_ERR(0, 542, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -16153,6 +16476,14 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_type_5mabel_4data_9internals_7dictset___pyx_scope_struct_12_sort_and_take.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_5mabel_4data_9internals_7dictset___pyx_scope_struct_12_sort_and_take = &__pyx_type_5mabel_4data_9internals_7dictset___pyx_scope_struct_12_sort_and_take;
+  if (PyType_Ready(&__pyx_type_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key) < 0) __PYX_ERR(0, 494, __pyx_L1_error)
+  #if PY_VERSION_HEX < 0x030800B1
+  __pyx_type_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key.tp_print = 0;
+  #endif
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key.tp_dictoffset && __pyx_type_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
+  }
+  __pyx_ptype_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key = &__pyx_type_5mabel_4data_9internals_7dictset___pyx_scope_struct_13_safety_key;
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -16832,9 +17163,9 @@ if (!__Pyx_RefNanny) {
  *     def __init__(
  *         self,
  */
-  __pyx_t_1 = __Pyx_CalculateMetaclass(NULL, __pyx_tuple__24); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_CalculateMetaclass(NULL, __pyx_tuple__26); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_tuple__24, __pyx_n_s_DictSet, __pyx_n_s_DictSet, (PyObject *) NULL, __pyx_n_s_mabel_data_internals_dictset, (PyObject *) NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 77, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_tuple__26, __pyx_n_s_DictSet, __pyx_n_s_DictSet, (PyObject *) NULL, __pyx_n_s_mabel_data_internals_dictset, (PyObject *) NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 77, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
   /* "mabel/data/internals/dictset.py":78
@@ -16888,7 +17219,7 @@ if (!__Pyx_RefNanny) {
  *         self,
  *         iterator: Iterable[Dict[Any, Any]],
  */
-  __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_1__init__, 0, __pyx_n_s_DictSet___init, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__26)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 78, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_1__init__, 0, __pyx_n_s_DictSet___init, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__28)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   if (!__Pyx_CyFunction_InitDefaults(__pyx_t_8, sizeof(__pyx_defaults), 1)) __PYX_ERR(0, 78, __pyx_L1_error)
 
@@ -16920,7 +17251,7 @@ if (!__Pyx_RefNanny) {
  *         """
  *         Wrap the iterator in a Iterable object
  */
-  __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_3__iter__, 0, __pyx_n_s_DictSet___iter, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__28)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 116, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_3__iter__, 0, __pyx_n_s_DictSet___iter, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__30)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 116, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_iter, __pyx_t_8) < 0) __PYX_ERR(0, 116, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -16932,7 +17263,7 @@ if (!__Pyx_RefNanny) {
  *         return next(self._iterator)
  * 
  */
-  __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_5__next__, 0, __pyx_n_s_DictSet___next, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__30)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 124, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_5__next__, 0, __pyx_n_s_DictSet___next, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__32)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 124, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_next, __pyx_t_8) < 0) __PYX_ERR(0, 124, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -16944,7 +17275,7 @@ if (!__Pyx_RefNanny) {
  *         return self
  * 
  */
-  __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_7__enter__, 0, __pyx_n_s_DictSet___enter, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__32)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_7__enter__, 0, __pyx_n_s_DictSet___enter, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__34)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 127, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_enter, __pyx_t_8) < 0) __PYX_ERR(0, 127, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -16956,7 +17287,7 @@ if (!__Pyx_RefNanny) {
  *         pass  # exist needs to exist to be a context manager
  * 
  */
-  __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_9__exit__, 0, __pyx_n_s_DictSet___exit, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__34)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 130, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_9__exit__, 0, __pyx_n_s_DictSet___exit, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__36)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 130, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_exit, __pyx_t_8) < 0) __PYX_ERR(0, 130, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -16978,7 +17309,7 @@ if (!__Pyx_RefNanny) {
   __pyx_t_8 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 133, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_fraction, __pyx_n_u_float) < 0) __PYX_ERR(0, 133, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_11sample, 0, __pyx_n_s_DictSet_sample, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__36)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 133, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_11sample, 0, __pyx_n_s_DictSet_sample, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 133, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_t_3);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_8);
@@ -17013,9 +17344,9 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_return, __pyx_t_7) < 0) __PYX_ERR(0, 153, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_13collect_list, 0, __pyx_n_s_DictSet_collect_list, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__38)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 153, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_13collect_list, 0, __pyx_n_s_DictSet_collect_list, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__40)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 153, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_7, __pyx_tuple__39);
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_7, __pyx_tuple__41);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_7, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_collect_list, __pyx_t_7) < 0) __PYX_ERR(0, 153, __pyx_L1_error)
@@ -17031,9 +17362,9 @@ if (!__Pyx_RefNanny) {
   __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 173, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_number_of_rows, __pyx_n_u_int) < 0) __PYX_ERR(0, 173, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_15keys, 0, __pyx_n_s_DictSet_keys, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__41)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 173, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_15keys, 0, __pyx_n_s_DictSet_keys, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__43)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 173, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_tuple__42);
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_tuple__44);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_7);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_keys, __pyx_t_4) < 0) __PYX_ERR(0, 173, __pyx_L1_error)
@@ -17049,9 +17380,9 @@ if (!__Pyx_RefNanny) {
   __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 189, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_number_of_rows, __pyx_n_u_int) < 0) __PYX_ERR(0, 189, __pyx_L1_error)
-  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_17types, 0, __pyx_n_s_DictSet_types, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__44)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 189, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_17types, 0, __pyx_n_s_DictSet_types, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__46)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 189, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_7, __pyx_tuple__45);
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_7, __pyx_tuple__47);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_7, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_types, __pyx_t_7) < 0) __PYX_ERR(0, 189, __pyx_L1_error)
@@ -17067,7 +17398,7 @@ if (!__Pyx_RefNanny) {
   __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 206, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_key, __pyx_n_u_unicode) < 0) __PYX_ERR(0, 206, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_19max, 0, __pyx_n_s_DictSet_max, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__47)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_19max, 0, __pyx_n_s_DictSet_max, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__49)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 206, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_7);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
@@ -17084,7 +17415,7 @@ if (!__Pyx_RefNanny) {
   __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 216, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_key, __pyx_n_u_unicode) < 0) __PYX_ERR(0, 216, __pyx_L1_error)
-  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_21sum, 0, __pyx_n_s_DictSet_sum, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__49)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 216, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_21sum, 0, __pyx_n_s_DictSet_sum, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__51)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 216, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_7, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -17101,7 +17432,7 @@ if (!__Pyx_RefNanny) {
   __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 226, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_key, __pyx_n_u_unicode) < 0) __PYX_ERR(0, 226, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_23min, 0, __pyx_n_s_DictSet_min, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__51)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 226, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_23min, 0, __pyx_n_s_DictSet_min, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__53)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 226, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_7);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
@@ -17118,7 +17449,7 @@ if (!__Pyx_RefNanny) {
   __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 236, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_key, __pyx_n_u_unicode) < 0) __PYX_ERR(0, 236, __pyx_L1_error)
-  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_25min_max, 0, __pyx_n_s_DictSet_min_max, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__53)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 236, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_25min_max, 0, __pyx_n_s_DictSet_min_max, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__55)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 236, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_7, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -17135,7 +17466,7 @@ if (!__Pyx_RefNanny) {
   __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 253, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_key, __pyx_n_u_unicode) < 0) __PYX_ERR(0, 253, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_27mean, 0, __pyx_n_s_DictSet_mean, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__55)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 253, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_27mean, 0, __pyx_n_s_DictSet_mean, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__57)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 253, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_7);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
@@ -17152,7 +17483,7 @@ if (!__Pyx_RefNanny) {
   __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 263, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_key, __pyx_n_u_unicode) < 0) __PYX_ERR(0, 263, __pyx_L1_error)
-  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_29variance, 0, __pyx_n_s_DictSet_variance, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__57)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 263, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_29variance, 0, __pyx_n_s_DictSet_variance, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__59)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 263, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_7, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -17169,7 +17500,7 @@ if (!__Pyx_RefNanny) {
   __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 273, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_key, __pyx_n_u_unicode) < 0) __PYX_ERR(0, 273, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_31standard_deviation, 0, __pyx_n_s_DictSet_standard_deviation, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__59)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 273, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_31standard_deviation, 0, __pyx_n_s_DictSet_standard_deviation, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__61)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 273, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_7);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
@@ -17183,7 +17514,7 @@ if (!__Pyx_RefNanny) {
  *         """
  *         Count the number of items in the _DictSet_.
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_33count, 0, __pyx_n_s_DictSet_count, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__61)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 283, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_33count, 0, __pyx_n_s_DictSet_count, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__63)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 283, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_count, __pyx_t_4) < 0) __PYX_ERR(0, 283, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -17195,7 +17526,7 @@ if (!__Pyx_RefNanny) {
  *         """
  *         Remove duplicates from a _DictSet_. This creates a list of the items
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_35distinct, 0, __pyx_n_s_DictSet_distinct, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__63)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 293, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_35distinct, 0, __pyx_n_s_DictSet_distinct, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__65)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 293, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_distinct, __pyx_t_4) < 0) __PYX_ERR(0, 293, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -17207,7 +17538,7 @@ if (!__Pyx_RefNanny) {
  *         """
  *         Group a dictset by a column or group of columns. Returns a GroupBy object.
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_37group_by, 0, __pyx_n_s_DictSet_group_by, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__65)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 323, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_37group_by, 0, __pyx_n_s_DictSet_group_by, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__67)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 323, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_group_by, __pyx_t_4) < 0) __PYX_ERR(0, 323, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -17222,9 +17553,9 @@ if (!__Pyx_RefNanny) {
   __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 329, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_dedupe, ((PyObject*)&PyBool_Type)) < 0) __PYX_ERR(0, 329, __pyx_L1_error)
-  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_39collect_set, 0, __pyx_n_s_DictSet_collect_set, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__67)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 329, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_39collect_set, 0, __pyx_n_s_DictSet_collect_set, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__69)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 329, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_7, __pyx_tuple__68);
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_7, __pyx_tuple__70);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_7, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_collect_set, __pyx_t_7) < 0) __PYX_ERR(0, 329, __pyx_L1_error)
@@ -17252,9 +17583,9 @@ if (!__Pyx_RefNanny) {
   __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 357, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_limit, __pyx_n_u_int) < 0) __PYX_ERR(0, 357, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_44to_ascii_table, 0, __pyx_n_s_DictSet_to_ascii_table, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__71)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 357, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_44to_ascii_table, 0, __pyx_n_s_DictSet_to_ascii_table, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__73)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 357, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_tuple__72);
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_tuple__74);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_7);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_to_ascii_table, __pyx_t_4) < 0) __PYX_ERR(0, 357, __pyx_L1_error)
@@ -17270,9 +17601,9 @@ if (!__Pyx_RefNanny) {
   __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 366, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_limit, __pyx_n_u_int) < 0) __PYX_ERR(0, 366, __pyx_L1_error)
-  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_46to_html_table, 0, __pyx_n_s_DictSet_to_html_table, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__74)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 366, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_46to_html_table, 0, __pyx_n_s_DictSet_to_html_table, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__76)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 366, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_7, __pyx_tuple__75);
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_7, __pyx_tuple__77);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_7, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_to_html_table, __pyx_t_7) < 0) __PYX_ERR(0, 366, __pyx_L1_error)
@@ -17285,7 +17616,7 @@ if (!__Pyx_RefNanny) {
  *         """
  *         Load the contents of the _DictSet_ to a _Pandas_ DataFrame.
  */
-  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_48to_pandas, 0, __pyx_n_s_DictSet_to_pandas, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__77)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 375, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_48to_pandas, 0, __pyx_n_s_DictSet_to_pandas, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__79)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 375, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_to_pandas, __pyx_t_7) < 0) __PYX_ERR(0, 375, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
@@ -17300,7 +17631,7 @@ if (!__Pyx_RefNanny) {
   __pyx_t_7 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 390, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_return, __pyx_n_u_dict) < 0) __PYX_ERR(0, 390, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_50first, 0, __pyx_n_s_DictSet_first, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__79)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 390, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_50first, 0, __pyx_n_s_DictSet_first, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__81)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 390, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_7);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
@@ -17317,7 +17648,7 @@ if (!__Pyx_RefNanny) {
   __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 399, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_items, __pyx_n_u_int) < 0) __PYX_ERR(0, 399, __pyx_L1_error)
-  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_52take, 0, __pyx_n_s_DictSet_take, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__81)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 399, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_52take, 0, __pyx_n_s_DictSet_take, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__83)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 399, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_7, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -17348,7 +17679,7 @@ if (!__Pyx_RefNanny) {
  *         """
  *         Filter a _DictSet_ returning only the items that match the predicate.
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_57filter, 0, __pyx_n_s_DictSet_filter, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__84)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 420, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_57filter, 0, __pyx_n_s_DictSet_filter, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__86)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 420, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_filter, __pyx_t_4) < 0) __PYX_ERR(0, 420, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -17360,7 +17691,7 @@ if (!__Pyx_RefNanny) {
  *         """
  *         If the DictSet supports cursors, return the cursor.
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_59cursor, 0, __pyx_n_s_DictSet_cursor, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__86)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 465, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_59cursor, 0, __pyx_n_s_DictSet_cursor, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__88)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 465, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
 
   /* "mabel/data/internals/dictset.py":464
@@ -17383,7 +17714,7 @@ if (!__Pyx_RefNanny) {
  *         """
  *         Selects columns from a _DictSet_. If the column doesn't exist it is populated
  */
-  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_61select, 0, __pyx_n_s_DictSet_select, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__88)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 473, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_61select, 0, __pyx_n_s_DictSet_select, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__90)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 473, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_select, __pyx_t_7) < 0) __PYX_ERR(0, 473, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
@@ -17393,7 +17724,7 @@ if (!__Pyx_RefNanny) {
  * 
  *     def sort_and_take(self, column, take: int = 5000, descending: bool = False):             # <<<<<<<<<<<<<<
  * 
- *         if self.storage_class == STORAGE_CLASS.MEMORY:
+ *         def safety_key(column):
  */
   __pyx_t_7 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 492, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
@@ -17401,53 +17732,53 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_t_7, __pyx_n_s_descending, ((PyObject*)&PyBool_Type)) < 0) __PYX_ERR(0, 492, __pyx_L1_error)
   __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_63sort_and_take, 0, __pyx_n_s_DictSet_sort_and_take, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__21)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 492, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_tuple__90);
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_4, __pyx_tuple__92);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_4, __pyx_t_7);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_sort_and_take, __pyx_t_4) < 0) __PYX_ERR(0, 492, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mabel/data/internals/dictset.py":515
+  /* "mabel/data/internals/dictset.py":520
  *             yield from cache[:take]
  * 
  *     def __getitem__(self, columns):             # <<<<<<<<<<<<<<
  *         """
  *         Select the columns from the _DictSet_, alias for .select
  */
-  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_66__getitem__, 0, __pyx_n_s_DictSet___getitem, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__92)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 515, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_66__getitem__, 0, __pyx_n_s_DictSet___getitem, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__94)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 520, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_getitem, __pyx_t_4) < 0) __PYX_ERR(0, 515, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_getitem, __pyx_t_4) < 0) __PYX_ERR(0, 520, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mabel/data/internals/dictset.py":521
+  /* "mabel/data/internals/dictset.py":526
  *         return self.select(columns)
  * 
  *     def __hash__(self, seed: int = 703115) -> int:             # <<<<<<<<<<<<<<
  *         """
  *         Creates a consistent hash of the _DictSet_ regardless of the order of
  */
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 521, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 526, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_seed, __pyx_n_u_int) < 0) __PYX_ERR(0, 521, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_return, __pyx_n_u_int) < 0) __PYX_ERR(0, 521, __pyx_L1_error)
-  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_68__hash__, 0, __pyx_n_s_DictSet___hash, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__94)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 521, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_seed, __pyx_n_u_int) < 0) __PYX_ERR(0, 526, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_return, __pyx_n_u_int) < 0) __PYX_ERR(0, 526, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_68__hash__, 0, __pyx_n_s_DictSet___hash, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__96)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 526, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_7, __pyx_tuple__95);
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_7, __pyx_tuple__97);
   __Pyx_CyFunction_SetAnnotationsDict(__pyx_t_7, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_hash, __pyx_t_7) < 0) __PYX_ERR(0, 521, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_hash, __pyx_t_7) < 0) __PYX_ERR(0, 526, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-  /* "mabel/data/internals/dictset.py":537
+  /* "mabel/data/internals/dictset.py":542
  *         return reduce(lambda x, y: x ^ y, hashed, seed)
  * 
  *     def __repr__(self):  # pragma: no cover             # <<<<<<<<<<<<<<
  *         if is_running_from_ipython():
  *             from IPython.display import HTML, display  # type:ignore
  */
-  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_70__repr__, 0, __pyx_n_s_DictSet___repr, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__97)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 537, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_New(&__pyx_mdef_5mabel_4data_9internals_7dictset_7DictSet_70__repr__, 0, __pyx_n_s_DictSet___repr, NULL, __pyx_n_s_mabel_data_internals_dictset, __pyx_d, ((PyObject *)__pyx_codeobj__99)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 542, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_repr, __pyx_t_7) < 0) __PYX_ERR(0, 537, __pyx_L1_error)
+  if (__Pyx_SetNameInClass(__pyx_t_2, __pyx_n_s_repr, __pyx_t_7) < 0) __PYX_ERR(0, 542, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
   /* "mabel/data/internals/dictset.py":77
@@ -17457,7 +17788,7 @@ if (!__Pyx_RefNanny) {
  *     def __init__(
  *         self,
  */
-  __pyx_t_7 = __Pyx_Py3ClassCreate(__pyx_t_1, __pyx_n_s_DictSet, __pyx_tuple__24, __pyx_t_2, NULL, 0, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 77, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_Py3ClassCreate(__pyx_t_1, __pyx_n_s_DictSet, __pyx_tuple__26, __pyx_t_2, NULL, 0, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 77, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_DictSet, __pyx_t_7) < 0) __PYX_ERR(0, 77, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;

@@ -147,3 +147,5 @@ SNAPSHOTS/
 setup.cfg
 tests/data/mass/**
 tests/data/huge/**
+tests/data/half/**
+**/profile.txt

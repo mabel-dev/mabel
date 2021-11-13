@@ -135,7 +135,7 @@ class GroupBy:
 
                 # the aggregation works by performing a simple calculation on
                 # the last known value and the value currently seen. This means
-                # we don't need a full copy of the full in memory ever.
+                # we don't need a full copy of the data in memory.
                 if existing:
                     if value or func == "COUNT":
                         value = AGGREGATORS[func](existing, value)

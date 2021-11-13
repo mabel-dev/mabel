@@ -7,40 +7,23 @@ automatic running of the data accesses.
 """
 import os
 import time
-import orjson
-from typing import Iterator
 from queue import Empty
 import multiprocessing
 import logging
 from .parsers import json
 import lz4.frame
+from multiprocessing import Queue
 
 
 TERMINATE_SIGNAL = -1
 MAXIMUM_SECONDS_PROCESSES_CAN_RUN = 600
 
 
-def page_dictset(dictset: Iterator[dict], page_size: int) -> Iterator:
-    """
-    Enables paging through a dictset by returning a page of records at a time.
-    Parameters:
-        dictset: iterable of dictionaries:
-            The dictset to process
-        page_size: integer:
-            The number of records per page
-    Yields:
-        dictionary
-    """
-    chunk: list = []
-    for record in dictset:
-        if len(chunk) >= page_size:
-            yield chunk
-            chunk = [record]
-        else:
-            chunk.append(record)
-    if chunk:
-        yield chunk
-
+def serialize(ob):
+    if hasattr(ob, 'mini'):
+        return ob.mini
+    import orjson
+    return orjson.dumps(ob)
 
 def _inner_process(func, source_queue, reply_queue):  # pragma: no cover
 
@@ -58,7 +41,7 @@ def _inner_process(func, source_queue, reply_queue):  # pragma: no cover
         # the empty list here is where the list of indicies should go
         reply_queue.put(
             lz4.frame.compress(
-                b"\n".join([orjson.dumps(d) for d in [*func(source, [])]])
+                b"\n".join(map(serialize, func(source, [])))
             ),
             timeout=30,
         )
@@ -79,17 +62,19 @@ def processed_reader(func, items_to_read, support_files):  # pragma: no cover
 
     process_pool = []
 
-    # determine the number of CPUs we're going to use:
+    # determine the number of slots we're going to make available:
     # - less than or equal to the number of files to read
-    # - half of the CPUs, unless there's 2, then use both
-    slots = max(min(len(items_to_read), multiprocessing.cpu_count() // 2), 2)
-    reply_queue = multiprocessing.Queue(slots)
+    # - one less than the CPUs we have
+    slots = max(min(len(items_to_read), multiprocessing.cpu_count() - 1), 2)
+    reply_queue = Queue(slots)
 
     send_queue = multiprocessing.Queue()
     for item_index in range(slots):
         if item_index < len(items_to_read):
             send_queue.put(items_to_read[item_index])
 
+    # We're going to use all but one CPU, unless there's 1 or 2 CPUs, then we're going
+    # to create two processes
     for i in range(slots):
         process = multiprocessing.Process(
             target=_inner_process,

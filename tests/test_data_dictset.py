@@ -174,6 +174,17 @@ def test_hash():
     hashval = hash(ds)
     assert hashval == 5233449951214716413, hashval
 
+def test_sort():
+    data = [
+        {"key": 1, "value": "one", "plus1": 2},
+        {"key": None, "value": "two", "plus1": 3},
+        {"key": 3, "value": "three", "plus1": 4},
+        {"key": 4, "value": "four", "plus1": 5},
+    ]
+    ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
+    st = list(ds.sort_and_take("key", 100))
+    assert st == [{'key': None, 'value': 'two', 'plus1': 3}, {'key': 1, 'value': 'one', 'plus1': 2}, {'key': 3, 'value': 'three', 'plus1': 4}, {'key': 4, 'value': 'four', 'plus1': 5}], st
+
 
 if __name__ == "__main__":
     test_count()
@@ -189,5 +200,6 @@ if __name__ == "__main__":
     test_items()
     test_filters()
     test_hash()
+    test_sort()
 
     print("OKAY")

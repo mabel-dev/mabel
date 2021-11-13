@@ -259,7 +259,11 @@ def SqlReader(sql_statement: str, **kwargs):
     if sql.select_expression is None:
         actual_select = "*"
     elif sql.select_expression != "*":
-        actual_select = sql.select_expression + ",*"
+        actual_select = sql.select_expression + ", *"
+
+    reducer = None
+    if sql.select_expression == "COUNT(*)":
+        reducer = lambda x: {"*":"*"}
 
     # FROM clause
     # WHERE clause

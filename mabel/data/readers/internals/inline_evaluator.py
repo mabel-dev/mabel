@@ -137,7 +137,7 @@ def evaluate_field(dict, token):
     """
     token_type = token["type"]
     if token_type == TOKENS.EVERYTHING:
-        return (TOKENS.EVERYTHING, TOKENS.EVERYTHING)
+        return ("*", "*")
     if token_type == TOKENS.VARIABLE:
         variable = token["value"]
         if variable[0] == variable[-1] == "`":
