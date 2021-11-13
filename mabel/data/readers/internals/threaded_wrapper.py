@@ -38,11 +38,11 @@ def page_dictset(dictset: Iterator[dict], page_size: int) -> Iterator:
             yield chunk
             chunk = [""] * page_size
             if hasattr(record, 'mini'):
-                chunk[0] = record.mini
+                chunk[0] = record.mini  # type:ignore
             else:
                 chunk[0] = orjson.dumps(record)
         elif hasattr(record, 'mini'):
-            chunk[i % page_size] = record.mini
+            chunk[i % page_size] = record.mini  # type:ignore
         else:
             chunk[i % page_size] = orjson.dumps(record)
     if chunk:
@@ -66,12 +66,6 @@ def _inner_process(func, source_queue, reply_queue):  # pragma: no cover
                 source = source_queue.get(timeout=1)
             except Empty:  # pragma: no cover
                 source = None
-
-def json(ds):
-    import simdjson
-    """parse each line in the file to a dictionary"""
-    json_parser = simdjson.Parser()
-    return json_parser.parse(ds)
 
 def processed_reader(func, items_to_read, support_files):  # pragma: no cover
 
