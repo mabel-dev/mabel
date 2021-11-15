@@ -15,7 +15,7 @@ def do_read():
     SQL = "SELECT COUNT(*) FROM tests/data/huge"
     SQL = "SELECT AVG(followers) FROM tests.data.huge"
     # SQL = "SELECT * FROM tests/data/huge"
-    #SQL = "SELECT * FROM tests.data.index.is  WHERE `user_name` = 'Verizon Support'"
+    # SQL = "SELECT * FROM tests.data.index.is  WHERE `user_name` = 'Verizon Support'"
     # SQL = "SELECT COUNT(*) FROM tests.data.index.is GROUP BY user_verified"
     # SQL = "SELECT user_name FROM tests.data.index.is LIMIT 2"
     SQL = "SELECT COUNT(*) FROM tests/data/huge"
@@ -35,7 +35,8 @@ def do_read():
 
 cProfile.run("do_read()", "profile.txt")
 import pstats
+
 p = pstats.Stats("profile.txt")
 p.sort_stats("tottime").print_stats(20)
 
-#do_read()
+# do_read()

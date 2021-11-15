@@ -94,6 +94,7 @@ def test_combined_group_by():
 
     # fmt:on
 
+
 def test_gappy_set():
     data = [
         {"key": 1, "value": "one", "plus1": 2},
@@ -104,7 +105,12 @@ def test_gappy_set():
     ]
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
     g = list(ds.group_by("value").average("key"))
-    assert g == [{'AVG(key)': 4.0, 'value': None}, {'AVG(key)': 3.0, 'value': 'two'}, {'AVG(key)': 1.0, 'value': 'one'}], g
+    assert g == [
+        {"AVG(key)": 4.0, "value": None},
+        {"AVG(key)": 3.0, "value": "two"},
+        {"AVG(key)": 1.0, "value": "one"},
+    ], g
+
 
 if __name__ == "__main__":  # pragma: no cover
     test_group_by()
