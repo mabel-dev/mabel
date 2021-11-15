@@ -1,5 +1,3 @@
-# DEVELOPMENT MABEL
-
 <img align="centre" alt="overlapping arrows" height="92" src="icons/mabel.svg" />
 
 ## mabel is a Data Engineering platform designed to run in serverless environments.
