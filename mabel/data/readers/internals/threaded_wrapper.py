@@ -9,6 +9,7 @@ import logging
 from queue import SimpleQueue
 import simdjson
 
+
 def json(ds):
     """parse each line in the file to a dictionary"""
     json_parser = simdjson.Parser()
@@ -37,16 +38,16 @@ def page_dictset(dictset: Iterator[dict], page_size: int) -> Iterator:
         if i > 0 and i % page_size == 0:
             yield chunk
             chunk = [""] * page_size
-            if hasattr(record, 'mini'):
+            if hasattr(record, "mini"):
                 chunk[0] = record.mini  # type:ignore
             else:
                 chunk[0] = orjson.dumps(record)
-        elif hasattr(record, 'mini'):
+        elif hasattr(record, "mini"):
             chunk[i % page_size] = record.mini  # type:ignore
         else:
             chunk[i % page_size] = orjson.dumps(record)
     if chunk:
-        yield chunk[:i % page_size]
+        yield chunk[: i % page_size]
 
 
 def _inner_process(func, source_queue, reply_queue):  # pragma: no cover
@@ -67,13 +68,13 @@ def _inner_process(func, source_queue, reply_queue):  # pragma: no cover
             except Empty:  # pragma: no cover
                 source = None
 
+
 def processed_reader(func, items_to_read, support_files):  # pragma: no cover
 
     process_pool = []
 
     slots = 8
     reply_queue = SimpleQueue()
-
 
     send_queue = SimpleQueue()
     for item_index in range(slots):
@@ -91,7 +92,6 @@ def processed_reader(func, items_to_read, support_files):  # pragma: no cover
 
     process_start_time = time.time()
     item_index = slots
-
 
     while any({p.is_alive() for p in process_pool}):
         try:

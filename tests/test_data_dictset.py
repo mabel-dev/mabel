@@ -148,8 +148,12 @@ def test_items():
         {"key": 4, "value": "four", "plus1": 5},
     ]
     ds = DictSet(data, storage_class=STORAGE_CLASS.DISK)
-    items = list([i.as_dict() for i in ds.get_items(0,2)])
-    assert items == [{"key": 1, "value": "one", "plus1": 2},{"key": 3, "value": "three", "plus1": 4}], items
+    items = list([i.as_dict() for i in ds.get_items(0, 2)])
+    assert items == [
+        {"key": 1, "value": "one", "plus1": 2},
+        {"key": 3, "value": "three", "plus1": 4},
+    ], items
+
 
 def test_filters():
     data = [
@@ -159,9 +163,10 @@ def test_filters():
         {"key": 4, "value": "four", "plus1": 5},
     ]
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
-    dnf = ds.filter(('key', '=', 1))
+    dnf = ds.filter(("key", "=", 1))
     assert dnf.count() == 1
     assert dnf.first() == {"key": 1, "value": "one", "plus1": 2}
+
 
 def test_hash():
     data = [
@@ -174,6 +179,7 @@ def test_hash():
     hashval = hash(ds)
     assert hashval == 5233449951214716413, hashval
 
+
 def test_sort():
     data = [
         {"key": 1, "value": "one", "plus1": 2},
@@ -183,7 +189,12 @@ def test_sort():
     ]
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
     st = list(ds.sort_and_take("key", 100))
-    assert st == [{'key': None, 'value': 'two', 'plus1': 3}, {'key': 1, 'value': 'one', 'plus1': 2}, {'key': 3, 'value': 'three', 'plus1': 4}, {'key': 4, 'value': 'four', 'plus1': 5}], st
+    assert st == [
+        {"key": None, "value": "two", "plus1": 3},
+        {"key": 1, "value": "one", "plus1": 2},
+        {"key": 3, "value": "three", "plus1": 4},
+        {"key": 4, "value": "four", "plus1": 5},
+    ], st
 
 
 if __name__ == "__main__":

@@ -490,11 +490,13 @@ class DictSet(object):
         )
 
     def sort_and_take(self, column, take: int = 5000, descending: bool = False):
-
         def safety_key(column):
             # this returns a tuple where the first element is a boolean, and the
             # second item is the value
-            return lambda x: (x.get(column) is not None, x.get(column), )
+            return lambda x: (
+                x.get(column) is not None,
+                x.get(column),
+            )
 
         if self.storage_class == STORAGE_CLASS.MEMORY:
             yield from sorted(
