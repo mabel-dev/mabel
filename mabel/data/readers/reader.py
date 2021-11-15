@@ -9,7 +9,8 @@ from .internals.parallel_reader import (
     EXTENSION_TYPE,
     KNOWN_EXTENSIONS,
 )
-#from .internals.threaded_wrapper import processed_reader
+
+# from .internals.threaded_wrapper import processed_reader
 from .internals.multiprocess_wrapper import processed_reader
 from .internals.cursor import Cursor
 from .internals.inline_evaluator import Evaluator

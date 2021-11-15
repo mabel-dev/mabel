@@ -263,7 +263,7 @@ def SqlReader(sql_statement: str, **kwargs):
 
     reducer = None
     if sql.select_expression == "COUNT(*)":
-        reducer = lambda x: {"*":"*"}
+        reducer = lambda x: {"*": "*"}
 
     # FROM clause
     # WHERE clause

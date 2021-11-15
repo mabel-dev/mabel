@@ -20,10 +20,12 @@ MAXIMUM_SECONDS_PROCESSES_CAN_RUN = 600
 
 
 def serialize(ob):
-    if hasattr(ob, 'mini'):
+    if hasattr(ob, "mini"):
         return ob.mini
     import orjson
+
     return orjson.dumps(ob)
+
 
 def _inner_process(func, source_queue, reply_queue):  # pragma: no cover
 
@@ -40,9 +42,7 @@ def _inner_process(func, source_queue, reply_queue):  # pragma: no cover
             time.sleep(1)
         # the empty list here is where the list of indicies should go
         reply_queue.put(
-            lz4.frame.compress(
-                b"\n".join(map(serialize, func(source, [])))
-            ),
+            lz4.frame.compress(b"\n".join(map(serialize, func(source, [])))),
             timeout=30,
         )
         source = None
@@ -94,7 +94,9 @@ def processed_reader(func, items_to_read, support_files):  # pragma: no cover
     ):
         try:
             records = reply_queue.get(timeout=1)
-            yield from map(json, lz4.frame.decompress(records).split(b"\n"))
+            yield from map(
+                json, [r for r in lz4.frame.decompress(records).split(b"\n") if r]
+            )
             if item_index < len(items_to_read):
                 send_queue.put_nowait(items_to_read[item_index])
                 item_index += 1

@@ -172,12 +172,15 @@ def diff_days(start_date, end_date):
         return (end_date - start_date).days
     return None
 
+
 def parse_number(parser, coerce):
     def inner(val):
         if val is None:
             return None
         return coerce(parser(val))
+
     return inner
+
 
 @lru_cache(8)
 def get_md5(item):

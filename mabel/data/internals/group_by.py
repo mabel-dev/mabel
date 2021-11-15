@@ -10,8 +10,10 @@ import fastnumbers
 from siphashc import siphash
 from collections import defaultdict
 
+
 def summer(x, y):
     return fastnumbers.real(x) + fastnumbers.real(y)
+
 
 AGGREGATORS = {
     "SUM": summer,
