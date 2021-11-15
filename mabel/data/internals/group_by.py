@@ -6,12 +6,15 @@ will be effective:
 python setup.py build_ext --inplace
 """
 import cython
-import operator
+import fastnumbers
 from siphashc import siphash
 from collections import defaultdict
 
+def summer(x, y):
+    return fastnumbers.real(x) + fastnumbers.real(y)
+
 AGGREGATORS = {
-    "SUM": operator.add,
+    "SUM": summer,
     "MAX": max,
     "MIN": min,
     "COUNT": lambda x, y: x + 1,

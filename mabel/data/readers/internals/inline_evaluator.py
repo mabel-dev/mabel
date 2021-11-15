@@ -154,19 +154,19 @@ def evaluate_field(dict, token):
             label = token["as"]
         return (
             label,
-            FUNCTIONS[token["value"].upper()](
+            FUNCTIONS[str(token["value"]).upper()](
                 *[evaluate_field(dict, t)[1] for t in token["parameters"]]
             ),
         )
     if token_type == TOKENS.FLOAT:
         return (
             token["value"],
-            fastnumbers.fast_float(token["value"]),
+            float(fastnumbers.real(token["value"])),
         )
     if token_type == TOKENS.INTEGER:
         return (
             token["value"],
-            fastnumbers.fast_int(token["value"]),
+            int(fastnumbers.real(token["value"])),
         )
     if token_type == TOKENS.LITERAL:
         return (
