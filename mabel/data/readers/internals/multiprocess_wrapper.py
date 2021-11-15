@@ -94,7 +94,7 @@ def processed_reader(func, items_to_read, support_files):  # pragma: no cover
     ):
         try:
             records = reply_queue.get(timeout=1)
-            yield from map(json, lz4.frame.decompress(records).split(b"\n"))
+            yield from map(json, [r for r in lz4.frame.decompress(records).split(b"\n") if r])
             if item_index < len(items_to_read):
                 send_queue.put_nowait(items_to_read[item_index])
                 item_index += 1
