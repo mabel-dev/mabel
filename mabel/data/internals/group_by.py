@@ -6,12 +6,15 @@ will be effective:
 python setup.py build_ext --inplace
 """
 import cython
-import operator
+import fastnumbers
 from siphashc import siphash
 from collections import defaultdict
 
+def summer(x, y):
+    return fastnumbers.real(x) + fastnumbers.real(y)
+
 AGGREGATORS = {
-    "SUM": operator.add,
+    "SUM": summer,
     "MAX": max,
     "MIN": min,
     "COUNT": lambda x, y: x + 1,
@@ -135,7 +138,7 @@ class GroupBy:
 
                 # the aggregation works by performing a simple calculation on
                 # the last known value and the value currently seen. This means
-                # we don't need a full copy of the full in memory ever.
+                # we don't need a full copy of the data in memory.
                 if existing:
                     if value or func == "COUNT":
                         value = AGGREGATORS[func](existing, value)

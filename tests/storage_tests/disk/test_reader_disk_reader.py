@@ -9,6 +9,7 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], "../../.."))
 from mabel.adapters.disk import DiskReader, DiskWriter
 from mabel.data import Reader, BatchWriter
+from mabel.errors import DataNotFoundError
 from rich import traceback
 
 traceback.install()
@@ -71,7 +72,7 @@ def test_step_past():
             end_date=datetime.date(2021, 1, 1),
             freshness_limit="5d",
         )
-        with pytest.raises(SystemExit):
+        with pytest.raises(DataNotFoundError):
             assert len(list(r)) == 0
 
     _inner("tests/data/dated/{date}")

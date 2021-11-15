@@ -1,23 +1,10 @@
-try:
-    import simdjson
-
-    def json(ds):
-        """parse each line in the file to a dictionary"""
-        json_parser = simdjson.Parser()
-        return json_parser.parse(ds)
-
-
-except ImportError:
-    import orjson
-
-    def json(ds):
-        return orjson.loads(ds)
-
-
-from ...internals import xmler
-
-
 pass_thru = lambda x: x
+
+def json(ds):
+    import simdjson
+    """parse each line in the file to a dictionary"""
+    json_parser = simdjson.Parser()
+    return json_parser.parse(ds)
 
 
 def pass_thru_block(ds):
@@ -28,4 +15,5 @@ def pass_thru_block(ds):
 
 
 def xml(ds):
+    from ...internals import xmler
     return xmler.parse(ds)

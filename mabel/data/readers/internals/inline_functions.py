@@ -4,6 +4,7 @@ These are a set of functions that can be applied to data as it passes through.
 These are the function definitions, the processor which uses these is in the
 'inline_evaluator' module.
 """
+from os import truncate
 import orjson
 import datetime
 import fastnumbers
@@ -171,6 +172,12 @@ def diff_days(start_date, end_date):
         return (end_date - start_date).days
     return None
 
+def parse_number(parser, coerce):
+    def inner(val):
+        if val is None:
+            return None
+        return coerce(parser(val))
+    return inner
 
 @lru_cache(8)
 def get_md5(item):
@@ -208,9 +215,9 @@ FUNCTIONS = {
     "CONCAT": concat,
     # NUMBERS
     "ROUND": round,
-    "TRUNC": fastnumbers.fast_int,
-    "INT": fastnumbers.fast_int,
-    "FLOAT": fastnumbers.fast_float,
+    "TRUNC": parse_number(fastnumbers.real, truncate),
+    "INT": parse_number(fastnumbers.real, int),
+    "FLOAT": parse_number(fastnumbers.real, float),
     # BOOLEAN
     "BOOLEAN": lambda x: str(x).upper() != "FALSE",
     "ISNONE": lambda x: x is None,

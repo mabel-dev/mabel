@@ -80,8 +80,6 @@ class GoogleCloudStorageReader(BaseInnerReader):
             timeout=30,
         )
 
-        print(payload.content)
-
         if payload.status_code // 100 != 2:
             return []
 
@@ -112,8 +110,6 @@ def get_blob(project: str, bucket: str, blob_name: str, credentials=None):
         headers=headers,
         timeout=30,
     )
-
-    print(payload.content)
 
     if payload.status_code // 100 != 2:
         raise GoogleStorageReadError(payload.content)

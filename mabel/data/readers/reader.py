@@ -9,7 +9,8 @@ from .internals.parallel_reader import (
     EXTENSION_TYPE,
     KNOWN_EXTENSIONS,
 )
-from .internals.threaded_wrapper import processed_reader
+#from .internals.threaded_wrapper import processed_reader
+from .internals.multiprocess_wrapper import processed_reader
 from .internals.cursor import Cursor
 from .internals.inline_evaluator import Evaluator
 
@@ -240,10 +241,9 @@ class _LowLevelReader(object):
             if self.freshness_limit < datetime.timedelta(
                 days=self.reader_class.days_stepped_back
             ):
-                logger.alert(
-                    f"No data found in last {self.freshness_limit} - aborting ({self.reader_class.dataset})"
-                )
-                sys.exit(5)
+                message = f"No data found in last {self.freshness_limit} - aborting ({self.reader_class.dataset})"
+                logger.alert(message)
+                raise DataNotFoundError(message)
             if self.reader_class.days_stepped_back > 0:
                 logger.warning(
                     f"Read looked back {self.reader_class.days_stepped_back} day(s) to {self.reader_class.start_date}, limit is {self.freshness_limit} ({self.reader_class.dataset})"

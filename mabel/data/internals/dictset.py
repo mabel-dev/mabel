@@ -345,9 +345,7 @@ class DictSet(object):
             return
 
         # if the iterator allows us to access items directly, use that
-        if self.storage_class == STORAGE_CLASS.MEMORY or hasattr(
-            self._iterator, "__getitem__"
-        ):
+        if hasattr(self._iterator, "__getitem__"):
             yield from [self._iterator[i] for i in locations]
             return
 
@@ -493,9 +491,14 @@ class DictSet(object):
 
     def sort_and_take(self, column, take: int = 5000, descending: bool = False):
 
+        def safety_key(column):
+            # this returns a tuple where the first element is a boolean, and the
+            # second item is the value
+            return lambda x: (x.get(column) is not None, x.get(column), )
+
         if self.storage_class == STORAGE_CLASS.MEMORY:
             yield from sorted(
-                self._iterator, key=itemgetter(column), reverse=descending
+                self._iterator, key=safety_key(column), reverse=descending
             )[:take]
 
         else:
@@ -509,9 +512,9 @@ class DictSet(object):
             for record in iter(self._iterator):
                 cache.append(record)
                 if len(cache) > double_cache:
-                    cache.sort(key=itemgetter(column), reverse=descending)
+                    cache.sort(key=safety_key(column), reverse=descending)
                     del cache[take:]
-            cache.sort(key=itemgetter(column), reverse=descending)
+            cache.sort(key=safety_key(column), reverse=descending)
             yield from cache[:take]
 
     def __getitem__(self, columns):
@@ -527,7 +530,7 @@ class DictSet(object):
         """
 
         def sip(val):
-            return siphash("*", val)
+            return siphash("TheApolloMission", val)
 
         # The seed is the mission duration of the Apollo 11 mission.
         #   703115 = 8 days, 3 hours, 18 minutes, 35 seconds

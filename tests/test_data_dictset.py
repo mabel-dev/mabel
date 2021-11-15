@@ -140,6 +140,52 @@ def test_take():
     assert ds.take(2).count() == 2, ds.take(2).count()
 
 
+def test_items():
+    data = [
+        {"key": 1, "value": "one", "plus1": 2},
+        {"key": 2, "value": "two", "plus1": 3},
+        {"key": 3, "value": "three", "plus1": 4},
+        {"key": 4, "value": "four", "plus1": 5},
+    ]
+    ds = DictSet(data, storage_class=STORAGE_CLASS.DISK)
+    items = list([i.as_dict() for i in ds.get_items(0,2)])
+    assert items == [{"key": 1, "value": "one", "plus1": 2},{"key": 3, "value": "three", "plus1": 4}], items
+
+def test_filters():
+    data = [
+        {"key": 1, "value": "one", "plus1": 2},
+        {"key": 2, "value": "two", "plus1": 3},
+        {"key": 3, "value": "three", "plus1": 4},
+        {"key": 4, "value": "four", "plus1": 5},
+    ]
+    ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
+    dnf = ds.filter(('key', '=', 1))
+    assert dnf.count() == 1
+    assert dnf.first() == {"key": 1, "value": "one", "plus1": 2}
+
+def test_hash():
+    data = [
+        {"key": 1, "value": "one", "plus1": 2},
+        {"key": 2, "value": "two", "plus1": 3},
+        {"key": 3, "value": "three", "plus1": 4},
+        {"key": 4, "value": "four", "plus1": 5},
+    ]
+    ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
+    hashval = hash(ds)
+    assert hashval == 5233449951214716413, hashval
+
+def test_sort():
+    data = [
+        {"key": 1, "value": "one", "plus1": 2},
+        {"key": None, "value": "two", "plus1": 3},
+        {"key": 3, "value": "three", "plus1": 4},
+        {"key": 4, "value": "four", "plus1": 5},
+    ]
+    ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
+    st = list(ds.sort_and_take("key", 100))
+    assert st == [{'key': None, 'value': 'two', 'plus1': 3}, {'key': 1, 'value': 'one', 'plus1': 2}, {'key': 3, 'value': 'three', 'plus1': 4}, {'key': 4, 'value': 'four', 'plus1': 5}], st
+
+
 if __name__ == "__main__":
     test_count()
     test_enumeration()
@@ -151,5 +197,9 @@ if __name__ == "__main__":
     test_types()
     test_summary()
     test_take()
+    test_items()
+    test_filters()
+    test_hash()
+    test_sort()
 
     print("OKAY")

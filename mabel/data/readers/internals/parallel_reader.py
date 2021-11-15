@@ -147,7 +147,7 @@ class ParallelReader:
         ORs are fatal if both sides can't be pre-evaluated.
         """
 
-        PRE_FILTERABLE_OPERATORS = {"=", "==", "is", "in", "contains"}
+        SARGABLE_OPERATORS = {"=", "==", "is", "in", "contains"}
 
         def _inner_prefilter(predicate):
             # No filter doesn't filter
@@ -159,7 +159,7 @@ class ParallelReader:
             # index - if we can.
             if isinstance(predicate, tuple):
                 key, operator, values = predicate
-                if operator in PRE_FILTERABLE_OPERATORS:
+                if operator in SARGABLE_OPERATORS:
                     # do I have an index for this field?
                     for index_file in [
                         index_file
