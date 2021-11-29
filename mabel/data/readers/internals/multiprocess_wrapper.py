@@ -4,6 +4,23 @@ to be manually enabled.
 
 When a reliable use case for multiprocessing is identified it may be included into the
 automatic running of the data accesses.
+
+One of the slowest parts of multiprocessing is moving data between the processes, 
+which is a problem because that's the main driver for using multiple processes here. So
+we do some things to improve performance (without them this runs in about double the
+time of serial execution).
+
+- We handle the serialization, Python appears to want to pickle, as we know we're only
+  dealing with dictionaries, we convert to JSON byte strings - we have two strategies,
+  one is fast (orjson) and the other is very fast (mini).
+- We compress the payload using LZ4, LZ4 is fast but not as compressive as ZSTD, 
+  from benchmarks we've run, LZ4 appears to be the better option when compressing to
+  memory (we also use LZ4 in the in-memory DictSet persistence for this reason)
+
+This gets us running at least as fast as serial processing (usually a little faster).
+We get significant boost when we can do some filtering in the sub-processes - such as
+filtering (filtering is good because less data needs to be moved between processes)
+and some calculations.
 """
 import os
 import time
@@ -73,8 +90,6 @@ def processed_reader(func, items_to_read, support_files):  # pragma: no cover
         if item_index < len(items_to_read):
             send_queue.put(items_to_read[item_index])
 
-    # We're going to use all but one CPU, unless there's 1 or 2 CPUs, then we're going
-    # to create two processes
     for i in range(slots):
         process = multiprocessing.Process(
             target=_inner_process,

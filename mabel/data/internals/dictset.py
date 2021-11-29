@@ -28,7 +28,6 @@ import orjson
 import statistics
 
 from siphashc import siphash
-from operator import itemgetter
 from functools import reduce
 
 from typing import Iterable, Dict, Any, Union
@@ -417,9 +416,10 @@ class DictSet(object):
             else:
                 yield item.as_dict()
 
-    def filter(self, filters):
+    def select(self, filters):
         """
-        Filter a _DictSet_ returning only the items that match the predicate.
+        Select items from a _DictSet_ returning only the items that match the
+        predicate.
 
         Parameters:
             predicate: callable
@@ -470,7 +470,7 @@ class DictSet(object):
             return self._iterator.cursor
         return None
 
-    def select(self, columns):
+    def project(self, columns):
         """
         Selects columns from a _DictSet_. If the column doesn't exist it is populated
         with `None`.
@@ -521,9 +521,9 @@ class DictSet(object):
 
     def __getitem__(self, columns):
         """
-        Select the columns from the _DictSet_, alias for .select
+        Select the columns from the _DictSet_, alias for .project
         """
-        return self.select(columns)
+        return self.project(columns)
 
     def __hash__(self, seed: int = 703115) -> int:
         """

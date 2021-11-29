@@ -1,6 +1,6 @@
 <img align="centre" alt="overlapping arrows" height="92" src="icons/mabel.svg" />
 
-## mabel is a Data Engineering platform designed to run in serverless environments.
+## mabel is a distributed Database platform designed to run in serverless environments.
 
 **mabel** has no server component, **mabel** just runs when you need it making it ideal
 for deployments to platforms like Kubernetes, GCP Cloud Run, AWS Fargate and Knative.
@@ -36,7 +36,7 @@ quickly and easily, so they could get on with doing what they do best.
 from mabel import Reader
 
 data = Reader(dataset="test_data")
-print(data.count())
+print(data.select("year = 100").distinct().count())
 ~~~
 
 ## Key Features

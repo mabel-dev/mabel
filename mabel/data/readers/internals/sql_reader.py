@@ -342,7 +342,7 @@ def SqlReader(sql_statement: str, **kwargs):
     if renames:
         reader = DictSet(map(_perform_renames, reader))
 
-    reader = reader.select(sql.select_evaluator.fields())  # type:ignore
+    reader = reader.project(sql.select_evaluator.fields())  # type:ignore
     # disctinct now we have only the columns we're interested in
     if sql.distinct:
         reader = reader.distinct()

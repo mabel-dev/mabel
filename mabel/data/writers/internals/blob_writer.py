@@ -2,7 +2,7 @@ import threading
 from typing import Any
 from orjson import dumps
 import zstandard
-from ...internals.index import IndexBuilder
+from ...internals.dsm_index import IndexBuilder
 from ...internals.records import flatten
 from ....logging import get_logger
 from ....utils.paths import get_parts

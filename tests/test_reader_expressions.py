@@ -50,29 +50,29 @@ def test_simple_equals_expressions():
 
     DATA = DictSet(TEST_DATA, storage_class=STORAGE_CLASS.MEMORY)
 
-    assert DATA.filter("name == 'James Potter'").count() == 2
-    assert DATA.filter("age == 10").count() == 1
-    assert DATA.filter("alive == true").count() == 3
-    assert DATA.filter("affiliations is none").count() == 4
-    assert DATA.filter("name like '%Potter%'").count() == 4
+    assert DATA.select("name == 'James Potter'").count() == 2
+    assert DATA.select("age == 10").count() == 1
+    assert DATA.select("alive == true").count() == 3
+    assert DATA.select("affiliations is none").count() == 4
+    assert DATA.select("name like '%Potter%'").count() == 4
 
 
 def test_simple_not_expressions():
 
     DATA = DictSet(TEST_DATA, storage_class=STORAGE_CLASS.MEMORY)
 
-    assert DATA.filter("name <> 'James Potter'").count() == 5
-    assert DATA.filter("not age == 10").count() == 6
-    assert DATA.filter("alive == false").count() == 4
-    assert DATA.filter("affiliations is not none").count() == 3
-    assert DATA.filter("name not like '%Potter%'").count() == 3
+    assert DATA.select("name <> 'James Potter'").count() == 5
+    assert DATA.select("not age == 10").count() == 6
+    assert DATA.select("alive == false").count() == 4
+    assert DATA.select("affiliations is not none").count() == 3
+    assert DATA.select("name not like '%Potter%'").count() == 3
 
 
 def test_simple_compound_expressions():
     DATA = DictSet(TEST_DATA, storage_class=STORAGE_CLASS.MEMORY)
 
-    assert DATA.filter("name like '%Potter' and alive == true").count() == 2
-    assert DATA.filter("name like '%Potter' or alive == true").count() == 5
+    assert DATA.select("name like '%Potter' and alive == true").count() == 2
+    assert DATA.select("name like '%Potter' or alive == true").count() == 5
 
 
 if __name__ == "__main__":  # pragma: no cover

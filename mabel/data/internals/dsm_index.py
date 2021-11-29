@@ -1,4 +1,6 @@
 """
+This isn't quite a DSM, but is an index constructed from a single column.
+
 Index is a json KV store:
 
 { 
@@ -24,7 +26,7 @@ Terminology:
 """
 
 
-class Index:
+class Dsm_Index:
     def __init__(self, index: bytes):
         if hasattr(index, "read"):
             index = index.read()  # type:ignore
@@ -105,7 +107,7 @@ class IndexBuilder:
         self.temporary_index += ret_val
         return ret_val
 
-    def build(self) -> Index:
+    def build(self) -> Dsm_Index:
         temp_index = {}
         for val, pos in self.temporary_index:
             if not val in temp_index:

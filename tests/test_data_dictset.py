@@ -1,3 +1,4 @@
+from logging import fatal
 import os
 import sys
 
@@ -155,7 +156,7 @@ def test_items():
     ], items
 
 
-def test_filters():
+def test_selectors():
     data = [
         {"key": 1, "value": "one", "plus1": 2},
         {"key": 2, "value": "two", "plus1": 3},
@@ -163,7 +164,7 @@ def test_filters():
         {"key": 4, "value": "four", "plus1": 5},
     ]
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
-    dnf = ds.filter(("key", "=", 1))
+    dnf = ds.select(("key", "=", 1))
     assert dnf.count() == 1
     assert dnf.first() == {"key": 1, "value": "one", "plus1": 2}
 
@@ -178,6 +179,32 @@ def test_hash():
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
     hashval = hash(ds)
     assert hashval == 5233449951214716413, hashval
+
+def test_projection():
+    data = [
+        {"key": 1, "value": "one", "plus1": 2},
+        {"key": 2, "value": "two", "plus1": 3},
+        {"key": 3, "value": "three", "plus1": 4},
+        {"key": 4, "value": "four", "plus1": 5},
+    ]
+    ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY).project("key").collect_list()
+    assert ds == [{'key': 1}, {'key': 2}, {'key': 3}, {'key': 4}], ds
+
+    ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY).project(("key", "value",)).collect_list()
+    assert ds == [{'key': 1, 'value': 'one'}, {'key': 2, 'value': 'two'}, {'key': 3, 'value': 'three'}, {'key': 4, 'value': 'four'}], ds
+
+def test_inline_projection():
+    data = [
+        {"key": 1, "value": "one", "plus1": 2},
+        {"key": 2, "value": "two", "plus1": 3},
+        {"key": 3, "value": "three", "plus1": 4},
+        {"key": 4, "value": "four", "plus1": 5},
+    ]
+    ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)["key"].collect_list()
+    assert ds == [{'key': 1}, {'key': 2}, {'key': 3}, {'key': 4}], ds
+
+    ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)["key", "value"].collect_list()
+    assert ds == [{'key': 1, 'value': 'one'}, {'key': 2, 'value': 'two'}, {'key': 3, 'value': 'three'}, {'key': 4, 'value': 'four'}], ds
 
 
 def test_sort():
@@ -209,8 +236,10 @@ if __name__ == "__main__":
     test_summary()
     test_take()
     test_items()
-    test_filters()
+    test_selectors()
     test_hash()
     test_sort()
+    test_projection()
+    test_inline_projection()
 
     print("OKAY")
