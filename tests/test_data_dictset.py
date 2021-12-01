@@ -180,6 +180,7 @@ def test_hash():
     hashval = hash(ds)
     assert hashval == 5233449951214716413, hashval
 
+
 def test_projection():
     data = [
         {"key": 1, "value": "one", "plus1": 2},
@@ -188,10 +189,25 @@ def test_projection():
         {"key": 4, "value": "four", "plus1": 5},
     ]
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY).project("key").collect_list()
-    assert ds == [{'key': 1}, {'key': 2}, {'key': 3}, {'key': 4}], ds
+    assert ds == [{"key": 1}, {"key": 2}, {"key": 3}, {"key": 4}], ds
 
-    ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY).project(("key", "value",)).collect_list()
-    assert ds == [{'key': 1, 'value': 'one'}, {'key': 2, 'value': 'two'}, {'key': 3, 'value': 'three'}, {'key': 4, 'value': 'four'}], ds
+    ds = (
+        DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
+        .project(
+            (
+                "key",
+                "value",
+            )
+        )
+        .collect_list()
+    )
+    assert ds == [
+        {"key": 1, "value": "one"},
+        {"key": 2, "value": "two"},
+        {"key": 3, "value": "three"},
+        {"key": 4, "value": "four"},
+    ], ds
+
 
 def test_inline_projection():
     data = [
@@ -201,10 +217,17 @@ def test_inline_projection():
         {"key": 4, "value": "four", "plus1": 5},
     ]
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)["key"].collect_list()
-    assert ds == [{'key': 1}, {'key': 2}, {'key': 3}, {'key': 4}], ds
+    assert ds == [{"key": 1}, {"key": 2}, {"key": 3}, {"key": 4}], ds
 
-    ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)["key", "value"].collect_list()
-    assert ds == [{'key': 1, 'value': 'one'}, {'key': 2, 'value': 'two'}, {'key': 3, 'value': 'three'}, {'key': 4, 'value': 'four'}], ds
+    ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)[
+        "key", "value"
+    ].collect_list()
+    assert ds == [
+        {"key": 1, "value": "one"},
+        {"key": 2, "value": "two"},
+        {"key": 3, "value": "three"},
+        {"key": 4, "value": "four"},
+    ], ds
 
 
 def test_sort():

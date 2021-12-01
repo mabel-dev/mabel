@@ -97,12 +97,12 @@ def get_indexable_filter_columns(predicate):
     This creates an list of tuples of (field,value) that we can feed to the
     index search.
     """
-    INDEXABLE_OPS = {"=", "==", "is", "in", "contains"}
+    SARGABLE_OPS = {"=", "==", "is", "in", "contains"}
     if predicate is None:
         return []
     if isinstance(predicate, tuple):
         key, op, value = predicate
-        if op in INDEXABLE_OPS:
+        if op in SARGABLE_OPS:
             return [
                 (
                     key,
@@ -117,7 +117,7 @@ def get_indexable_filter_columns(predicate):
                     v,
                 )
                 for k, o, v in predicate
-                if o in INDEXABLE_OPS
+                if o in SARGABLE_OPS
             ]
         if all([isinstance(p, list) for p in predicate]):
             columns = []

@@ -27,7 +27,6 @@ from enum import Enum
 from functools import reduce
 from ....utils import paths
 from ....data.internals.records import flatten
-from ....data.internals.dsm_index import Dsm_Index
 from ....data.internals.expression import Expression
 from ....data.internals.dnf_filters import DnfFilters
 
@@ -80,9 +79,10 @@ def expand_nested_json(row):
                 row.pop(k)
     return row
 
+
 def eliminate_nulls(row):
     # remove the nulls to make the payloads smaller, missing === nulls
-    return { k:v for k, v in row.items() if v is not None}
+    return {k: v for k, v in row.items() if v is not None}
 
 
 class ParallelReader:

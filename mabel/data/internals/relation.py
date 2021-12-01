@@ -1,10 +1,14 @@
 """
-Implement a Relation, a relation is analogous to a database table.
+Implement a Relation, this analogous to a database table. It is called a Relation in
+line with terminology for Relational Algreba and technically makes Mabel a Relational
+Database although probably not charactistically.
 
-Internally it is stored as a list of tuples with the values and a dictionary
-recording the schema and other information about the relation.
+Internally the data for the Relation is stored as a list of Tuples and a dictionary
+records the schema and other key information about the Relation. Tuples are faster
+than Dicts for accessing data, and  
 
-Relations are approximately twice as fast as DictSets.
+Relations are approximately twice as fast as DictSets and use approximately half the
+memory.
 
 - self.data is an array of tuples
 - self.header is a dictionary
@@ -23,9 +27,9 @@ Relations are approximately twice as fast as DictSets.
 import sys
 import os
 
-sys.path.insert(1, os.path.join(sys.path[0], "../../../.."))
+sys.path.insert(1, os.path.join(sys.path[0], "../../.."))
 
-from typing import Iterable, Tuple 
+from typing import Iterable, Tuple
 from mabel.data.internals.dictset import DictSet
 
 
@@ -39,49 +43,66 @@ class Relation():
 
     def apply_selection(self, predicate):
         """
-        Apply a Selection operation to a Relation, this filters the data in the 
-        relation to just the entries which match the predicate.
+        Apply a Selection operation to a Relation, this filters the data in the
+        Relation to just the entries which match the predicate.
 
         Parameters:
             predicate (callable):
-                A function which can be applied to a tuple to determine if it 
+                A function which can be applied to a tuple to determine if it
                 should be returned in the target Relation.
 
         Returns:
-            Relation
+
         """
         # selection invalidates what we thought we knew about counts etc
-        new_header = {k:{ "type":v.get("type") } for k,v in self.header.items()}
+        new_header = {k: {"type": v.get("type")} for k, v in self.header.items()}
         return Relation(filter(predicate, self.data), new_header)
 
     def apply_projection(self, attributes):
         if not isinstance(attributes, (list, tuple)):
             attributes = [attributes]
         attribute_indices = []
-        new_header = {k:v for k,v in self.header.items() if k in attributes}
+        new_header = {k: v for k, v in self.header.items() if k in attributes}
         for index, attribute in enumerate(self.header.keys()):
             if attribute in attributes:
                 attribute_indices.append(index)
-        
+
         def _inner_projection():
             for tup in self.data:
                 yield tuple([tup[indice] for indice in attribute_indices])
 
         return Relation(_inner_projection(), new_header)
 
-
     def materialize(self):
-        self.data = list(self.data)
-    
+        if not isinstance(self.data, list):
+            self.data = list(self.data)
+        return self.data
+
+    def count(self):
+        self.materialize()
+        return len(self.data)
+
+    def distinct(self):
+        hash_list = {}
+        def do_dedupe(data):
+            for item in data:
+                hashed_item = hash(item)
+                if hashed_item not in hash_list:
+                    yield item
+                    hash_list[hashed_item] = True
+        return Relation(do_dedupe(self.data), self.header)
+
+
     def from_dictset(self, dictset: DictSet):
         """
         Load a Relation from a DictSet.
 
         In this case, the entire Relation is loaded into memory.
         """
-        self.header = dictset.types()
+        self.header = {k: {"type": v} for k, v in dictset.types().items()}
         self.data = [
-            tuple([row.get(k) for k,v in self.header.items()]) for row in dictset.collect_list()
+            tuple([row.get(k) for k, v in self.header.items()])
+            for row in dictset.collect_list()
         ]
 
     def to_dictset(self):
@@ -89,17 +110,29 @@ class Relation():
         Convert a Relation to a DictSet, this will fill every column so missing entries
         will be populated with Nones.
         """
+
         def _inner_to_dictset():
-            yield from [{k:row[i] for i, (k,v) in enumerate(self.header.items())} for row in self.data]
+            yield from [
+                {k: row[i] for i, (k, v) in enumerate(self.header.items())}
+                for row in self.data
+            ]
+
         return DictSet(_inner_to_dictset())
 
 
 if __name__ == "__main__":
     from mabel.data import STORAGE_CLASS
+
     data = [
-        {"number": "1", "description": "Stole ten dollars from a guy at the Camden Market"},
+        {
+            "number": "1",
+            "description": "Stole ten dollars from a guy at the Camden Market",
+        },
         {"number": "2", "description": "Took money from car coin holder"},
-        {"number": "3", "description": "Copped a feel off old (Miss Jones?) but I think she liked..."},
+        {
+            "number": "3",
+            "description": "Copped a feel off old (Miss Jones?) but I think she liked...",
+        },
         {"number": "4", "description": "Blew Dad’s chance to be elected Mayor."},
         {"number": "5", "description": "Picked my nose in public"},
         {"number": "6", "description": "Took Borrowed money from tip jar"},
@@ -107,9 +140,15 @@ if __name__ == "__main__":
         {"number": "8", "description": "I did my best friend's girl A LOT"},
         {"number": "9", "description": "Cheated alot on my school tests"},
         {"number": "10", "description": "Experimented with (Baking soda?)"},
-        {"number": "11", "description": "Took beer glass from cafe for ... as a present for Joy"},
+        {
+            "number": "11",
+            "description": "Took beer glass from cafe for ... as a present for Joy",
+        },
         {"number": "12", "description": "Made a lady think I was god"},
-        {"number": "18", "description": "Told an inappropriate story at Hank Lang's birthday party"},
+        {
+            "number": "18",
+            "description": "Told an inappropriate story at Hank Lang's birthday party",
+        },
         {"number": "23", "description": "Peed in the back of a cop car"},
         {"number": "26", "description": "Robbed a stoner blind"},
         {"number": "27", "description": "Made fun of people with accents"},
@@ -121,17 +160,29 @@ if __name__ == "__main__":
         {"number": "35", "description": "Stole organ from Reverend Hash Brown"},
         {"number": "37", "description": "Stole laptop"},
         {"number": "40", "description": "Broke Dodge and Earl Jr.'s clubhouse"},
-        {"number": "41", "description": "Snatched a kid's Halloween candy when he came to my trailer to trick or treat"},
-        {"number": "42", "description": "Cut holes in all of Dad's shirts to show his nipples."},
+        {
+            "number": "41",
+            "description": "Snatched a kid's Halloween candy when he came to my trailer to trick or treat",
+        },
+        {
+            "number": "42",
+            "description": "Cut holes in all of Dad's shirts to show his nipples.",
+        },
         {"number": "43", "description": "Racked a rich guy"},
         {"number": "44", "description": "Picked on a French kid"},
         {"number": "49", "description": "I've been wasteful"},
         {"number": "50", "description": "Kicked Tom out of band"},
         {"number": "51", "description": "Slept with Ralph's mom"},
-        {"number": "53", "description": "Put used gum under almost every table I've ever sat at"},
+        {
+            "number": "53",
+            "description": "Put used gum under almost every table I've ever sat at",
+        },
         {"number": "56", "description": "Stole liquor from liquor store"},
         {"number": "56", "description": "Larceny of a kitty cat"},
-        {"number": "57", "description": "Told Joy Dan Dodd messed himself on the golf course because she thought he was cute"},
+        {
+            "number": "57",
+            "description": "Told Joy Dan Dodd messed himself on the golf course because she thought he was cute",
+        },
         {"number": "57", "description": "Gave Randy a 'swirlie' when he was five"},
         {"number": "58", "description": "Fixed a high school football game"},
         {"number": "59", "description": "Everything I did to Dad"},
@@ -168,18 +219,39 @@ if __name__ == "__main__":
         {"number": "87", "description": "I broke into houses"},
         {"number": "88", "description": "Told Randy he would (land?) if he jumped"},
         {"number": "88", "description": "Left cigarette ..."},
-        {"number": "89", "description": "Broke into a house, had a party and didn't clean up"},
-        {"number": "91", "description": "Made fun of Maggie Lester for having a moustache"},
-        {"number": "98", "description": "Told Dodge & Earl Jr. we would have a father/son day at Mystery Fun Land and didn't take them"},
-        {"number": "102", "description": "Harmed and possibly killed innocent people by second-hand smoke"},
+        {
+            "number": "89",
+            "description": "Broke into a house, had a party and didn't clean up",
+        },
+        {
+            "number": "91",
+            "description": "Made fun of Maggie Lester for having a moustache",
+        },
+        {
+            "number": "98",
+            "description": "Told Dodge & Earl Jr. we would have a father/son day at Mystery Fun Land and didn't take them",
+        },
+        {
+            "number": "102",
+            "description": "Harmed and possibly killed innocent people by second-hand smoke",
+        },
         {"number": "107", "description": "Put bleach in ... laundry detergent"},
         {"number": "108", "description": "Lost Dad's Mustang"},
-        {"number": "109", "description": "Fixed wiring so neighbors (nosy ones) didn't have power for a week"},
+        {
+            "number": "109",
+            "description": "Fixed wiring so neighbors (nosy ones) didn't have power for a week",
+        },
         {"number": "111", "description": "Accidentally broke Tom's Toe"},
         {"number": "111", "description": "Ruined Joy's chili"},
-        {"number": "112", "description": "Let Donny Jones serve jail time for a crime I committed"},
+        {
+            "number": "112",
+            "description": "Let Donny Jones serve jail time for a crime I committed",
+        },
         {"number": "116", "description": "Parked in a handicapped spot"},
-        {"number": "117", "description": "Killed cat trying to see if it would land on its feet"},
+        {
+            "number": "117",
+            "description": "Killed cat trying to see if it would land on its feet",
+        },
         {"number": "119", "description": "Ruined Joy's chance to get into art school"},
         {"number": "126", "description": "Helped myself to the tip jar at Crab Shack"},
         {"number": "127", "description": "Stole a badge from a police officer"},
@@ -204,34 +276,64 @@ if __name__ == "__main__":
         {"number": "154", "description": "Gave Joy a tape worm"},
         {"number": "154", "description": "Put sugar in Ray's gas tank"},
         {"number": "155", "description": "Sold Joy's hair"},
-        {"number": "156", "description": "Told Joy Dan Dodd messed himself on the golf course"},
+        {
+            "number": "156",
+            "description": "Told Joy Dan Dodd messed himself on the golf course",
+        },
         {"number": "157", "description": "Gave Joy 236 bladder infections"},
-        {"number": "157", "description": "Aimed and set off bottle rockets at Randy when he was on a date"},
+        {
+            "number": "157",
+            "description": "Aimed and set off bottle rockets at Randy when he was on a date",
+        },
         {"number": "158", "description": "Made Randy steal electronics and got caught"},
         {"number": "159", "description": "Stole P's HD Cart"},
         {"number": "160", "description": "Set off bottle rockets at Randy with Ralph"},
-        {"number": "164", "description": "Burned down a barn at the Right Choice Ranch"},
-        {"number": "171", "description": "Went to Sex Anonymous support group to pick up girls"},
+        {
+            "number": "164",
+            "description": "Burned down a barn at the Right Choice Ranch",
+        },
+        {
+            "number": "171",
+            "description": "Went to Sex Anonymous support group to pick up girls",
+        },
         {"number": "174", "description": "Ruined Dodge's Career Day"},
         {"number": "183", "description": "Never took Joy's side"},
         {"number": "186", "description": "Was mean to the Crazy Witch Lady."},
         {"number": "188", "description": "Slept with Linda (Unknown) who was married"},
         {"number": "202", "description": "Stole a wallet from a guy at a gas station"},
-        {"number": "203", "description": "Stole various snacks and drinks from a local quick stop"},
+        {
+            "number": "203",
+            "description": "Stole various snacks and drinks from a local quick stop",
+        },
         {"number": "204", "description": "Seduced seven virgins"},
-        {"number": "205", "description": "Gave Joy's car a dent, said it was a hit and run"},
-        {"number": "206", "description": "Refused to dance with Too-Tall Maggie at the eighth grade dance"},
+        {
+            "number": "205",
+            "description": "Gave Joy's car a dent, said it was a hit and run",
+        },
+        {
+            "number": "206",
+            "description": "Refused to dance with Too-Tall Maggie at the eighth grade dance",
+        },
         {"number": "207", "description": "I've been wasteful"},
-        {"number": "213", "description": "Never let Randy have anything better than me"},
+        {
+            "number": "213",
+            "description": "Never let Randy have anything better than me",
+        },
         {"number": "239", "description": "Made a kid scared of the boogeyman"},
         {"number": "241", "description": "Made Derek Stone late for work"},
-        {"number": "258", "description": "Took Donny away from his mother for for 2 years"},
+        {
+            "number": "258",
+            "description": "Took Donny away from his mother for for 2 years",
+        },
         {"number": "259", "description": "Took Randy's one touchdown"},
         {"number": "260", "description": "Neglected Randy"},
         {"number": "260", "description": "Neglected Randy"},
         {"number": "261", "description": "Ruined Joy's wedding"},
         {"number": "262", "description": "Slept with Crab Man's fiancée"},
-        {"number": "263", "description": "Broke bus stop while looking for Poncho the blue fish"},
+        {
+            "number": "263",
+            "description": "Broke bus stop while looking for Poncho the blue fish",
+        },
         {"number": "264", "description": "Punched college student"},
         {"number": "265", "description": "Punch Tom in gut"},
         {"number": "265", "description": "Didn't pay taxes"},
@@ -240,23 +342,56 @@ if __name__ == "__main__":
         {"number": "269", "description": "Got Catalina deported"},
         {"number": "270", "description": "Kept a guy locked in a truck"},
         {"number": "273", "description": "Kept myself from being an adult"},
-        {"number": "277", "description": "Broke up Randy & Pinky"}
+        {"number": "277", "description": "Broke up Randy & Pinky"},
     ]
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
+
+    import sys
+    from types import ModuleType, FunctionType
+    from gc import get_referents
+
+    # Custom objects know their class.
+    # Function objects seem to know way too much, including modules.
+    # Exclude modules as well.
+    BLACKLIST = type, ModuleType, FunctionType
+
+    def getsize(obj):
+        """sum size of object & members."""
+        if isinstance(obj, BLACKLIST):
+            raise TypeError(
+                "getsize() does not take argument of type: " + str(type(obj))
+            )
+        seen_ids = set()
+        size = 0
+        objects = [obj]
+        while objects:
+            need_referents = []
+            for obj in objects:
+                if not isinstance(obj, BLACKLIST) and id(obj) not in seen_ids:
+                    seen_ids.add(id(obj))
+                    size += sys.getsizeof(obj)
+                    need_referents.append(obj)
+            objects = get_referents(*need_referents)
+        return size
 
     rel = Relation()
     rel.from_dictset(ds)
 
-
-    print(sys.getsizeof(rel))
-    print(sys.getsizeof(ds))
+    print(getsize(rel))
+    print(getsize(ds))
 
     from mabel.utils.timer import Timer
 
     with Timer("rel"):
         for i in range(1000):
-            r = rel.apply_selection(lambda x: x[0] == "270")
+#            r = rel.apply_selection(lambda x: x[0] == "270").data
+            r = rel.distinct().count()
+    print(r)
 
     with Timer("ds"):
         for i in range(1000):
-            d = ds.select(lambda x: x["number"] == "270")
+#            d = ds.select(lambda x: x["number"] == "270")
+            r = ds.distinct().count()
+    print(r)
+
+    #print(rel.apply_projection("description").to_dictset())

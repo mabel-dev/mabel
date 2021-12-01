@@ -4,6 +4,7 @@ from pydantic import BaseModel  # type:ignore
 from typing import Any, Optional, Union, List
 from .internals.blob_writer import BlobWriter
 from ..validator import Schema
+from ..internals.zone_map_writer import ZoneMapWriter
 from ...utils import paths, dates
 from ...errors import ValidationError, InvalidDataSetError, MissingDependencyError
 from ...logging import get_logger
@@ -26,10 +27,13 @@ class Writer:
         set_of_expectations: Optional[list] = None,
         format: str = "zstd",
         date: Any = None,
+        clustered_index: str = None,
         **kwargs,
     ):
         """
         Simple Writer provides a basic writer capability.
+
+
         """
 
         dataset = kwargs.get("dataset", "")
@@ -63,6 +67,7 @@ class Writer:
 
         self.finalized = False
         self.batch_date = self._get_writer_date(date)
+        self.clustered_index = clustered_index
 
         self.dataset_template = dataset
         if "{date" not in self.dataset_template and not kwargs.get("raw_path", False):
@@ -85,6 +90,7 @@ class Writer:
 
         # default index
         kwargs["index_on"] = kwargs.get("index_on", [])
+        kwargs["clustered_index"] = clustered_index
 
         # create the writer
         self.blob_writer = BlobWriter(**kwargs)
@@ -118,6 +124,7 @@ class Writer:
             de.evaluate_record(self.expectations, record)
 
         self.blob_writer.append(record)
+        self.zone_map_writer.add(record)
         self.records += 1
 
     def __del__(self):
@@ -129,6 +136,10 @@ class Writer:
     def finalize(self, **kwargs):
         self.finalized = True
         try:
+            self.blob_writer.inner_writer.commit(
+                byte_data=orjson.dumps(self.zone_map_writer.profile(self.records)),
+                override_blob_name="zone.map",
+            )
             return self.blob_writer.commit()
         except Exception as e:
             get_logger().error(

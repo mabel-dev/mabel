@@ -2,7 +2,6 @@ import threading
 from typing import Any
 from orjson import dumps
 import zstandard
-from ...internals.dsm_index import IndexBuilder
 from ...internals.records import flatten
 from ....logging import get_logger
 from ....utils.paths import get_parts
@@ -10,7 +9,7 @@ from ....utils import safe_field_name
 from ....errors import MissingDependencyError
 
 
-BLOB_SIZE = 64 * 1024 * 1024  # 64Mb, 16 files per gigabyte
+BLOB_SIZE = 128 * 1024 * 1024  # 128Mb, 8 files per gigabyte
 SUPPORTED_FORMATS_ALGORITHMS = ("jsonl", "zstd", "parquet", "text", "flat")
 
 

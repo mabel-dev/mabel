@@ -7,7 +7,7 @@ import shutil
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.data import BatchWriter
 from mabel.data import Reader
-from mabel.data.internals.index import Index
+from mabel.data.internals.dsm_index import Dsm_Index
 from mabel.adapters.disk import DiskReader, DiskWriter
 from rich import traceback
 
@@ -33,7 +33,7 @@ def test_index():
         idx = f.read()
 
     # test the recently created index outside the reader
-    i = Index(io.BytesIO(idx))
+    i = Dsm_Index(io.BytesIO(idx))
     assert i.search("SwiftOnSecurity") == []
     assert i.search("BBCNews") == [1, 2, 4, 24, 25, 44], i.search("BBCNews")
 
