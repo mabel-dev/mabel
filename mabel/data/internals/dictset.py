@@ -149,7 +149,7 @@ class DictSet(object):
             inner_sampler(iter(self._iterator)), storage_class=self.storage_class
         )
 
-    def collect_list(self, key: str = None) -> Union[list, map]:
+    def icollect_list(self, key: str = None) -> Union[Iterable, map]:
         """
         Convert a _DictSet_ to a list, optionally, but probably usually, just extract
         a specific column.
@@ -160,14 +160,17 @@ class DictSet(object):
 
         def asdic(lst):
             for l in lst:
-                if isinstance(l, dict):
-                    yield l
-                else:
+                if hasattr(l, "as_dict"):
                     yield l.as_dict()
+                else:
+                    yield l
 
         if not key:
-            return list(asdic(iter(self._iterator)))
+            return asdic(iter(self._iterator))
         return [record[key] for record in iter(self._iterator) if key in record]
+
+    def collect_list(self, key: str = None) -> list:
+        return list(self.icollect_list(key))
 
     def keys(self, number_of_rows: int = 0):
         """
@@ -306,11 +309,7 @@ class DictSet(object):
                         "".join([str(item.get(c, "$$")) for c in columns])
                     )
                 else:
-                    # ensure the fields are in the same order
-                    # this is quicker than dealing with dictionaries
-                    hashed_item = hash(
-                        "".join([f"{k}:{item[k]}" for k in sorted(item.keys())])
-                    )
+                    hashed_item = reduce(lambda x, y: x ^ y, [hash(v) + i for i,v in enumerate(item.values())], 0)
                 if hashed_item not in hash_list:
                     yield item
                     hash_list[hashed_item] = True
