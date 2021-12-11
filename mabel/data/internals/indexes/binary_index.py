@@ -17,10 +17,10 @@ from typing import Iterable, Optional
 from functools import lru_cache
 
 
-MAX_INDEX:int = 4294967295  # 2^32 - 1
-STRUCT_DEF:str = "I I"  # 4 byte unsigned int, 4 byte unsigned int
-RECORD_SIZE:int = struct.calcsize(STRUCT_DEF)  # this should be 8
-HASH_SEED:str = "MISAPPROPRIATION"
+MAX_INDEX: int = 4294967295  # 2^32 - 1
+STRUCT_DEF: str = "I I"  # 4 byte unsigned int, 4 byte unsigned int
+RECORD_SIZE: int = struct.calcsize(STRUCT_DEF)  # this should be 8
+HASH_SEED: str = "MISAPPROPRIATION"
 
 """
 There are overlapping terms because we're traversing a dataset so we can traverse a

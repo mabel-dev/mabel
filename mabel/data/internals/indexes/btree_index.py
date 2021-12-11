@@ -39,7 +39,7 @@ class Node(object):
         order (int): The maximum number of keys each node can hold.
     """
 
-    __slots__ = ('_order', '_keys', '_values', '_leaf')
+    __slots__ = ("_order", "_keys", "_values", "_leaf")
 
     def __init__(self, order):
         """
@@ -110,7 +110,7 @@ class Node(object):
         Prints the keys at each level.
         """
         if not parent:
-            parent = 'root'
+            parent = "root"
         print(counter, str(self._keys), str(self._values), self._leaf, parent)
         # Recursively print the key of child nodes (if these exist).
         if not self._leaf:
@@ -134,7 +134,8 @@ class Node(object):
                 yield from item.keys()
 
     def __repr__(self):
-        return F"Node ({str(self._keys)})"
+        return f"Node ({str(self._keys)})"
+
 
 class BTree(object):
     """
@@ -146,6 +147,7 @@ class BTree(object):
     Attributes:
         order (int): The maximum number of keys each node can hold.
     """
+
     def __init__(self, order=8):
         self._order = order
         self.root = Node(order)
@@ -232,11 +234,12 @@ class BTree(object):
 
     def save(self, filename):
         import ujson as json
-        with open(filename, mode='w') as file:
+
+        with open(filename, mode="w") as file:
             for key, attributes in self.items():
-                file.write(json.dumps({"key":key, "value": attributes}) + '\n')
+                file.write(json.dumps({"key": key, "value": attributes}) + "\n")
 
     def copy(self):
-        k = [k for k,v in self.items()]
-        v = [v for k,v in self.items()]
+        k = [k for k, v in self.items()]
+        v = [v for k, v in self.items()]
         return BTree.bulk_load(k, v, self._order)

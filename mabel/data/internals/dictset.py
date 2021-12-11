@@ -309,7 +309,11 @@ class DictSet(object):
                         "".join([str(item.get(c, "$$")) for c in columns])
                     )
                 else:
-                    hashed_item = reduce(lambda x, y: x ^ y, [hash(v) + i for i,v in enumerate(item.values())], 0)
+                    hashed_item = reduce(
+                        lambda x, y: x ^ y,
+                        [hash(f"{i},{v}") for i, v in enumerate(item.values())],
+                        0,
+                    )
                 if hashed_item not in hash_list:
                     yield item
                     hash_list[hashed_item] = True

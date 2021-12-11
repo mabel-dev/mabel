@@ -36,11 +36,12 @@ import os
 
 sys.path.insert(1, os.path.join(sys.path[0], "../../.."))
 
+import datetime
 from typing import Iterable, Tuple
 from mabel.data.internals.dictset import DictSet
 
 
-class Relation():
+class Relation:
 
     __slots__ = ("header", "data", "name")
 
@@ -95,14 +96,15 @@ class Relation():
         Return a new Relation with only unique values
         """
         hash_list = {}
+
         def do_dedupe(data):
             for item in data:
                 hashed_item = hash(item)
                 if hashed_item not in hash_list:
                     yield item
                     hash_list[hashed_item] = True
-        return Relation(do_dedupe(self.data), self.header)
 
+        return Relation(do_dedupe(self.data), self.header)
 
     def from_dictset(self, dictset: DictSet):
         """
@@ -110,9 +112,10 @@ class Relation():
 
         In this case, the entire Relation is loaded into memory.
         """
+
         self.header = {k: {"type": v} for k, v in dictset.types().items()}
         self.data = [
-            tuple([row.get(k) for k in self.header.keys()])
+            tuple([self._coerce(row.get(k)) for k in self.header.keys()])
             for row in dictset.icollect_list()
         ]
 
@@ -121,6 +124,7 @@ class Relation():
         Convert a Relation to a DictSet, this will fill every column so missing entries
         will be populated with Nones.
         """
+
         def _inner_to_dictset():
             yield from [
                 {k: row[i] for i, (k, v) in enumerate(self.header.items())}
@@ -133,7 +137,7 @@ class Relation():
         return [k for k in self.header.keys()]
 
     def __str__(self):
-        return F"{self.name or 'Relation'} ({', '.join([k + ':' + v.get('type') for k,v in self.header.items()])})"
+        return f"{self.name or 'Relation'} ({', '.join([k + ':' + v.get('type') for k,v in self.header.items()])})"
 
     def __len__(self):
         """
@@ -141,14 +145,28 @@ class Relation():
         """
         return self.count()
 
+    def _coerce(self, var):
+        """
+        Relations only support a subset of types, if we know how to translate a type
+        into a supported type, do it
+        """
+        t = type(var)
+        if t in (int, float, tuple, bool, str, datetime.datetime, None):
+            return var
+        if t in (list, set):
+            return tuple(var)
+        if t in (datetime.date,):
+            return datetime.datetime(t.year, t.month, t.day)
+
 
 if __name__ == "__main__":
     from mabel.data import STORAGE_CLASS, Reader
     from mabel.adapters.disk import DiskReader
 
-    ds = Reader(inner_reader=DiskReader, dataset="tests/data/half", raw_path=True) #, persistence=STORAGE_CLASS.MEMORY)
-
-    print(ds.first())
+    ds = Reader(
+        inner_reader=DiskReader, dataset="tests/data/half", raw_path=True
+    )  # , persistence=STORAGE_CLASS.MEMORY)
+    ds = DictSet(ds.sample(0.1), storage_class=STORAGE_CLASS.MEMORY)
 
     import sys
     from types import ModuleType, FunctionType
@@ -181,23 +199,23 @@ if __name__ == "__main__":
     rel = Relation()
     rel.from_dictset(ds)
 
-    print(getsize(rel))
-    print(getsize(ds))
+    # print(getsize(rel))
+    # print(getsize(ds))
 
     from mabel.utils.timer import Timer
 
     with Timer("rel"):
         for i in range(10):
-            #r = rel.apply_selection(lambda x: x[0] == "270").count()
+            # r = rel.apply_selection(lambda x: x[0] == "270").count()
             r = rel.distinct().count()
     print(r)
 
-    #with Timer("ds"):
-    #    for i in range(10):
-    #        #d = ds.select(lambda x: x["number"] == "270").count()
-    #        r = ds.distinct().count()
-    #print(r)
+    with Timer("ds"):
+        for i in range(10):
+            #        #d = ds.select(lambda x: x["number"] == "270").count()
+            r = ds.distinct().count()
+    print(r)
 
-    #print(rel.apply_projection("description").to_dictset())
+    # print(rel.apply_projection("description").to_dictset())
 
     print(rel.attributes(), len(rel.attributes()))
