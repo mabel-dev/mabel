@@ -39,7 +39,7 @@ sys.path.insert(1, os.path.join(sys.path[0], "../../.."))
 import datetime
 from typing import Iterable, Tuple
 from mabel.data.internals.dictset import DictSet
-
+from mabel.data.internals.algorithms.hyper_log_log import HyperLogLog
 
 class Relation:
 
@@ -203,6 +203,7 @@ if __name__ == "__main__":
     # print(getsize(ds))
 
     from mabel.utils.timer import Timer
+    from mabel.data.internals.zone_map_writer import ZoneMapWriter
 
     with Timer("rel"):
         for i in range(10):
@@ -210,12 +211,25 @@ if __name__ == "__main__":
             r = rel.distinct().count()
     print(r)
 
-    with Timer("ds"):
-        for i in range(10):
-            #        #d = ds.select(lambda x: x["number"] == "270").count()
-            r = ds.distinct().count()
-    print(r)
+    #with Timer("ds"):
+    #    for i in range(10):
+    #        #        #d = ds.select(lambda x: x["number"] == "270").count()
+    #        r = ds.distinct().count()
+    #print(r)
 
     # print(rel.apply_projection("description").to_dictset())
 
     print(rel.attributes(), len(rel.attributes()))
+
+
+    with Timer("without mapper"):
+        for i in [a for a in ds._iterator]:
+            pass
+
+    with Timer("with mapper"):
+        zm = ZoneMapWriter()
+        for i in [a for a in ds._iterator]:
+            zm.add(i)
+
+    from pprint import pprint     
+    pprint(list(zm.profile()))

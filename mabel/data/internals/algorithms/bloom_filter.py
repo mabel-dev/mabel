@@ -1,8 +1,12 @@
 """
 Bloom Filter
 
-This is a variation of the Bloom Filter; this provides a fast and memory
-efficient way to tell if an item is in a list.
+This is a variation of the Bloom Filter; this provides a fast and memory efficient way
+to tell if an item is in a list.
+
+This is a probabilistic algorithm, it saves memory and/or time to give you an
+approximation of the correct answer. It doesn't claim to be 100% correct 100% of the
+time.
 
 https://en.wikipedia.org/wiki/Bloom_filter
 
@@ -113,7 +117,7 @@ class BloomFilter:
         collision = True
 
         for i in range(self.hash_count):
-            h = siphash(SIP_HASH_SEEDS[i], term) % self.filter_size
+            h = siphash(SIP_HASH_SEEDS[i], f"{term}") % self.filter_size
             if not self.bits[h]:
                 self.bits[h] = 1
                 collision = False

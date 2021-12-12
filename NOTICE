@@ -11,3 +11,8 @@ The parts of this framework are copied from, or derived from:
 - https://github.com/joocer/arhap
 - https://github.com/joocer/newidydd
 - https://github.com/joocer/cronicl
+
+
+From other authors:
+
+https://github.com/svpcom/hyperloglog - LGPL-2.1 License @ https://github.com/svpcom/hyperloglog/blob/master/LICENSE

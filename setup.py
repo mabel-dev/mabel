@@ -31,6 +31,8 @@ setup(
             "mabel/data/internals/expression.py",
             "mabel/data/readers/internals/inline_evaluator.py",
             "mabel/data/readers/internals/parallel_reader.py",
+            "mabel/data/internals/relation.py",
+            "mabel/data/internals/bloom_filter.py",
         ]
     ),
 )

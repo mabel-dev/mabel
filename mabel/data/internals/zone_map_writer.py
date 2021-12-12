@@ -1,6 +1,6 @@
 import datetime
 from typing import Any
-from .bloom_filter import BloomFilter
+from mabel.data.internals.algorithms.hyper_log_log import HyperLogLog
 
 
 # This should require a filter which takes about 1.8Mb of memory and uses 9 hashes
@@ -17,6 +17,7 @@ class ZoneMap:
         self.missing: int = 0
         self.cumulative_sum: float = 0
         self.unique_items: int = 0
+        self.cardinality: float = 0
 
     def dict(self, column: str):
         return {
@@ -26,28 +27,29 @@ class ZoneMap:
                 "maximum": self.maximum,
                 "count": self.count,
                 "missing": self.missing,
-                "cumulative_sum": self.cumulative_sum,
-                "unique_items": self.unique_itmes,
+                "cumulative_sum": self.cumulative_sum
             }
         }
 
 
 class ZoneMapWriter(object):
     def __init__(self):
-        self.counter = 0
         self.collector = {}
-        self.bloom_filters = {}
+        self.hyper_log_logs = {}
         self.record_counter = 0
 
     def add(self, row):
+        self.record_counter += 1
+
         for k, v in row.items():
 
             collector = self.collector.get(k)
             if not collector:
                 collector = ZoneMap()
-                self.bloom_filters[k] = BloomFilter(
-                    BLOOM_FILTER_SIZE, BLOOM_FILTER_FALSE_POSITIVE_RATE
-                )
+                #self.bloom_filters[k] = BloomFilter(
+                #    BLOOM_FILTER_SIZE, BLOOM_FILTER_FALSE_POSITIVE_RATE
+                #)
+                self.hyper_log_logs[k] = HyperLogLog(0.01)
             collector.count += 1
 
             # if the value is missing, skip anything else
@@ -76,21 +78,23 @@ class ZoneMapWriter(object):
                 else:
                     collector.type = "mixed"
 
-            v = str(v)
             # count the unique items, use a bloom filter to save space - we're going to
             # use to create estimates of value distribution, so this is probably okay.
-            if self.bloom_filters[k].add(v):
-                collector.unique_items += 1
+            #if self.bloom_filters[k].add(v):
+            #    collector.unique_items += 1
+            
+            self.hyper_log_logs[k].add(v)
 
             # put the profile back in the collector
             self.collector[k] = collector
 
-    def profile(self, record_count=0):
+    def profile(self):
         """
         Pass the record count in as we can't count the rows ourselves
         """
         for column in self.collector:
-            profile.missing = record_count - profile["count"]
             profile = self.collector[column].dict(column)
+            profile[column]['missing'] = self.record_counter - profile[column]['count']
+            profile[column]['cardinality'] = self.hyper_log_logs[column].card() / profile[column]['count']
 
             yield profile

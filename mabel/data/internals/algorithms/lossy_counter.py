@@ -2,7 +2,14 @@
 Find the most frequent item in an infinite (i.e. larger than will fit in memory)
 dataset.
 
-Based on LossyCounter by Manku and Motwani
+This is a probabilistic algorithm, it saves memory and/or time to give you an
+approximation of the correct answer. It doesn't claim to be 100% correct 100% of the
+time.
+
+This entirely new code but is based on LossyCounter by Manku and Motwani.
+
+This works by dividing a bag into buckets, the number of times each item appears
+in each bucket is used to removed rare items (items which have only appeared once)
 """
 from typing import Dict, List, Any
 
@@ -29,16 +36,14 @@ class LossyCounter:
     def empty_bucket(self):
 
         for i in self.bucket:
-            # if it exists on the list already, increment the frequency by one
+            # if it's tracked already, increment the frequency by one
             if i in self.tracked_items:
                 self.tracked_items[i] += 1
-            # if it's new and if we have room in the list for new items, add it
-            elif len(self.tracked_items) <= self.max_items:
-                self.tracked_items[i] = 1
-            # if it's new and the list is full, remove the least frequent item
             else:
-                key_to_remove = min(self.tracked_items, key=self.tracked_items.get)
-                self.tracked_items.pop(key_to_remove)
+                # if the tracked set is full, remove the oldest least frequent item
+                if len(self.tracked_items) >= self.max_items:
+                    key_to_remove = min(self.tracked_items, key=self.tracked_items.get)
+                    self.tracked_items.pop(key_to_remove)
                 self.tracked_items[i] = 1
 
         # after each bucket, decrement the counters by 1
