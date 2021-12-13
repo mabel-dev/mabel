@@ -10,7 +10,9 @@ import datetime
 import fastnumbers
 from siphashc import siphash
 from functools import lru_cache
-from ....utils.dates import parse_iso
+
+from mabel.utils.text import levenshtein_distance
+from mabel.utils.dates import parse_iso
 
 
 def get_year(input):
@@ -189,6 +191,13 @@ def get_md5(item):
     return hashlib.md5(str(item).encode()).hexdigest()  # nosec - meant to be MD5
 
 
+def attempt(func):
+    try:
+        func
+    except:
+        return None
+
+
 FUNCTIONS = {
     # DATES & TIMES
     "YEAR": get_year,
@@ -216,6 +225,7 @@ FUNCTIONS = {
     "RIGHT": lambda x, y: str(x)[-int(y) :],
     "MID": lambda x, y, z: str(x)[int(y) :][: int(z)],
     "CONCAT": concat,
+    "LEVENSHTEIN": levenshtein_distance,
     # NUMBERS
     "ROUND": round,
     "TRUNC": parse_number(fastnumbers.real, truncate),
@@ -231,4 +241,5 @@ FUNCTIONS = {
     # OTHER
     "BETWEEN": lambda val, low, high: low < val < high,
     "SORT": lambda x: sorted(x),
+    "TRY": attempt,
 }

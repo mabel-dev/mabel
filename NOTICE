@@ -15,4 +15,8 @@ The parts of this framework are copied from, or derived from:
 
 From other authors:
 
+2021-12-12
 https://github.com/svpcom/hyperloglog - LGPL-2.1 License @ https://github.com/svpcom/hyperloglog/blob/master/LICENSE
+
+2021-12-12
+https://github.com/1e0ng/simhash - MIT Licence @ https://github.com/1e0ng/simhash/blob/master/LICENSE

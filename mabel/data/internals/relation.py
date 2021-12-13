@@ -41,6 +41,7 @@ from typing import Iterable, Tuple
 from mabel.data.internals.dictset import DictSet
 from mabel.data.internals.algorithms.hyper_log_log import HyperLogLog
 
+
 class Relation:
 
     __slots__ = ("header", "data", "name")
@@ -211,16 +212,15 @@ if __name__ == "__main__":
             r = rel.distinct().count()
     print(r)
 
-    #with Timer("ds"):
+    # with Timer("ds"):
     #    for i in range(10):
     #        #        #d = ds.select(lambda x: x["number"] == "270").count()
     #        r = ds.distinct().count()
-    #print(r)
+    # print(r)
 
     # print(rel.apply_projection("description").to_dictset())
 
     print(rel.attributes(), len(rel.attributes()))
-
 
     with Timer("without mapper"):
         for i in [a for a in ds._iterator]:
@@ -231,5 +231,6 @@ if __name__ == "__main__":
         for i in [a for a in ds._iterator]:
             zm.add(i)
 
-    from pprint import pprint     
+    from pprint import pprint
+
     pprint(list(zm.profile()))

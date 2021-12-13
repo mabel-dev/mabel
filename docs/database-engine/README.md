@@ -1,3 +1,3 @@
-Database engine is being written in v0.6
+Distributable Query Engine is being written in v0.6
 
 

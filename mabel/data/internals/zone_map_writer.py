@@ -27,7 +27,7 @@ class ZoneMap:
                 "maximum": self.maximum,
                 "count": self.count,
                 "missing": self.missing,
-                "cumulative_sum": self.cumulative_sum
+                "cumulative_sum": self.cumulative_sum,
             }
         }
 
@@ -46,9 +46,9 @@ class ZoneMapWriter(object):
             collector = self.collector.get(k)
             if not collector:
                 collector = ZoneMap()
-                #self.bloom_filters[k] = BloomFilter(
+                # self.bloom_filters[k] = BloomFilter(
                 #    BLOOM_FILTER_SIZE, BLOOM_FILTER_FALSE_POSITIVE_RATE
-                #)
+                # )
                 self.hyper_log_logs[k] = HyperLogLog(0.01)
             collector.count += 1
 
@@ -80,9 +80,9 @@ class ZoneMapWriter(object):
 
             # count the unique items, use a bloom filter to save space - we're going to
             # use to create estimates of value distribution, so this is probably okay.
-            #if self.bloom_filters[k].add(v):
+            # if self.bloom_filters[k].add(v):
             #    collector.unique_items += 1
-            
+
             self.hyper_log_logs[k].add(v)
 
             # put the profile back in the collector
@@ -94,7 +94,9 @@ class ZoneMapWriter(object):
         """
         for column in self.collector:
             profile = self.collector[column].dict(column)
-            profile[column]['missing'] = self.record_counter - profile[column]['count']
-            profile[column]['cardinality'] = self.hyper_log_logs[column].card() / profile[column]['count']
+            profile[column]["missing"] = self.record_counter - profile[column]["count"]
+            profile[column]["cardinality"] = (
+                self.hyper_log_logs[column].card() / profile[column]["count"]
+            )
 
             yield profile
