@@ -75,7 +75,7 @@ class Relation:
         new_header = {k: v for k, v in self.header.items() if k in attributes}
         for index, attribute in enumerate(self.header.keys()):
             if attribute in attributes:
-                attribute_indices.append(index)
+                attribute_indices.append(index - 1)
 
         def _inner_projection():
             for tup in self.data:
