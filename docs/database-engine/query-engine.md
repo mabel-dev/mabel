@@ -8,14 +8,15 @@
 // relational algebra -> graph (query planning)
 
 # SequentialScan (partition, dataset)
-# Project
+# Project (including renames)
 # Select
 # CrossJoin
 # Sort
-# Aggregate
-# Limit
+# Aggregate - MIN/MAX/AVG etc
+# Limit - Top N records
 # Distinct
-# Union
+# Union - append sets to each other
+# Evaluate -
 
 # * RemoteScan (e.g. ODBC databases)
 

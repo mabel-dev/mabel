@@ -5955,27 +5955,3 @@ class HyperLogLog(object):
             return H if H <= get_treshold(self.p) else self._Ep()
         else:
             return self._Ep()
-
-
-if __name__ == "__main__":
-
-    values = [
-        {"key": 6},
-        {"key": 10},
-        {"key": 3},
-        {"key": 9},
-        {"key": "eight"},
-        {"key": 4},
-        {"key": 7},
-        {"key": 5},
-        {"key": "two"},
-        {"key": 1},
-        {"key": 2},
-        {"key": 3},
-        {"key": "4"},
-    ]
-
-    hll = HyperLogLog()
-    for i in values:
-        hll.add(i)
-    print(hll.card())

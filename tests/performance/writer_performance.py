@@ -87,7 +87,7 @@ def execute_test(compress, schema, reader):
     for i in range(10):
         writer = BatchWriter(
             inner_writer=NullWriter,
-            dataset="{datefolders}",
+            dataset="test",
             format=compress,
             schema=schema,
         )

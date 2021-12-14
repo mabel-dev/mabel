@@ -159,6 +159,11 @@ class Relation:
         if t in (datetime.date,):
             return datetime.datetime(t.year, t.month, t.day)
 
+    def serialize(self):
+        from pyarrow import orc
+
+        
+
 
 if __name__ == "__main__":
     from mabel.data import STORAGE_CLASS, Reader

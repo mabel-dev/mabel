@@ -1,4 +1,3 @@
-import sys
 import datetime
 
 from typing import Optional, Dict, Union
@@ -32,7 +31,7 @@ RULES = [
     {"name": "end_date", "required": False, "warning": None, "incompatible_with": []},
     {"name": "freshness_limit", "required": False, "warning": None, "incompatible_with": []},
     {"name": "inner_reader", "required": False, "warning": None, "incompatible_with": []},
-    {"name": "raw_path", "required": False, "warning": None, "incompatible_with": ["freshness_limit"]},
+    {"name": "partitioning", "required": False, "warning": None, "incompatible_with": []},
     {"name": "select", "required": False, "warning": None, "incompatible_with": []},
     {"name": "start_date", "required": False, "warning": None, "incompatible_with": []},
     {"name": "filters", "required": False, "warning": "", "incompatible_with": []},
@@ -57,8 +56,8 @@ def Reader(
     select: str = "*",
     dataset: str = "",
     filters: Optional[str] = None,
-    inner_reader=None,  # type:ignore
-    raw_path: bool = False,
+    inner_reader=None,
+    partitioning=("year_{yyyy}", "month_{mm}", "day_{dd}"),
     persistence: STORAGE_CLASS = STORAGE_CLASS.NO_PERSISTANCE,
     override_format: Optional[str] = None,
     multiprocess: bool = False,
@@ -115,6 +114,9 @@ def Reader(
             incidates the maximum age of a dataset before it is no longer
             considered fresh. Where the 'time' of a dataset cannot be
             determined, it will be treated as midnight (00:00) for the date.
+        partitioning: tuple of strings (optional):
+            define a pattern for partitioning - this defaults to the following date
+            based partitions 'year_YYYY/month_MM/day_DD'.
         persistence: STORAGE_CLASS (optional)
             How to cache the results, the default is NO_PERSISTANCE which will almost
             always return a generator. MEMORY should only be used where the dataset
@@ -136,7 +138,7 @@ def Reader(
             of allowable resources to be defined.
 
     Returns:
-        DictSet
+        Relation
 
     Raises:
 
@@ -164,7 +166,7 @@ def Reader(
 
     # instantiate the injected reader class
     reader_class = inner_reader(
-        dataset=dataset, raw_path=raw_path, **kwargs
+        dataset=dataset, partitioning=partitioning, **kwargs
     )  # type:ignore
 
     arg_dict = kwargs.copy()

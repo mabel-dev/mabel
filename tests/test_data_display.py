@@ -13,7 +13,7 @@ get_logger().setLevel(5)
 
 def get_ds(**kwargs):
     ds = Reader(
-        inner_reader=DiskReader, dataset="tests/data/tweets", raw_path=True, **kwargs
+        inner_reader=DiskReader, dataset="tests/data/tweets", partitioning=[], **kwargs
     )
     return ds
 

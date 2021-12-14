@@ -17,19 +17,19 @@ get_logger().setLevel(5)
 
 
 def test_reader_can_read():
-    r = Reader(inner_reader=DiskReader, dataset="tests/data/tweets", raw_path=True)
+    r = Reader(inner_reader=DiskReader, dataset="tests/data/tweets", partitioning=[])
     assert len(list(r)) == 50
 
 
 def test_reader_to_pandas():
-    r = Reader(inner_reader=DiskReader, dataset="tests/data/tweets", raw_path=True)
+    r = Reader(inner_reader=DiskReader, dataset="tests/data/tweets", partitioning=[])
     df = r.to_pandas()
 
     assert len(df) == 50
 
 
 def test_reader_can_read_alot():
-    r = Reader(inner_reader=DiskReader, dataset="tests/data/nvd", raw_path=True)
+    r = Reader(inner_reader=DiskReader, dataset="tests/data/nvd", partitioning=[])
     for i, row in enumerate(r):
         if i % 1000000 == 0:
             print(i)

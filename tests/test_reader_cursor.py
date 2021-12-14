@@ -14,7 +14,7 @@ traceback.install()
 
 
 def get_records():
-    r = Reader(inner_reader=DiskReader, dataset="tests/data/tweets/", raw_path=True)
+    r = Reader(inner_reader=DiskReader, dataset="tests/data/tweets/", partitioning=[])
     return len(list(r))
 
 
@@ -25,7 +25,7 @@ def test_cursor():
     lim = number_of_records // 4 * 3
 
     reader = Reader(
-        inner_reader=DiskReader, dataset="tests/data/tweets/", raw_path=True
+        inner_reader=DiskReader, dataset="tests/data/tweets/", partitioning=[]
     )
 
     for row in reader.take(lim):
@@ -39,7 +39,7 @@ def test_cursor():
     reader = Reader(
         inner_reader=DiskReader,
         dataset="tests/data/tweets/",
-        raw_path=True,
+        partitioning=[],
         cursor=cursor,
     )
 
@@ -57,7 +57,7 @@ def test_cursor_as_text():
         reader = Reader(
             inner_reader=DiskReader,
             dataset="tests/data/tweets/",
-            raw_path=True,
+            partitioning=[],
             cursor='{"partition": 5122091051124077700, "location": '
             + str(offset)
             + ', "map":"80" }',

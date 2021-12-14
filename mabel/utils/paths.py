@@ -3,6 +3,7 @@ Functions to help with handling file paths
 """
 import pathlib
 import datetime
+from sys import path
 from mabel.utils.entropy import random_string
 
 
@@ -52,18 +53,18 @@ def date_format(path_string: str, date: datetime.date = None):
     if not date:
         date = datetime.datetime.now()
 
-    year = date.year
-    month = f"{date.month:02d}"
-    day = f"{date.day:02d}"
+    # convert dates to datetimes - so we can extract HH:MM:SS information
+    args = date.timetuple()[:6]
+    date = datetime.datetime(*args)
 
     path_string = str(path_string)
 
-    path_string = path_string.replace("{datefolders_short}", f"{year}/{month}/{day}")
-
-    path_string = path_string.replace(
-        "{datefolders}", f"year_{year}/month_{month}/day_{day}"
-    )
-    path_string = path_string.replace("{date}", f"{year}-{month}-{day}")
+    path_string = path_string.replace("{yyyy}", f"{date.year}")
+    path_string = path_string.replace("{mm}", f"{date.month:02d}")
+    path_string = path_string.replace("{dd}", f"{date.day:02d}")
+    path_string = path_string.replace("{HH}", f"{date.hour:02d}")
+    path_string = path_string.replace("{MM}", f"{date.minute:02d}")
+    path_string = path_string.replace("{SS}", f"{date.second:02d}")
 
     return path_string
 

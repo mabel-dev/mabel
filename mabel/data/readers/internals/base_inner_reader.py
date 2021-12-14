@@ -58,14 +58,14 @@ class BaseInnerReader(abc.ABC):
                 return part
         return ""
 
-    def __init__(self, **kwargs):
+    def __init__(self, partitioning=None, **kwargs):
         self.dataset = kwargs.get("dataset")
         if self.dataset is None:
             raise ValueError("Readers must have the `dataset` parameter set")
         if not self.dataset.endswith("/"):
             self.dataset += "/"
-        if "{" not in self.dataset and not kwargs.get("raw_path", False):
-            self.dataset += "{datefolders}/"
+        if partitioning:
+            self.dataset += "/".join(partitioning) + "/"
 
         self.start_date = dates.extract_date(kwargs.get("start_date"))
         self.end_date = dates.extract_date(kwargs.get("end_date"))
