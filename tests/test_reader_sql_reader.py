@@ -15,7 +15,7 @@ def test_where():
     s = SqlReader(
         "SELECT * FROM tests.data.tweets WHERE username == 'BBCNews'",
         inner_reader=DiskReader,
-        raw_path=True,
+        partitioning=[],
         persistence=STORAGE_CLASS.MEMORY,
     )
     assert s.count() == 6, s.count()
@@ -67,7 +67,7 @@ def test_sql_returned_rows():
             s = SqlReader(
                 test.get("statement"),
                 inner_reader=DiskReader,
-                raw_path=True,
+                partitioning=[],
                 persistence=STORAGE_CLASS.MEMORY,
             )
             len_s = len(s.collect_list())
@@ -84,7 +84,7 @@ def test_sql_to_dictset():
     s = SqlReader(
         sql_statement="SELECT * FROM tests.data.index.not",
         inner_reader=DiskReader,
-        raw_path=True,
+        partitioning=[],
         persistence=STORAGE_CLASS.MEMORY,
     )
     keys = s.keys()
@@ -109,7 +109,7 @@ def test_sql_returned_cols():
         s = SqlReader(
             test.get("statement"),
             inner_reader=DiskReader,
-            raw_path=True,
+            partitioning=[],
             persistence=STORAGE_CLASS.MEMORY,
         )
         # print(s.collect())
@@ -122,7 +122,7 @@ def test_limit():
     s = SqlReader(
         sql_statement="SELECT tweet_id, user_name FROM tests.data.index.not LIMIT 12",
         inner_reader=DiskReader,
-        raw_path=True,
+        partitioning=[],
         persistence=STORAGE_CLASS.MEMORY,
     )
     record_count = s.count()
@@ -134,7 +134,7 @@ def test_group_by_count():
     s = SqlReader(
         sql_statement="SELECT COUNT(*) FROM tests.data.index.not GROUP BY user_verified",
         inner_reader=DiskReader,
-        raw_path=True,
+        partitioning=[],
     )
     records = s.collect_list()
     record_count = len(records)
@@ -143,7 +143,7 @@ def test_group_by_count():
     s = SqlReader(
         sql_statement="SELECT COUNT(*), user_name FROM tests.data.index.not GROUP BY user_name",
         inner_reader=DiskReader,
-        raw_path=True,
+        partitioning=[],
     )
     records = s.collect_list()
     record_count = len(records)

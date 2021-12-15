@@ -1,3 +1,4 @@
+import os
 import orjson
 import datetime
 from pydantic import BaseModel  # type:ignore
@@ -44,10 +45,6 @@ class Writer:
             )
         if dataset.endswith("/"):
             InvalidDataSetError("Dataset names cannot end with /")
-        if "{" in dataset or "}" in dataset:
-            InvalidDataSetError("Dataset names cannot contain { or }")
-        if "%" in dataset:
-            InvalidDataSetError("Dataset names cannot contain %")
 
         self.schema = None
         if isinstance(schema, list):
@@ -70,9 +67,12 @@ class Writer:
         self.clustered_index = clustered_index
 
         self.dataset_template = dataset
-        if "{date" not in self.dataset_template and not kwargs.get("raw_path", False):
-            self.dataset_template += "/{datefolders}"
-            self.raw_path = True
+        self.partitioning = kwargs.get(
+            "partition", ["year_{yyyy}", "month_{mm}", "day_{dd}"]
+        )
+        if self.partitioning:
+            self.dataset_template += "/" + "/".join(self.partitioning)
+            self.partitioning = None
 
         self.dataset = paths.build_path(self.dataset_template, self.batch_date)
 
@@ -95,6 +95,7 @@ class Writer:
         # create the writer
         self.blob_writer = BlobWriter(**kwargs)
         self.records = 0
+        self.zone_map_writer = ZoneMapWriter()
 
     def append(self, record: Union[dict, BaseModel]):
         """
@@ -136,9 +137,10 @@ class Writer:
     def finalize(self, **kwargs):
         self.finalized = True
         try:
+            zone_map_path = os.path.split(self.dataset)[0] + "/zone.map"
             self.blob_writer.inner_writer.commit(
-                byte_data=orjson.dumps(self.zone_map_writer.profile(self.records)),
-                override_blob_name="zone.map",
+                byte_data=orjson.dumps(list(self.zone_map_writer.profile())),
+                override_blob_name=zone_map_path,
             )
             return self.blob_writer.commit()
         except Exception as e:

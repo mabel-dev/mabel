@@ -14,7 +14,7 @@ def test_reader_can_read_csv():
     r = Reader(
         inner_reader=DiskReader,
         dataset="tests/data/formats/csv",
-        raw_path=True,
+        partitioning=[],
         persistence=STORAGE_CLASS.MEMORY,
     )
 
@@ -33,7 +33,7 @@ def test_reader_can_read_zipped_csv():
     r = Reader(
         inner_reader=DiskReader,
         dataset="tests/data/formats/zipped_csv",
-        raw_path=True,
+        partitioning=[],
         persistence=STORAGE_CLASS.MEMORY,
     )
 

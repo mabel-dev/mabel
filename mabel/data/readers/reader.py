@@ -156,6 +156,11 @@ def Reader(
         ):
             raise AccessDenied("Access has been denied to this Dataset.")
 
+    if "raw_path" in kwargs:
+        raise InvalidCombinationError(
+            "`raw_path` in no longer supported, use `partioning` instead."
+        )
+
     # lazy loading of dependency - in this case the Google GCS Reader
     # eager loading will cause failures when we try to load the google-cloud
     # libraries and they aren't installed.

@@ -162,8 +162,6 @@ class Relation:
     def serialize(self):
         from pyarrow import orc
 
-        
-
 
 if __name__ == "__main__":
     from mabel.data import STORAGE_CLASS, Reader

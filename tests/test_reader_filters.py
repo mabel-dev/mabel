@@ -24,7 +24,7 @@ TEST_DATA = [
 
 def test_reader_filters_no_filter():
     """ensure the reader filter is working as expected"""
-    r = Reader(inner_reader=DiskReader, dataset="tests/data/tweets/", raw_path=True)
+    r = Reader(inner_reader=DiskReader, dataset="tests/data/tweets/", partitioning=[])
     for index, item in enumerate(r):
         pass
     assert index == 49, index
@@ -35,7 +35,7 @@ def test_reader_filters_single_filter():
     r = Reader(
         inner_reader=DiskReader,
         dataset="tests/data/tweets/",
-        raw_path=True,
+        partitioning=[],
         filters="username == 'NBCNews'",
         persistence=STORAGE_CLASS.MEMORY,
     )
@@ -47,7 +47,7 @@ def test_reader_filters_multiple_filter():
     r = Reader(
         inner_reader=DiskReader,
         dataset="tests/data/tweets/",
-        raw_path=True,
+        partitioning=[],
         filters="username = 'NBCNews' and timestamp >= '2020-01-12T07:11:04'",
         persistence=STORAGE_CLASS.MEMORY,
     )

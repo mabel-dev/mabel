@@ -7,7 +7,6 @@ from mabel.data.internals.relation import Relation
 
 
 class MovieData(Relation):
-
     def __init__(self):
         SCHEMA = {
             "YEAR": {"type": "int"},
@@ -56,11 +55,10 @@ class MovieData(Relation):
         super().__init__(DATA, SCHEMA, "MovieData")
 
 
-
 if __name__ == "__main__":
 
     md = MovieData()
-    
+
     print(md.count())
     print(md.apply_selection(lambda r: r[4] == "Walt Disney").count())
     print(md.apply_projection("DISTRIBUTOR").distinct().count())
