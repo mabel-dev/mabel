@@ -1,6 +1,6 @@
 <img align="centre" alt="overlapping arrows" height="92" src="icons/mabel.svg" />
 
-## mabel is a distributed Database platform designed to run in serverless environments.
+## mabel is a distributed SQL Engine and Data platform designed to run in serverless environments.
 
 **mabel** has no server component, **mabel** just runs when you need it making it ideal
 for deployments to platforms like Kubernetes, GCP Cloud Run, AWS Fargate and Knative.
