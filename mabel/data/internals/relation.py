@@ -149,10 +149,19 @@ class Relation:
     def _coerce(self, var):
         """
         Relations only support a subset of types, if we know how to translate a type
-        into a supported type, do it
+        into a supported type, do it.
+
+        INTEGER
+        FLOAT
+        LIST
+        BOOLEAN
+        STRING
+        TIMESTAMP
+        STRUCT
+
         """
         t = type(var)
-        if t in (int, float, tuple, bool, str, datetime.datetime, None):
+        if t in (int, float, tuple, bool, str, datetime.datetime, None, dict):
             return var
         if t in (list, set):
             return tuple(var)
@@ -160,8 +169,22 @@ class Relation:
             return datetime.datetime(t.year, t.month, t.day)
 
     def serialize(self):
-        from pyarrow import orc
+        from pyarrow.orc import orc
+        import pyarrow.json
+        import io
 
+        buffer = b'{"row":1}\n{"row":2}\n{"row":3}'
+        return pyarrow.json.read_json(io.BytesIO(buffer))
+
+
+    def deserialize(self):
+        from pyarrow.orc import orc
+        import io
+
+        buffer = b'ORC\x1d\x00\x00\n\x0c\n\x04\x00\x00\x00\x00\x12\x04\x08\x03P\x00,\x00\x00\xe3\x12\xe7bg\x80\x00!\x1e\x0ef!6\x0e&\x016\t\x9e\x00\x06\x00\x05\x00\x00\xff\xe0\x05\x00\x00\xff\xe0\t\x00\x00F\x02$`T\x00\x00\xe3b\xe3`\x13`\x90\x10\xe4\x02\xd1\x8c\x12\x92@\x9a\x01\xc8g\x05\xd3\x8c`\x9a\x11H\xb3\x0b\xb1\x80\xc4\x81$\x93\x00\x83\x14\xb3\xbbo\x08\x00-\x00\x00\n\x14\n\x04\x08\x03P\x00\n\x0c\x08\x03\x12\x06\x08\x02\x10\x06\x18\x0cP\x00\x8a\x00\x00\xe3`\x16\xc8\x90\xe2\xe2`\x16\xd0\x92\x10T\xd0\xd5`V\x12\xe0\xe0\x11bd\x94b.\xca/W`\xd0`0`P\xe2\xe0`\x81\xb0\x0c\x98\xadX8\x98\x03\x18\xacx8\x98\x85\xd88\x98\x04\xd8$x\x02\x18\x1c&\xf8y0\x02\x00\x08H\x10\x01\x18\x80\x80\x04"\x02\x00\x0c(\x190\x06\x82\xf4\x03\x03ORC\x17'
+
+        data0 = orc.ORCFile(io.BytesIO(buffer))
+        df0 = data0.read(columns=["row"])
 
 if __name__ == "__main__":
     from mabel.data import STORAGE_CLASS, Reader
