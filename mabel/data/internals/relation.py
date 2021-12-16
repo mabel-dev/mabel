@@ -10,6 +10,7 @@ than Dicts for accessing data.
 Some naive benchmarking with 135k records (with 269 columns):
 - dataset is 30% smaller
 - Dedupe 90% faster
+- Trivial selection 75% faster
 
 We don't use numpy arrays for Relations, which documentation would have you believe
 is orders of magnititude faster again because we are storing heterogenous data which
@@ -17,7 +18,7 @@ at the moment I can't think of a good way implement without hugh overheads to de
 with this limitation.
 
 
-- self.data is an array of tuples
+- self.data is a list of tuples
 - self.header is a dictionary
     {
         "attribute": {
@@ -36,17 +37,65 @@ import os
 
 sys.path.insert(1, os.path.join(sys.path[0], "../../.."))
 
-import datetime
 from typing import Iterable, Tuple
+from enum import Enum
+from mabel.data.internals.attribute_domains import coerce
 from mabel.data.internals.dictset import DictSet
-from mabel.data.internals.algorithms.hyper_log_log import HyperLogLog
+
+
+class STORAGE_CLASS(int, Enum):
+    """
+    How to cache the results for processing:
+
+    - NO_PERSISTANCE = don't do anything with the records to cache them, assumes
+      the records are already persisted (e.g. you've loaded a list) but most
+      functionality works with generators.
+    - MEMORY = load the entire dataset into a list, this is fast but if the
+      dataset is too large it will kill the app.
+    - DISK = load the entire dataset to a temporary file, this can deal with
+      Tb of data (if you have that much disk space) but it is at least 3x slower
+      than memory from basic bench marks.
+    - COMPRESSED_MEMORY = a middle ground, allows you to load more data into
+      memory but still needs to perform compression on the data so isn't as fast
+      as the MEMORY option. Bench marks show you can fit about 2x the data in
+      memory but at a cost of 2.5x - your results will vary.
+    """
+
+    NO_PERSISTANCE = 1
+    MEMORY = 2
+    DISK = 3
+    COMPRESSED_MEMORY = 4
 
 
 class Relation:
 
     __slots__ = ("header", "data", "name")
 
-    def __init__(self, data: Iterable[Tuple] = [], header: dict = {}, name: str = None):
+    def __init__(
+        self,
+        data: Iterable[Tuple] = [],
+        *,
+        header: dict = {},
+        name: str = None,
+        storage_class=STORAGE_CLASS.NO_PERSISTANCE,
+    ):
+        """
+        Create a Relation.
+
+        Parameters:
+            data: Iterable
+                An iterable which is the data in the Relation
+            header: Dictionary (optional)
+                Schema and profile information for this Relation
+            name: String (optional)
+                A handle for this Relation, cosmetic only
+            persistance: STORAGE_CLASS (optional)
+                How to store this dataset while we're processing it. The default is
+                NO_PERSISTANCE which applies no specific persistance. MEMORY loads
+                into a Python `list`, DISK saves to disk - disk persistance is slower
+                but can handle much larger data sets. 'COMPRESSED_MEMORY' uses
+                compression to fit more in memory for a performance cost.
+        """
         self.data = data
         self.header = header
         self.name = name
@@ -116,7 +165,7 @@ class Relation:
 
         self.header = {k: {"type": v} for k, v in dictset.types().items()}
         self.data = [
-            tuple([self._coerce(row.get(k)) for k in self.header.keys()])
+            tuple([coerce(row.get(k)) for k in self.header.keys()])
             for row in dictset.icollect_list()
         ]
 
@@ -146,28 +195,6 @@ class Relation:
         """
         return self.count()
 
-    def _coerce(self, var):
-        """
-        Relations only support a subset of types, if we know how to translate a type
-        into a supported type, do it.
-
-        INTEGER
-        FLOAT
-        LIST
-        BOOLEAN
-        STRING
-        TIMESTAMP
-        STRUCT
-
-        """
-        t = type(var)
-        if t in (int, float, tuple, bool, str, datetime.datetime, None, dict):
-            return var
-        if t in (list, set):
-            return tuple(var)
-        if t in (datetime.date,):
-            return datetime.datetime(t.year, t.month, t.day)
-
     def serialize(self):
         from pyarrow.orc import orc
         import pyarrow.json
@@ -175,7 +202,6 @@ class Relation:
 
         buffer = b'{"row":1}\n{"row":2}\n{"row":3}'
         return pyarrow.json.read_json(io.BytesIO(buffer))
-
 
     def deserialize(self):
         from pyarrow.orc import orc
@@ -186,12 +212,16 @@ class Relation:
         data0 = orc.ORCFile(io.BytesIO(buffer))
         df0 = data0.read(columns=["row"])
 
+
 if __name__ == "__main__":
+
+    print(type(None))
+
     from mabel.data import STORAGE_CLASS, Reader
     from mabel.adapters.disk import DiskReader
 
     ds = Reader(
-        inner_reader=DiskReader, dataset="tests/data/half", raw_path=True
+        inner_reader=DiskReader, dataset="tests/data/half", partitioning=()
     )  # , persistence=STORAGE_CLASS.MEMORY)
     ds = DictSet(ds.sample(0.1), storage_class=STORAGE_CLASS.MEMORY)
 
@@ -233,16 +263,16 @@ if __name__ == "__main__":
     from mabel.data.internals.zone_map_writer import ZoneMapWriter
 
     with Timer("rel"):
-        for i in range(10):
-            # r = rel.apply_selection(lambda x: x[0] == "270").count()
-            r = rel.distinct().count()
+        for i in range(1000):
+            r = rel.apply_selection(lambda x: x[0] > 100).count()
+    #        r = rel.distinct().count()
     print(r)
 
-    # with Timer("ds"):
-    #    for i in range(10):
-    #        #        #d = ds.select(lambda x: x["number"] == "270").count()
+    with Timer("ds"):
+        for i in range(1000):
+            d = ds.select(lambda x: x["followers"] > 100).count()
     #        r = ds.distinct().count()
-    # print(r)
+    print(d)
 
     # print(rel.apply_projection("description").to_dictset())
 

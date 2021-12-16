@@ -15,12 +15,18 @@ def summer(x, y):
     return fastnumbers.real(x) + fastnumbers.real(y)
 
 
+def raise_not_implemented():
+    raise NotImplementedError()
+
+
 AGGREGATORS = {
     "SUM": summer,
     "MAX": max,
     "MIN": min,
     "COUNT": lambda x, y: x + 1,
     "AVG": lambda x, y: 1,
+    "PERCENT": raise_not_implemented,
+    "APPROX_DISTINCT": raise_not_implemented,
 }
 
 HASH_SEED = b"Anakin Skywalker"

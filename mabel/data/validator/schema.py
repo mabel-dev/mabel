@@ -5,6 +5,15 @@ import datetime
 from typing import Any, Union, List, Dict
 from ...errors import ValidationError
 
+"""
+- INTEGER
+- FLOAT
+- LIST
+- BOOLEAN
+- STRING
+- TIMESTAMP
+- STRUCT
+"""
 
 DEFAULT_MIN = -9223372036854775808
 DEFAULT_MAX = 9223372036854775807

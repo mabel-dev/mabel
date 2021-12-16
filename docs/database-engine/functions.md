@@ -1,0 +1,11 @@
+
+
+## Aggregations
+
+- SUM
+- MAX
+- MIN
+- COUNT
+- AVG
+- PERCENT // not implemented - calculate the %age of total items this group represents
+- APPROX_DISTINCT // not implemented - get an approximate for the distinct values in this group (uses HyperLogLog)

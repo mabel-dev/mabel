@@ -1,11 +1,10 @@
 import datetime
 from typing import Any
 from mabel.data.internals.algorithms.hyper_log_log import HyperLogLog
+from mabel.data.internals.attribute_domains import get_coerced_type
 
 
-# This should require a filter which takes about 1.8Mb of memory and uses 9 hashes
-BLOOM_FILTER_SIZE = 1000000
-BLOOM_FILTER_FALSE_POSITIVE_RATE = 0.001
+HYPERLOGLOG_ERROR_RATE = 0.01
 
 
 class ZoneMap:
@@ -22,7 +21,7 @@ class ZoneMap:
     def dict(self, column: str):
         return {
             column: {
-                "type": self.type,
+                "type": get_coerced_type(self.type),
                 "minimum": self.minimum,
                 "maximum": self.maximum,
                 "count": self.count,
@@ -46,10 +45,7 @@ class ZoneMapWriter(object):
             collector = self.collector.get(k)
             if not collector:
                 collector = ZoneMap()
-                # self.bloom_filters[k] = BloomFilter(
-                #    BLOOM_FILTER_SIZE, BLOOM_FILTER_FALSE_POSITIVE_RATE
-                # )
-                self.hyper_log_logs[k] = HyperLogLog(0.01)
+                self.hyper_log_logs[k] = HyperLogLog(HYPERLOGLOG_ERROR_RATE)
             collector.count += 1
 
             # if the value is missing, skip anything else

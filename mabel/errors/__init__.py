@@ -9,3 +9,4 @@ from .invalid_syntax import InvalidSyntaxError
 from .missing_dependency_error import MissingDependencyError
 from .data_not_found_error import DataNotFoundError
 from .invalid_argument import InvalidArgument
+from .unsupported_type_error import UnsupportedTypeError
