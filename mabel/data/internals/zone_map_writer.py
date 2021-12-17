@@ -4,7 +4,7 @@ from mabel.data.internals.algorithms.hyper_log_log import HyperLogLog
 from mabel.data.internals.attribute_domains import get_coerced_type
 
 
-HYPERLOGLOG_ERROR_RATE = 0.01
+HYPERLOGLOG_ERROR_RATE = 0.005
 
 
 class ZoneMap:
@@ -38,6 +38,7 @@ class ZoneMapWriter(object):
         self.record_counter = 0
 
     def add(self, row):
+        # count every time we've been called - this is the total record count
         self.record_counter += 1
 
         for k, v in row.items():
@@ -45,40 +46,34 @@ class ZoneMapWriter(object):
             collector = self.collector.get(k)
             if not collector:
                 collector = ZoneMap()
+                # we don't want to put the HLL in the ZoneMap, so create
+                # a sidecar HLL which we dispose of later.
                 self.hyper_log_logs[k] = HyperLogLog(HYPERLOGLOG_ERROR_RATE)
             collector.count += 1
 
-            # if the value is missing, skip anything else
+            # if the value is missing, count it and skip everything else
             if (v or "") == "" and v != False:
                 continue
 
             # calculate the min/max for ordinals (and strings) and the cummulative
             # sum for numerics
             value_type = type(v)
-            value_type_name = value_type.__name__
             if value_type in (int, float, str, datetime.date, datetime.datetime):
                 collector.maximum = max(v, collector.maximum or v)
                 collector.minimum = min(v, collector.minimum or v)
             if value_type in (int, float):
                 collector.cumulative_sum += v
 
-            # track the type of the field
+            # track the type of the attribute, if it changes mark as mixed
+            value_type_name = value_type.__name__
             if collector.type != value_type_name:
                 if collector.type == "unknown":
                     collector.type = value_type_name
-                elif collector.type in ("float", "int") and value_type_name in (
-                    "float",
-                    "int",
-                ):
-                    collector.type = "numeric"
                 else:
                     collector.type = "mixed"
 
-            # count the unique items, use a bloom filter to save space - we're going to
-            # use to create estimates of value distribution, so this is probably okay.
-            # if self.bloom_filters[k].add(v):
-            #    collector.unique_items += 1
-
+            # count the unique items, use a hyper-log-log for size and speed
+            # this gives us an estimate only.
             self.hyper_log_logs[k].add(v)
 
             # put the profile back in the collector
@@ -91,8 +86,11 @@ class ZoneMapWriter(object):
         for column in self.collector:
             profile = self.collector[column].dict(column)
             profile[column]["missing"] = self.record_counter - profile[column]["count"]
-            profile[column]["cardinality"] = (
-                self.hyper_log_logs[column].card() / profile[column]["count"]
+            # High cardinality (closer to 1) indicates a greated number of unique
+            # values. The error ratio for the HLL is 1/200, so we're going to round to
+            # the nearest 1/1000th
+            profile[column]["cardinality"] = round(
+                self.hyper_log_logs[column].card() / profile[column]["count"], 3
             )
 
             yield profile

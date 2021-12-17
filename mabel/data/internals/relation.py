@@ -115,7 +115,7 @@ class Relation:
         """
         # selection invalidates what we thought we knew about counts etc
         new_header = {k: {"type": v.get("type")} for k, v in self.header.items()}
-        return Relation(filter(predicate, self.data), new_header)
+        return Relation(filter(predicate, self.data), header=new_header)
 
     def apply_projection(self, attributes):
         if not isinstance(attributes, (list, tuple)):
@@ -130,7 +130,7 @@ class Relation:
             for tup in self.data:
                 yield tuple([tup[indice] for indice in attribute_indices])
 
-        return Relation(_inner_projection(), new_header)
+        return Relation(_inner_projection(), header=new_header)
 
     def materialize(self):
         if not isinstance(self.data, list):
@@ -154,7 +154,7 @@ class Relation:
                     yield item
                     hash_list[hashed_item] = True
 
-        return Relation(do_dedupe(self.data), self.header)
+        return Relation(do_dedupe(self.data), header=self.header)
 
     def from_dictset(self, dictset: DictSet):
         """
@@ -263,13 +263,13 @@ if __name__ == "__main__":
     from mabel.data.internals.zone_map_writer import ZoneMapWriter
 
     with Timer("rel"):
-        for i in range(1000):
+        for i in range(10):
             r = rel.apply_selection(lambda x: x[0] > 100).count()
     #        r = rel.distinct().count()
     print(r)
 
     with Timer("ds"):
-        for i in range(1000):
+        for i in range(10):
             d = ds.select(lambda x: x["followers"] > 100).count()
     #        r = ds.distinct().count()
     print(d)
