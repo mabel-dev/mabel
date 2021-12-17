@@ -258,14 +258,14 @@ class _LowLevelReader(object):
                 )
 
         # filter the list to items we know what to do with
-        supported_blobs = [
+        supported_blobs = {
             b for b in blob_list if f".{b.split('.')[-1]}" in KNOWN_EXTENSIONS
-        ]
-        readable_blobs = [
+        }
+        readable_blobs = {
             b
             for b in supported_blobs
             if KNOWN_EXTENSIONS[f".{b.split('.')[-1]}"][2] == EXTENSION_TYPE.DATA
-        ]
+        }
 
         if len(readable_blobs) == 0:
             message = f"Reader found {len(readable_blobs)} sources to read data from in `{self.reader_class.dataset}`."

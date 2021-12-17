@@ -247,7 +247,7 @@ class ParallelReader:
             # Parse
             record_iterator = map(parser, record_iterator)
             # remove empty fields
-            record_iterator = map(eliminate_nulls, record_iterator)
+            #record_iterator = map(eliminate_nulls, record_iterator)
             # Expand Nested JSON
             # record_iterator = map(expand_nested_json, record_iterator)
             # Transform
