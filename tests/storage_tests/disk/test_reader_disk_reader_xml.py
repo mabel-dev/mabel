@@ -14,7 +14,7 @@ def test_can_read_lxml():
     r = Reader(
         inner_reader=DiskReader,
         dataset="tests/data/formats/lxml",
-        raw_path=True,
+        partitioning=None,
         persistence=STORAGE_CLASS.MEMORY,
     )
 
@@ -26,7 +26,7 @@ def test_can_read_xml():
     r = Reader(
         inner_reader=DiskReader,
         dataset="tests/data/formats/xml",
-        raw_path=True,
+        partitioning=None,
         persistence=STORAGE_CLASS.MEMORY,
     )
 

@@ -14,7 +14,7 @@ def test_can_read_zip():
     r = Reader(
         inner_reader=DiskReader,
         dataset="tests/data/formats/zip",
-        raw_path=True,
+        partitioning=None,
         persistence=STORAGE_CLASS.MEMORY,
     )
 
