@@ -19,8 +19,12 @@ multiple index strategies
 Indexes can be single columns only.
 
 Writers automatically create a ZoneMap, this contains information to assist with
-indexing strategies such as:
+indexing strategies including:
 - Column Types
 - Column Min/Max 
 - Cardinality Estimates
 - Missing (null) value counts
+
+Mabel implementation is not identical to Oracle, but more information about Zone Maps
+can be found here:
+https://docs.oracle.com/database/121/DWHSG/zone_maps.htm#DWHSG-GUID-BEA5ACA1-6718-4948-AB38-1F2C0335FDE4
