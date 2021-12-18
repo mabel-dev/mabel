@@ -23,7 +23,7 @@ def test_reading_aws_using_minio():
         secure=True,
         dataset=f"{BUCKET_NAME}/538/StarWars",
         inner_reader=MinIoReader,
-        raw_path=True,
+        partitioning=None,
     )
 
     data = list(reader)
