@@ -116,7 +116,7 @@ def test_reader_writer_format_default():
 
 
 def get_data():
-    r = Reader(inner_reader=DiskReader, dataset="tests/data/tweets", raw_path=True)
+    r = Reader(inner_reader=DiskReader, dataset="tests/data/tweets", partitioning=None)
     return r
 
 

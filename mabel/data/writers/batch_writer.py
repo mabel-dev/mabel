@@ -20,6 +20,7 @@ class BatchWriter(Writer):
         format: str = "zstd",
         date: Any = None,
         frame_id: str = None,
+        partitioning=("year_{yyyy}", "month_{mm}", "day_{dd}"),
         **kwargs,
     ):
         """
@@ -64,8 +65,8 @@ class BatchWriter(Writer):
             as_at = datetime.datetime.utcnow().strftime("as_at_%Y%m%d-%H%M%S")
             self.batch_date = self._get_writer_date(date)
 
-            if "{date" not in dataset and not kwargs.get("raw_path", False):
-                dataset += "/{datefolders}"
+            if "{" not in dataset and partitioning:
+                dataset += "/" + "/".join(partitioning)
             frame_id = paths.build_path(
                 dataset + "/" + as_at,  # type:ignore
                 self.batch_date,
@@ -74,6 +75,7 @@ class BatchWriter(Writer):
         kwargs["raw_path"] = True  # we've just added the dates
         kwargs["format"] = format
         kwargs["dataset"] = frame_id
+        kwargs["partitioning"] = partitioning
 
         super().__init__(**kwargs)
 

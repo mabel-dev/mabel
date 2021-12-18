@@ -29,6 +29,7 @@ class Writer:
         format: str = "zstd",
         date: Any = None,
         clustered_index: str = None,
+        partitioning=("year_{yyyy}", "month_{mm}", "day_{dd}"),
         **kwargs,
     ):
         """
@@ -67,11 +68,9 @@ class Writer:
         self.clustered_index = clustered_index
 
         self.dataset_template = dataset
-        self.partitioning = kwargs.get(
-            "partition", ["year_{yyyy}", "month_{mm}", "day_{dd}"]
-        )
-        if self.partitioning:
-            self.dataset_template += "/" + "/".join(self.partitioning)
+        self.partitioning = partitioning
+        if partitioning:
+            self.dataset_template += "/" + "/".join(partitioning)
             self.partitioning = None
 
         self.dataset = paths.build_path(self.dataset_template, self.batch_date)
@@ -91,6 +90,7 @@ class Writer:
         # default index
         kwargs["index_on"] = kwargs.get("index_on", [])
         kwargs["clustered_index"] = clustered_index
+        
 
         # create the writer
         self.blob_writer = BlobWriter(**kwargs)
