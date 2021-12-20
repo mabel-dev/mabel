@@ -11,4 +11,4 @@ jobs:
   
       - uses: anchore/sbom-action@v0
         with:
-          path: $GITHUB_WORKSPACE
+          path: ./$GITHUB_WORKSPACE
