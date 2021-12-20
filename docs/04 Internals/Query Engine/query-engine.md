@@ -7,7 +7,7 @@
 
 // relational algebra -> graph (query planning)
 
-# SequentialScan (partition, dataset)
+# BlobScanNode (blobs)
 # Project (including renames)
 # Select
 # CrossJoin
