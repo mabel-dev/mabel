@@ -1,4 +1,3 @@
-from urllib3.packages.six import b
 from ...data.readers.internals.base_inner_reader import BaseInnerReader, BUFFER_SIZE
 
 

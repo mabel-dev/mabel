@@ -25,6 +25,8 @@ indexing strategies including:
 - Cardinality Estimates
 - Missing (null) value counts
 
+https://en.wikipedia.org/wiki/Block_Range_Index
+
 Mabel implementation is not identical to Oracle, but more information about Zone Maps
 can be found here:
 https://docs.oracle.com/database/121/DWHSG/zone_maps.htm#DWHSG-GUID-BEA5ACA1-6718-4948-AB38-1F2C0335FDE4
