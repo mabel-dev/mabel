@@ -1,4 +1,5 @@
 import datetime
+from gc import collect
 from typing import Any
 from mabel.data.internals.algorithms.hyper_log_log import HyperLogLog
 from mabel.data.internals.attribute_domains import get_coerced_type
@@ -43,11 +44,12 @@ class ZoneMapWriter(object):
 
         for k, v in row.items():
 
-            collector = self.collector.get(k)
-            if not collector:
+            if k in self.collector:
+                collector = self.collector[k]
+            else:
                 collector = ZoneMap()
-                # we don't want to put the HLL in the ZoneMap, so create
-                # a sidecar HLL which we dispose of later.
+#                # we don't want to put the HLL in the ZoneMap, so create
+#                # a sidecar HLL which we dispose of later.
                 self.hyper_log_logs[k] = HyperLogLog(HYPERLOGLOG_ERROR_RATE)
             collector.count += 1
 
@@ -61,10 +63,10 @@ class ZoneMapWriter(object):
             if value_type in (int, float, str, datetime.date, datetime.datetime):
                 collector.maximum = max(v, collector.maximum or v)
                 collector.minimum = min(v, collector.minimum or v)
-            if value_type in (int, float):
-                collector.cumulative_sum += v
+#            if value_type in (int, float):
+#                collector.cumulative_sum += v
 
-            # track the type of the attribute, if it changes mark as mixed
+#            # track the type of the attribute, if it changes mark as mixed
             value_type_name = value_type.__name__
             if collector.type != value_type_name:
                 if collector.type == "unknown":
@@ -74,7 +76,7 @@ class ZoneMapWriter(object):
 
             # count the unique items, use a hyper-log-log for size and speed
             # this gives us an estimate only.
-            self.hyper_log_logs[k].add(v)
+            #self.hyper_log_logs[k].add(v)
 
             # put the profile back in the collector
             self.collector[k] = collector
