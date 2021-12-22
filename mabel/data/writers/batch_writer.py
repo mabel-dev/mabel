@@ -115,7 +115,7 @@ class BatchWriter(Writer):
         status = {"records": self.records}
         flag = self.blob_writer.inner_writer.commit(
             byte_data=orjson.dumps(status),
-            override_blob_name=completion_path,
+            blob_name=completion_path,
         )
         get_logger().debug(f"Frame completion file `{flag}` written")
         return final

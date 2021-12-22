@@ -1,21 +1,20 @@
 import threading
-from typing import Any
+from functools import lru_cache
 from orjson import dumps
 import zstandard
 from ...internals.records import flatten
 from ....logging import get_logger
-from ....utils.paths import get_parts
-from ....utils import safe_field_name
 from ....errors import MissingDependencyError
 
 
-BLOB_SIZE = 128 * 1024 * 1024  # 128Mb, 8 files per gigabyte
-SUPPORTED_FORMATS_ALGORITHMS = ("jsonl", "zstd", "parquet", "text", "flat")
+BLOB_SIZE = 64 * 1024 * 1024  # 64Mb, 16 files per gigabyte
+SUPPORTED_FORMATS_ALGORITHMS = ("jsonl", "zstd", "parquet", "text", "flat", "orc")
+STEM = "{stem}"
 
 
 class BlobWriter(object):
 
-    # in som failure scenarios commit is called before __init__, so we need to define
+    # in some failure scenarios commit is called before __init__, so we need to define
     # this variable outside the __init__.
     buffer = bytearray()
 
@@ -28,7 +27,7 @@ class BlobWriter(object):
         **kwargs,
     ):
 
-        self.indexes = kwargs.get("index_on", [])
+        #self.indexes = kwargs.get("index_on", [])
 
         self.format = format
         self.maximum_blob_size = blob_size
@@ -60,8 +59,8 @@ class BlobWriter(object):
             serialized = dumps(record) + b"\n"  # type:ignore
 
         # add the columns to the index
-        for column in self.indexes:
-            self.index_builders[column].add(self.records_in_buffer, record)
+#        for column in self.indexes:
+#            self.index_builders[column].add(self.records_in_buffer, record)
 
         # the newline isn't counted so add 1 to get the actual length
         # if this write would exceed the blob size, close it so another
@@ -78,8 +77,6 @@ class BlobWriter(object):
 
     def commit(self):
 
-        committed_blob_name = ""
-
         if len(self.buffer) > 0:
 
             with threading.Lock():
@@ -90,7 +87,7 @@ class BlobWriter(object):
                         import pyarrow.parquet as pq  # type:ignore
                     except ImportError as err:  # pragma: no cover
                         raise MissingDependencyError(
-                            "`pyarrow` is missing, please install or includein requirements.txt"
+                            "`pyarrow` is missing, please install or include in requirements.txt"
                         )
 
                     # pyarrow is opinionated to dealing with files - so we use files
@@ -115,43 +112,55 @@ class BlobWriter(object):
                     # zstandard is an non-optional installed dependency
                     self.buffer = zstandard.compress(self.buffer)
 
-                committed_blob_name = self.inner_writer.commit(
-                    byte_data=bytes(self.buffer), override_blob_name=None
+                self.inner_writer.commit(
+                    byte_data=bytes(self.buffer), blob_name=self.blob_name
                 )
 
-                for column in self.indexes:
-                    index = self.index_builders[column].build()
+                get_logger().error("Indexing functionality temporarily Removed")
+                #for column in self.indexes:
+                #    index = self.index_builders[column].build()
+                #
+                #    bucket, path, stem, suffix = get_parts(committed_blob_name)
+                #    index_name = f"{bucket}/{path}{stem}.{safe_field_name(column)}.idx"
+                #    self.inner_writer.commit(
+                #        byte_data=index.bytes(), blob_name=index_name
+                #    )
 
-                    bucket, path, stem, suffix = get_parts(committed_blob_name)
-                    index_name = f"{bucket}/{path}{stem}.{safe_field_name(column)}.idx"
-                    committed_index_name = self.inner_writer.commit(
-                        byte_data=index.bytes(), override_blob_name=index_name
-                    )
-
-                if "BACKOUT" in committed_blob_name:
+                if "BACKOUT" in self.blob_name:
                     get_logger().warning(
-                        f"{self.records_in_buffer:n} failed records written to BACKOUT partition `{committed_blob_name}`"
+                        f"{self.records_in_buffer:n} failed records written to BACKOUT partition `{self.blob_name}`"
                     )
                 get_logger().debug(
                     {
-                        "committed_blob": committed_blob_name,
+                        "committed_blob": self.blob_name,
                         "records": self.records_in_buffer,
                         "bytes": len(self.buffer),
                     }
                 )
 
         self.buffer = bytearray()
-        return committed_blob_name
+        return self.blob_name
+
+    @lru_cache(1)
+    def _get_node(self):
+        import uuid
+        import os
+
+        return f"{uuid.getnode():x}-{os.getpid():x}"
 
     def open_buffer(self):
+        import time
+
         self.buffer = bytearray()
 
         # create index builders
-        self.index_builders = {}
-        for column in self.indexes:
-            self.index_builders[column] = IndexBuilder(column)
+        #self.index_builders = {}
+        #for column in self.indexes:
+        #    self.index_builders[column] = IndexBuilder(column)
 
         self.records_in_buffer = 0
+        blob_id = f"{time.time_ns():x}-{self._get_node()}"
+        self.blob_name = self.inner_writer.filename.replace(STEM, f"{blob_id}")
 
     def __del__(self):
         # this should never be relied on to save data

@@ -110,7 +110,7 @@ def test_reader_writer_format_default():
 
 def test_write_to_path_logged():
     # none of these should do anything
-    nw = Writer(inner_writer=NullWriter, to_path="bucket/path")
+    nw = Writer(inner_writer=NullWriter, dataset="bucket/path")
     nw.append({"abc": "def"})
     print(nw.finalize())
 

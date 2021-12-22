@@ -28,13 +28,14 @@ class GoogleCloudStorageWriter(BaseInnerWriter):
         super().__init__(**kwargs)
         self.project = project
         self.credentials = credentials
+        self.filename = self.filename_without_bucket
 
         predicate = retry.if_exception_type(
             ConnectionResetError, ProtocolError, InternalServerError, TooManyRequests
         )
         self.retry = retry.Retry(predicate)
 
-    def commit(self, byte_data, override_blob_name=None):
+    def commit(self, byte_data, blob_name=None):
 
         # this means we're testing
         if os.environ.get("STORAGE_EMULATOR_HOST") is not None:
@@ -45,14 +46,6 @@ class GoogleCloudStorageWriter(BaseInnerWriter):
         else:  # pragma: no cover
             client = storage.Client(project=self.project, credentials=self.credentials)
         self.gcs_bucket = client.get_bucket(self.bucket)
-        self.filename = self.filename_without_bucket
-
-        # if we've been given the filename, use that, otherwise get the
-        # name from the path builder
-        if override_blob_name:
-            blob_name = override_blob_name
-        else:
-            blob_name = self._build_path()
 
         try:
             blob = self.gcs_bucket.blob(blob_name)
