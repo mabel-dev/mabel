@@ -1,7 +1,3 @@
-
-
-## Aggregations
-
 - SUM
 - MAX
 - MIN
