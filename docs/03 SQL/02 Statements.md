@@ -10,10 +10,8 @@ ANALYZE dataset -> creates and/or returns profile information for a dataset
     Bytes: Raw Byte Count
     Columns: List of columns and types
 
-EXPLAIN query -> returns the optimized plan for a query
-
-EXPLAIN NOOPT query
+EXPLAIN [NOOPT] query -> returns the plan for a query
 
 DESCRIBE dataset -> creates and/or returns schema information for a dataset
 
-CREATE INDEX index_name ON dataset (attribute1, attribute2, ...) -> creates an index
+CREATE [MINMAX|BTREE|BINARY|BITMAP] INDEX index_name ON dataset (attribute1) -> creates an index

@@ -20,7 +20,7 @@ def test_null_writer():
     for i in range(1):
         nw.append({"blob": ["2"] * BLOB_SIZE})
     res = nw.finalize()
-    assert res.startswith("NullWriter"), res
+    assert res.startswith("bucket/path"), res
 
 
 if __name__ == "__main__":  # pragma: no cover

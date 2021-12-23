@@ -9,7 +9,7 @@ class MinMaxIndex():
     domain = "unknown"
 
     @staticmethod
-    def build_index(dictset: Iterable[dict]):
+    def build(dictset: Iterable[dict]):
 
         for row 
         # calculate the min/max for ordinals (and strings) and the cummulative
