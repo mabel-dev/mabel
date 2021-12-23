@@ -88,14 +88,14 @@ class Writer:
         get_logger().debug(orjson.dumps(arg_dict))
 
         # default index
-        kwargs["index_on"] = kwargs.get("index_on", [])
-        kwargs["clustered_index"] = clustered_index
+        #kwargs["index_on"] = kwargs.get("index_on", [])
+        #kwargs["clustered_index"] = clustered_index
         
 
         # create the writer
         self.blob_writer = BlobWriter(**kwargs)
         self.records = 0
-        self.zone_map_writer = ZoneMapWriter()
+        self.zone_map_writer = ZoneMapWriter(self.schema)
 
     def append(self, record: Union[dict, BaseModel]):
         """
@@ -125,7 +125,7 @@ class Writer:
             de.evaluate_record(self.expectations, record)
 
         self.blob_writer.append(record)
-        self.zone_map_writer.add(record)
+        self.zone_map_writer.add(record, self.dataset)
         self.records += 1
 
     def __del__(self):

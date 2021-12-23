@@ -25,11 +25,12 @@ def coerce(var):
 class MABEL_TYPES(str, Enum):
     BOOLEAN = "BOOLEAN"
     INTEGER = "INTEGER"
-    FLOAT = "FLOAT"
+    DOUBLE = "DOUBLE"
     LIST = "LIST"
-    STRING = "STRING"
+    VARCHAR = "VARCHAR"
     STRUCT = "STRUCT"
     TIMESTAMP = "TIMESTAMP"
+    OTHER = "OTHER"
 
 
 PYTHON_TYPES = {
@@ -37,8 +38,8 @@ PYTHON_TYPES = {
     "datetime": MABEL_TYPES.TIMESTAMP,
     "dict": MABEL_TYPES.STRUCT,
     "int": MABEL_TYPES.INTEGER,
-    "float": MABEL_TYPES.FLOAT,
-    "str": MABEL_TYPES.STRING,
+    "float": MABEL_TYPES.DOUBLE,
+    "str": MABEL_TYPES.VARCHAR,
     "tuple": MABEL_TYPES.LIST,
 }
 
@@ -48,8 +49,8 @@ COERCABLE_PYTHON_TYPES = {
     "date": MABEL_TYPES.TIMESTAMP,
     "dict": MABEL_TYPES.STRUCT,
     "int": MABEL_TYPES.INTEGER,
-    "float": MABEL_TYPES.FLOAT,
-    "str": MABEL_TYPES.STRING,
+    "float": MABEL_TYPES.DOUBLE,
+    "str": MABEL_TYPES.VARCHAR,
     "tuple": MABEL_TYPES.LIST,
     "set": MABEL_TYPES.LIST,
     "list": MABEL_TYPES.LIST,

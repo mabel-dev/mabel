@@ -1,3 +1,6 @@
+## Note: cythonizing this module has less than a 10% impact on
+## performance from testing
+
 INVALID_ELEMENT_MSG = "'UintSet' elements must be integers >= 0"
 INVALID_ITER_ARG_MSG = "expected UintSet or iterable argument"
 NOT_IN_SET_MSG = "element not in UintSet"

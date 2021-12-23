@@ -52,7 +52,7 @@ class MovieData(Relation):
         ]
         # fmt:on
 
-        super().__init__(DATA, SCHEMA, "MovieData")
+        super().__init__(DATA, header=SCHEMA, name="MovieData")
 
 
 if __name__ == "__main__":

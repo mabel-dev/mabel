@@ -1,8 +1,52 @@
+"""
+ZoneMap Writer
+
+This is a combined index (BRIN) and data profiler.
+
+As an Index:
+
+  This is a Block Range Index - also known as a MinMax Index - this records the maximum
+  and minimum values for each attribute in each block (in this case Blobs). This is
+  used to determine if a specific Blob has rows which will satisfy a selection.
+
+  A BRIN records the maximum and minimum values of each attribute, if we're using a
+  selection in our query, we can quickly identify if a Blob definitely doesn't have a
+  matching row if it's between the minimum and maximum values. Not being ruled out
+  doesn't mean the value is is the Blob, as such this is a probabilistic approach.
+
+As a Data Profiler:
+
+  This contains a limited selection of information about the dataset, the purpose of
+  capturing this information is to provide information to the index and query planners
+  such as cardinality of records and if columns contain nulls.
+
+  The profiler also contains description information from the Schema, if provided to
+  the reader.
+  
+  This data can also be used as part of a higher-level profiler.
+
+The resultant map file is a JSON file / Python dict:
+
+{
+    "blob_name": {
+        "column_name": {
+            profile information
+        },
+        "column_name": {
+            profile_information
+        }
+    },
+    "blob_name": {
+        blob_information
+    }
+}
+  
+"""
 import datetime
-from gc import collect
 from typing import Any
 from mabel.data.internals.algorithms.hyper_log_log import HyperLogLog
-from mabel.data.internals.attribute_domains import get_coerced_type
+from mabel.data.internals.attribute_domains import MABEL_TYPES, get_coerced_type
+from mabel.data.validator.schema import Schema
 
 
 HYPERLOGLOG_ERROR_RATE = 0.005
@@ -10,7 +54,7 @@ HYPERLOGLOG_ERROR_RATE = 0.005
 
 class ZoneMap:
     def __init__(self):
-        self.type: str = "unknown"
+        self.type: MABEL_TYPES.OTHER
         self.minimum: Any = None
         self.maximum: Any = None
         self.count: int = 0
@@ -18,6 +62,7 @@ class ZoneMap:
         self.cumulative_sum: float = 0
         self.unique_items: int = 0
         self.cardinality: float = 0
+        self.description: str = "none"
 
     def dict(self, column: str):
         return {
@@ -33,24 +78,32 @@ class ZoneMap:
 
 
 class ZoneMapWriter(object):
-    def __init__(self):
+
+    def __init__(self, schema: Schema):
         self.collector = {}
         self.hyper_log_logs = {}
         self.record_counter = 0
 
-    def add(self, row):
+        raise NotImplementedError("ZoneMapWriter needs some refactoring")
+
+        # extract type and desc info from the schema
+
+    def add(self, row, blob):
         # count every time we've been called - this is the total record count
         self.record_counter += 1
 
+        if not blob in self.collector:
+            self.collector[blob] = {}
+
         for k, v in row.items():
 
-            if k in self.collector:
-                collector = self.collector[k]
+            if k in self.collector[blob]:
+                collector = self.collector[blob][k]
             else:
                 collector = ZoneMap()
 #                # we don't want to put the HLL in the ZoneMap, so create
 #                # a sidecar HLL which we dispose of later.
-                self.hyper_log_logs[k] = HyperLogLog(HYPERLOGLOG_ERROR_RATE)
+                self.hyper_log_logs[f"{blob}:{k}"] = HyperLogLog(HYPERLOGLOG_ERROR_RATE)
             collector.count += 1
 
             # if the value is missing, count it and skip everything else
@@ -76,7 +129,7 @@ class ZoneMapWriter(object):
 
             # count the unique items, use a hyper-log-log for size and speed
             # this gives us an estimate only.
-            #self.hyper_log_logs[k].add(v)
+            self.hyper_log_logs[k].add(v)
 
             # put the profile back in the collector
             self.collector[k] = collector
