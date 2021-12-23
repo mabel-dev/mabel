@@ -1,3 +1,18 @@
+## Types
+
+Type   | Description
+------ | -----------------------
+B+Tree | High cardinality
+Binary | Unique values
+Bitmap | Low cardinality
+
+[Cardinality](https://en.wikipedia.org/wiki/Cardinality_(SQL_statements))
+
+## B+Tree Index
+
+## Binary Index
+
+## Bitmap Index
 
 
 multiple index strategies
