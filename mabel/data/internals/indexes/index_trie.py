@@ -1,71 +1,80 @@
 """
-
-adapted from: https://leetcode.com/problems/implement-trie-prefix-tree/discuss/653851/python-radix-tree-memory-efficient
+this particular implementation is roughly 4x slower than a dict
 """
 
 
-from collections import defaultdict
+class Trie:
 
-class RadixTreeNode():
-    def __init__(self,is_word=False,keys=None):
-        self.is_word=is_word
-        self.children=keys if keys else defaultdict(RadixTreeNode)
-
-class Trie():
     def __init__(self):
-        self.root=RadixTreeNode()
+        self.trie = {}
 
-    def insert(self, word):
-        return self.insert_helper(self.root, word)
+    def insert(self, word: str) -> None:
+        node = self.trie
+        for ch in word:
+            if ch not in node:
+                node[ch] = {}
+            node = node[ch]
+        node[b'$'] = True
+        
+    def search(self, word: str) -> bool:
+        return b'$' in self.searchHelper(word)
 
-    def insert_helper(self, node, word):
-        for key,child in node.children.items():
-            prefix, split, rest = self.match(key, word)
-            if not split:
-                #key complete match
-                if not rest:
-                    #word matched
-                    child.is_word=True
-                    return True
-                else:
-                    #match rest of word
-                    return self.insert_helper(child, rest)
-            if prefix:
-                #key partial match, need to split
-                new_node=RadixTreeNode(is_word=not rest,keys={split:child})
-                node.children[prefix]=new_node
-                del node.children[key]
-                return self.insert_helper(new_node, rest)
-        node.children[word]=RadixTreeNode(is_word=True)
+    def startsWith(self, prefix: str) -> bool:
+        return len(self.searchHelper(prefix)) > 0
+        
+    def searchHelper(self, word) -> dict:
+        node = self.trie
+        for ch in word:
+            if ch in node:
+                node = node[ch]
+            else:
+                return {}
+        return node
 
-    def search(self, word):
-        return self.search_helper(self.root,word)
 
-    def search_helper(self,node, word):
-        for key,child in node.children.items():
-            prefix, split, rest = self.match(key, word)
-            if not split and not rest:
-                return child.is_word
-            if not split:
-                return self.search_helper(child,rest)
-        return False
+if __name__ == "__main__":
 
-    def startsWith(self,word):
-        return self.startsWith_helper(self.root,word)
+    import sys
+    import os
 
-    def startsWith_helper(self,node,word):
-        for key,child in node.children.items():
-            prefix, split, rest = self.match(key, word)
-            if not rest:
-                return True
-            if not split:
-                return self.startsWith_helper(child,rest)
-        return False
+    sys.path.insert(1, os.path.join(sys.path[0], "../../../.."))
 
-    def match(self, key, word):
-        i=0
-        for k,w in zip(key,word):
-            if k!=w:
-                break
-            i+=1
-        return key[:i],key[i:],word[i:]
+    from mabel.utils.timer import Timer
+    from mabel import Reader
+    from mabel.adapters.disk import DiskReader
+
+    words = Reader(inner_reader=DiskReader, partitioning=None, dataset="tests/data/wordlist")
+    words = words.first().split()
+
+    t = Trie()
+
+    with Timer("trie"):
+        for word in words:
+            t.insert(word)
+
+        for word in words:
+            a = t.search(word)
+
+        with Timer("trie-lookup"):
+            matches = 0
+            for word in words:
+                if t.search(word[::-1]):
+                    matches += 1
+
+    print(matches, sys.getsizeof(t.trie))
+
+    d = {}
+    with Timer("dict"):
+        for word in words:
+            d[word] = True
+
+        for word in words:
+            a = d.get(word)
+
+        with Timer("dict-lookup"):
+            matches = 0
+            for word in words:
+                if d.get(word[::-1], False):
+                    matches += 1
+
+    print(matches, sys.getsizeof(d))

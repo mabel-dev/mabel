@@ -76,7 +76,7 @@ class Writer:
         self.dataset = paths.build_path(self.dataset_template, self.batch_date)
 
         # add the values to kwargs
-        kwargs["raw_path"] = True  # we've just added the dates
+
         kwargs["format"] = format
         kwargs["dataset"] = self.dataset
 
@@ -137,10 +137,10 @@ class Writer:
     def finalize(self, **kwargs):
         self.finalized = True
         try:
-            zone_map_path = os.path.split(self.dataset)[0] + "/zone.map"
+            zone_map_path = os.path.split(self.dataset)[0] + "/zonemap.index"
             self.blob_writer.inner_writer.commit(
                 byte_data=orjson.dumps(list(self.zone_map_writer.profile())),
-                override_blob_name=zone_map_path,
+                blob_name=zone_map_path,
             )
             return self.blob_writer.commit()
         except Exception as e:

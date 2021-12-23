@@ -30,14 +30,7 @@ class MinIoWriter(BaseInnerWriter):
         self.client = Minio(end_point, access_key, secret_key, secure=secure)
         self.filename = self.filename_without_bucket
 
-    def commit(self, byte_data, override_blob_name=None):
-
-        # if we've been given the filename, use that, otherwise get the
-        # name from the path builder
-        if override_blob_name:
-            blob_name = override_blob_name
-        else:
-            blob_name = self._build_path()
+    def commit(self, byte_data, blob_name=None):
 
         self.client.put_object(
             self.bucket, blob_name, io.BytesIO(byte_data), len(byte_data)
