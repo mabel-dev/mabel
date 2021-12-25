@@ -1,5 +1,6 @@
 from typing import Callable
-from mabel.data.internals.dictset import STORAGE_CLASS, DictSet
+from mabel.data.internals.data_containers import DictSet
+from mabel.data.internals.storage_classes import STORAGE_CLASS
 
 
 class CollectedSet:

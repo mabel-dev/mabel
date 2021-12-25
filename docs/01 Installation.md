@@ -7,7 +7,8 @@ pip install mabel
 
 ## mabel-worker
 
-The Mabel Worker is an optional part of the Query Engine.
+The [Mabel Worker](https://github.com/mabel-dev/mabel-worker) is an optional part of
+the Query Engine.
 
 ## mabel-remote-host
 

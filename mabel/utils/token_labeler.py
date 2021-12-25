@@ -10,7 +10,6 @@ import re
 import operator
 import fastnumbers
 
-from mabel import data
 from .text import like, not_like, matches
 from .dates import parse_iso
 from ..data.readers.internals.inline_functions import FUNCTIONS

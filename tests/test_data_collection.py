@@ -4,7 +4,7 @@ import os
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.data.internals.collected_set import CollectedSet
-from mabel.data.internals.dictset import STORAGE_CLASS, DictSet
+from mabel import STORAGE_CLASS, DictSet
 from rich import traceback
 
 traceback.install()

@@ -14,9 +14,10 @@ from .internals.multiprocess_wrapper import processed_reader
 from .internals.cursor import Cursor
 from .internals.inline_evaluator import Evaluator
 
-from ..internals.expression import Expression
-from ..internals.dnf_filters import DnfFilters
-from ..internals.dictset import DictSet, STORAGE_CLASS
+from mabel.data.internals.expression import Expression
+from mabel.data.internals.dnf_filters import DnfFilters
+from mabel.data.internals.data_containers import DictSet
+from mabel.data.internals.storage_classes import STORAGE_CLASS
 
 from ...logging import get_logger
 from ...utils.dates import parse_delta

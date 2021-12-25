@@ -35,39 +35,18 @@ with this limitation.
 import sys
 import os
 
+from mabel.data.internals import data_containers
+
 sys.path.insert(1, os.path.join(sys.path[0], "../../.."))
 
 from typing import Iterable, Tuple
 from enum import Enum
 from mabel.data.internals.attribute_domains import coerce
-from mabel.data.internals.dictset import DictSet
+from mabel.data.internals.data_containers.base_container import BaseDataContainer
+from mabel.data.internals.storage_classes import STORAGE_CLASS
 
 
-class STORAGE_CLASS(int, Enum):
-    """
-    How to cache the results for processing:
-
-    - NO_PERSISTANCE = don't do anything with the records to cache them, assumes
-      the records are already persisted (e.g. you've loaded a list) but most
-      functionality works with generators.
-    - MEMORY = load the entire dataset into a list, this is fast but if the
-      dataset is too large it will kill the app.
-    - DISK = load the entire dataset to a temporary file, this can deal with
-      Tb of data (if you have that much disk space) but it is at least 3x slower
-      than memory from basic bench marks.
-    - COMPRESSED_MEMORY = a middle ground, allows you to load more data into
-      memory but still needs to perform compression on the data so isn't as fast
-      as the MEMORY option. Bench marks show you can fit about 2x the data in
-      memory but at a cost of 2.5x - your results will vary.
-    """
-
-    NO_PERSISTANCE = 1
-    MEMORY = 2
-    DISK = 3
-    COMPRESSED_MEMORY = 4
-
-
-class Relation:
+class Relation(BaseDataContainer):
 
     __slots__ = ("header", "data", "name")
 
@@ -156,12 +135,16 @@ class Relation:
 
         return Relation(do_dedupe(self.data), header=self.header)
 
-    def from_dictset(self, dictset: DictSet):
+    def from_dictset(self, dictset):
         """
         Load a Relation from a DictSet.
 
         In this case, the entire Relation is loaded into memory.
         """
+        from mabel.data.internals.data_containers.base_container import BaseDataContainer
+
+        if not isinstance(dictset, BaseDataContainer):
+            raise TypeError(f'Cannot convert from type `{type(dictset).name}`.')
 
         self.header = {k: {"type": v} for k, v in dictset.types().items()}
         self.data = [
@@ -174,6 +157,7 @@ class Relation:
         Convert a Relation to a DictSet, this will fill every column so missing entries
         will be populated with Nones.
         """
+        from mabel import DictSet
 
         def _inner_to_dictset():
             yield from [

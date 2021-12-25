@@ -1,7 +1,0 @@
-uvicorn
-fastapi
-pydantic
-mabel
-orjson
-requests
-google-cloud-storage

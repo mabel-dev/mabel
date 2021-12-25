@@ -5,4 +5,5 @@ from .writers.writer import Writer
 from .readers.reader import Reader
 from .readers.internals.sql_reader import SqlReader
 
-from .internals.dictset import STORAGE_CLASS, DictSet
+from .internals.data_containers import Relation, DictSet
+from .internals.storage_classes import STORAGE_CLASS

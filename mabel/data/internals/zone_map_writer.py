@@ -46,7 +46,7 @@ import datetime
 from typing import Any
 from mabel.data.internals.algorithms.hyper_log_log import HyperLogLog
 from mabel.data.internals.attribute_domains import MABEL_TYPES, get_coerced_type
-from mabel.data.validator.schema import Schema
+from mabel.data.internals.schema_validator import Schema
 
 
 HYPERLOGLOG_ERROR_RATE = 0.005
@@ -84,7 +84,7 @@ class ZoneMapWriter(object):
         self.hyper_log_logs = {}
         self.record_counter = 0
 
-        raise NotImplementedError("ZoneMapWriter needs some refactoring")
+        #raise NotImplementedError("ZoneMapWriter needs some refactoring")
 
         # extract type and desc info from the schema
 

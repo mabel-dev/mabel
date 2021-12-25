@@ -27,4 +27,5 @@ if os.environ.get("RESOURCE_MONITORING", False):  # pragma: no cover
 from .data.readers.reader import Reader
 from .data.readers.internals.sql_reader import SqlReader
 from .data.writers.writer import Writer
-from .data.internals.dictset import DictSet
+from .data.internals.data_containers import DictSet, Relation
+from .data.internals.storage_classes import STORAGE_CLASS

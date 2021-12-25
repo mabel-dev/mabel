@@ -32,24 +32,26 @@ from functools import reduce
 
 from typing import Iterable, Dict, Any, Union
 
-from ...errors import MissingDependencyError
-from ...utils.ipython import is_running_from_ipython
+from mabel.data.internals.data_containers.base_container import BaseDataContainer
 
-from .display import html_table, ascii_table
-from .storage_classes import (
+from mabel.errors import MissingDependencyError
+from mabel.utils.ipython import is_running_from_ipython
+
+from ..display import html_table, ascii_table
+from ..storage_classes import (
     StorageClassMemory,
     StorageClassDisk,
     StorageClassCompressedMemory,
+    STORAGE_CLASS
 )
-from .expression import Expression
-from .dnf_filters import DnfFilters
-from .dumb_iterator import DumbIterator
-from .group_by import GroupBy
-
-from enum import Enum
+from ..expression import Expression
+from ..dnf_filters import DnfFilters
+from ..dumb_iterator import DumbIterator
+from ..group_by import GroupBy
 
 
-class DictSet(object):
+
+class DictSet(BaseDataContainer):
     def __init__(
         self,
         iterator: Iterable[Dict[Any, Any]],
@@ -305,7 +307,7 @@ class DictSet(object):
         return GroupBy(iter(self._iterator), group_by_columns)
 
     def collect_set(self, column, dedupe: bool = False):
-        from .collected_set import CollectedSet
+        from mabel.data.internals.collected_set import CollectedSet
 
         return CollectedSet(self, column, dedupe=dedupe)
 

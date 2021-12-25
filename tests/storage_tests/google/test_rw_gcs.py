@@ -4,9 +4,8 @@ import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], "../../.."))
 from mabel.adapters.google import GoogleCloudStorageWriter, GoogleCloudStorageReader
-from mabel.data.internals.dictset import STORAGE_CLASS
+from mabel import STORAGE_CLASS, Reader
 from mabel.data import BatchWriter
-from mabel.data import Reader
 from google.auth.credentials import AnonymousCredentials
 from google.cloud import storage
 from rich import traceback

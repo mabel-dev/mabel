@@ -6,7 +6,7 @@ import os
 import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
-from mabel.data.validator import Schema
+from mabel.data.internals.schema_validator import Schema
 from mabel.errors import ValidationError
 from rich import traceback
 import orjson
