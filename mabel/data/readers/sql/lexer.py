@@ -6,5 +6,3 @@ Lexer Interprets the tokens
 Planner creates a naive plan for the query
 
 """
-
-

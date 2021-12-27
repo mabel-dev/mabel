@@ -4,7 +4,6 @@ this particular implementation is roughly 4x slower than a dict
 
 
 class Trie:
-
     def __init__(self):
         self.trie = {}
 
@@ -14,14 +13,14 @@ class Trie:
             if ch not in node:
                 node[ch] = {}
             node = node[ch]
-        node[b'$'] = True
-        
+        node[b"$"] = True
+
     def search(self, word: str) -> bool:
-        return b'$' in self.searchHelper(word)
+        return b"$" in self.searchHelper(word)
 
     def startsWith(self, prefix: str) -> bool:
         return len(self.searchHelper(prefix)) > 0
-        
+
     def searchHelper(self, word) -> dict:
         node = self.trie
         for ch in word:
@@ -43,7 +42,9 @@ if __name__ == "__main__":
     from mabel import Reader
     from mabel.adapters.disk import DiskReader
 
-    words = Reader(inner_reader=DiskReader, partitioning=None, dataset="tests/data/wordlist")
+    words = Reader(
+        inner_reader=DiskReader, partitioning=None, dataset="tests/data/wordlist"
+    )
     words = words.first().split()
 
     t = Trie()

@@ -41,7 +41,6 @@ def find_ones(bigint):
 
 
 class UintSet:
-
     def __init__(self, elements=None, bits=0):
         self._bits = bits
         if elements:
@@ -74,10 +73,10 @@ class UintSet:
         return find_ones(self._bits)
 
     def __repr__(self):
-        elements = ', '.join(str(e) for e in self)
+        elements = ", ".join(str(e) for e in self)
         if elements:
-            elements = '{' + elements + '}'
-        return f'UintSet({elements})'
+            elements = "{" + elements + "}"
+        return f"UintSet({elements})"
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self._bits == other._bits
@@ -94,7 +93,7 @@ class UintSet:
         cls = self.__class__
         res = cls()
         res._bits = self._bits
-        for other in others:    
+        for other in others:
             if isinstance(other, cls):
                 res._bits |= other._bits
             else:
@@ -118,7 +117,7 @@ class UintSet:
         cls = self.__class__
         res = cls()
         res._bits = self._bits
-        for other in others:    
+        for other in others:
             if isinstance(other, cls):
                 res._bits &= other._bits
             try:
@@ -147,12 +146,12 @@ class UintSet:
             res._bits ^= self._bits & other._bits
             return res
         return NotImplemented
-       
+
     def difference(self, *others):
         cls = self.__class__
         res = cls()
         res._bits = self._bits
-        for other in others:    
+        for other in others:
             if isinstance(other, cls):
                 res._bits ^= self._bits & other._bits
             else:
@@ -180,4 +179,3 @@ class UintSet:
         elem = next(iter(self))
         self.remove(elem)
         return elem
-       

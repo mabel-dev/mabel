@@ -36,7 +36,7 @@ def bytes_to_int(b):
 def _hashfunc(x):
     SIP_HASH_SEED = "HyperLogLog SEED"
     return siphash(SIP_HASH_SEED, f"{x}").to_bytes("big")
-    #return hashlib.md5(x).digest()
+    # return hashlib.md5(x).digest()
 
 
 class Simhash(object):
@@ -161,7 +161,7 @@ class Simhash(object):
         return np.unpackbits(np.frombuffer(b, dtype=">B"))
 
     def distance(self, another):
-        #assert self.f == another.f
+        # assert self.f == another.f
         x = (self.value ^ another.value) & ((1 << self.f) - 1)
         ans = 0
         while x:
@@ -202,7 +202,7 @@ class SimhashIndex(object):
         `simhash` is an instance of Simhash
         return a list of obj_id, which is in type of str
         """
-        #assert simhash.f == self.f
+        # assert simhash.f == self.f
 
         ans = set()
 
@@ -226,7 +226,7 @@ class SimhashIndex(object):
         `obj_id` is a string
         `simhash` is an instance of Simhash
         """
-        #assert simhash.f == self.f
+        # assert simhash.f == self.f
 
         for key in self.get_keys(simhash):
             v = "%x,%s" % (simhash.value, obj_id)
@@ -237,7 +237,7 @@ class SimhashIndex(object):
         `obj_id` is a string
         `simhash` is an instance of Simhash
         """
-        #assert simhash.f == self.f
+        # assert simhash.f == self.f
 
         for key in self.get_keys(simhash):
             v = "%x,%s" % (simhash.value, obj_id)

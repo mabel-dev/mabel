@@ -24,10 +24,9 @@ sys.path.insert(1, os.path.join(sys.path[0], "../.."))
 from mabel.data import BatchWriter
 from mabel.adapters.null import NullWriter
 from mabel.logging import get_logger
-from mabel.data.validator import Schema
-from mabel.data.formats import display, dictset
+from mabel import DictSet
 
-import ujson as json
+import orjson as json
 
 
 logger = get_logger()
@@ -83,8 +82,10 @@ def execute_test(compress, schema, reader):
 
     # reader = read_jsonl('tweets.jsonl')
 
+    print(compress)
+
     res = []
-    for i in range(10):
+    for i in range(1):
         writer = BatchWriter(
             inner_writer=NullWriter,
             dataset="test",
@@ -99,8 +100,9 @@ def execute_test(compress, schema, reader):
     return statistics.mean(res)
 
 
-schema = Schema(schema_definition)
-lines = list(read_jsonl("tests/data/formats/tweets.jsonl"))
+# schema = Schema(schema_definition)
+schema = None
+lines = list(read_jsonl("tests/data/formats/jsonl/tweets.jsonl"))
 
 print(len(lines))
 
@@ -134,20 +136,6 @@ result = {
 results.append(result)
 
 result = {
-    "format": "lzma",
-    "validation": False,
-    "time": execute_test("lzma", None, lines),
-}
-results.append(result)
-
-result = {
-    "format": "lzma",
-    "validation": True,
-    "time": execute_test("lzma", schema, lines),
-}
-results.append(result)
-
-result = {
     "format": "parquet",
     "validation": False,
     "time": execute_test("parquet", None, lines),
@@ -161,16 +149,31 @@ result = {
 }
 results.append(result)
 
+result = {
+    "format": "orc",
+    "validation": False,
+    "time": execute_test("orc", None, lines),
+}
+results.append(result)
+
+result = {
+    "format": "orc",
+    "validation": True,
+    "time": execute_test("orc", schema, lines),
+}
+results.append(result)
+
 fastest = 100000000000
 for result in results:
     if result["time"] < fastest:
         fastest = result["time"]
-results = dictset.set_column(
-    results, "ratio", lambda r: int((1000 * fastest) / r["time"]) / 1000
-)
-results = dictset.set_column(
-    results, "rows/second", lambda r: int(len(lines) / r["time"])
-)
-results = dictset.set_column(results, "time", lambda r: int(1000 * r["time"]) / 1000)
+results = DictSet(results)
+# results = dictset.set_column(
+#    results, "ratio", lambda r: int((1000 * fastest) / r["time"]) / 1000
+# )
+# results = dictset.set_column(
+#    results, "rows/second", lambda r: int(len(lines) / r["time"])
+# )
+# results = dictset.set_column(results, "time", lambda r: int(1000 * r["time"]) / 1000)
 
-print(display.ascii_table(results, 100))
+print(results.to_ascii_table(100))

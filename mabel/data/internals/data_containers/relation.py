@@ -141,10 +141,12 @@ class Relation(BaseDataContainer):
 
         In this case, the entire Relation is loaded into memory.
         """
-        from mabel.data.internals.data_containers.base_container import BaseDataContainer
+        from mabel.data.internals.data_containers.base_container import (
+            BaseDataContainer,
+        )
 
         if not isinstance(dictset, BaseDataContainer):
-            raise TypeError(f'Cannot convert from type `{type(dictset).name}`.')
+            raise TypeError(f"Cannot convert from type `{type(dictset).name}`.")
 
         self.header = {k: {"type": v} for k, v in dictset.types().items()}
         self.data = [

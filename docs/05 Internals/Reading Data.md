@@ -11,7 +11,7 @@
   3) Distributed - this isn't written yet.
 - The reader will collect a list of the files in the partition, these will be:
     - data files
-    - metedata files (zone.map)
+    - metedata files (frame.metadata)
     - index files (*.index)
     - directives (frame.invalid / frame.complete)
 

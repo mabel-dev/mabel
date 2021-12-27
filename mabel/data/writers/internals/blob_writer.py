@@ -1,3 +1,4 @@
+import io
 import threading
 from functools import lru_cache
 from orjson import dumps
@@ -27,7 +28,7 @@ class BlobWriter(object):
         **kwargs,
     ):
 
-        #self.indexes = kwargs.get("index_on", [])
+        # self.indexes = kwargs.get("index_on", [])
 
         self.format = format
         self.maximum_blob_size = blob_size
@@ -59,8 +60,8 @@ class BlobWriter(object):
             serialized = dumps(record) + b"\n"  # type:ignore
 
         # add the columns to the index
-#        for column in self.indexes:
-#            self.index_builders[column].add(self.records_in_buffer, record)
+        #        for column in self.indexes:
+        #            self.index_builders[column].add(self.records_in_buffer, record)
 
         # the newline isn't counted so add 1 to get the actual length
         # if this write would exceed the blob size, close it so another
@@ -84,22 +85,16 @@ class BlobWriter(object):
                 if self.format == "parquet":
                     try:
                         import pyarrow.json
-                        import pyarrow.parquet as pq  # type:ignore
+                        import pyarrow.parquet as pq
                     except ImportError as err:  # pragma: no cover
                         raise MissingDependencyError(
                             "`pyarrow` is missing, please install or include in requirements.txt"
                         )
 
-                    # pyarrow is opinionated to dealing with files - so we use files
-                    # to load into and read from pyarrow
-                    # first, we load the buffer into a file and then into pyarrow
                     import tempfile
 
-                    buffer_temp_file = tempfile.TemporaryFile()
-                    buffer_temp_file.write(self.buffer)
-                    buffer_temp_file.seek(0, 0)
-                    in_pyarrow_buffer = pyarrow.json.read_json(buffer_temp_file)
-                    buffer_temp_file.close()
+                    # load the jsonl data into PyArrow
+                    in_pyarrow_buffer = pyarrow.json.read_json(io.BytesIO(self.buffer))
 
                     # then we save from pyarrow into another file which we read
                     pq_temp_file = tempfile.TemporaryFile()
@@ -107,6 +102,31 @@ class BlobWriter(object):
                     pq_temp_file.seek(0, 0)
                     self.buffer = pq_temp_file.read()
                     pq_temp_file.close()
+
+                if self.format == "orc":
+
+                    try:
+                        import pyarrow.json
+                        import pyarrow.orc as orc
+                    except ImportError as err:  # pragma: no cover
+                        raise MissingDependencyError(
+                            "`pyarrow` is missing, please install or include in requirements.txt"
+                        )
+                    import tempfile
+
+                    # load the jsonl data into PyArrow
+                    pyarrow_table = pyarrow.json.read_json(io.BytesIO(self.buffer))
+
+                    # we serialize the PyArrow table for us to save off to the blob
+                    with tempfile.NamedTemporaryFile() as orc_temp_file:
+
+                        with open(orc_temp_file.name, "wb") as temp:
+                            writer = orc.ORCWriter(temp)
+                            writer.write(pyarrow_table)
+                            writer.close()
+
+                        with open(orc_temp_file.name, "rb") as temp:
+                            self.buffer = temp.read()
 
                 if self.format == "zstd":
                     # zstandard is an non-optional installed dependency
@@ -117,7 +137,7 @@ class BlobWriter(object):
                 )
 
                 get_logger().error("Indexing functionality temporarily Removed")
-                #for column in self.indexes:
+                # for column in self.indexes:
                 #    index = self.index_builders[column].build()
                 #
                 #    bucket, path, stem, suffix = get_parts(committed_blob_name)
@@ -154,8 +174,8 @@ class BlobWriter(object):
         self.buffer = bytearray()
 
         # create index builders
-        #self.index_builders = {}
-        #for column in self.indexes:
+        # self.index_builders = {}
+        # for column in self.indexes:
         #    self.index_builders[column] = IndexBuilder(column)
 
         self.records_in_buffer = 0

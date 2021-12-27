@@ -4,11 +4,11 @@ from ...utils import paths
 import requests
 
 
-def get(url: str, parameters: dict = None, username: str = None, password: str = None) -> tuple:
+def get(
+    url: str, parameters: dict = None, username: str = None, password: str = None
+) -> tuple:
 
-    if not url.startswith("https://") and not url.startswith(
-        "http://"
-    ):
+    if not url.startswith("https://") and not url.startswith("http://"):
         raise ValueError(
             f"`{url}` is not a valid HTTP end-point, RemoteReader can only be used for HTTP end-points."
         )
@@ -26,21 +26,20 @@ def get(url: str, parameters: dict = None, username: str = None, password: str =
     return 500, {}, bytes()  # pragma: no cover
 
 
-
 class RemoteReader(BaseInnerReader):
-    def __init__(self, domain:str = None, **kwargs):
+    def __init__(self, domain: str = None, **kwargs):
         """
         File System Reader
         """
         super().__init__(**kwargs)
         if domain:
-           self.domain = domain
+            self.domain = domain
         else:
             import os
+
             self.domain = os.environ.get("REMOTE_MABLE", "//")
         if self.domain[-1] != "/":
             self.domain += "/"
-
 
     def get_blobs_at_path(self, path):
         """
@@ -51,14 +50,13 @@ class RemoteReader(BaseInnerReader):
         url = self.domain + f"v1/o/list/{bucket}?prefix={object_path}"
         response = get(url)
 
-
     def get_blob_bytes(self, blob_name: str) -> bytes:
         """
         GET remote_server/v1/b/get/<bucket>/<path>/
         """
 
         bucket, object_path, name, extension = paths.get_parts(blob_name)
-        remote_blob_name=object_path + name + extension
+        remote_blob_name = object_path + name + extension
 
         url = self.domain + f"v1/b/get/{bucket}/{remote_blob_name}"
         response = get(url)

@@ -42,13 +42,12 @@ from ..storage_classes import (
     StorageClassMemory,
     StorageClassDisk,
     StorageClassCompressedMemory,
-    STORAGE_CLASS
+    STORAGE_CLASS,
 )
 from ..expression import Expression
 from ..dnf_filters import DnfFilters
 from ..dumb_iterator import DumbIterator
 from ..group_by import GroupBy
-
 
 
 class DictSet(BaseDataContainer):

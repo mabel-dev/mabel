@@ -52,6 +52,7 @@ KNOWN_EXTENSIONS = {
     ".zip": (decompressors.unzip, parsers.pass_thru, EXTENSION_TYPE.DATA),
     ".jsonl": (decompressors.lines, parsers.json, EXTENSION_TYPE.DATA),
     ".xml": (decompressors.block, parsers.xml, EXTENSION_TYPE.DATA),
+    ".orc": (decompressors.orc, parsers.pass_thru, EXTENSION_TYPE.DATA),
     ".lxml": (decompressors.lines, parsers.xml, EXTENSION_TYPE.DATA),
     ".parquet": (decompressors.parquet, parsers.pass_thru, EXTENSION_TYPE.DATA),
     ".csv": (decompressors.csv, parsers.pass_thru, EXTENSION_TYPE.DATA),
@@ -247,7 +248,7 @@ class ParallelReader:
             # Parse
             record_iterator = map(parser, record_iterator)
             # remove empty fields
-            #record_iterator = map(eliminate_nulls, record_iterator)
+            # record_iterator = map(eliminate_nulls, record_iterator)
             # Expand Nested JSON
             # record_iterator = map(expand_nested_json, record_iterator)
             # Transform

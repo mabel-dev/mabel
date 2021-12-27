@@ -81,7 +81,29 @@ def test_reader_writer_format_zstd():
     g = glob.glob("_temp/**/*.zstd", recursive=True)
     assert len(g) > 0, g
 
-    c = glob.glob("_temp/**/*.complete", recursive=True)
+    g = glob.glob("_temp/**/frame.metadata", recursive=True)
+    assert len(g) > 0, g
+
+    c = glob.glob("_temp/**/frame.complete", recursive=True)
+    len(c) == 0, c
+
+    r = Reader(inner_reader=DiskReader, dataset="_temp")
+    l = len(list(r))
+    shutil.rmtree("_temp", ignore_errors=True)
+    assert l == 200000, l
+
+
+def test_reader_writer_format_orc():
+
+    do_writer_compressed("orc")
+
+    g = glob.glob("_temp/**/*.orc", recursive=True)
+    assert len(g) > 0, g
+
+    g = glob.glob("_temp/**/frame.metadata", recursive=True)
+    assert len(g) > 0, g
+
+    c = glob.glob("_temp/**/frame.complete", recursive=True)
     len(c) == 0, c
 
     r = Reader(inner_reader=DiskReader, dataset="_temp")
@@ -145,6 +167,7 @@ def get_data():
 
 if __name__ == "__main__":  # pragma: no cover
     test_reader_writer()
+    test_reader_writer_format_orc()
     test_reader_writer_format_zstd()
     test_reader_writer_format_jsonl()
     test_reader_writer_format_parquet()

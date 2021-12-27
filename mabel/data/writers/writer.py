@@ -88,9 +88,8 @@ class Writer:
         get_logger().debug(orjson.dumps(arg_dict))
 
         # default index
-        #kwargs["index_on"] = kwargs.get("index_on", [])
-        #kwargs["clustered_index"] = clustered_index
-        
+        # kwargs["index_on"] = kwargs.get("index_on", [])
+        # kwargs["clustered_index"] = clustered_index
 
         # create the writer
         self.blob_writer = BlobWriter(**kwargs)
@@ -137,9 +136,9 @@ class Writer:
     def finalize(self, **kwargs):
         self.finalized = True
         try:
-            zone_map_path = os.path.split(self.dataset)[0] + "/zonemap.index"
+            zone_map_path = os.path.split(self.dataset)[0] + "/frame.metadata"
             self.blob_writer.inner_writer.commit(
-                byte_data=orjson.dumps(list(self.zone_map_writer.profile())),
+                byte_data=self.zone_map_writer.profile(),
                 blob_name=zone_map_path,
             )
             return self.blob_writer.commit()
@@ -147,4 +146,5 @@ class Writer:
             get_logger().error(
                 f"{type(self).__name__} failed to close pool: {type(e).__name__} - {e}"
             )
+            raise
         return None

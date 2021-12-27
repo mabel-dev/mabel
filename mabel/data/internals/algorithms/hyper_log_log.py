@@ -89,10 +89,6 @@ from siphashc import siphash
 SIP_HASH_SEED = "HyperLogLog SEED"
 
 
-def bit_length(w):
-    return w.bit_length()
-
-
 def get_treshold(p):
     return tresholdData[p - 4]
 
@@ -129,15 +125,6 @@ def get_alpha(p):
     return 0.7213 / (1.0 + 1.079 / (1 << p))
 
 
-def get_rho(w, max_width):
-    rho = max_width - bit_length(w) + 1
-
-    if rho <= 0:
-        raise ValueError("w overflow")
-
-    return rho
-
-
 class HyperLogLog(object):
     """
     HyperLogLog cardinality counter
@@ -168,18 +155,18 @@ class HyperLogLog(object):
     def add(self, value):
         """
         Adds the item to the HyperLogLog
+
+        This has been updated from the copied version to try to improve performance.
         """
-        # h: D -> {0,1} ** 64
-        # x = h(v)
-        # j = <x_0x_1..x_{p-1}>
-        # w = <x_{p}x_{p+1}..>
-        # M[j] = max(M[j], rho(w))
 
         x = siphash(SIP_HASH_SEED, f"{value}")
+
         j = x & (self.m - 1)
         w = x >> self.p
 
-        self.M[j] = max(self.M[j], get_rho(w, 64 - self.p))
+        rho = (64 - self.p) - w.bit_length() + 1
+        mj = self.M[j]
+        self.M[j] = mj if mj >= rho else rho
 
     def update(self, *others):
         """

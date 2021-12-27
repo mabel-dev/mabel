@@ -1,9 +1,11 @@
-from ....errors import MissingDependencyError
+from mabel.errors import MissingDependencyError
 
 
-def zstd(stream):
+def zstd(stream, projection=None, selection=None):
     """
     Read zstandard compressed files
+
+    This assumes the underlying format is line separated records.
     """
     import zstandard  # type:ignore
 
@@ -11,7 +13,7 @@ def zstd(stream):
         yield from file.read().split(b"\n")[:-1]
 
 
-def lzma(stream):
+def lzma(stream, projection=None, selection=None):
     """
     Read LZMA compressed files
     """
@@ -22,7 +24,7 @@ def lzma(stream):
         yield from file
 
 
-def unzip(stream):
+def unzip(stream, projection=None, selection=None):
     """
     Read ZIP compressed files
     """
@@ -43,7 +45,7 @@ def unzip(stream):
                     yield parser(line)
 
 
-def parquet(stream):
+def parquet(stream, projection=None, selection=None):
     """
     Read parquet formatted files
     """
@@ -60,7 +62,28 @@ def parquet(stream):
             yield {k: v[index] for k, v in dict_batch.items()}
 
 
-def lines(stream):
+def orc(stream, projection=None, selection=None):
+    """
+    Read orc formatted files
+    """
+    try:
+        import pyarrow.orc as orc
+    except ImportError:  # pragma: no cover
+        raise MissingDependencyError(
+            "`pyarrow` is missing, please install or include in requirements.txt"
+        )
+
+    orc_file = orc.ORCFile(stream)
+    data = orc_file.read()  # columns=[] to push down projection
+
+    for batch in data.to_batches():
+        dict_batch = batch.to_pydict()
+        for index in range(len(batch)):
+            yield ({k: v[index] for k, v in dict_batch.items()})  # returns a dict
+            # yield tuple([v[index] for k, v in dict_batch.items()]) # yields a tuple
+
+
+def lines(stream, projection=None, selection=None):
     """
     Default reader, assumes text format
     """
@@ -68,11 +91,11 @@ def lines(stream):
     yield from text.splitlines()
 
 
-def block(stream):
+def block(stream, projection=None, selection=None):
     yield stream.read()
 
 
-def csv(stream):
+def csv(stream, projection=None, selection=None):
     import csv
 
     yield from csv.DictReader(stream.read().decode("utf8").splitlines())

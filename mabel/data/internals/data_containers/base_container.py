@@ -3,7 +3,6 @@ from typing import Iterable
 
 
 class BaseDataContainer(abc.ABC, Iterable):
-
     def __init__(self):
         """
         Data Containers are representations of datasets. There are two Data Containers,

@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class STORAGE_CLASS(int, Enum):
     """
     How to cache the results for processing:

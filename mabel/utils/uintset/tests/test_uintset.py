@@ -9,6 +9,7 @@ from uintset import UintSet
 
 WORD_SIZE = 64
 
+
 def test_new():
     s = UintSet()
     assert len(s) == 0
@@ -52,12 +53,12 @@ def test_iter():
 
 def test_repr_empty():
     s = UintSet()
-    assert repr(s) == 'UintSet()'
+    assert repr(s) == "UintSet()"
 
 
 def test_repr():
     s = UintSet([1, 5, 0, 3, 2, 4])
-    assert repr(s) == 'UintSet({0, 1, 2, 3, 4, 5})'
+    assert repr(s) == "UintSet({0, 1, 2, 3, 4, 5})"
 
 
 def test_eq():
@@ -65,7 +66,7 @@ def test_eq():
         (UintSet(), UintSet(), True),
         (UintSet([1]), UintSet(), False),
         (UintSet(), UintSet([1]), False),
-        (UintSet([1, 2, 100]), UintSet([100, 2, 1]), True), # beyond word 0
+        (UintSet([1, 2, 100]), UintSet([100, 2, 1]), True),  # beyond word 0
         (UintSet([1, 100]), UintSet([1, 101]), False),
         (UintSet([1, 100]), UintSet([1, 100, 1000]), False),
     ]
@@ -89,7 +90,7 @@ union_cases = [
     (UintSet(), UintSet(), UintSet()),
     (UintSet([1]), UintSet(), UintSet([1])),
     (UintSet(), UintSet([1]), UintSet([1])),
-    (UintSet([1, 100]), UintSet([100, 1]), UintSet([100, 1])), # beyond word 0
+    (UintSet([1, 100]), UintSet([100, 1]), UintSet([100, 1])),  # beyond word 0
     (UintSet([1, 100]), UintSet([2]), UintSet([1, 2, 100])),
 ]
 
@@ -131,7 +132,7 @@ def intersection_cases():
         (UintSet(), UintSet(), UintSet()),
         (UintSet([1]), UintSet(), UintSet()),
         (UintSet([1]), UintSet([1]), UintSet([1])),
-        (UintSet([1, 100]), UintSet([100, 1]), UintSet([100, 1])), # beyond word 0
+        (UintSet([1, 100]), UintSet([100, 1]), UintSet([100, 1])),  # beyond word 0
         (UintSet([1, 100]), UintSet([2]), UintSet()),
         (UintSet([1, 2, 3, 4]), UintSet([2, 3, 5]), UintSet([2, 3])),
     ]
@@ -157,7 +158,7 @@ def symmetric_diff_cases():
         (UintSet(), UintSet(), UintSet()),
         (UintSet([1]), UintSet(), UintSet([1])),
         (UintSet([1]), UintSet([1]), UintSet()),
-        (UintSet([1, 100]), UintSet([100, 1]), UintSet()), # beyond word 0
+        (UintSet([1, 100]), UintSet([100, 1]), UintSet()),  # beyond word 0
         (UintSet([1, 100]), UintSet([2]), UintSet([1, 100, 2])),
         (UintSet([1, 2, 3, 4]), UintSet([2, 3, 5]), UintSet([1, 4, 5])),
     ]
@@ -181,16 +182,18 @@ difference_cases = [
     (UintSet(), UintSet(), UintSet()),
     (UintSet([1]), UintSet(), UintSet([1])),
     (UintSet([1]), UintSet([1]), UintSet()),
-    (UintSet([1, 100]), UintSet([100, 1]), UintSet()), # beyond word 0
+    (UintSet([1, 100]), UintSet([100, 1]), UintSet()),  # beyond word 0
     (UintSet([1, 100]), UintSet([2]), UintSet([1, 100])),
     (UintSet([1, 2, 3, 4]), UintSet([2, 3, 5]), UintSet([1, 4])),
 ]
+
 
 @pytest.mark.parametrize("s1, s2, want", difference_cases)
 def test_sub_op(s1, s2, want):
     got = s1 - s2
     assert len(got) == len(want)
     assert got == want
+
 
 @pytest.mark.parametrize("s1, s2, want", difference_cases)
 def test_difference(s1, s2, want):
@@ -237,11 +240,11 @@ def test_pop_not_found():
     s = UintSet()
     with pytest.raises(KeyError) as excinfo:
         s.pop()
-    assert 'pop from an empty set' in str(excinfo.value)
+    assert "pop from an empty set" in str(excinfo.value)
 
 
 def test_pop():
-    test_cases = [0, 1, WORD_SIZE-1, WORD_SIZE, WORD_SIZE+1, 100]
+    test_cases = [0, 1, WORD_SIZE - 1, WORD_SIZE, WORD_SIZE + 1, 100]
     for want in test_cases:
         s = UintSet([want])
         got = s.pop()
