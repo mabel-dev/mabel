@@ -1,7 +1,11 @@
+"""
+Decompressors for the Dictionary based Readers
+"""
+
 from mabel.errors import MissingDependencyError
 
 
-def zstd(stream, projection=None, selection=None):
+def zstd(stream):
     """
     Read zstandard compressed files
 
@@ -13,7 +17,7 @@ def zstd(stream, projection=None, selection=None):
         yield from file.read().split(b"\n")[:-1]
 
 
-def lzma(stream, projection=None, selection=None):
+def lzma(stream):
     """
     Read LZMA compressed files
     """
@@ -24,7 +28,7 @@ def lzma(stream, projection=None, selection=None):
         yield from file
 
 
-def unzip(stream, projection=None, selection=None):
+def unzip(stream):
     """
     Read ZIP compressed files
     """
@@ -45,7 +49,7 @@ def unzip(stream, projection=None, selection=None):
                     yield parser(line)
 
 
-def parquet(stream, projection=None, selection=None):
+def parquet(stream):
     """
     Read parquet formatted files
     """
@@ -62,7 +66,7 @@ def parquet(stream, projection=None, selection=None):
             yield {k: v[index] for k, v in dict_batch.items()}
 
 
-def orc(stream, projection=None, selection=None):
+def orc(stream):
     """
     Read orc formatted files
     """
@@ -79,11 +83,10 @@ def orc(stream, projection=None, selection=None):
     for batch in data.to_batches():
         dict_batch = batch.to_pydict()
         for index in range(len(batch)):
-            yield ({k: v[index] for k, v in dict_batch.items()})  # returns a dict
-            # yield tuple([v[index] for k, v in dict_batch.items()]) # yields a tuple
+            yield ({k: v[index] for k, v in dict_batch.items()})
 
 
-def lines(stream, projection=None, selection=None):
+def lines(stream):
     """
     Default reader, assumes text format
     """
@@ -91,11 +94,11 @@ def lines(stream, projection=None, selection=None):
     yield from text.splitlines()
 
 
-def block(stream, projection=None, selection=None):
+def block(stream):
     yield stream.read()
 
 
-def csv(stream, projection=None, selection=None):
+def csv(stream):
     import csv
 
     yield from csv.DictReader(stream.read().decode("utf8").splitlines())

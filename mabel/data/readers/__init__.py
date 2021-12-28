@@ -1,1 +1,1 @@
-from .internals.sql_reader import SqlReader
+from .sql_reader import SqlReader
