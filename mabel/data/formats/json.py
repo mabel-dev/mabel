@@ -34,7 +34,6 @@ try:
         else:
             return orjson.dumps(obj, option=orjson.OPT_SORT_KEYS).decode()
 
-
 except ImportError:  # pragma: no cover
     # orjson doesn't install on 32bit systems so we need a backup plan
     # however, orjson and ujson have functional differences so we can't
