@@ -32,25 +32,23 @@ from functools import reduce
 
 from typing import Iterable, Dict, Any, Union
 
-from mabel.data.internals.data_containers.base_container import BaseDataContainer
-
 from mabel.errors import MissingDependencyError
 from mabel.utils.ipython import is_running_from_ipython
 
-from ..display import html_table, ascii_table
-from ..storage_classes import (
+from .display import html_table, ascii_table
+from .storage_classes import (
     StorageClassMemory,
     StorageClassDisk,
     StorageClassCompressedMemory,
     STORAGE_CLASS,
 )
-from ..expression import Expression
-from ..dnf_filters import DnfFilters
-from ..dumb_iterator import DumbIterator
-from ..group_by import GroupBy
+from .expression import Expression
+from .dnf_filters import DnfFilters
+from .dumb_iterator import DumbIterator
+from .group_by import GroupBy
 
 
-class DictSet(BaseDataContainer):
+class DictSet(object):
     def __init__(
         self,
         iterator: Iterable[Dict[Any, Any]],

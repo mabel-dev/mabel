@@ -3,6 +3,7 @@ Decompressors for the Dictionary based Readers
 """
 
 from mabel.errors import MissingDependencyError
+from mabel.logging import get_logger
 
 
 def zstd(stream):

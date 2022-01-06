@@ -57,8 +57,8 @@ def test_simd_serializer(serializer):
     for item in reader:
         s = sparser(item)
         dic = s.as_dict()
-        dic.mini = s.mini
-        setattr(dic, "mini", s.mini)
+        #dic.mini = s.mini
+        #setattr(dic, "mini", s.mini)
         serializer(dic)
 
 

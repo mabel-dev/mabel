@@ -147,4 +147,3 @@ class Writer:
                 f"{type(self).__name__} failed to close pool: {type(e).__name__} - {e}"
             )
             raise
-        return None

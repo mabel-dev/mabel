@@ -20,7 +20,7 @@ from .internals.inline_evaluator import Evaluator
 
 from mabel.data.internals.expression import Expression
 from mabel.data.internals.dnf_filters import DnfFilters
-from mabel.data.internals.data_containers import DictSet
+from mabel.data.internals.dictset import DictSet
 from mabel.data.internals.storage_classes import STORAGE_CLASS
 
 from ...logging import get_logger

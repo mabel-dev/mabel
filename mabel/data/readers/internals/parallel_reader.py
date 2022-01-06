@@ -58,7 +58,7 @@ KNOWN_EXTENSIONS = {
     ".csv": (decompressors.csv, parsers.pass_thru, EXTENSION_TYPE.DATA),
     ".ignore": (empty_list, empty_list, EXTENSION_TYPE.CONTROL),
     ".complete": (empty_list, empty_list, EXTENSION_TYPE.CONTROL),
-    ".idx": (empty_list, empty_list, EXTENSION_TYPE.INDEX),
+    ".idx": (empty_list, empty_list, EXTENSION_TYPE.INDEX)
 }
 
 
