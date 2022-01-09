@@ -13,7 +13,7 @@
 Helper routines for handling types between different dialects.
 """
 from enum import Enum
-from mabel.errors import UnsupportedTypeError
+from mabel.exceptions import UnsupportedTypeError
 import datetime
 
 

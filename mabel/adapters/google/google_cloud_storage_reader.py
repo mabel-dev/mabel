@@ -2,9 +2,9 @@
 Google Cloud Storage Reader
 """
 import os
-from ...data.readers.internals.base_inner_reader import BaseInnerReader
-from ...errors import MissingDependencyError
-from ...utils import paths
+from mabel.data.readers.internals.base_inner_reader import BaseInnerReader
+from mabel.exceptions import MissingDependencyError
+from mabel.utils import paths
 
 try:
     from google.auth.credentials import AnonymousCredentials  # type:ignore

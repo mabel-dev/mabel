@@ -9,7 +9,7 @@ import sys
 sys.path.insert(1, os.path.join(sys.path[0], "../../.."))
 from mabel.adapters.disk import DiskReader, DiskWriter
 from mabel.data import Reader, BatchWriter
-from mabel.errors import DataNotFoundError
+from mabel.exceptions import DataNotFoundError
 from rich import traceback
 
 traceback.install()

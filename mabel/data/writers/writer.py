@@ -7,7 +7,7 @@ from mabel.data.writers.internals.blob_writer import BlobWriter
 from mabel.data.internals.schema_validator import Schema
 from mabel.data.internals.zone_map_writer import ZoneMapWriter
 from mabel.utils import paths, dates
-from mabel.errors import ValidationError, InvalidDataSetError, MissingDependencyError
+from mabel.exceptions import ValidationError, InvalidDataSetError, MissingDependencyError
 from mabel.logging import get_logger
 
 

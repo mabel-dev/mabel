@@ -1,6 +1,6 @@
 import io
-from ...data.writers.internals.base_inner_writer import BaseInnerWriter
-from ...errors import MissingDependencyError
+from mabel.data.writers.internals.base_inner_writer import BaseInnerWriter
+from mabel.exceptions import MissingDependencyError
 
 try:
     from minio import Minio  # type:ignore

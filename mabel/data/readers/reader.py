@@ -6,7 +6,7 @@ import datetime
 
 from typing import Optional, Dict, Union
 
-from .internals.parallel_reader import (
+from mabel.data.readers.internals.parallel_reader import (
     ParallelReader,
     pass_thru,
     EXTENSION_TYPE,
@@ -14,19 +14,19 @@ from .internals.parallel_reader import (
 )
 
 # from .internals.threaded_wrapper import processed_reader
-from .internals.multiprocess_wrapper import processed_reader
-from .internals.cursor import Cursor
-from .internals.inline_evaluator import Evaluator
+from mabel.data.readers.internals.multiprocess_wrapper import processed_reader
+from mabel.data.readers.internals.cursor import Cursor
+from mabel.data.readers.internals.inline_evaluator import Evaluator
 
 from mabel.data.internals.expression import Expression
 from mabel.data.internals.dnf_filters import DnfFilters
 from mabel.data.internals.dictset import DictSet
 from mabel.data.internals.storage_classes import STORAGE_CLASS
 
-from ...logging import get_logger
-from ...utils.dates import parse_delta
-from ...utils.parameter_validator import validate
-from ...errors import InvalidCombinationError, DataNotFoundError
+from mabel.logging import get_logger
+from mabel.utils.dates import parse_delta
+from mabel.utils.parameter_validator import validate
+from mabel.exceptions import InvalidCombinationError, DataNotFoundError
 
 
 # fmt:off

@@ -14,6 +14,12 @@ As an Index:
   matching row if it's between the minimum and maximum values. Not being ruled out
   doesn't mean the value is is the Blob, as such this is a probabilistic approach.
 
+  This works well for selective (where the value doesn't appear in some blobs) or
+  ordered columns, but doesn't work well when the index cannot eliminate blobs from
+  the read.
+
+  See: https://en.wikipedia.org/wiki/Block_Range_Index
+
 As a Data Profiler:
 
   This contains a limited selection of information about the dataset, the purpose of
@@ -23,21 +29,34 @@ As a Data Profiler:
   The profiler also contains description information from the Schema, if provided to
   the reader.
   
-  This data can also be used as part of a higher-level profiler.
+  As well as query planning, this data can also be used:
+    - To respond to simple queries where the data is present in the index, such as 
+      SELECT COUNT(*) - this is possible as we have a count of the records in the 
+      index. SELECT AVG(field) - this is possible as we have the count and cumulative
+      sum for columns.
+    - As the basis of more detailed data profiling. 
 
 The resultant map file is a JSON file / Python dict:
 
 {
-    "blob_name": {
-        "column_name": {
-            profile information
-        },
-        "column_name": {
-            profile_information
+    "partition": {
+        "count": 222,
+        "columns": {
+            "column_name": description
         }
-    },
-    "blob_name": {
-        blob_information
+        "blobs: {
+            "blob_name": {
+                "column_name": {
+                    profile information
+                },
+                "column_name": {
+                    profile_information
+                }
+            },
+            "blob_name": {
+                blob_information
+            }
+        }
     }
 }
   
@@ -46,7 +65,7 @@ import datetime
 import json
 from typing import Any, Optional
 from mabel.data.internals.algorithms.hyper_log_log import HyperLogLog
-from mabel.data.internals.attribute_domains import MABEL_TYPES, get_coerced_type
+from mabel.data.internals.attribute_domains import get_coerced_type
 from mabel.data.internals.schema_validator import Schema
 
 
@@ -90,14 +109,12 @@ class ZoneMap:
 
 
 class ZoneMapWriter(object):
+
     def __init__(self, schema: Optional[Schema] = None):
         self.collectors = {}
         self.hyper_log_logs = {}
         self.record_counter = 0
-
-        # raise NotImplementedError("ZoneMapWriter needs some refactoring")
-
-        # extract type and desc info from the schema
+        self._schema = schema
 
     def add(self, row, blob):
         # count every time we've been called - this is the total record count for
@@ -172,11 +189,11 @@ class ZoneMapWriter(object):
                     )
                     # High cardinality (closer to 1) indicates a greated number of unique
                     # values. The error ratio for the HLL is 1/200, so we're going to round to
-                    # the nearest 1/1000th
+                    # the nearest 1%
                     self.collectors[blob][column].cardinality = round(
                         self.hyper_log_logs[f"{blob}:{column}"].card()
                         / self.collectors[blob][column].count,
-                        3,
+                        2,
                     )
 
                     self.collectors[blob][column] = self.collectors[blob][

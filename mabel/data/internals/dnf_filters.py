@@ -3,9 +3,9 @@ This is a filtering mechanism to be applied when reading data.
 """
 import operator
 from typing import Optional, Iterable, List, Tuple, Union
-from ...errors import InvalidSyntaxError
-from ...logging import get_logger
-from ...utils.text import like, matches
+from mabel.exceptions import InvalidSyntaxError
+from mabel.logging import get_logger
+from mabel.utils.text import like, matches
 
 
 def _in(x, y):

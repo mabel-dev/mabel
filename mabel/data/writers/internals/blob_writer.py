@@ -3,9 +3,9 @@ import threading
 from functools import lru_cache
 from orjson import dumps
 import zstandard
-from ...internals.records import flatten
-from ....logging import get_logger
-from ....errors import MissingDependencyError
+from mabel.data.internals.records import flatten
+from mabel.logging import get_logger
+from mabel.exceptions import MissingDependencyError
 
 
 BLOB_SIZE = 64 * 1024 * 1024  # 64Mb, 16 files per gigabyte

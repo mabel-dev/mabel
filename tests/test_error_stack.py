@@ -2,7 +2,7 @@ import os
 import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
-from mabel.errors.render_error_stack import render_error_stack
+from mabel.utils.render_error_stack import render_error_stack
 from rich import traceback
 
 traceback.install()

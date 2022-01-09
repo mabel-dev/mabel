@@ -32,7 +32,7 @@ from functools import reduce
 
 from typing import Iterable, Dict, Any, Union
 
-from mabel.errors import MissingDependencyError
+from mabel.exceptions import MissingDependencyError
 from mabel.utils.ipython import is_running_from_ipython
 
 from .display import html_table, ascii_table

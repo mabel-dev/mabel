@@ -1,8 +1,8 @@
 import functools
 import inspect
-from ..logging import get_logger
-from ..errors import InvalidReaderConfigError
-from .text import levenshtein_distance
+from mabel.logging import get_logger
+from mabel.exceptions import InvalidReaderConfigError
+from mabel.utils.text import levenshtein_distance
 
 
 class validate:  # pragma: no cover

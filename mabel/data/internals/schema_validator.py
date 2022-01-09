@@ -3,7 +3,7 @@ import re
 import orjson
 import datetime
 from typing import Any, Union, List, Dict
-from ...errors import ValidationError
+from mabel.exceptions import ValidationError
 
 """
 - INTEGER
