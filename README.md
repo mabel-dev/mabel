@@ -70,11 +70,6 @@ From GitHub
 pip install --upgrade git+https://github.com/mabel-dev/mabel
 ~~~
 
-## Guides
-
-[How to Write a Flow](https://github.com/mabel-dev/mabel/wiki/how_to_write_a_flow)  
-[How to Read Data](https://github.com/mabel-dev/mabel/wiki/how_to_read_a_dataset)
-
 ## Dependencies
 
 -  **[dateutil](https://dateutil.readthedocs.io/en/stable/)** is used to convert dates received as strings
