@@ -2,7 +2,7 @@
 
 ## mabel is a Data Engineering platform designed to run in serverless environments.
 
-**mabel** has no server component, **mabel** just runs when you need it making it ideal
+**mabel** just runs when you need it, scaling to zero, making it efficient and ideal
 for deployments to platforms like Kubernetes, GCP Cloud Run, AWS Fargate and Knative.
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/mabel-dev/mabel/blob/master/LICENSE)
