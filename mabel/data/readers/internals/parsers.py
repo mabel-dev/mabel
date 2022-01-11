@@ -2,7 +2,6 @@ pass_thru = lambda x: x
 
 
 from mabel.logging import get_logger
-get_logger().warning("handle tsdb here")
 
 
 def json(ds):
