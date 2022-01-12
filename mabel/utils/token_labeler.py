@@ -8,7 +8,6 @@ in one place b) different parts of the system behave consistently.
 from functools import lru_cache
 import re
 import operator
-import fastnumbers
 
 from mabel import data
 from .text import like, not_like, matches
@@ -29,14 +28,19 @@ def interpret_value(value):
         return value
     if value.upper() in ("TRUE", "FALSE"):
         return value.upper() == "TRUE"
+
     try:
-        # there appears to be a race condition with this library
-        # so wrap in a SystemError
-        num = fastnumbers.fast_real(value)
-        if isinstance(num, (int, float)):
-            return num
-    except SystemError:
+        num = int(value)
+        return num
+    except ValueError:
         pass
+
+    try:
+        num = float(value)
+        return num
+    except ValueError:
+        pass
+
     value = value[1:-1]
     return parse_iso(value) or value
 
@@ -125,14 +129,25 @@ def get_token_type(token):
             return TOKENS.DATE
         else:
             return TOKENS.LITERAL
-    if fastnumbers.isint(token):
+
+    try:
+        num = int(token)
         return TOKENS.INTEGER
-    if fastnumbers.isfloat(token):
+    except ValueError:
+        pass
+
+    try:
+        num = float(token)
         return TOKENS.FLOAT
+    except ValueError:
+        pass
+
     if token in ("(", "["):
         return TOKENS.LEFTPARENTHESES
     if token in (")", "]"):
         return TOKENS.RIGHTPARENTHESES
+    if token == ",":
+        return TOKENS.COMMA
     if re.search(r"^[^\d\W][\w\-\.]*", token):
         if token_upper in ("TRUE", "FALSE"):
             # 'true' and 'false' without quotes are booleans

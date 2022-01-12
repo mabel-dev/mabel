@@ -5,6 +5,7 @@ sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.data.internals.group_by import GroupBy
 from mabel.data.internals.dictset import STORAGE_CLASS, DictSet
 from rich import traceback
+from decimal import Decimal
 
 traceback.install()
 
@@ -37,7 +38,8 @@ def test_group_by():
     assert list(GroupBy(ds, "user").count()) == [{'COUNT(*)': 6, 'user': 'alice'}, {'COUNT(*)': 5, 'user': 'bob'}, {'COUNT(*)': 2, 'user': 'eve'}]
 
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
-    assert list(GroupBy(ds, "user").average("value")) == [{'AVG(value)': 4.0, 'user': 'alice'}, {'AVG(value)': 1.4, 'user': 'bob'}, {'AVG(value)': 6.5, 'user': 'eve'}]
+    gb = list(GroupBy(ds, "user").average("value"))
+    assert gb == [{'AVG(value)': Decimal("4.0"), 'user': 'alice'}, {'AVG(value)': Decimal("1.4"), 'user': 'bob'}, {'AVG(value)': Decimal("6.5"), 'user': 'eve'}], gb
 
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
     assert list(GroupBy(ds, "user").max("value")) == [{'MAX(value)': 5, 'user': 'alice'}, {'MAX(value)': 2, 'user': 'bob'}, {'MAX(value)': 7, 'user': 'eve'}]
@@ -78,15 +80,15 @@ def test_combined_group_by():
 
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
     gs = list(GroupBy(ds, ("fname", "sname")).average('value'))
-    assert gs == [{'AVG(value)': 2.0, 'fname': 'bob', 'sname': 'jones'}, {'AVG(value)': 1.0, 'fname': 'bob', 'sname': 'smith'}, {'AVG(value)': 4.333333333333333, 'fname': 'alice', 'sname': 'smith'}, {'AVG(value)': 7.0, 'fname': 'eve', 'sname': 'smith'}, {'AVG(value)': 6.0, 'fname': 'eve', 'sname': 'jones'}, {'AVG(value)': 3.6666666666666665, 'fname': 'alice', 'sname': 'jones'}], gs
+    assert gs == [{'AVG(value)': Decimal('2.0'), 'fname': 'bob', 'sname': 'jones'}, {'AVG(value)': Decimal('1.0'), 'fname': 'bob', 'sname': 'smith'}, {'AVG(value)': Decimal('4.333333333333333333333333333'), 'fname': 'alice', 'sname': 'smith'}, {'AVG(value)': Decimal('7.0'), 'fname': 'eve', 'sname': 'smith'}, {'AVG(value)': Decimal('6.0'), 'fname': 'eve', 'sname': 'jones'}, {'AVG(value)': Decimal('3.666666666666666666666666667'), 'fname': 'alice', 'sname': 'jones'}], gs
 
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
     gs = list(GroupBy(ds, ("fname", "sname")).average('cost'))
-    assert gs == [{'AVG(cost)': 3.0, 'fname': 'bob', 'sname': 'jones'}, {'AVG(cost)': 1.6666666666666667, 'fname': 'bob', 'sname': 'smith'}, {'AVG(cost)': 2.3333333333333335, 'fname': 'alice', 'sname': 'smith'}, {'AVG(cost)': 1.0, 'fname': 'eve', 'sname': 'smith'}, {'AVG(cost)': 2.0, 'fname': 'eve', 'sname': 'jones'}, {'AVG(cost)': 3.3333333333333335, 'fname': 'alice', 'sname': 'jones'}], gs
+    assert gs == [{'AVG(cost)': Decimal('3.0'), 'fname': 'bob', 'sname': 'jones'}, {'AVG(cost)': Decimal('1.666666666666666666666666667'), 'fname': 'bob', 'sname': 'smith'}, {'AVG(cost)': Decimal('2.333333333333333333333333333'), 'fname': 'alice', 'sname': 'smith'}, {'AVG(cost)': Decimal('1.0'), 'fname': 'eve', 'sname': 'smith'}, {'AVG(cost)': Decimal('2.0'), 'fname': 'eve', 'sname': 'jones'}, {'AVG(cost)': Decimal('3.333333333333333333333333333'), 'fname': 'alice', 'sname': 'jones'}], gs
 
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
     gs = list(GroupBy(ds, ("fname", "sname")).average(('cost', 'value',)))
-    assert gs == [{'AVG(cost)': 3.0, 'AVG(value)': 2.0, 'fname': 'bob', 'sname': 'jones'}, {'AVG(cost)': 1.6666666666666667, 'AVG(value)': 1.0, 'fname': 'bob', 'sname': 'smith'}, {'AVG(cost)': 2.3333333333333335, 'AVG(value)': 4.333333333333333, 'fname': 'alice', 'sname': 'smith'}, {'AVG(cost)': 1.0, 'AVG(value)': 7.0, 'fname': 'eve', 'sname': 'smith'}, {'AVG(cost)': 2.0, 'AVG(value)': 6.0, 'fname': 'eve', 'sname': 'jones'}, {'AVG(cost)': 3.3333333333333335, 'AVG(value)': 3.6666666666666665, 'fname': 'alice', 'sname': 'jones'}], gs
+    assert gs == [{'AVG(cost)': Decimal('3'), 'AVG(value)': Decimal('2'), 'fname': 'bob', 'sname': 'jones'}, {'AVG(cost)': Decimal('1.666666666666666666666666667'), 'AVG(value)': Decimal('1'), 'fname': 'bob', 'sname': 'smith'}, {'AVG(cost)': Decimal('2.333333333333333333333333333'), 'AVG(value)': Decimal('4.333333333333333333333333333'), 'fname': 'alice', 'sname': 'smith'}, {'AVG(cost)': 1.0, 'AVG(value)': 7.0, 'fname': 'eve', 'sname': 'smith'}, {'AVG(cost)': 2.0, 'AVG(value)': 6.0, 'fname': 'eve', 'sname': 'jones'}, {'AVG(cost)': Decimal('3.333333333333333333333333333'), 'AVG(value)': Decimal('3.666666666666666666666666667'), 'fname': 'alice', 'sname': 'jones'}]
 
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
     gs = list(GroupBy(ds, ("fname", "sname")).aggregate([('MAX', 'value'),('MIN', 'cost')]))
