@@ -146,7 +146,7 @@ def get_token_type(token):
         return TOKENS.LEFTPARENTHESES
     if token in (")", "]"):
         return TOKENS.RIGHTPARENTHESES
-    if token == ",":
+    if token == ",":  # nosec
         return TOKENS.COMMA
     if re.search(r"^[^\d\W][\w\-\.]*", token):
         if token_upper in ("TRUE", "FALSE"):
