@@ -126,6 +126,11 @@ class CollectedSet:
         else:
             return SubCollection(self._collections.get(item))
 
+    def items(self):
+        for collection in self._collections:
+            for item in self._collections[collection] :
+                yield collection, item       
+
 
 class SubCollection:
 
