@@ -40,5 +40,5 @@ setup(
     packages=find_packages(where="mabel"),
     url="https://github.com/mabel-dev/mabel/",
     install_requires=required,
-    ext_modules=ext_modules
+    ext_modules=ext_modules,
 )

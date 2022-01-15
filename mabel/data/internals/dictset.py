@@ -487,7 +487,7 @@ class DictSet(object):
 
             def inner_select(it):
                 for record in it:
-                    yield {k:v for k,v in record.items() if k != "*"}
+                    yield {k: v for k, v in record.items() if k != "*"}
 
         else:
 
