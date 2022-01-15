@@ -15,8 +15,7 @@ with open("requirements.txt") as f:
     required = f.read().splitlines()
 
 
-ext_modules = [
-    cythonize(
+ext_modules = cythonize(
         [
             "mabel/data/internals/group_by.py",
             "mabel/data/internals/dictset.py",
@@ -25,8 +24,6 @@ ext_modules = [
             "mabel/data/readers/internals/parallel_reader.py",
         ]
     )
-]
-
 
 setup(
     name="mabel",
