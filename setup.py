@@ -1,6 +1,8 @@
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages, Extension
 from Cython.Build import cythonize
 
+import os
+import glob
 
 with open("mabel/version.py", "r") as v:
     vers = v.read()
@@ -12,19 +14,9 @@ with open("README.md", "r") as rm:
 with open("requirements.txt") as f:
     required = f.read().splitlines()
 
-setup(
-    name="mabelbeta",
-    version=__version__,
-    description="Python Data Libraries",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
-    maintainer="Joocer",
-    author="joocer",
-    author_email="justin.joyce@joocer.com",
-    packages=find_packages(include=["mabel", "mabel.*"]),
-    url="https://github.com/mabel-dev/mabel/",
-    install_requires=required,
-    ext_modules=cythonize(
+
+ext_modules = [
+    cythonize(
         [
             "mabel/data/internals/group_by.py",
             "mabel/data/internals/dictset.py",
@@ -32,5 +24,21 @@ setup(
             "mabel/data/readers/internals/inline_evaluator.py",
             "mabel/data/readers/internals/parallel_reader.py",
         ]
-    ),
+    )
+]
+
+
+setup(
+    name="mabel",
+    version=__version__,
+    description="Python Data Libraries",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    maintainer="Joocer",
+    author="joocer",
+    author_email="justin.joyce@joocer.com",
+    packages=find_packages(where="mabel"),
+    url="https://github.com/mabel-dev/mabel/",
+    install_requires=required,
+    ext_modules=ext_modules,
 )

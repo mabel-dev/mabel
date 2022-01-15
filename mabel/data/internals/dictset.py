@@ -479,11 +479,21 @@ class DictSet(object):
             return self
 
         if not isinstance(columns, (list, set, tuple)):
-            columns = set([columns])
+            columns = list([columns])
 
-        def inner_select(it):
-            for record in it:
-                yield {k: record.get(k, None) for k in columns}
+        columns = set(columns)
+
+        if "*" in columns:
+
+            def inner_select(it):
+                for record in it:
+                    yield {k: v for k, v in record.items() if k != "*"}
+
+        else:
+
+            def inner_select(it):
+                for record in it:
+                    yield {k: record.get(k, None) for k in columns}
 
         return DictSet(
             inner_select(iter(self._iterator)), storage_class=self.storage_class

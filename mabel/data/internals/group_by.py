@@ -12,8 +12,9 @@ from collections import defaultdict
 
 def summer(x, y):
     import decimal
+
     return decimal.Decimal(x) + decimal.Decimal(y)
-    #return x + y
+    # return x + y
 
 
 AGGREGATORS = {

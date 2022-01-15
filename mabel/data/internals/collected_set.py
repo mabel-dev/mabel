@@ -4,7 +4,7 @@ from mabel.data.internals.dictset import STORAGE_CLASS, DictSet
 
 class CollectedSet:
 
-    __slots__ = ("_collections")
+    __slots__ = "_collections"
 
     def __init__(self, dictset: DictSet, column: str, dedupe: bool = False):
         """
@@ -128,8 +128,8 @@ class CollectedSet:
 
     def items(self):
         for collection in self._collections:
-            for item in self._collections[collection] :
-                yield collection, item       
+            for item in self._collections[collection]:
+                yield collection, item
 
 
 class SubCollection:
@@ -153,3 +153,9 @@ class SubCollection:
 
     def __repr__(self):
         return f"SubCollection of {len(self)} items"
+
+    def get(self, item):
+        values = self[item]
+        if len(values) == 0 or values is None:
+            return None
+        return values
