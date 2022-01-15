@@ -37,7 +37,7 @@ setup(
     maintainer="Joocer",
     author="joocer",
     author_email="justin.joyce@joocer.com",
-    packages=find_packages(where="mabel"),
+    packages=find_packages(include=["mabel", "mabel.*"]),
     url="https://github.com/mabel-dev/mabel/",
     install_requires=required,
     ext_modules=ext_modules,
