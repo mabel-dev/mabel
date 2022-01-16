@@ -1,7 +1,5 @@
-from setuptools import setup
-from setuptools import find_packages
+from setuptools import setup, find_packages
 from Cython.Build import cythonize
-
 
 with open("mabel/version.py", "r") as v:
     vers = v.read()
@@ -13,6 +11,16 @@ with open("README.md", "r") as rm:
 with open("requirements.txt") as f:
     required = f.read().splitlines()
 
+
+ext_modules = cythonize(
+        [
+            "mabel/data/internals/group_by.py",
+            "mabel/data/internals/dictset.py",
+            "mabel/data/internals/expression.py",
+            "mabel/data/readers/internals/inline_evaluator.py",
+            "mabel/data/readers/internals/parallel_reader.py",
+        ]
+    )
 
 setup(
     name="mabelbeta",
@@ -26,16 +34,5 @@ setup(
     packages=find_packages(include=["mabel", "mabel.*"]),
     url="https://github.com/mabel-dev/mabel/",
     install_requires=required,
-    ext_modules=cythonize(
-        [
-            #    "mabel/data/internals/group_by.py",
-            #    "mabel/data/internals/dictset.py",
-            #    "mabel/data/internals/expression.py",
-            #    "mabel/data/readers/internals/inline_evaluator.py",
-            #    "mabel/data/readers/internals/parallel_reader.py",
-            #    "mabel/data/internals/relation.py",
-            #    "mabel/data/internals/bloom_filter.py",
-            #    "mabel/utils/uintset/uintset.py"
-        ]
-    ),
+    ext_modules=ext_modules,
 )

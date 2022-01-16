@@ -6,9 +6,9 @@ The head of the current and previous minor version are supported for functional 
 
 | Version | Supported          |
 | ------- | ------------------ |
+| 0.6.x   | :white_check_mark: |
 | 0.5.x   | :white_check_mark: |
-| 0.4.x   | :white_check_mark: |
-| <= 0.3  | :x:                |
+| <= 0.4  | :x:                |
 
 [Feature Labels](https://github.com/joocer/mabel/projects/1) have the following meaning:
 
