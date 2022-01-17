@@ -20,6 +20,7 @@ from multiprocessing import Queue
 TERMINATE_SIGNAL = -1
 MAXIMUM_SECONDS_PROCESSES_CAN_RUN = 600
 
+
 def fix_dict(obj: dict) -> dict:
     def fix_fields(dt):
         if isinstance(dt, (datetime.date, datetime.datetime)):
@@ -39,6 +40,7 @@ def fix_dict(obj: dict) -> dict:
     if not isinstance(obj, dict):
         return obj  # type:ignore
     return {k: fix_fields(v) for k, v in obj.items()}
+
 
 def serialize(ob):
     if hasattr(ob, "mini"):
