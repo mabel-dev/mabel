@@ -1,8 +1,5 @@
-from setuptools import setup, find_packages, Extension
+from setuptools import setup, find_packages
 from Cython.Build import cythonize
-
-import os
-import glob
 
 with open("mabel/version.py", "r") as v:
     vers = v.read()
@@ -16,14 +13,14 @@ with open("requirements.txt") as f:
 
 
 ext_modules = cythonize(
-        [
-            "mabel/data/internals/group_by.py",
-            "mabel/data/internals/dictset.py",
-            "mabel/data/internals/expression.py",
-            "mabel/data/readers/internals/inline_evaluator.py",
-            "mabel/data/readers/internals/parallel_reader.py",
-        ]
-    )
+    [
+        "mabel/data/internals/group_by.py",
+        "mabel/data/internals/dictset.py",
+        "mabel/data/internals/expression.py",
+        "mabel/data/readers/internals/inline_evaluator.py",
+        "mabel/data/readers/internals/parallel_reader.py",
+    ]
+)
 
 setup(
     name="mabel",
