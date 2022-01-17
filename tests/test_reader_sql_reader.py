@@ -62,6 +62,7 @@ def test_sql_returned_rows():
         {"statement":"SELECT `followers` FROM tests.data.index.is", "result":65499},
         {"statement":"SELECT `user name` FROM tests.data.gaps", "result":25},
         {"statement":"SELECT `user name` FROM tests.data.gaps WHERE `user name` = 'NBCNews'", "result":21},
+        {"statement":"SELECT `user_verified` FROM tests.data.gaps", "result":25},
     ]
     # fmt:on
 

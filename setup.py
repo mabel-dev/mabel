@@ -1,8 +1,5 @@
-from setuptools import setup, find_packages, Extension
+from setuptools import setup, find_packages
 from Cython.Build import cythonize
-
-import os
-import glob
 
 with open("mabel/version.py", "r") as v:
     vers = v.read()

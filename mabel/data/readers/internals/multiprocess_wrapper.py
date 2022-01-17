@@ -7,6 +7,8 @@ automatic running of the data accesses.
 """
 import os
 import time
+import datetime
+import csimdjson
 from queue import Empty
 import multiprocessing
 import logging
@@ -18,13 +20,32 @@ from multiprocessing import Queue
 TERMINATE_SIGNAL = -1
 MAXIMUM_SECONDS_PROCESSES_CAN_RUN = 600
 
+def fix_dict(obj: dict) -> dict:
+    def fix_fields(dt):
+        if isinstance(dt, (datetime.date, datetime.datetime)):
+            return dt.isoformat()
+        if isinstance(dt, (int, float, bool)):
+            return dt
+        if isinstance(dt, bytes):
+            return dt.decode("UTF8")
+        if hasattr(dt, "mini"):
+            return dt.mini.decode("UTF8")
+        if isinstance(dt, dict):
+            return {k: fix_fields(v) for k, v in dt.items()}
+        if isinstance(dt, (list, tuple, set, csimdjson.Array)):
+            return str([fix_fields(i) for i in dt])
+        return str(dt)
+
+    if not isinstance(obj, dict):
+        return obj  # type:ignore
+    return {k: fix_fields(v) for k, v in obj.items()}
 
 def serialize(ob):
     if hasattr(ob, "mini"):
         return ob.mini
     import orjson
 
-    return orjson.dumps(ob)
+    return orjson.dumps(fix_dict(ob))
 
 
 def _inner_process(func, source_queue, reply_queue):  # pragma: no cover
