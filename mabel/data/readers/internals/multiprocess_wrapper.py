@@ -49,6 +49,7 @@ def fix_dict(obj: dict) -> dict:
     return obj
 
 
+
 def serialize(ob):
     if hasattr(ob, "mini"):
         return ob.mini
