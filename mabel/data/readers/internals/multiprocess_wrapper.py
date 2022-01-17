@@ -39,7 +39,7 @@ def fix_dict(obj: dict) -> dict:
         return str(dt)
 
     if hasattr(obj, "mini"):
-        return obj.mini.decode("UTF8")
+        return obj.mini.decode("UTF8")  # type:ignore
 
     if not isinstance(obj, dict):
         return obj  # type:ignore
