@@ -23,23 +23,30 @@ MAXIMUM_SECONDS_PROCESSES_CAN_RUN = 600
 
 def fix_dict(obj: dict) -> dict:
     def fix_fields(dt):
-        if isinstance(dt, (datetime.date, datetime.datetime)):
-            return dt.isoformat()
-        if isinstance(dt, (int, float, bool)):
+        dt_type = type(dt)
+        if dt_type in (int, float, bool, str):
             return dt
-        if isinstance(dt, bytes):
-            return dt.decode("UTF8")
         if hasattr(dt, "mini"):
             return dt.mini.decode("UTF8")
-        if isinstance(dt, dict):
-            return {k: fix_fields(v) for k, v in dt.items()}
-        if isinstance(dt, (list, tuple, set, csimdjson.Array)):
+        if dt_type == dict:
+            return str(fix_dict(dt))
+        if dt_type in (list, tuple, set, csimdjson.Array):
             return str([fix_fields(i) for i in dt])
+        if dt_type in (datetime.date, datetime.datetime):
+            return dt.isoformat()
+        if dt_type == bytes:
+            return dt.decode("UTF8")
         return str(dt)
+
+    if hasattr(obj, "mini"):
+        return obj.mini.decode("UTF8")  # type:ignore
 
     if not isinstance(obj, dict):
         return obj  # type:ignore
-    return {k: fix_fields(v) for k, v in obj.items()}
+
+    for key in obj.keys():
+        obj[key] = fix_fields(obj[key])
+    return obj
 
 
 def serialize(ob):
