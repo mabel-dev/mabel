@@ -77,7 +77,7 @@ def test_inline_other():
     for i in range(10):
         vals.append(inline_functions.get_random())
     vals = set(vals)
-    assert len(vals) == 10, len(vals)
+    assert 9 <= len(vals) <= 10, len(vals)
 
     assert inline_functions.concat("a", "b", "c") == "abc"
     assert inline_functions.concat(["a", "b", "c"]) == "a, b, c"

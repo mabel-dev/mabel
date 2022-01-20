@@ -1,11 +1,13 @@
+import re
 import time
 import datetime
 import threading
+import itertools
 from pydantic import BaseModel  # type:ignore
 from typing import Any, Union
 from .writer import Writer
 from .internals.writer_pool import WriterPool
-from ...utils import paths
+from ...utils import paths, text
 from ...logging import get_logger
 
 
@@ -95,6 +97,7 @@ class StreamWriter(Writer):
         # problem here, instead we're going to save the file to a BACKOUT
         # partition
 
+        writes = 0
         identity = paths.date_format(self.dataset_template, datetime.date.today())
 
         if isinstance(record, BaseModel):
@@ -108,8 +111,43 @@ class StreamWriter(Writer):
             )
 
         with threading.Lock():
-            blob_writer = self.writer_pool.get_writer(identity)
-            return blob_writer.append(record)
+
+            # get the placeholders from the dataset name
+            placeholders = set(re.findall(r"\{(.*?)\}", identity))
+
+            # there's no substitutions needed, so just write the record
+            if len(placeholders) == 0:
+                blob_writer = self.writer_pool.get_writer(identity)
+                return blob_writer.append(record)
+
+            # get the values from the record, there can be multiple of these
+            values = []
+            for placeholder in placeholders:
+                value = record.get(placeholder)
+                if not isinstance(value, list):
+                    value = [value]
+                values.append(value)
+            # get the cartesian product of these lists
+            # save the result to a set otherwise it's not a cartesian product
+            value_combinations = {i for i in itertools.product(*values)}
+
+            # for every variation in the cartesian product
+            for values in value_combinations:  # type:ignore
+
+                this_identity = identity
+                # do the actual replacing of the placeholders
+                for k, v in zip(placeholders, values):
+                    this_identity = this_identity.replace(
+                        "{" + k + "}", text.sanitize(str(v))
+                    )
+
+                print(this_identity)
+                # get the writer and save the record
+                blob_writer = self.writer_pool.get_writer(this_identity)
+                blob_writer.append(record)
+                writes += 1
+
+        return writes
 
     def finalize(self, **kwargs):
         with threading.Lock():

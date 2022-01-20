@@ -67,8 +67,11 @@ class BaseInnerReader(abc.ABC):
         if "{" not in self.dataset and not kwargs.get("raw_path", False):
             self.dataset += "{datefolders}/"
 
-        self.start_date = dates.extract_date(kwargs.get("start_date"))
-        self.end_date = dates.extract_date(kwargs.get("end_date"))
+        start_date = dates.extract_date(kwargs.get("start_date"))
+        end_date = dates.extract_date(kwargs.get("end_date"))
+
+        self.start_date = min(start_date, end_date)
+        self.end_date = max(start_date, end_date)
 
         self.days_stepped_back = 0
 
