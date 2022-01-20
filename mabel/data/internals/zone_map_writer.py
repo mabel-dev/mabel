@@ -63,6 +63,7 @@ The resultant map file is a JSON file / Python dict:
 """
 import datetime
 import json
+from decimal import Decimal
 from typing import Any, Optional
 from mabel.data.internals.algorithms.hyper_log_log import HyperLogLog
 from mabel.data.internals.attribute_domains import get_coerced_type
@@ -145,8 +146,8 @@ class ZoneMapWriter(object):
             # sum for numerics
             value_type = type(v)
             if value_type == str:
-                if len(v) > 128:
-                    v = v[:128]
+                if len(v) > 64:
+                    v = v[:64]
             if value_type in (int, float, str, datetime.date, datetime.datetime):
                 if collector.maximum:
                     # this is faster than max(a,b)
@@ -172,7 +173,7 @@ class ZoneMapWriter(object):
 
             # count the unique items, use a hyper-log-log for size and speed
             # this gives us an estimate only.
-            if value_type in (int, float, str, datetime.date, datetime.datetime):
+            if value_type in (Decimal, int, float, str, datetime.date, datetime.datetime):
                 self.hyper_log_logs[f"{blob}:{k}"].add(v)
 
             # put the profile back in the collector

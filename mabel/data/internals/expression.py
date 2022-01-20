@@ -15,7 +15,7 @@ expression tree as it's only doing boolean logic.
 
 Derived from: https://gist.github.com/leehsueh/1290686
 """
-import fastnumbers
+import decimal
 from ..readers.internals.inline_evaluator import *
 from ...utils.dates import parse_iso
 from ...utils.token_labeler import Tokenizer, TOKENS, OPERATORS
@@ -156,11 +156,8 @@ class Expression(object):
     def parse_terminal(self):
         if self.tokenizer.has_next():
             token_type = self.tokenizer.next_token_type()
-            if token_type == TOKENS.INTEGER:
-                n = TreeNode(token_type, fastnumbers.fast_int(self.tokenizer.next()))
-                return n
-            if token_type == TOKENS.FLOAT:
-                n = TreeNode(token_type, fastnumbers.fast_float(self.tokenizer.next()))
+            if token_type == TOKENS.DECIMAL:
+                n = TreeNode(token_type, decimal.Decimal(self.tokenizer.next()))
                 return n
             if token_type in (TOKENS.VARIABLE, TOKENS.NOT):
                 n = TreeNode(token_type, self.tokenizer.next())
@@ -200,14 +197,19 @@ class Expression(object):
             return value
         if value.upper() in ("TRUE", "FALSE"):
             return value.upper() == "TRUE"
+        
         try:
-            # there appears to be a race condition with this library
-            # so wrap in a SystemError
-            num = fastnumbers.fast_real(value)
-            if isinstance(num, (int, float)):
-                return num
-        except SystemError:
+            num = int(value)
+            return num
+        except ValueError:
             pass
+
+        try:
+            num = float(value)
+            return num
+        except ValueError:
+            pass
+
         return parse_iso(value) or value
 
     def evaluate(self, variable_dict):
@@ -218,8 +220,7 @@ class Expression(object):
 
     def evaluate_recursive(self, treeNode, variable_dict):
         if treeNode.token_type in (
-            TOKENS.INTEGER,
-            TOKENS.FLOAT,
+            TOKENS.DECIMAL,
             TOKENS.LITERAL,
             TOKENS.BOOLEAN,
             TOKENS.NULL,
@@ -264,8 +265,7 @@ class Expression(object):
 
     def _inner_to_dnf(self, treeNode):
         if treeNode.token_type in (
-            TOKENS.INTEGER,
-            TOKENS.FLOAT,
+            TOKENS.DECIMAL,
             TOKENS.BOOLEAN,
             TOKENS.NULL,
             TOKENS.VARIABLE,

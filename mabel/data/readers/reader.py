@@ -13,8 +13,6 @@ from mabel.data.readers.internals.parallel_reader import (
     KNOWN_EXTENSIONS,
 )
 
-# from .internals.threaded_wrapper import processed_reader
-from mabel.data.readers.internals.multiprocess_wrapper import processed_reader
 from mabel.data.readers.internals.cursor import Cursor
 from mabel.data.readers.internals.inline_evaluator import Evaluator
 
@@ -43,7 +41,6 @@ RULES = [
     {"name": "persistence", "required": False, "warning": "", "incompatible_with": []},
     {"name": "project", "required": False, "warning": "", "incompatible_with": []},
     {"name": "override_format", "required": False, "warning": "", "incompatible_with": []},
-    {"name": "multiprocess", "required": False, "warning": "", "incompatible_with": ["cursor"]},
     {"name": "valid_dataset_prefixes", "required": False},
 ]
 # fmt:on
@@ -65,7 +62,6 @@ def Reader(
     partitioning=("year_{yyyy}", "month_{mm}", "day_{dd}"),
     persistence: STORAGE_CLASS = STORAGE_CLASS.NO_PERSISTANCE,
     override_format: Optional[str] = None,
-    multiprocess: bool = False,
     cursor: Optional[Union[str, Dict]] = None,
     valid_dataset_prefixes: Optional[list] = None,
     **kwargs,
@@ -204,7 +200,6 @@ def Reader(
             filters=filters,
             override_format=override_format,
             cursor=cursor,
-            multiprocess=multiprocess,
         ),
         storage_class=persistence,
     )
@@ -219,7 +214,6 @@ class _LowLevelReader(object):
         filters,
         override_format,
         cursor,
-        multiprocess,
     ):
         self.reader_class = reader_class
         self.freshness_limit = freshness_limit
@@ -227,7 +221,6 @@ class _LowLevelReader(object):
         self.override_format = override_format
         self.cursor = cursor
         self._inner_line_reader = None
-        self.multiprocess = multiprocess
 
         if isinstance(filters, str):
             self.filters = Expression(filters)
@@ -288,40 +281,27 @@ class _LowLevelReader(object):
             override_format=self.override_format,
         )
 
-        use_multiprocess = all(
-            [
-                self.multiprocess,  # the user must have asked for it
-                not self.cursor,  # we must not have a cursor
-                len(readable_blobs) > 4,  # we must enough files to read
-            ]
-        )
+        if not isinstance(self.cursor, Cursor):
+            cursor = Cursor(readable_blobs=readable_blobs, cursor=self.cursor)
+            self.cursor = cursor
 
-        if not use_multiprocess:
-            logger.debug(f"Serial Reader {self.cursor}")
-            if not isinstance(self.cursor, Cursor):
-                cursor = Cursor(readable_blobs=readable_blobs, cursor=self.cursor)
-                self.cursor = cursor
+        blob_to_read = self.cursor.next_blob()
+        while blob_to_read:
+            blob_reader = parallel(
+                blob_to_read,
+                [
+                    idx
+                    for idx in supported_blobs
+                    if blob_to_read in idx and idx.endswith(".idx")
+                ],
+            )
+            location = self.cursor.skip_to_cursor(blob_reader)
+            for self.cursor.location, record in enumerate(
+                blob_reader, start=location
+            ):
+                yield record
+            blob_to_read = self.cursor.next_blob(blob_to_read)
 
-            blob_to_read = self.cursor.next_blob()
-            while blob_to_read:
-                blob_reader = parallel(
-                    blob_to_read,
-                    [
-                        idx
-                        for idx in supported_blobs
-                        if blob_to_read in idx and idx.endswith(".idx")
-                    ],
-                )
-                location = self.cursor.skip_to_cursor(blob_reader)
-                for self.cursor.location, record in enumerate(
-                    blob_reader, start=location
-                ):
-                    yield record
-                blob_to_read = self.cursor.next_blob(blob_to_read)
-
-        else:
-            logger.debug("Parallel Reader")
-            yield from processed_reader(parallel, readable_blobs, supported_blobs)
 
     def __iter__(self):
         return self

@@ -12,7 +12,6 @@
 - The reader will collect a list of the files in the partition, these will be:
     - data files
     - metedata files (frame.metadata)
-    - index files (*.index)
     - directives (frame.invalid / frame.complete)
 
 - The reader has the following steps:
@@ -25,7 +24,6 @@
     - determine which blobs in the partition to read (using the zonemap, or read them
       all)
     - for each blob to be read:
-        - if there's any indexes which can be used work out which rows to process
         - determine which 'driver' to use to read the blob
         - read the blob into records, selecting only the records identified after
           applying the indexes and projecting only the columns passed to the reader

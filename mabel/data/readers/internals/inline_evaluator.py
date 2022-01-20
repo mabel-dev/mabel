@@ -20,8 +20,8 @@ Evaluator("LEFT(NAME, 1), AGE").evaluate(dic)
 will perform the function LEFT on the NAME field from the dict and return AGE
 from the dict
 """
+import decimal
 import re
-import fastnumbers
 from .inline_functions import FUNCTIONS
 from ....utils.dates import parse_iso
 from ....utils.token_labeler import TOKENS, get_token_type
@@ -158,15 +158,10 @@ def evaluate_field(dict, token):
                 *[evaluate_field(dict, t)[1] for t in token["parameters"]]
             ),
         )
-    if token_type == TOKENS.FLOAT:
+    if token_type == TOKENS.DECIMAL:
         return (
             token["value"],
-            float(fastnumbers.real(token["value"])),
-        )
-    if token_type == TOKENS.INTEGER:
-        return (
-            token["value"],
-            int(fastnumbers.real(token["value"])),
+            decimal.Decimal(token["value"]),
         )
     if token_type == TOKENS.LITERAL:
         return (

@@ -41,7 +41,6 @@ class EXTENSION_TYPE(str, Enum):
     # labels for the file extentions
     DATA = "DATA"
     CONTROL = "CONTROL"
-    INDEX = "INDEX"
 
 
 KNOWN_EXTENSIONS = {
@@ -58,7 +57,6 @@ KNOWN_EXTENSIONS = {
     ".csv": (decompressors.csv, parsers.pass_thru, EXTENSION_TYPE.DATA),
     ".ignore": (empty_list, empty_list, EXTENSION_TYPE.CONTROL),
     ".complete": (empty_list, empty_list, EXTENSION_TYPE.CONTROL),
-    ".idx": (empty_list, empty_list, EXTENSION_TYPE.INDEX)
 }
 
 
@@ -140,76 +138,6 @@ class ParallelReader:
             if not self.override_format[0] == ".":
                 self.override_format = "." + self.override_format
 
-    def pre_filter(self, blob_name, index_files):
-        """
-        Select rows from the file based on the filters and indexes, this filters
-        the data before we've even seen it. This is usually faster as it avoids
-        reading files with no records and parsing data we don't want.
-
-        Go over the tree, if the predicate is an operator we can filter on and
-        the field in the predicate is indexed, we can apply a pre-filter.
-
-        ORs are fatal if both sides can't be pre-evaluated.
-        """
-
-        SARGABLE_OPERATORS = {"=", "==", "is", "in", "contains"}
-
-        def _inner_prefilter(predicate):
-            # No filter doesn't filter
-            if predicate is None:  # pragma: no cover
-                return None
-
-            # If we have a tuple, this is the inner most representation of our filter.
-            # Extract out the key, operator and value and look them up against the
-            # index - if we can.
-            if isinstance(predicate, tuple):
-                key, operator, values = predicate
-                if operator in SARGABLE_OPERATORS:
-                    # do I have an index for this field?
-                    for index_file in [
-                        index_file
-                        for index_file in index_files
-                        if f".{key}." in index_file
-                    ]:
-                        index = Index(self.reader.get_blob_stream(index_file))
-                        return index.search(values)
-
-                return self.NOT_INDEXED
-
-            if isinstance(predicate, list):
-                # Are all of the entries tuples? These are ANDed together.
-                rows = []
-                if all([isinstance(p, tuple) for p in predicate]):
-                    for index, row in enumerate(predicate):
-                        if index == 0:
-                            rows = _inner_prefilter(row)
-                        else:
-                            rows = [p for p in _inner_prefilter(row) if p in rows]
-                    return rows
-
-                # Are all of the entries lists? These are ORed together.
-                # All of the elements in an OR need to be indexable for use to be
-                # able to prefilter.
-                if all([isinstance(p, list) for p in predicate]):
-                    evaluations = [_inner_prefilter(p) for p in predicate]
-                    if not all([e == self.NOT_INDEXED for e in evaluations]):
-                        return self.NOT_INDEXED
-                    else:
-                        # join the data sets together by adding them
-                        rows = reduce(
-                            lambda x, y: x + _inner_prefilter(y), predicate, []
-                        )
-                    return rows
-
-                # if we're here the structure of the filter is wrong
-                return self.NOT_INDEXED
-            return self.NOT_INDEXED
-
-        index_filters = _inner_prefilter(self.dnf_filter.predicates)
-        if index_filters != self.NOT_INDEXED:
-            return True, index_filters
-        return False, []
-
     def _select(self, data_set, selector):
         for index, record in enumerate(data_set):
             if index in selector:
@@ -227,24 +155,10 @@ class ParallelReader:
                 return []
             decompressor, parser, file_type = KNOWN_EXTENSIONS[ext]
 
-            # Pre-Filter
-            if self.dnf_filter and len(index_files):
-                (row_selector, selected_rows) = self.pre_filter(blob_name, index_files)
-            else:
-                row_selector = False
-                selected_rows = []
-
-            # if the value isn't in the set, abort early
-            if row_selector and len(selected_rows) == 0:
-                return None
-
             # Read
             record_iterator = self.reader.read_blob(blob_name)
             # Decompress
             record_iterator = decompressor(record_iterator)
-            ### bypass rows which aren't selected
-            if row_selector:
-                record_iterator = self._select(record_iterator, selected_rows)
             # Parse
             record_iterator = map(parser, record_iterator)
             # remove empty fields

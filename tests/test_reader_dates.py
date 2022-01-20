@@ -41,8 +41,9 @@ def test_start_date_only():
 
 def test_end_date_only():
     subject = EmptyReader(dataset="", end_date=END_DATE)
-    assert subject.start_date == TODAY
-    assert subject.end_date == END_DATE
+    # the values are reversed to make a valid range of start < end
+    assert subject.start_date == END_DATE, subject.start_date
+    assert subject.end_date == TODAY, subject.end_date
 
 
 def test_start_and_end_dates():

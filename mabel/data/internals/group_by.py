@@ -6,13 +6,13 @@ will be effective:
 python setup.py build_ext --inplace
 """
 import cython
-import fastnumbers
 from siphashc import siphash
 from collections import defaultdict
 
 
 def summer(x, y):
-    return fastnumbers.real(x) + fastnumbers.real(y)
+    from decimal import Decimal
+    return Decimal(x) + Decimal(y)
 
 
 def raise_not_implemented():

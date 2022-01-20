@@ -19,17 +19,20 @@ def do_read():
     # SQL = "SELECT COUNT(*) FROM tests.data.index.is GROUP BY user_verified"
     # SQL = "SELECT user_name FROM tests.data.index.is LIMIT 2"
     SQL = "SELECT COUNT(*) FROM tests/data/huge"
-    d = SqlReader(
-        SQL,
+    d = Reader(
+        dataset="tests/data/huge",
         inner_reader=DiskReader,
-        multiprocess=True,
-        raw_path=True,
+        #multiprocess=True,
+        select="followers, user_name",
+        filters=("followers", "=", 10,),
+        partitioning=None,
     )
+
+    #g = d.group_by("followers").count()
 
     i = -1
     for i, r in enumerate(d):
         pass
-        print(r)
     print(i + 1)
 
 

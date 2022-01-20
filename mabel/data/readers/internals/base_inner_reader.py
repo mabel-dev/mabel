@@ -67,8 +67,12 @@ class BaseInnerReader(abc.ABC):
         if partitioning:
             self.dataset += "/".join(partitioning) + "/"
 
-        self.start_date = dates.extract_date(kwargs.get("start_date"))
-        self.end_date = dates.extract_date(kwargs.get("end_date"))
+        start_date = dates.extract_date(kwargs.get("start_date"))
+        end_date = dates.extract_date(kwargs.get("end_date"))
+
+        # forgive people for getting the dates the wrong way around
+        self.start_date = min(start_date, end_date)
+        self.end_date = max(start_date, end_date)
 
         self.days_stepped_back = 0
 

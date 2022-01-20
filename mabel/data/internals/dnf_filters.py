@@ -5,7 +5,7 @@ import operator
 from typing import Optional, Iterable, List, Tuple, Union
 from mabel.exceptions import InvalidSyntaxError
 from mabel.logging import get_logger
-from mabel.utils.text import like, matches
+from mabel.utils.text import like, similar_to
 
 
 def _in(x, y):
@@ -39,7 +39,7 @@ OPERATORS = {
     "<=": operator.le,
     ">=": operator.ge,
     "like": like,
-    "matches": matches,
+    "similar to": similar_to,
     "in": _in,
     "!in": _nin,
     "not in": _nin,

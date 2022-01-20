@@ -5,12 +5,12 @@ a label to them. Doing this in a helper module means a) it only needs to be main
 in one place b) different parts of the system behave consistently.
 """
 
+import decimal
 from functools import lru_cache
 import re
 import operator
-import fastnumbers
 
-from .text import like, not_like, matches
+from .text import like, not_like, similar_to
 from .dates import parse_iso
 from ..data.readers.internals.inline_functions import FUNCTIONS
 from ..data.internals.group_by import AGGREGATORS
@@ -31,9 +31,17 @@ def interpret_value(value):
     try:
         # there appears to be a race condition with this library
         # so wrap in a SystemError
-        num = fastnumbers.fast_real(value)
-        if isinstance(num, (int, float)):
+        try:
+            num = int(value)
             return num
+        except ValueError:
+            pass
+
+        try:
+            num = float(value)
+            return num
+        except ValueError:
+            pass
     except SystemError:
         pass
     value = value[1:-1]
@@ -65,7 +73,7 @@ OPERATORS = {
     "IS": operator.is_,
     "NOT LIKE": not_like,
     "LIKE": like,
-    "MATCHES": matches,
+    "SIMILAR TO": similar_to,
     "IN": function_in,
     "CONTAINS": function_contains,
 }
@@ -73,8 +81,7 @@ OPERATORS = {
 
 class TOKENS(int):
     UNKNOWN = -1
-    INTEGER = 0
-    FLOAT = 1
+    DECIMAL = 1
     LITERAL = 2
     VARIABLE = 3
     BOOLEAN = 4
@@ -124,10 +131,6 @@ def get_token_type(token):
             return TOKENS.DATE
         else:
             return TOKENS.LITERAL
-    if fastnumbers.isint(token):
-        return TOKENS.INTEGER
-    if fastnumbers.isfloat(token):
-        return TOKENS.FLOAT
     if token in ("(", "["):
         return TOKENS.LEFTPARENTHESES
     if token in (")", "]"):
@@ -151,6 +154,12 @@ def get_token_type(token):
         # hyphens, underscores and dots are probably variables. We do this
         # last so we don't miss assign other items to be a variable
         return TOKENS.VARIABLE
+    try:
+        # this is the slowest, so do it last
+        decimal.Decimal(token)
+        return TOKENS.DECIMAL
+    except decimal.InvalidOperation:
+        pass
     # at this point, we don't know what it is
     return TOKENS.UNKNOWN
 

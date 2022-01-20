@@ -43,7 +43,7 @@ print(data.select("year = 100").distinct().count())
 
 -  On-the-fly compression
 -  Low-memory requirements, even with terabytes of data
--  Indexing and partitioning of data for fast reads 
+-  Partitioning of data for fast reads 
 -  Cursors for tracking reading position between processes 
 -  Partial SQL DQL (Data Query Language) support 
 -  Schema and [data_expectations](https://github.com/joocer/data_expectations) validation

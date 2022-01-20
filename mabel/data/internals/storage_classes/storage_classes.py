@@ -23,3 +23,4 @@ class STORAGE_CLASS(int, Enum):
     MEMORY = 2
     DISK = 3
     COMPRESSED_MEMORY = 4
+    ARROW = 5

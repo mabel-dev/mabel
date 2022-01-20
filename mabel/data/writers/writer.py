@@ -28,14 +28,11 @@ class Writer:
         set_of_expectations: Optional[list] = None,
         format: str = "zstd",
         date: Any = None,
-        clustered_index: str = None,
         partitioning=("year_{yyyy}", "month_{mm}", "day_{dd}"),
         **kwargs,
     ):
         """
-        Simple Writer provides a basic writer capability.
-
-
+        Writer provides a basic writer capability.
         """
 
         dataset = kwargs.get("dataset", "")
@@ -65,7 +62,6 @@ class Writer:
 
         self.finalized = False
         self.batch_date = self._get_writer_date(date)
-        self.clustered_index = clustered_index
 
         self.dataset_template = dataset
         self.partitioning = partitioning
@@ -86,10 +82,6 @@ class Writer:
             "inner_writer"
         ] = f"{arg_dict.get('inner_writer', type(None)).__name__}"  # type:ignore
         get_logger().debug(orjson.dumps(arg_dict))
-
-        # default index
-        # kwargs["index_on"] = kwargs.get("index_on", [])
-        # kwargs["clustered_index"] = clustered_index
 
         # create the writer
         self.blob_writer = BlobWriter(**kwargs)
@@ -124,7 +116,7 @@ class Writer:
             de.evaluate_record(self.expectations, record)
 
         self.blob_writer.append(record)
-        self.zone_map_writer.add(record, self.dataset)
+        self.zone_map_writer.add(record, self.blob_writer.blob_name)
         self.records += 1
 
     def __del__(self):

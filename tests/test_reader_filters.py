@@ -23,7 +23,7 @@ TEST_DATA = [
 
 def test_reader_filters_no_filter():
     """ensure the reader filter is working as expected"""
-    r = Reader(inner_reader=DiskReader, dataset="tests/data/tweets/", partitioning=[])
+    r = Reader(inner_reader=DiskReader, dataset="tests/data/tweets/", partitioning=None)
     for index, item in enumerate(r):
         pass
     assert index == 49, index

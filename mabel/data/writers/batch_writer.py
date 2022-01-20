@@ -50,10 +50,8 @@ class BatchWriter(Writer):
                 NullWriter
             frame_id: string (optional)
 
-            raw_path: boolean (optional)
-                Don't automatically add any date parts to dataset names
-            index_on: collection (optional)
-                Index on these columns, the default is to not index
+            partioning: Tuple (optional)
+                Set to None to not partition data
 
         Note:
             Different inner_writers may take or require additional parameters.

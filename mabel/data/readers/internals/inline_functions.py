@@ -7,7 +7,6 @@ These are the function definitions, the processor which uses these is in the
 from os import truncate
 import orjson
 import datetime
-import fastnumbers
 from siphashc import siphash
 from functools import lru_cache
 
@@ -228,9 +227,9 @@ FUNCTIONS = {
     "LEVENSHTEIN": levenshtein_distance,
     # NUMBERS
     "ROUND": round,
-    "TRUNC": parse_number(fastnumbers.real, truncate),
-    "INT": parse_number(fastnumbers.real, int),
-    "FLOAT": parse_number(fastnumbers.real, float),
+    "TRUNC": parse_number(float, truncate),
+    "INT": parse_number(int, int),
+    "FLOAT": parse_number(float, float),
     # BOOLEAN
     "BOOLEAN": lambda x: str(x).upper() != "FALSE",
     "ISNONE": lambda x: x is None,

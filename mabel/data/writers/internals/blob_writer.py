@@ -28,8 +28,6 @@ class BlobWriter(object):
         **kwargs,
     ):
 
-        # self.indexes = kwargs.get("index_on", [])
-
         self.format = format
         self.maximum_blob_size = blob_size
 
@@ -58,10 +56,6 @@ class BlobWriter(object):
             serialized = record.mini + b"\n"  # type:ignore
         else:
             serialized = dumps(record) + b"\n"  # type:ignore
-
-        # add the columns to the index
-        #        for column in self.indexes:
-        #            self.index_builders[column].add(self.records_in_buffer, record)
 
         # the newline isn't counted so add 1 to get the actual length
         # if this write would exceed the blob size, close it so another
@@ -96,12 +90,11 @@ class BlobWriter(object):
                     # load the jsonl data into PyArrow
                     in_pyarrow_buffer = pyarrow.json.read_json(io.BytesIO(self.buffer))
 
-                    # then we save from pyarrow into another file which we read
-                    pq_temp_file = tempfile.TemporaryFile()
-                    pq.write_table(in_pyarrow_buffer, pq_temp_file, compression="ZSTD")
-                    pq_temp_file.seek(0, 0)
-                    self.buffer = pq_temp_file.read()
-                    pq_temp_file.close()
+                    # then we save from pyarrow into a buffer
+                    self.buffer = io.BytesIO()
+                    pq.write_table(in_pyarrow_buffer, self.buffer, compression="ZSTD")
+                    self.buffer.seek(0, 0)
+                    self.buffer = self.buffer.read()
 
                 if self.format == "orc":
 
@@ -136,16 +129,6 @@ class BlobWriter(object):
                     byte_data=bytes(self.buffer), blob_name=self.blob_name
                 )
 
-                get_logger().error("Indexing functionality temporarily Removed")
-                # for column in self.indexes:
-                #    index = self.index_builders[column].build()
-                #
-                #    bucket, path, stem, suffix = get_parts(committed_blob_name)
-                #    index_name = f"{bucket}/{path}{stem}.{safe_field_name(column)}.idx"
-                #    self.inner_writer.commit(
-                #        byte_data=index.bytes(), blob_name=index_name
-                #    )
-
                 if "BACKOUT" in self.blob_name:
                     get_logger().warning(
                         f"{self.records_in_buffer:n} failed records written to BACKOUT partition `{self.blob_name}`"
@@ -172,11 +155,6 @@ class BlobWriter(object):
         import time
 
         self.buffer = bytearray()
-
-        # create index builders
-        # self.index_builders = {}
-        # for column in self.indexes:
-        #    self.index_builders[column] = IndexBuilder(column)
 
         self.records_in_buffer = 0
         blob_id = f"{time.time_ns():x}-{self._get_node()}"

@@ -43,8 +43,7 @@ def coerce_values(value, value_type):
 
 class MABEL_TYPES(str, Enum):
     BOOLEAN = "BOOLEAN"
-    INTEGER = "INTEGER"
-    DOUBLE = "DOUBLE"
+    NUMERIC = "NUMERIC"
     LIST = "LIST"
     VARCHAR = "VARCHAR"
     STRUCT = "STRUCT"
@@ -54,8 +53,7 @@ class MABEL_TYPES(str, Enum):
 
 MABEL_TYPE_NAMES = {
     MABEL_TYPES.BOOLEAN: "BOOLEAN",
-    MABEL_TYPES.INTEGER: "INTEGER",
-    MABEL_TYPES.DOUBLE: "DOUBLE",
+    MABEL_TYPES.NUMERIC: "NUMERIC",
     MABEL_TYPES.LIST: "LIST",
     MABEL_TYPES.VARCHAR: "VARCHAR",
     MABEL_TYPES.STRUCT: "STRUCT",
@@ -67,39 +65,30 @@ MABEL_TYPE_NAMES = {
 PYTHON_TYPES = {
     "bool": MABEL_TYPES.BOOLEAN,
     "datetime": MABEL_TYPES.TIMESTAMP,
+    "date": MABEL_TYPES.TIMESTAMP,
     "dict": MABEL_TYPES.STRUCT,
-    "int": MABEL_TYPES.INTEGER,
-    "float": MABEL_TYPES.DOUBLE,
+    "int": MABEL_TYPES.NUMERIC,
+    "float": MABEL_TYPES.NUMERIC,
+    "Decimal": MABEL_TYPES.NUMERIC,
     "str": MABEL_TYPES.VARCHAR,
     "tuple": MABEL_TYPES.LIST,
-    "dict": MABEL_TYPES.STRUCT
+    "list": MABEL_TYPES.LIST,
+    "set": MABEL_TYPES.LIST
 }
 
 PARQUET_TYPES = {
     "bool": MABEL_TYPES.BOOLEAN,
     "timestamp[ms]": MABEL_TYPES.TIMESTAMP,
     "dict": MABEL_TYPES.STRUCT,
-    "int64": MABEL_TYPES.INTEGER,
-    "double": MABEL_TYPES.DOUBLE,
+    "int64": MABEL_TYPES.NUMERIC,
+    "double": MABEL_TYPES.NUMERIC,
     "string": MABEL_TYPES.VARCHAR,
     "tuple": MABEL_TYPES.LIST,
 }
 
-COERCABLE_PYTHON_TYPES = {
-    "bool": MABEL_TYPES.BOOLEAN,
-    "datetime": MABEL_TYPES.TIMESTAMP,
-    "date": MABEL_TYPES.TIMESTAMP,
-    "dict": MABEL_TYPES.STRUCT,
-    "int": MABEL_TYPES.INTEGER,
-    "float": MABEL_TYPES.DOUBLE,
-    "str": MABEL_TYPES.VARCHAR,
-    "tuple": MABEL_TYPES.LIST,
-    "set": MABEL_TYPES.LIST,
-    "list": MABEL_TYPES.LIST,
-}
 
 
 def get_coerced_type(python_type):
-    if python_type in COERCABLE_PYTHON_TYPES:
-        return COERCABLE_PYTHON_TYPES[python_type].name
+    if python_type in PYTHON_TYPES:
+        return PYTHON_TYPES[python_type].name
     return f"unknown ({python_type})"
