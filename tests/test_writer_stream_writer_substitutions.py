@@ -10,8 +10,8 @@ traceback.install()
 
 
 DATA_SET = [
-    {"key": 6, "value":["s", "i", "x"], "combinations": 3},  # (6,s),(6,i),(6,x)
-    {"key": [1,0], "value":["t","e","n"], "combinations": 6},
+    {"key": 6, "value": ["s", "i", "x"], "combinations": 3},  # (6,s),(6,i),(6,x)
+    {"key": [1, 0], "value": ["t", "e", "n"], "combinations": 6},
     {"key": 0, "combinations": 1},
 ]
 
@@ -26,7 +26,6 @@ def test_writer_substitutions():
     for record in DATA_SET:
         combinations = w.append(record)
         assert combinations == record["combinations"]
-
 
 
 if __name__ == "__main__":  # pragma: no cover

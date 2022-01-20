@@ -111,16 +111,16 @@ class StreamWriter(Writer):
             )
 
         with threading.Lock():
-            
+
             # get the placeholders from the dataset name
             placeholders = set(re.findall(r"\{(.*?)\}", identity))
 
             # there's no substitutions needed, so just write the record
             if len(placeholders) == 0:
                 blob_writer = self.writer_pool.get_writer(identity)
-                return blob_writer.append(record)    
-            
-            # get the values from the record, there can be multiple of these 
+                return blob_writer.append(record)
+
+            # get the values from the record, there can be multiple of these
             values = []
             for placeholder in placeholders:
                 value = record.get(placeholder)
@@ -137,7 +137,9 @@ class StreamWriter(Writer):
                 this_identity = identity
                 # do the actual replacing of the placeholders
                 for k, v in zip(placeholders, values):
-                    this_identity = this_identity.replace('{' + k + '}', text.sanitize(str(v)))
+                    this_identity = this_identity.replace(
+                        "{" + k + "}", text.sanitize(str(v))
+                    )
 
                 print(this_identity)
                 # get the writer and save the record
