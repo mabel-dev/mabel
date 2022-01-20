@@ -132,7 +132,7 @@ class StreamWriter(Writer):
             value_combinations = {i for i in itertools.product(*values)}
 
             # for every variation in the cartesian product
-            for values in value_combinations: # type:ignore
+            for values in value_combinations:  # type:ignore
 
                 this_identity = identity
                 # do the actual replacing of the placeholders
