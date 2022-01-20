@@ -3,7 +3,6 @@ import time
 import datetime
 import threading
 import itertools
-from pkg_resources import safe_name
 from pydantic import BaseModel  # type:ignore
 from typing import Any, Union
 from .writer import Writer
@@ -133,7 +132,7 @@ class StreamWriter(Writer):
             value_combinations = {i for i in itertools.product(*values)}
 
             # for every variation in the cartesian product
-            for values in value_combinations:
+            for values in value_combinations: # type:ignore
 
                 this_identity = identity
                 # do the actual replacing of the placeholders
