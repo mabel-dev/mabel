@@ -127,7 +127,7 @@ class StreamWriter(Writer):
                 if not isinstance(value, list):
                     value = [value]
                 if hasattr(value, "as_list"):
-                    value = value.as_list
+                    value = value.as_list()  # type:ignore
                 values.append(value)
             # get the cartesian product of these lists
             # save the result to a set otherwise it's not a cartesian product
