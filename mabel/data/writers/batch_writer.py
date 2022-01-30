@@ -20,6 +20,7 @@ class BatchWriter(Writer):
         format: str = "zstd",
         date: Any = None,
         frame_id: str = None,
+        metadata: dict = None,
         **kwargs,
     ):
         """
@@ -53,6 +54,8 @@ class BatchWriter(Writer):
                 Don't automatically add any date parts to dataset names
             index_on: collection (optional)
                 Index on these columns, the default is to not index
+            metadata: dict (optional)
+                data to write into the frame.complete file
 
         Note:
             Different inner_writers may take or require additional parameters.
@@ -70,6 +73,11 @@ class BatchWriter(Writer):
                 dataset + "/" + as_at,  # type:ignore
                 self.batch_date,
             )
+
+        if metadata:
+            self.metadata = metadata
+        else:
+            self.metadata = {}
 
         kwargs["raw_path"] = True  # we've just added the dates
         kwargs["format"] = format
@@ -110,9 +118,14 @@ class BatchWriter(Writer):
 
         completion_path = self.blob_writer.inner_writer.filename
         completion_path = os.path.split(completion_path)[0] + "/frame.complete"
-        status = {"records": self.records}
+        self.metadata["records"] = self.records
+        if self.schema:
+            if isinstance(self.schema, dict):
+                self.metadata["schema"] = self.schema
+            elif hasattr(self.schema, "definition"):
+                self.metadata["schema"] = self.schema.definition
         flag = self.blob_writer.inner_writer.commit(
-            byte_data=orjson.dumps(status),
+            byte_data=orjson.dumps(self.metadata, option=orjson.OPT_INDENT_2),
             override_blob_name=completion_path,
         )
         get_logger().debug(f"Frame completion file `{flag}` written")

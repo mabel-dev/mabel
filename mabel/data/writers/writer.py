@@ -1,7 +1,7 @@
 import orjson
 import datetime
-from pydantic import BaseModel  # type:ignore
-from typing import Any, Optional, Union, List
+from pydantic import BaseModel
+from typing import Any, Optional, Union
 from .internals.blob_writer import BlobWriter
 from ..validator import Schema
 from ...utils import paths, dates
@@ -31,7 +31,6 @@ class Writer:
         """
         Simple Writer provides a basic writer capability.
         """
-
         dataset = kwargs.get("dataset", "")
 
         if "BACKOUT" in dataset:

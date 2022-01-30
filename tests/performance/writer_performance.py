@@ -23,9 +23,10 @@ import statistics
 sys.path.insert(1, os.path.join(sys.path[0], "../.."))
 from mabel.data import BatchWriter
 from mabel.adapters.null import NullWriter
+from mabel.adapters.disk import DiskWriter
 from mabel.logging import get_logger
 from mabel.data.validator import Schema
-from mabel.data.formats import display, dictset
+from mabel.data.internals import display, dictset
 
 import ujson as json
 
@@ -35,13 +36,12 @@ logger.setLevel(100)
 
 schema_definition = {
     "fields": [
-        {"name": "userid", "type": "numeric"},
-        {"name": "username", "type": "string"},
+        {"name": "user_id", "type": "numeric"},
+        {"name": "user_name", "type": "string"},
         {"name": "user_verified", "type": "boolean"},
         {"name": "followers", "type": "numeric"},
-        {"name": "tweet", "type": "string"},
+        {"name": "text", "type": "string"},
         {"name": "location", "type": ["string", "nullable"]},
-        {"name": "sentiment", "type": "numeric"},
         {"name": "timestamp", "type": "date"},
     ]
 }
@@ -87,9 +87,10 @@ def execute_test(compress, schema, reader):
     for i in range(10):
         writer = BatchWriter(
             inner_writer=NullWriter,
-            dataset="{datefolders}",
+            dataset="_tests/{datefolders}",
             format=compress,
             schema=schema,
+            metadata={"test_data": True},
         )
         start = time.perf_counter_ns()
         for record in reader:
@@ -100,7 +101,7 @@ def execute_test(compress, schema, reader):
 
 
 schema = Schema(schema_definition)
-lines = list(read_jsonl("tests/data/formats/tweets.jsonl"))
+lines = list(read_jsonl("tests/data/formats/jsonl/tweets.jsonl"))
 
 print(len(lines))
 
@@ -134,20 +135,6 @@ result = {
 results.append(result)
 
 result = {
-    "format": "lzma",
-    "validation": False,
-    "time": execute_test("lzma", None, lines),
-}
-results.append(result)
-
-result = {
-    "format": "lzma",
-    "validation": True,
-    "time": execute_test("lzma", schema, lines),
-}
-results.append(result)
-
-result = {
     "format": "parquet",
     "validation": False,
     "time": execute_test("parquet", None, lines),
@@ -165,12 +152,12 @@ fastest = 100000000000
 for result in results:
     if result["time"] < fastest:
         fastest = result["time"]
-results = dictset.set_column(
-    results, "ratio", lambda r: int((1000 * fastest) / r["time"]) / 1000
-)
-results = dictset.set_column(
-    results, "rows/second", lambda r: int(len(lines) / r["time"])
-)
-results = dictset.set_column(results, "time", lambda r: int(1000 * r["time"]) / 1000)
+# results = dictset.set_column(
+#    results, "ratio", lambda r: int((1000 * fastest) / r["time"]) / 1000
+# )
+# results = dictset.set_column(
+#    results, "rows/second", lambda r: int(len(lines) / r["time"])
+# )
+# results = dictset.set_column(results, "time", lambda r: int(1000 * r["time"]) / 1000)
 
 print(display.ascii_table(results, 100))
