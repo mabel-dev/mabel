@@ -4,6 +4,7 @@ import orjson
 import datetime
 from typing import Any, Union, List, Dict
 from ...errors import ValidationError
+from mabel.data.internals.display import ascii_table
 
 
 DEFAULT_MIN = -9223372036854775808
@@ -179,6 +180,8 @@ class Schema:
             if definition.get("fields"):  # type:ignore
                 definition = definition["fields"]  # type:ignore
 
+        self.definition = definition
+
         try:
             # read the schema and look up the validators
             self._validators = {  # type:ignore
@@ -264,4 +267,4 @@ class Schema:
             val = ",".join(val)
             retval.append({"field": key, "type": val})
 
-        return ascii_table(retval)
+        return orjson.dumps(retval).decode()
