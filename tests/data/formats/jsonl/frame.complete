@@ -1,0 +1,40 @@
+{
+  "description": "A sample of Tweets",
+  "records": 100000,
+  "schema": [
+    {
+      "name": "user_id",
+      "type": "numeric",
+      "description": "the ID of the user"
+    },
+    {
+      "name": "user_name",
+      "type": "string",
+      "description": "the name of the user"
+    },
+    {
+      "name": "user_verified",
+      "type": "numeric",
+      "description": "VIP flag"
+    },
+    {
+      "name": "followers",
+      "type": "numeric"
+    },
+    {
+      "name": "text",
+      "type": "string"
+    },
+    {
+      "name": "location",
+      "type": [
+        "string",
+        "nullable"
+      ]
+    },
+    {
+      "name": "timestamp",
+      "type": "date"
+    }
+  ]
+}
