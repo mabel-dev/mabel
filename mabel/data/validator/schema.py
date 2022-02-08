@@ -33,6 +33,7 @@ def is_date(**kwargs):
     def _inner(value: Any) -> bool:
         """date"""
         from mabel.utils import dates
+
         return dates.parse_iso(value) is not None
 
     return _inner
@@ -118,14 +119,13 @@ VALIDATORS = {
     "string": is_string,
     "boolean": is_boolean,
     "cve": is_cve,
-
     "TIMESTAMP": is_date,
     "OTHER": other_validator,
     "LIST": is_list,
     "VARCHAR": is_string,
     "BOOLEAN": is_boolean,
     "NUMERIC": is_numeric,
-    "STRUCT": other_validator 
+    "STRUCT": other_validator,
 }
 
 

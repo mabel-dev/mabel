@@ -44,7 +44,7 @@ schema_definition = {
         {"name": "text", "type": "string"},
         {"name": "location", "type": ["string", "nullable"]},
         {"name": "timestamp", "type": "date"},
-    ]
+    ],
 }
 
 
