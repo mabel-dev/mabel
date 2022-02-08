@@ -35,6 +35,7 @@ logger = get_logger()
 logger.setLevel(100)
 
 schema_definition = {
+    "description": "test data",
     "fields": [
         {"name": "user_id", "type": "numeric"},
         {"name": "user_name", "type": "string"},
@@ -43,7 +44,7 @@ schema_definition = {
         {"name": "text", "type": "string"},
         {"name": "location", "type": ["string", "nullable"]},
         {"name": "timestamp", "type": "date"},
-    ]
+    ],
 }
 
 

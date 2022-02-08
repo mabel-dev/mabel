@@ -58,12 +58,12 @@ def parse_iso(value):
     #
     # If the last character is a Z, we ignore it.
     try:
+        if isinstance(value, (datetime.datetime, datetime.date, datetime.time)):
+            return value
         if value[-1] == "Z":
             value = value[:-1]
         val_len = len(value)
-        if isinstance(value, (datetime.datetime, datetime.date, datetime.time)):
-            return value
-        if isinstance(value, str) and 10 <= val_len <= 24:
+        if isinstance(value, str) and 10 <= val_len <= 26:
             if not value[4] in DATE_SEPARATORS or not value[7] in DATE_SEPARATORS:
                 return None
             if val_len == 10:
@@ -74,8 +74,8 @@ def parse_iso(value):
             if val_len >= 16:
                 if not (value[10] in ("T", " ") and value[13] in DATE_SEPARATORS):
                     return False
-                if val_len == 24 and value[16] in DATE_SEPARATORS and value[19] == ".":
-                    # YYYY-MM-DD HH:MM:SS.ssss
+                if val_len >= 24 and value[16] in DATE_SEPARATORS and value[19] == ".":
+                    # YYYY-MM-DD HH:MM:SS.ssssss
                     return datetime.datetime(
                         *map(  # type:ignore
                             int,
@@ -86,7 +86,7 @@ def parse_iso(value):
                                 value[11:13],  # HH
                                 value[14:16],  # MM
                                 value[17:19],  # SS
-                                value[20:24],  # ssss
+                                value[20:],  # ssssss
                             ],
                         )
                     )

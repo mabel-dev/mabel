@@ -41,7 +41,7 @@ def test_validator_all_valid_values():
     }
 
     test = Schema(TEST_SCHEMA)
-    assert test.validate(TEST_DATA)
+    assert test.validate(TEST_DATA), test.last_error
 
 
 def test_validator_invalid_string():
@@ -107,7 +107,7 @@ def test_validator_nonnative_types():
     TEST_DATA = {
         "integer_field": "100",
         "boolean_field": "True",
-        "date_field": "2000-01-01T00:00:00.000",
+        "date_field": "2000-01-01 00:00:00.0000",
         "nullable_field": "",
     }
     TEST_SCHEMA = {
