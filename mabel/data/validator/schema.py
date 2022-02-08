@@ -30,43 +30,10 @@ def is_cve(**kwargs):
 
 
 def is_date(**kwargs):
-    DATE_SEPARATORS = {"-", "\\", "/", ":"}
-    # date validation at speed is hard, dateutil is great but really slow
-    # this is as about as good as validating a string is a date, but isn't
     def _inner(value: Any) -> bool:
         """date"""
-        try:
-            if type(value).__name__ in ("datetime", "date", "time"):
-                return True
-            if type(value).__name__ == "str":
-                if not value[4] in DATE_SEPARATORS:
-                    return False
-                if not value[7] in DATE_SEPARATORS:
-                    return False
-                if len(value) == 10:
-                    # YYYY-MM-DD
-                    datetime.date(*map(int, [value[:4], value[5:7], value[8:10]]))
-                else:
-                    if not value[10] == "T":
-                        return False
-                    if not value[13] in DATE_SEPARATORS:
-                        return False
-                    # YYYY-MM-DDTHH:MM....
-                    datetime.datetime(
-                        *map(  # type:ignore
-                            int,
-                            [
-                                value[:4],
-                                value[5:7],
-                                value[8:10],
-                                value[11:13],
-                                value[14:16],
-                            ],
-                        )
-                    )
-            return True
-        except (ValueError, TypeError):
-            return False
+        from mabel.utils import dates
+        return dates.parse_iso(value) is not None
 
     return _inner
 
@@ -151,6 +118,14 @@ VALIDATORS = {
     "string": is_string,
     "boolean": is_boolean,
     "cve": is_cve,
+
+    "TIMESTAMP": is_date,
+    "OTHER": other_validator,
+    "LIST": is_list,
+    "VARCHAR": is_string,
+    "BOOLEAN": is_boolean,
+    "NUMERIC": is_numeric,
+    "STRUCT": other_validator 
 }
 
 
