@@ -15,7 +15,7 @@ def test_satellite_data_is_a_relation():
     """
     The other tests aren't really valid if we don't confirm this.
     """
-    from opteryx import Relation
+    from mabel.data.internals.relation import Relation
 
     assert issubclass(SatelliteData, Relation)
 

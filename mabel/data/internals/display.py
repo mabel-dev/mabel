@@ -1,4 +1,5 @@
 from typing import Iterable, Dict, Any
+from mabel.data.internals.relation import Relation
 
 
 def html_table(relation: Iterable[dict], limit: int = 5):
@@ -70,7 +71,9 @@ def html_table(relation: Iterable[dict], limit: int = 5):
         footer = f"\n<p>top {i+1} rows x {len(columns)} columns</p>"
         footer += "\nNOTE: the displayed records may have been spent"
     elif hasattr(relation, "__len__"):
-        footer = f"\n<p>{len(relation)} rows x {len(columns)} columns</p>"  # type:ignore
+        footer = (
+            f"\n<p>{len(relation)} rows x {len(columns)} columns</p>"
+        )  # type:ignore
 
     return "".join(_to_html_table(rows, columns)) + footer
 

@@ -8,7 +8,7 @@ import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.data import STORAGE_CLASS
-from mabel import Relation
+from mabel.data.internals.relation import Relation
 from mabel.data.internals.expression import Expression
 from rich import traceback
 

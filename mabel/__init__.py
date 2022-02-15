@@ -21,11 +21,10 @@ elif dotenv is not None:  # pragma: no cover
 import os
 from .version import __version__
 
-if os.environ.get("RESOURCE_MONITORING", False):  # pragma: no cover
-    from .utils.resource_monitoring import ResourceMonitor
+__author__ = "@joocer"
 
-from .data.readers.reader import Reader
-from .data.readers.sql_reader import SqlReader
-from .data.writers.writer import Writer
-from .data.internals.relation import Relation
-from .data.internals.storage_classes import STORAGE_CLASS
+from .utils.resource_monitoring import ResourceMonitor
+from mabel.data.readers.reader import Reader
+from mabel.data.readers.sql_reader import SqlReader
+from mabel.data.writers.writer import Writer
+from mabel.data.internals.relation import Relation

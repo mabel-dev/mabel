@@ -13,7 +13,7 @@ from mabel.data import Reader
 from rich import traceback
 from mabel.utils import parameter_validator
 from mabel.utils.text import levenshtein_distance
-from mabel.exceptions import InvalidReaderConfigError
+from mabel.errors import InvalidReaderConfigError
 from mabel.data.readers.reader import AccessDenied
 
 traceback.install()

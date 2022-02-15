@@ -12,6 +12,7 @@ from collections import defaultdict
 
 def summer(x, y):
     from decimal import Decimal
+
     return Decimal(x) + Decimal(y)
 
 

@@ -4,7 +4,7 @@ import sys
 import orjson
 
 sys.path.insert(1, os.path.join(sys.path[0], "../.."))
-from mabel import Relation
+from mabel.data.internals.relation import Relation
 from mabel.data import STORAGE_CLASS
 from timer import Timer
 

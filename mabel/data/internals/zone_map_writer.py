@@ -110,7 +110,6 @@ class ZoneMap:
 
 
 class ZoneMapWriter(object):
-
     def __init__(self, schema: Optional[Schema] = None):
         self.collectors = {}
         self.hyper_log_logs = {}
@@ -173,7 +172,14 @@ class ZoneMapWriter(object):
 
             # count the unique items, use a hyper-log-log for size and speed
             # this gives us an estimate only.
-            if value_type in (Decimal, int, float, str, datetime.date, datetime.datetime):
+            if value_type in (
+                Decimal,
+                int,
+                float,
+                str,
+                datetime.date,
+                datetime.datetime,
+            ):
                 self.hyper_log_logs[f"{blob}:{k}"].add(v)
 
             # put the profile back in the collector

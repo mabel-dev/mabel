@@ -1,7 +1,7 @@
 import functools
 import inspect
 from mabel.logging import get_logger
-from mabel.exceptions import InvalidReaderConfigError
+from mabel.errors import InvalidReaderConfigError
 from mabel.utils.text import levenshtein_distance
 
 

@@ -19,12 +19,11 @@ from mabel.data.readers.internals.inline_evaluator import Evaluator
 from mabel.data.internals.expression import Expression
 from mabel.data.internals.dnf_filters import DnfFilters
 from mabel.data.internals.relation import Relation
-from mabel.data.internals.storage_classes import STORAGE_CLASS
 
 from mabel.logging import get_logger
 from mabel.utils.dates import parse_delta
 from mabel.utils.parameter_validator import validate
-from mabel.exceptions import InvalidCombinationError, DataNotFoundError
+from mabel.errors import InvalidCombinationError, DataNotFoundError
 
 
 # fmt:off
@@ -60,7 +59,6 @@ def Reader(
     filters: Optional[str] = None,
     inner_reader=None,
     partitioning=("year_{yyyy}", "month_{mm}", "day_{dd}"),
-    persistence: STORAGE_CLASS = STORAGE_CLASS.NO_PERSISTANCE,
     override_format: Optional[str] = None,
     cursor: Optional[Union[str, Dict]] = None,
     valid_dataset_prefixes: Optional[list] = None,
@@ -118,11 +116,6 @@ def Reader(
         partitioning: tuple of strings (optional):
             define a pattern for partitioning - this defaults to the following date
             based partitions 'year_YYYY/month_MM/day_DD'.
-        persistence: STORAGE_CLASS (optional)
-            How to cache the results, the default is NO_PERSISTANCE which will almost
-            always return a generator. MEMORY should only be used where the dataset
-            isn't huge and DISK is many times slower than MEMORY. COMPRESSED_MEMORY
-            fits in between, usually faster than DISK but slower than MEMORY.
         cursor: dictionary (or string)
             Resume read from a given point (assumes other parameters are the same).
             If a JSON string is provided, it will converted to a dictionary.
@@ -201,7 +194,6 @@ def Reader(
             override_format=override_format,
             cursor=cursor,
         ),
-        storage_class=persistence,
     )
 
 
@@ -287,14 +279,11 @@ class _LowLevelReader(object):
 
         blob_to_read = self.cursor.next_blob()
         while blob_to_read:
-            blob_reader = parallel(blob_to_read,[])
+            blob_reader = parallel(blob_to_read, [])
             location = self.cursor.skip_to_cursor(blob_reader)
-            for self.cursor.location, record in enumerate(
-                blob_reader, start=location
-            ):
+            for self.cursor.location, record in enumerate(blob_reader, start=location):
                 yield record
             blob_to_read = self.cursor.next_blob(blob_to_read)
-
 
     def __iter__(self):
         return self

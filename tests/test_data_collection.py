@@ -6,7 +6,7 @@ from mabel.data.internals.relation import Relation
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.data.internals.collected_set import CollectedSet
-from mabel import STORAGE_CLASS, Relation
+from mabel import Relation
 from rich import traceback
 
 traceback.install()
@@ -35,7 +35,7 @@ def test_group_by_advanced():
         {"user": "eve", "value": 6},
         {"user": "eve", "value": 7},
     ]
-    ds = Relation(data, storage_class=STORAGE_CLASS.MEMORY)
+    ds = Relation(data)
 
     # don't deduplicate
     groups = ds.collect_set("user", dedupe=False).apply(summarize)
@@ -61,7 +61,7 @@ def test_group_by():
         {"user": "eve", "value": 7},
     ]
 
-    ds = Relation(data, storage_class=STORAGE_CLASS.MEMORY)
+    ds = Relation(data)
     groups = ds.collect_set("user")
 
     # the right number of groups

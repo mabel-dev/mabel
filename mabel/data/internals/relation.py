@@ -51,7 +51,7 @@ from mabel.data.types import (
     PYTHON_TYPES,
     coerce_types,
 )
-from mabel.exceptions import MissingDependencyError
+from mabel.errors import MissingDependencyError
 
 
 class Relation:
@@ -59,7 +59,12 @@ class Relation:
     __slots__ = ("header", "data", "name")
 
     def __init__(
-        self, data: Iterable[Tuple] = [], *, header: dict = {}, name: str = None
+        self,
+        data: Iterable[Tuple] = [],
+        *,
+        header: dict = {},
+        name: str = None,
+        **kwargs,
     ):
         """
         Create a Relation.
@@ -243,6 +248,34 @@ class Relation:
 
         return list(_inner_fetch())
 
+    def __iter__(self):
+        keys = self.header.keys()
+        self.materialize()
+
+        def _inner_fetch():
+            for index in range(len(self.data)):
+                yield dict(zip(keys, self.data[index]))
+
+        yield from _inner_fetch()
+
+    def sample(self, fraction: float = 0.5):
+        """
+        Select a random sample of records, fraction indicates the portion of
+        records to select.
+
+        NOTE: records are randomly selected so is unlikely to perfectly match the
+        fraction.
+        """
+
+        def inner_sampler(dictset):
+            selector = int(1 / fraction)
+            for row in dictset:
+                random_value = int.from_bytes(os.urandom(2), "big")
+                if random_value % selector == 0:
+                    yield row
+
+        return Relation(inner_sampler(self.data), header=self.header)
+
     def collect_column(self, column):
         def get_column(column):
             for index, attribute in enumerate(self.header.keys()):
@@ -297,6 +330,19 @@ class Relation:
     def load(file):
         with open(file, "rb") as pq_file:
             return Relation.deserialize(pq_file)
+
+    def __repr__(self):  # pragma: no cover
+        from mabel.utils.ipython import is_running_from_ipython
+        from mabel.data.internals.display import html_table, ascii_table
+
+        if is_running_from_ipython():
+            from IPython.display import HTML, display  # type:ignore
+
+            html = html_table(iter(self), 10)
+            display(HTML(html))
+            return ""  # __repr__ must return something
+        else:
+            return ascii_table(iter(self), 10)
 
 
 if __name__ == "__main__":

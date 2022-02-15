@@ -17,7 +17,7 @@ import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], "../.."))
 from mabel.data.readers import Reader, FileReader
-from mabel.data import Relation
+from mabel.data.internals.relation import Relation
 
 try:
     from rich import traceback

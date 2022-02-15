@@ -197,7 +197,7 @@ class Expression(object):
             return value
         if value.upper() in ("TRUE", "FALSE"):
             return value.upper() == "TRUE"
-        
+
         try:
             num = int(value)
             return num

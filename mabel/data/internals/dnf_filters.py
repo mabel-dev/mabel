@@ -3,7 +3,7 @@ This is a filtering mechanism to be applied when reading data.
 """
 import operator
 from typing import Optional, Iterable, List, Tuple, Union
-from mabel.exceptions import InvalidSyntaxError
+from mabel.errors import InvalidSyntaxError
 from mabel.logging import get_logger
 from mabel.utils.text import like, similar_to
 

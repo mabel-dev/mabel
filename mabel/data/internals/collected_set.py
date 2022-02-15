@@ -1,10 +1,10 @@
 from typing import Callable
-from mabel.data.internals.relation import STORAGE_CLASS, Relation
+from mabel.data.internals.relation import Relation
 
 
 class CollectedSet:
 
-    __slots__ = ("_collections")
+    __slots__ = "_collections"
 
     def __init__(self, relation: Relation, column: str, dedupe: bool = False):
         """
@@ -134,10 +134,10 @@ class CollectedSet:
 
 class SubCollection:
 
-    __slots__ = ("values")
+    __slots__ = "values"
 
     def __init__(self, values):
-        self.values = Relation(values or [], storage_class=STORAGE_CLASS.MEMORY)
+        self.values = Relation(values or [])
 
     def __getitem__(self, item):
         """

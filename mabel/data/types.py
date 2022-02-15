@@ -13,7 +13,7 @@
 Helper routines for handling types between different dialects.
 """
 from enum import Enum
-from mabel.exceptions import UnsupportedTypeError
+from mabel.errors import UnsupportedTypeError
 import datetime
 
 
@@ -73,7 +73,7 @@ PYTHON_TYPES = {
     "str": MABEL_TYPES.VARCHAR,
     "tuple": MABEL_TYPES.LIST,
     "list": MABEL_TYPES.LIST,
-    "set": MABEL_TYPES.LIST
+    "set": MABEL_TYPES.LIST,
 }
 
 PARQUET_TYPES = {
@@ -85,7 +85,6 @@ PARQUET_TYPES = {
     "string": MABEL_TYPES.VARCHAR,
     "tuple": MABEL_TYPES.LIST,
 }
-
 
 
 def get_coerced_type(python_type):

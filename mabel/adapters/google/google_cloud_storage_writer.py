@@ -2,7 +2,7 @@ import os
 from urllib3.exceptions import ProtocolError  # type:ignore
 from mabel.logging.create_logger import get_logger
 from mabel.data.writers.internals.base_inner_writer import BaseInnerWriter
-from mabel.exceptions import MissingDependencyError
+from mabel.errors import MissingDependencyError
 
 try:
     from google.auth.credentials import AnonymousCredentials  # type:ignore

@@ -3,10 +3,8 @@ import re
 from unicodedata import decimal
 import orjson
 from typing import Any, Union, List, Dict
-from mabel.exceptions import ValidationError
+from mabel.errors import ValidationError
 from mabel.data.internals.display import ascii_table
-
-
 
 
 def is_boolean(**kwargs):
@@ -15,7 +13,6 @@ def is_boolean(**kwargs):
         return isinstance(value, bool)
 
     return _inner
-
 
 
 def is_date(**kwargs):
@@ -45,7 +42,6 @@ def is_null(**kwargs):
 
 
 def is_numeric(**kwargs):
-
     def _inner(value: Any) -> bool:
         """numeric"""
         try:
@@ -63,7 +59,6 @@ def is_string(**kwargs):
         return isinstance(value, str)
 
     return _inner
-
 
 
 def other_validator(**kwargs):

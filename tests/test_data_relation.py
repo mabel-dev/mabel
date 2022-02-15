@@ -3,19 +3,11 @@ import os
 import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
-from mabel import Reader, Relation, STORAGE_CLASS
+from mabel import Reader, Relation
 from mabel.adapters.disk import DiskReader
 from mabel.logging import get_logger
 
 get_logger().setLevel(5)
-
-
-STORAGE_CLASSES = [
-    STORAGE_CLASS.NO_PERSISTANCE,
-    STORAGE_CLASS.COMPRESSED_MEMORY,
-    STORAGE_CLASS.MEMORY,
-    STORAGE_CLASS.DISK,
-]
 
 
 def get_ds(**kwargs):
@@ -26,85 +18,71 @@ def get_ds(**kwargs):
 
 
 def test_count():
-    for storage_class in STORAGE_CLASSES:
-        ds = get_ds(persistence=storage_class)
-        if storage_class == STORAGE_CLASS.NO_PERSISTANCE:
-            assert ds.count() == -1, f"{storage_class} {ds.count()}"
-        else:
-            assert ds.count() == 50, f"{storage_class} {ds.count()}"
+    ds = get_ds()
+    assert ds.count() == 50, f"{ds.count()}"
 
 
 def test_enumeration():
-    for storage_class in STORAGE_CLASSES:
-        ds = get_ds(persistence=storage_class)
-        i = -1
-        for i, r in enumerate(ds):
-            pass
-        assert i + 1 == 50, f"{storage_class} {i+1}"
+    ds = get_ds()
+    i = -1
+    for i, r in enumerate(ds):
+        pass
+    assert i + 1 == 50, f"{i+1}"
 
 
 def test_sample():
-    for storage_class in STORAGE_CLASSES:
-        ds = get_ds(persistence=storage_class)
-        sample = ds.sample(0.02)
-        assert isinstance(sample, Relation)
-        assert sample.count() < 5, sample.count()
-        assert sample.storage_class == storage_class
+    ds = get_ds()
+    sample = ds.sample(0.50)
+    assert isinstance(sample, Relation)
+    assert 20 < sample.count() < 30, sample.count()
 
 
 def test_repr():
-    for storage_class in STORAGE_CLASSES:
-        ds = get_ds(persistence=storage_class)
-        rep = repr(ds)
-        assert "├" in rep, storage_class
+    ds = get_ds()
+    rep = repr(ds)
+    assert "├" in rep, rep
 
 
 def test_collect():
-    for storage_class in STORAGE_CLASSES:
-        ds = get_ds(persistence=storage_class)
-        collection = ds.collect_list("username")
-        assert collection.count("NBCNews") == 44, storage_class
+    ds = get_ds()
+    collection = ds.collect_list("username")
+    assert collection.count("NBCNews") == 44
 
 
 def test_keys():
-    for storage_class in STORAGE_CLASSES:
-        ds = get_ds(persistence=storage_class)
-        keys = ds.keys()
-        assert keys == [
-            "userid",
-            "username",
-            "user_verified",
-            "followers",
-            "tweet",
-            "location",
-            "sentiment",
-            "timestamp",
-        ], storage_class
+    ds = get_ds()
+    keys = ds.keys()
+    assert keys == [
+        "userid",
+        "username",
+        "user_verified",
+        "followers",
+        "tweet",
+        "location",
+        "sentiment",
+        "timestamp",
+    ]
 
 
 def test_types():
-    for storage_class in STORAGE_CLASSES:
-        if storage_class != STORAGE_CLASS.NO_PERSISTANCE:
-            ds = get_ds(persistence=storage_class)
-            types = ds.types()
-            assert types["userid"] == "int", types
-            assert types["username"] == "str"
-            assert types["user_verified"] == "bool"
-            assert types["followers"] == "int"
-            assert types["tweet"] == "str"
-            assert types["location"] == "str"
-            assert types["sentiment"] == "numeric"
-            assert types["timestamp"] == "str"
+    ds = get_ds()
+    types = ds.types()
+    assert types["userid"] == "int", types
+    assert types["username"] == "str"
+    assert types["user_verified"] == "bool"
+    assert types["followers"] == "int"
+    assert types["tweet"] == "str"
+    assert types["location"] == "str"
+    assert types["sentiment"] == "numeric"
+    assert types["timestamp"] == "str"
 
 
 def test_distinct():
-    for storage_class in STORAGE_CLASSES:
-        if storage_class != STORAGE_CLASS.NO_PERSISTANCE:
-            ds = get_ds(persistence=storage_class)
-            assert ds.distinct().count() == 50, storage_class
-            assert ds.distinct("username").count() == 2, storage_class
-            assert ds.distinct("username", "location").count() == 2, storage_class
-            assert ds.distinct("sentiment").count() == 36, storage_class
+    ds = get_ds()
+    assert ds.distinct().count() == 50
+    assert ds.distinct("username").count() == 2
+    assert ds.distinct("username", "location").count() == 2
+    assert ds.distinct("sentiment").count() == 36
 
 
 def test_summary():
@@ -114,7 +92,7 @@ def test_summary():
         {"key": 3, "value": "three", "plus1": 4},
         {"key": 4, "value": "four", "plus1": 5},
     ]
-    ds = Relation(data, storage_class=STORAGE_CLASS.MEMORY)
+    ds = Relation(data)
 
     assert ds.min("key") == 1
     assert ds.max("key") == 4
@@ -135,7 +113,7 @@ def test_take():
         {"key": 3, "value": "three", "plus1": 4},
         {"key": 4, "value": "four", "plus1": 5},
     ]
-    ds = Relation(data, storage_class=STORAGE_CLASS.MEMORY)
+    ds = Relation(data)
     assert ds.take(1).collect_list().pop() == {"key": 1, "value": "one", "plus1": 2}
     assert ds.take(2).count() == 2, ds.take(2).count()
 
@@ -147,7 +125,7 @@ def test_items():
         {"key": 3, "value": "three", "plus1": 4},
         {"key": 4, "value": "four", "plus1": 5},
     ]
-    ds = Relation(data, storage_class=STORAGE_CLASS.DISK)
+    ds = Relation(data)
     items = list([i.as_dict() for i in ds.get_items(0, 2)])
     assert items == [
         {"key": 1, "value": "one", "plus1": 2},
@@ -162,7 +140,7 @@ def test_selectors():
         {"key": 3, "value": "three", "plus1": 4},
         {"key": 4, "value": "four", "plus1": 5},
     ]
-    ds = Relation(data, storage_class=STORAGE_CLASS.MEMORY)
+    ds = Relation(data)
     dnf = ds.select(("key", "=", 1))
     assert dnf.count() == 1
     assert dnf.first() == {"key": 1, "value": "one", "plus1": 2}
@@ -175,7 +153,7 @@ def test_hash():
         {"key": 3, "value": "three", "plus1": 4},
         {"key": 4, "value": "four", "plus1": 5},
     ]
-    ds = Relation(data, storage_class=STORAGE_CLASS.MEMORY)
+    ds = Relation(data)
     hashval = hash(ds)
     assert hashval == 5233449951214716413, hashval
 
@@ -187,11 +165,11 @@ def test_projection():
         {"key": 3, "value": "three", "plus1": 4},
         {"key": 4, "value": "four", "plus1": 5},
     ]
-    ds = Relation(data, storage_class=STORAGE_CLASS.MEMORY).project("key").collect_list()
+    ds = Relation(data).project("key").collect_list()
     assert ds == [{"key": 1}, {"key": 2}, {"key": 3}, {"key": 4}], ds
 
     ds = (
-        Relation(data, storage_class=STORAGE_CLASS.MEMORY)
+        Relation(data)
         .project(
             (
                 "key",
@@ -215,12 +193,10 @@ def test_inline_projection():
         {"key": 3, "value": "three", "plus1": 4},
         {"key": 4, "value": "four", "plus1": 5},
     ]
-    ds = Relation(data, storage_class=STORAGE_CLASS.MEMORY)["key"].collect_list()
+    ds = Relation(data)["key"].collect_list()
     assert ds == [{"key": 1}, {"key": 2}, {"key": 3}, {"key": 4}], ds
 
-    ds = Relation(data, storage_class=STORAGE_CLASS.MEMORY)[
-        "key", "value"
-    ].collect_list()
+    ds = Relation(data)["key", "value"].collect_list()
     assert ds == [
         {"key": 1, "value": "one"},
         {"key": 2, "value": "two"},
@@ -236,7 +212,7 @@ def test_sort():
         {"key": 3, "value": "three", "plus1": 4},
         {"key": 4, "value": "four", "plus1": 5},
     ]
-    ds = Relation(data, storage_class=STORAGE_CLASS.MEMORY)
+    ds = Relation(data)
     st = list(ds.sort_and_take("key", 100))
     assert st == [
         {"key": None, "value": "two", "plus1": 3},

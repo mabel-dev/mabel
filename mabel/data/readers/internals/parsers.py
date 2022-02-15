@@ -5,7 +5,8 @@ from mabel.logging import get_logger
 
 json_parser = simdjson.Parser()
 
-def json_not_used(line):
+
+def json(line):
     """
     Parse each line in the file to a dictionary.
 
@@ -18,10 +19,11 @@ def json_not_used(line):
     del dic
     return dict(zip(keys, values))
 
-def json(ds):
-    """parse each line in the file to a dictionary"""
-    json_parser = simdjson.Parser()
-    return json_parser.parse(ds)
+
+# def json(ds):
+#    """parse each line in the file to a dictionary"""
+#    json_parser = simdjson.Parser()
+#    return json_parser.parse(ds)
 
 
 def pass_thru_block(ds):

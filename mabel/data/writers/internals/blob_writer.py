@@ -5,7 +5,7 @@ from orjson import dumps
 import zstandard
 from mabel.data.internals.records import flatten
 from mabel.logging import get_logger
-from mabel.exceptions import MissingDependencyError
+from mabel.errors import MissingDependencyError
 
 
 BLOB_SIZE = 64 * 1024 * 1024  # 64Mb, 16 files per gigabyte

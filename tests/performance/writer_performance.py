@@ -24,7 +24,7 @@ sys.path.insert(1, os.path.join(sys.path[0], "../.."))
 from mabel.data import BatchWriter
 from mabel.adapters.null import NullWriter
 from mabel.logging import get_logger
-from mabel import Relation
+from mabel.data.internals.relation import Relation
 
 import orjson as json
 

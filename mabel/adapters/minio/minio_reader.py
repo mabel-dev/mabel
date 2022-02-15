@@ -4,7 +4,7 @@ MinIo Reader - also works with AWS
 from functools import lru_cache
 from mabel.data.readers.internals.base_inner_reader import BaseInnerReader
 from mabel.utils import paths, dates
-from mabel.exceptions import MissingDependencyError
+from mabel.errors import MissingDependencyError
 
 try:
     from minio import Minio  # type:ignore

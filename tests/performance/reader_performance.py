@@ -22,13 +22,17 @@ def do_read():
     d = Reader(
         dataset="tests/data/huge",
         inner_reader=DiskReader,
-        #multiprocess=True,
+        # multiprocess=True,
         select="followers, user_name",
-        filters=("followers", "=", 10,),
+        filters=(
+            "followers",
+            "=",
+            10,
+        ),
         partitioning=None,
     )
 
-    #g = d.group_by("followers").count()
+    # g = d.group_by("followers").count()
 
     i = -1
     for i, r in enumerate(d):
