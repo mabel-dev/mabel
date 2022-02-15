@@ -4,8 +4,8 @@ import hashlib
 import logging
 import orjson as json
 from functools import lru_cache
-from ..utils.colors import COLORS, colorize
-from ..utils.ipython import is_running_from_ipython
+from mabel.utils.colors import COLORS, colorize
+from mabel.utils.ipython import is_running_from_ipython
 
 
 # if we find a key which matches these strings, we hash the contents

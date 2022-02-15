@@ -1,10 +1,10 @@
 import os
 import logging
 from functools import lru_cache
-from .add_level import add_logging_level
-from .log_formatter import LogFormatter
-from .levels import LEVELS_TO_STRING, LEVELS
-from .google_cloud_logger import GoogleLogger
+from mabel.logging.add_level import add_logging_level
+from mabel.logging.log_formatter import LogFormatter
+from mabel.logging.levels import LEVELS_TO_STRING, LEVELS
+from mabel.logging.google_cloud_logger import GoogleLogger
 
 LOG_NAME: str = "MABEL"
 LOG_FORMAT: str = "{BOLD_CYAN}%(name)s{OFF} | %(levelname)-8s | %(asctime)s | {GREEN}%(funcName)s(){OFF} | {YELLOW}%(filename)s{OFF}:{PURPLE}%(lineno)s{OFF} | %(message)s"

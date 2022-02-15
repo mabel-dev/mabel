@@ -1,80 +1,29 @@
 import os
 import re
+from unicodedata import decimal
 import orjson
-import datetime
 from typing import Any, Union, List, Dict
 from mabel.exceptions import ValidationError
+from mabel.data.internals.display import ascii_table
 
-"""
-- INTEGER
-- FLOAT
-- LIST
-- BOOLEAN
-- STRING
-- TIMESTAMP
-- STRUCT
-"""
 
-DEFAULT_MIN = -9223372036854775808
-DEFAULT_MAX = 9223372036854775807
-VALID_BOOLEAN_VALUES = {"true", "false", "on", "off", "yes", "no", "0", "1"}
-CVE_REGEX = re.compile("cve|CVE-[0-9]{4}-[0-9]{4,}")
 
 
 def is_boolean(**kwargs):
     def _inner(value: Any) -> bool:
         """boolean"""
-        return str(value).lower() in VALID_BOOLEAN_VALUES
+        return isinstance(value, bool)
 
     return _inner
 
-
-def is_cve(**kwargs):
-    def _inner(value):
-        """cve"""
-        return CVE_REGEX.match(str(value))
-
-    return _inner
 
 
 def is_date(**kwargs):
-    DATE_SEPARATORS = {"-", "\\", "/", ":"}
-    # date validation at speed is hard, dateutil is great but really slow
-    # this is as about as good as validating a string is a date, but isn't
     def _inner(value: Any) -> bool:
         """date"""
-        try:
-            if type(value).__name__ in ("datetime", "date", "time"):
-                return True
-            if type(value).__name__ == "str":
-                if not value[4] in DATE_SEPARATORS:
-                    return False
-                if not value[7] in DATE_SEPARATORS:
-                    return False
-                if len(value) == 10:
-                    # YYYY-MM-DD
-                    datetime.date(*map(int, [value[:4], value[5:7], value[8:10]]))
-                else:
-                    if not value[10] == "T":
-                        return False
-                    if not value[13] in DATE_SEPARATORS:
-                        return False
-                    # YYYY-MM-DDTHH:MM....
-                    datetime.datetime(
-                        *map(  # type:ignore
-                            int,
-                            [
-                                value[:4],
-                                value[5:7],
-                                value[8:10],
-                                value[11:13],
-                                value[14:16],
-                            ],
-                        )
-                    )
-            return True
-        except (ValueError, TypeError):
-            return False
+        from mabel.utils import dates
+
+        return dates.parse_iso(value) is not None
 
     return _inner
 
@@ -82,7 +31,7 @@ def is_date(**kwargs):
 def is_list(**kwargs):
     def _inner(value: Any) -> bool:
         """list"""
-        return isinstance(value, (list, set))
+        return isinstance(value, (list, set, tuple))
 
     return _inner
 
@@ -97,44 +46,24 @@ def is_null(**kwargs):
 
 def is_numeric(**kwargs):
 
-    mn = kwargs.get("min") or DEFAULT_MIN
-    mx = kwargs.get("max") or DEFAULT_MAX
-
     def _inner(value: Any) -> bool:
         """numeric"""
         try:
-            n = float(value)
+            n = decimal.Decimal(value)
         except (ValueError, TypeError):
             return False
-        return mn <= n <= mx
+        return True
 
     return _inner
 
 
 def is_string(**kwargs):
-    regex = None
-    pattern = kwargs.get("format")
-    if pattern:
-        regex = re.compile(pattern)
-
     def _inner(value: Any) -> bool:
         """string"""
-        if pattern is None:
-            return type(value).__name__ == "str"
-        else:
-            return regex.match(str(value))
+        return isinstance(value, str)
 
     return _inner
 
-
-def is_valid_enum(**kwargs):
-    symbols = kwargs.get("symbols", set())
-
-    def _inner(value: Any) -> bool:
-        """enum"""
-        return value in symbols
-
-    return _inner
 
 
 def other_validator(**kwargs):
@@ -149,16 +78,15 @@ def other_validator(**kwargs):
 Create dictionaries to look up the type validators
 """
 VALIDATORS = {
-    "date": is_date,
     "nullable": is_null,
-    "other": other_validator,
-    "list": is_list,
-    "array": is_list,
-    "enum": is_valid_enum,
-    "numeric": is_numeric,
-    "string": is_string,
-    "boolean": is_boolean,
-    "cve": is_cve,
+    "NULLABLE": is_null,
+    "TIMESTAMP": is_date,
+    "OTHER": other_validator,
+    "LIST": is_list,
+    "VARCHAR": is_string,
+    "BOOLEAN": is_boolean,
+    "NUMERIC": is_numeric,
+    "STRUCT": other_validator,
 }
 
 
@@ -187,6 +115,8 @@ class Schema:
         if isinstance(definition, dict):
             if definition.get("fields"):  # type:ignore
                 definition = definition["fields"]  # type:ignore
+
+        self.definition = definition
 
         try:
             # read the schema and look up the validators
@@ -273,4 +203,4 @@ class Schema:
             val = ",".join(val)
             retval.append({"field": key, "type": val})
 
-        return ascii_table(retval)
+        return orjson.dumps(retval).decode()

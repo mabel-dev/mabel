@@ -42,16 +42,16 @@ Some naive benchmarking with 135k records (with 269 columns) vs lists of diction
 import sys
 import os
 
-sys.path.insert(1, os.path.join(sys.path[0], "../.."))
+sys.path.insert(1, os.path.join(sys.path[0], "../../.."))
 
 from typing import Iterable, Tuple
-from opteryx.engine.attribute_types import (
-    OPTERYX_TYPES,
+from mabel.data.types import (
+    MABEL_TYPES,
     PARQUET_TYPES,
     PYTHON_TYPES,
     coerce_types,
 )
-from opteryx.exceptions import MissingDependencyError
+from mabel.exceptions import MissingDependencyError
 
 
 class Relation:
@@ -151,11 +151,11 @@ class Relation:
             response = {}
             for row in dictionaries:
                 for k, v in row.items():
-                    value_type = PYTHON_TYPES.get(str(type(v)), OPTERYX_TYPES.OTHER)
+                    value_type = PYTHON_TYPES.get(str(type(v)), MABEL_TYPES.OTHER)
                     if k not in response:
                         response[k] = {"type": value_type}
                     elif response[k] != {"type": value_type}:
-                        response[k] = {"type": OPTERYX_TYPES.OTHER}
+                        response[k] = {"type": MABEL_TYPES.OTHER}
             return response
 
         if not header:
@@ -286,7 +286,7 @@ class Relation:
             for attribute in pq_schema:
                 schema[attribute.name] = {
                     "type": PARQUET_TYPES.get(
-                        str(attribute.type), OPTERYX_TYPES.OTHER
+                        str(attribute.type), MABEL_TYPES.OTHER
                     ).value
                 }
             return schema
@@ -301,7 +301,7 @@ class Relation:
 
 if __name__ == "__main__":
 
-    from opteryx.utils.timer import Timer
+    from mabel.utils.timer import Timer
 
     with Timer("load"):
         r = Relation.load("tests/data/parquet/tweets.parquet")

@@ -66,7 +66,7 @@ import json
 from decimal import Decimal
 from typing import Any, Optional
 from mabel.data.internals.algorithms.hyper_log_log import HyperLogLog
-from mabel.data.internals.attribute_domains import get_coerced_type
+from mabel.data.types import get_coerced_type
 from mabel.data.internals.schema_validator import Schema
 
 
