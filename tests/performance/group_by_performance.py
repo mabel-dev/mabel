@@ -11,7 +11,7 @@ def do_read():
 
     sys.path.insert(1, os.path.join(sys.path[0], "../.."))
     from mabel.data.internals.group_by import GroupBy
-    from mabel.data.internals.dictset import STORAGE_CLASS, DictSet
+    from mabel.data import STORAGE_CLASS, Relation
 
     data = [
         {"user": "bob", "value": 1},
@@ -30,7 +30,7 @@ def do_read():
     ] * 10000
 
     for i in range(50):
-        ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
+        ds = Relation(data, storage_class=STORAGE_CLASS.MEMORY)
         gs = list(GroupBy(ds, "user").min("value"))
 
 

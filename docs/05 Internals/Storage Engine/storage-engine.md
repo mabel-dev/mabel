@@ -17,7 +17,7 @@ to fail on partition writes, but it deos provide some transaction capability
         - min/max allows us to skip files if the value isn't in the file
 
 
-Relation -> DictSet
+Relation
 -> schema - [names, types, range, etc]
 -> generator/list of tuples
 -> Select (predicate/Expression)

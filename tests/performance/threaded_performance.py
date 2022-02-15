@@ -39,7 +39,7 @@ reader = Reader(
     # where=lambda r: b'smb' in r
 )
 
-# reader = dictset.limit(reader, 100)
+# reader = relation.limit(reader, 100)
 
 start = time.perf_counter_ns()
 count = 0

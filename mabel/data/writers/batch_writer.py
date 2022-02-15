@@ -20,6 +20,7 @@ class BatchWriter(Writer):
         format: str = "zstd",
         date: Any = None,
         frame_id: str = None,
+        metadata: dict = None,
         partitioning=("year_{yyyy}", "month_{mm}", "day_{dd}"),
         **kwargs,
     ):
@@ -52,6 +53,8 @@ class BatchWriter(Writer):
 
             partioning: Tuple (optional)
                 Set to None to not partition data
+            metadata: dict(optionsal)
+                Dataset Metadata
 
         Note:
             Different inner_writers may take or require additional parameters.
@@ -69,6 +72,11 @@ class BatchWriter(Writer):
                 dataset + "/" + as_at,  # type:ignore
                 self.batch_date,
             )
+
+        if metadata:
+            self.metadata = metadata
+        else:
+            self.metadata = {}
 
         kwargs["raw_path"] = True  # we've just added the dates
         kwargs["format"] = format
@@ -110,10 +118,12 @@ class BatchWriter(Writer):
 
         completion_path = self.blob_writer.inner_writer.filename
         completion_path = os.path.split(completion_path)[0] + "/frame.complete"
-        status = {"records": self.records}
+        self.metadata["records"] = self.records
+        if self.schema:
+            self.metadata["schema"] = self.schema
         flag = self.blob_writer.inner_writer.commit(
-            byte_data=orjson.dumps(status),
-            blob_name=completion_path,
+            byte_data=orjson.dumps(self.metadata),
+            override_blob_name=completion_path,
         )
         get_logger().debug(f"Frame completion file `{flag}` written")
         return final

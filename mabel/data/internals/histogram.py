@@ -1,4 +1,4 @@
-from ...data.internals.dictset import DictSet
+from mabel.data.internals.relation import Relation
 
 
 BAR_CHARS = [r" ", r"▁", r"▂", r"▃", r"▄", r"▅", r"▆", r"▇", r"█"]
@@ -7,7 +7,7 @@ BAR_CHARS = [r" ", r"▁", r"▂", r"▃", r"▄", r"▅", r"▆", r"▇", r"█
 class Histogram:
     def __init__(self, values, *, key: str, number_of_bins: int = 10):
 
-        if isinstance(values, DictSet):
+        if isinstance(values, Relation):
             values = values.collect_list(key)
 
         self.bins = [0] * number_of_bins

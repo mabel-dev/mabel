@@ -4,7 +4,7 @@ import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], "../.."))
 from mabel.index.bloom_filter import BloomFilter
-from mabel.data.formats.dictset import drop_duplicates
+from mabel.data.formats.relation import drop_duplicates
 from mabel.utils import entropy
 
 try:
@@ -30,9 +30,9 @@ def dedupe():
     print((time.time_ns() - start) / 1e9)
 
 
-def drop(dictset):
+def drop(relation):
     bf = BloomFilter(10000)
-    for record in dictset:
+    for record in relation:
         if record in bf:
             continue
         bf.add(record)

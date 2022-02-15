@@ -1,16 +1,16 @@
 from typing import Callable
-from mabel.data.internals.dictset import STORAGE_CLASS, DictSet
+from mabel.data.internals.relation import STORAGE_CLASS, Relation
 
 
 class CollectedSet:
 
     __slots__ = ("_collections")
 
-    def __init__(self, dictset: DictSet, column: str, dedupe: bool = False):
+    def __init__(self, relation: Relation, column: str, dedupe: bool = False):
         """
         Collection functionality for Iterables of Dictionaries
         Parameters:
-            dictset: Iterable of dictionaries
+            relation: Relation
                 The dataset to perform the Collection on
             column: string
                 The name of the field to collect by
@@ -24,9 +24,9 @@ class CollectedSet:
         """
         collections: dict = {}
 
-        groups = dictset
+        groups = relation
         if dedupe:
-            groups = dictset.distinct()
+            groups = relation.distinct()
 
         for item in groups:
             if hasattr(item, "as_dict"):
@@ -137,7 +137,7 @@ class SubCollection:
     __slots__ = ("values")
 
     def __init__(self, values):
-        self.values = DictSet(values or [], storage_class=STORAGE_CLASS.MEMORY)
+        self.values = Relation(values or [], storage_class=STORAGE_CLASS.MEMORY)
 
     def __getitem__(self, item):
         """

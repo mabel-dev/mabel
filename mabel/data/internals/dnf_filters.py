@@ -179,21 +179,21 @@ class DnfFilters:
                 return columns
         return []  # pragma: no cover
 
-    def filter_dictset(self, dictset: Iterable[dict]) -> Iterable:
+    def filter_relation(self, relation: Iterable[dict]) -> Iterable:
         """
         Tests each entry in a Iterable against the filters
 
         Parameters:
-            dictset: iterable of dictionaries
-                The dictset to process
+            relation: iterable of dictionaries
+                The relation to process
 
         Yields:
             dictionary
         """
         if self.empty_filter:
-            yield from dictset
+            yield from relation
         else:
-            for record in dictset:
+            for record in relation:
                 if evaluate(self.predicates, record):
                     yield record
 

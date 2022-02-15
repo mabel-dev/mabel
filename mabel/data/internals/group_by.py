@@ -44,8 +44,8 @@ class GroupBy:
     data is in a generator, there's a chance the dataset doesn't fit in memory.
     """
 
-    def __init__(self, dictset, columns):
-        self._dictset = dictset
+    def __init__(self, relation, columns):
+        self._relation = relation
         if isinstance(columns, (list, set, tuple)):
             self._columns = tuple(columns)
         else:
@@ -70,11 +70,11 @@ class GroupBy:
         if collect_columns == self._columns == {"*"}:
             # if we're doing COUNT(*), short-cut the processing
             self._group_keys["*"] = [("*", "*")]
-            for record in self._dictset:
+            for record in self._relation:
                 yield ("*", "*", "*")
             return
 
-        for record in self._dictset:
+        for record in self._relation:
             try:
                 group_key: cython.ulong = siphash(
                     HASH_SEED,

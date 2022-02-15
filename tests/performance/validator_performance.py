@@ -19,8 +19,8 @@ import os
 
 sys.path.insert(1, os.path.join(sys.path[0], "../.."))
 from mabel.data.validator import Schema
-from mabel.data.formats import dictset
-from mabel.data.formats.dictset import display
+from mabel.data import Relation
+from mabel.data.internals import display
 
 import orjson as json
 

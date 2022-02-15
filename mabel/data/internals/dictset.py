@@ -48,7 +48,7 @@ from .dumb_iterator import DumbIterator
 from .group_by import GroupBy
 
 
-class DictSet(object):
+class _DictSet(object):
     def __init__(
         self,
         iterator: Iterable[Dict[Any, Any]],

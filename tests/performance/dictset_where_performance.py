@@ -1,7 +1,7 @@
 #
 #  for 1 million iterations of 50 records:
 #
-#   old dictset : 6.69
+#   old relation : 6.69
 #   filter      : 5.29
 import datetime
 import time
@@ -37,7 +37,7 @@ def time_it(test, *args):
     return (time.perf_counter_ns() - start) / 1e9
 
 
-def use_dictset(data, cycles):
+def use_relation(data, cycles):
     list(data.filters(where_clause))
 
 
@@ -55,6 +55,6 @@ def just_code(data, cycles):
 data = get_data()
 
 cycles = 1
-print("use_dictset :", time_it(use_dictset, data, cycles))  # 5.0
+print("use_relation :", time_it(use_relation, data, cycles))  # 5.0
 print("just code   :", time_it(just_code, data, cycles))  # 5.8
 print("comprehens  :", time_it(use_comprehension, data, cycles))  # 5.8

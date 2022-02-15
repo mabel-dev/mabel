@@ -56,19 +56,19 @@ def test_reader_filters_multiple_filter():
 def test_filters():
 
     d = DnfFilters(filters=[("age", "==", 11), ("gender", "in", ("a", "b", "male"))])
-    assert len(list(d.filter_dictset(TEST_DATA))) == 1
+    assert len(list(d.filter_relation(TEST_DATA))) == 1
 
 
 def test_empty_filters():
 
     d = DnfFilters(filters=None)
-    assert len(list(d.filter_dictset(TEST_DATA))) == 6
+    assert len(list(d.filter_relation(TEST_DATA))) == 6
 
 
 def test_like_filters():
 
     d = DnfFilters(filters=[("dob", "like", "%-12-%")])
-    assert len(list(d.filter_dictset(TEST_DATA))) == 3
+    assert len(list(d.filter_relation(TEST_DATA))) == 3
 
 
 def test_combined_filters():
@@ -110,15 +110,15 @@ def test_combined_filters():
     # contains conditions
     filter08 = DnfFilters(("name", "contains", "Isabelle"))
 
-    assert len([a for a in filter01.filter_dictset(TEST_DATA)]) == 1
-    assert len([a for a in filter02.filter_dictset(TEST_DATA)]) == 1
-    assert len([a for a in filter03.filter_dictset(TEST_DATA)]) == 1
-    assert len([a for a in filter03a.filter_dictset(TEST_DATA)]) == 1
-    assert len([a for a in filter04.filter_dictset(TEST_DATA)]) == 2
-    assert len([a for a in filter05.filter_dictset(TEST_DATA)]) == 6
-    assert len([a for a in filter06.filter_dictset(TEST_DATA)]) == 2
-    assert len([a for a in filter07.filter_dictset(TEST_DATA)]) == 2
-    assert len([a for a in filter08.filter_dictset(TEST_DATA)]) == 1
+    assert len([a for a in filter01.filter_relation(TEST_DATA)]) == 1
+    assert len([a for a in filter02.filter_relation(TEST_DATA)]) == 1
+    assert len([a for a in filter03.filter_relation(TEST_DATA)]) == 1
+    assert len([a for a in filter03a.filter_relation(TEST_DATA)]) == 1
+    assert len([a for a in filter04.filter_relation(TEST_DATA)]) == 2
+    assert len([a for a in filter05.filter_relation(TEST_DATA)]) == 6
+    assert len([a for a in filter06.filter_relation(TEST_DATA)]) == 2
+    assert len([a for a in filter07.filter_relation(TEST_DATA)]) == 2
+    assert len([a for a in filter08.filter_relation(TEST_DATA)]) == 1
 
 
 if __name__ == "__main__":  # pragma: no cover

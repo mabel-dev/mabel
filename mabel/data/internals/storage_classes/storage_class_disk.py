@@ -1,5 +1,5 @@
 """
-StorageClassDisk is a helper class for persisting DictSets locally, it is the backend
+StorageClassDisk is a helper class for persisting Relations locally, it is the backend
 for the DISK variation of the STORAGE CLASSES.
 
 The Reader and Writer are pretty fast, the bottleneck is the parsing and serialization
@@ -27,7 +27,7 @@ class StorageClassDisk(BaseStorageClass):
         self.inner_reader = None
         self.length = -1
 
-        self.file = NamedTemporaryFile(prefix="mabel-dictset").name
+        self.file = NamedTemporaryFile(prefix="mabel-Relation").name
         atexit.register(silent_remove, filename=self.file)
 
         buffer = bytearray()

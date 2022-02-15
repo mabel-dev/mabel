@@ -17,7 +17,7 @@ import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], "../.."))
 from mabel.data.readers import Reader, FileReader
-from mabel.data.formats import dictset
+from mabel.data import Relation
 
 try:
     from rich import traceback
@@ -29,7 +29,7 @@ except ImportError:  # pragma: no cover
 # schema = avro.schema.parse(open("twitter.avsc").read())
 # writer = DataFileWriter(open("twitter.avro", "wb"), DatumWriter(), schema)
 
-# for record in dictset.limit(reader, 100000):
+# for record in relation.limit(reader, 100000):
 #    writer.append(record)
 
 # writer.close()
@@ -47,11 +47,11 @@ from timer import Timer
 
 reader = DataFileReader(open("twitter.avro", "rb"), DatumReader())
 with Timer("avro"):
-    print(len(list(dictset.select_from(reader, where=lambda t: "trump" in t["text"]))))
+    print(len(list(relation.select_from(reader, where=lambda t: "trump" in t["text"]))))
 reader.close
 
 reader = FileReader(dataset="./twitter.jsonl").read_from_source("twitter.jsonl")
 with Timer("jsonl"):
-    reader = dictset.jsonify(reader)
-    print(len(list(dictset.select_from(reader, where=lambda t: "trump" in t["text"]))))
+    reader = relation.jsonify(reader)
+    print(len(list(relation.select_from(reader, where=lambda t: "trump" in t["text"]))))
 reader.close

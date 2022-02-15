@@ -1,16 +1,16 @@
 from typing import Iterable, Dict, Any
 
 
-def html_table(dictset: Iterable[dict], limit: int = 5):
+def html_table(relation: Iterable[dict], limit: int = 5):
     """
-    Render the dictset as a HTML table.
+    Render the relation as a HTML table.
 
     NOTE:
         This exhausts generators so is only recommended to be used on lists.
 
     Parameters:
-        dictset: iterable of dictionaries
-            The dictset to render
+        relation: iterable of dictionaries
+            The relation to render
         limit: integer (optional)
             The maximum number of record to show in the table, defaults to 5
 
@@ -56,7 +56,7 @@ def html_table(dictset: Iterable[dict], limit: int = 5):
     rows = []
     columns = []  # type:ignore
     i = -1
-    for i, row in enumerate(iter(dictset)):
+    for i, row in enumerate(iter(relation)):
         rows.append(row)
         columns = columns + list(row.keys())
         if (i + 1) == limit:
@@ -66,25 +66,25 @@ def html_table(dictset: Iterable[dict], limit: int = 5):
     import types
 
     footer = ""
-    if isinstance(dictset, types.GeneratorType):
+    if isinstance(relation, types.GeneratorType):
         footer = f"\n<p>top {i+1} rows x {len(columns)} columns</p>"
         footer += "\nNOTE: the displayed records may have been spent"
-    elif hasattr(dictset, "__len__"):
-        footer = f"\n<p>{len(dictset)} rows x {len(columns)} columns</p>"  # type:ignore
+    elif hasattr(relation, "__len__"):
+        footer = f"\n<p>{len(relation)} rows x {len(columns)} columns</p>"  # type:ignore
 
     return "".join(_to_html_table(rows, columns)) + footer
 
 
-def ascii_table(dictset: Iterable[Dict[Any, Any]], limit: int = 5):
+def ascii_table(relation: Relation, limit: int = 5):
     """
-    Render the dictset as a ASCII table.
+    Render the relation as a ASCII table.
 
     NOTE:
         This exhausts generators so is only recommended to be used on lists.
 
     Parameters:
-        dictset: iterable of dictionaries
-            The dictset to render
+        relation: iterable of dictionaries
+            The Relation to render
         limit: integer (optional)
             The maximum number of record to show in the table, defaults to 5
 
@@ -106,7 +106,7 @@ def ascii_table(dictset: Iterable[Dict[Any, Any]], limit: int = 5):
     cache = []
 
     # inspect values
-    for count, row in enumerate(dictset):
+    for count, row in enumerate(relation):
         if count == limit:
             break
 

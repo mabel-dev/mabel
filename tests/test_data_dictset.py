@@ -3,7 +3,7 @@ import os
 import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
-from mabel import Reader, DictSet, STORAGE_CLASS
+from mabel import Reader, Relation, STORAGE_CLASS
 from mabel.adapters.disk import DiskReader
 from mabel.logging import get_logger
 
@@ -47,7 +47,7 @@ def test_sample():
     for storage_class in STORAGE_CLASSES:
         ds = get_ds(persistence=storage_class)
         sample = ds.sample(0.02)
-        assert isinstance(sample, DictSet)
+        assert isinstance(sample, Relation)
         assert sample.count() < 5, sample.count()
         assert sample.storage_class == storage_class
 
@@ -114,7 +114,7 @@ def test_summary():
         {"key": 3, "value": "three", "plus1": 4},
         {"key": 4, "value": "four", "plus1": 5},
     ]
-    ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
+    ds = Relation(data, storage_class=STORAGE_CLASS.MEMORY)
 
     assert ds.min("key") == 1
     assert ds.max("key") == 4
@@ -135,7 +135,7 @@ def test_take():
         {"key": 3, "value": "three", "plus1": 4},
         {"key": 4, "value": "four", "plus1": 5},
     ]
-    ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
+    ds = Relation(data, storage_class=STORAGE_CLASS.MEMORY)
     assert ds.take(1).collect_list().pop() == {"key": 1, "value": "one", "plus1": 2}
     assert ds.take(2).count() == 2, ds.take(2).count()
 
@@ -147,7 +147,7 @@ def test_items():
         {"key": 3, "value": "three", "plus1": 4},
         {"key": 4, "value": "four", "plus1": 5},
     ]
-    ds = DictSet(data, storage_class=STORAGE_CLASS.DISK)
+    ds = Relation(data, storage_class=STORAGE_CLASS.DISK)
     items = list([i.as_dict() for i in ds.get_items(0, 2)])
     assert items == [
         {"key": 1, "value": "one", "plus1": 2},
@@ -162,7 +162,7 @@ def test_selectors():
         {"key": 3, "value": "three", "plus1": 4},
         {"key": 4, "value": "four", "plus1": 5},
     ]
-    ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
+    ds = Relation(data, storage_class=STORAGE_CLASS.MEMORY)
     dnf = ds.select(("key", "=", 1))
     assert dnf.count() == 1
     assert dnf.first() == {"key": 1, "value": "one", "plus1": 2}
@@ -175,7 +175,7 @@ def test_hash():
         {"key": 3, "value": "three", "plus1": 4},
         {"key": 4, "value": "four", "plus1": 5},
     ]
-    ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
+    ds = Relation(data, storage_class=STORAGE_CLASS.MEMORY)
     hashval = hash(ds)
     assert hashval == 5233449951214716413, hashval
 
@@ -187,11 +187,11 @@ def test_projection():
         {"key": 3, "value": "three", "plus1": 4},
         {"key": 4, "value": "four", "plus1": 5},
     ]
-    ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY).project("key").collect_list()
+    ds = Relation(data, storage_class=STORAGE_CLASS.MEMORY).project("key").collect_list()
     assert ds == [{"key": 1}, {"key": 2}, {"key": 3}, {"key": 4}], ds
 
     ds = (
-        DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
+        Relation(data, storage_class=STORAGE_CLASS.MEMORY)
         .project(
             (
                 "key",
@@ -215,10 +215,10 @@ def test_inline_projection():
         {"key": 3, "value": "three", "plus1": 4},
         {"key": 4, "value": "four", "plus1": 5},
     ]
-    ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)["key"].collect_list()
+    ds = Relation(data, storage_class=STORAGE_CLASS.MEMORY)["key"].collect_list()
     assert ds == [{"key": 1}, {"key": 2}, {"key": 3}, {"key": 4}], ds
 
-    ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)[
+    ds = Relation(data, storage_class=STORAGE_CLASS.MEMORY)[
         "key", "value"
     ].collect_list()
     assert ds == [
@@ -236,7 +236,7 @@ def test_sort():
         {"key": 3, "value": "three", "plus1": 4},
         {"key": 4, "value": "four", "plus1": 5},
     ]
-    ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
+    ds = Relation(data, storage_class=STORAGE_CLASS.MEMORY)
     st = list(ds.sort_and_take("key", 100))
     assert st == [
         {"key": None, "value": "two", "plus1": 3},

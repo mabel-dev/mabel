@@ -6,6 +6,4 @@ A side-car file for each dataset (the folder of partitions) provides information
 optimize database performance, a .map file. This is a JSON file which contains schema
 and zonemap information. 
 
-The schema is used to speed up reading into a Relation (as opposed to reading into a
-DictSet). Relations are smaller and faster than DictSets and are the internal
-representation for the query-engine. 
+The schema is used to speed up reading into a Relation

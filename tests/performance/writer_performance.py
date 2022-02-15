@@ -24,7 +24,7 @@ sys.path.insert(1, os.path.join(sys.path[0], "../.."))
 from mabel.data import BatchWriter
 from mabel.adapters.null import NullWriter
 from mabel.logging import get_logger
-from mabel import DictSet
+from mabel import Relation
 
 import orjson as json
 
@@ -167,13 +167,13 @@ fastest = 100000000000
 for result in results:
     if result["time"] < fastest:
         fastest = result["time"]
-results = DictSet(results)
-# results = dictset.set_column(
+results = Relation(results)
+# results = relation.set_column(
 #    results, "ratio", lambda r: int((1000 * fastest) / r["time"]) / 1000
 # )
-# results = dictset.set_column(
+# results = relation.set_column(
 #    results, "rows/second", lambda r: int(len(lines) / r["time"])
 # )
-# results = dictset.set_column(results, "time", lambda r: int(1000 * r["time"]) / 1000)
+# results = relation.set_column(results, "time", lambda r: int(1000 * r["time"]) / 1000)
 
 print(results.to_ascii_table(100))

@@ -18,7 +18,7 @@ from mabel.data.readers.internals.inline_evaluator import Evaluator
 
 from mabel.data.internals.expression import Expression
 from mabel.data.internals.dnf_filters import DnfFilters
-from mabel.data.internals.dictset import DictSet
+from mabel.data.internals.relation import Relation
 from mabel.data.internals.storage_classes import STORAGE_CLASS
 
 from mabel.logging import get_logger
@@ -65,7 +65,7 @@ def Reader(
     cursor: Optional[Union[str, Dict]] = None,
     valid_dataset_prefixes: Optional[list] = None,
     **kwargs,
-) -> DictSet:
+) -> Relation:
     """
     Reads records from a data store, opinionated toward Google Cloud Storage but a
     filesystem reader is available to assist with local development.
@@ -82,7 +82,7 @@ def Reader(
 
     The reader does not support aggregations, calculations or grouping of data, it
     is a log reader and returns log entries. The reader can convert a set into
-    _Pandas_ dataframe, or the _dictset_ helper library can perform some activities
+    _Pandas_ dataframe, or the _Relation_ helper library can perform some activities
     on the set in a more memory efficient manner.
 
     Note:
@@ -192,7 +192,7 @@ def Reader(
             "freshness_limit can only be used when the start and end dates are the same"
         )
 
-    return DictSet(
+    return Relation(
         _LowLevelReader(
             reader_class=reader_class,
             freshness_limit=freshness_limit,
@@ -287,14 +287,7 @@ class _LowLevelReader(object):
 
         blob_to_read = self.cursor.next_blob()
         while blob_to_read:
-            blob_reader = parallel(
-                blob_to_read,
-                [
-                    idx
-                    for idx in supported_blobs
-                    if blob_to_read in idx and idx.endswith(".idx")
-                ],
-            )
+            blob_reader = parallel(blob_to_read,[])
             location = self.cursor.skip_to_cursor(blob_reader)
             for self.cursor.location, record in enumerate(
                 blob_reader, start=location

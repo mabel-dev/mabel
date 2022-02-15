@@ -1,5 +1,5 @@
 """
-StorageClassCompressedMemory is a helper class for persisting DictSets locally, it is
+StorageClassCompressedMemory is a helper class for persisting Relations locally, it is
 the backend for the COMPRESSED_MEMORY variation of the STORAGE CLASSES.
 
 This is particularly useful when local storage is slow and the data is too big for

@@ -1,6 +1,6 @@
 """
 We're testing the Expression module, but for simplicity we're testing it via
-the .query() method on the DictSet, this makes handling the data we're querying
+the .query() method on the Relation, this makes handling the data we're querying
 easier to handle.
 """
 

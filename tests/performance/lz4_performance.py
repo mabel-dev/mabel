@@ -4,7 +4,7 @@ import sys
 import orjson
 
 sys.path.insert(1, os.path.join(sys.path[0], "../.."))
-from mabel import DictSet
+from mabel import Relation
 from mabel.data import STORAGE_CLASS
 from timer import Timer
 
@@ -34,13 +34,13 @@ os.makedirs("_temp", exist_ok=True)
 
 
 with Timer("MEMORY"):
-    t = DictSet(lines, storage_class=STORAGE_CLASS.MEMORY)
+    t = Relation(lines, storage_class=STORAGE_CLASS.MEMORY)
     for i, r in enumerate(t):
         pass
     print(i)
 
 with Timer("DISK WRITE"):
-    t = DictSet(lines, storage_class=STORAGE_CLASS.DISK)
+    t = Relation(lines, storage_class=STORAGE_CLASS.DISK)
     print(t.count())
 
 with Timer("DISK READ"):
@@ -49,7 +49,7 @@ with Timer("DISK READ"):
     print(i)
 
 with Timer("COMBINED"):
-    t = DictSet(lines, storage_class=STORAGE_CLASS.DISK)
+    t = Relation(lines, storage_class=STORAGE_CLASS.DISK)
     for i, r in enumerate(t):
         pass
     print(i)
