@@ -28,7 +28,7 @@ def test_cursor():
         inner_reader=DiskReader, dataset="tests/data/tweets/", partitioning=[]
     )
 
-    for row in reader.take(lim):
+    for row in reader.i_fetchall():
         test_counter += 1
     cursor = reader.cursor
 
