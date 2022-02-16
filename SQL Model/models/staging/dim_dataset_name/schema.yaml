@@ -1,9 +1,0 @@
-model: name
-description: this is the desc
-
-columns:
-  - name: abc
-    description: field description
-    expectations:
-      - expect_column_values_to_match_like: %cve%
-  - name: edf
