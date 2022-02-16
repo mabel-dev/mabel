@@ -1,10 +1,7 @@
 import os
-import re
-from unicodedata import decimal
 import orjson
 from typing import Any, Union, List, Dict
 from mabel.errors import ValidationError
-from mabel.data.internals.display import ascii_table
 
 
 def is_boolean(**kwargs):
@@ -42,11 +39,12 @@ def is_null(**kwargs):
 
 
 def is_numeric(**kwargs):
+    import decimal
     def _inner(value: Any) -> bool:
         """numeric"""
         try:
             n = decimal.Decimal(value)
-        except (ValueError, TypeError):
+        except (ValueError, TypeError, decimal.InvalidOperation):
             return False
         return True
 
@@ -73,7 +71,6 @@ def other_validator(**kwargs):
 Create dictionaries to look up the type validators
 """
 VALIDATORS = {
-    "nullable": is_null,
     "NULLABLE": is_null,
     "TIMESTAMP": is_date,
     "OTHER": other_validator,

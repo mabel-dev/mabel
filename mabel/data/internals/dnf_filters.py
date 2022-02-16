@@ -4,8 +4,7 @@ This is a filtering mechanism to be applied when reading data.
 import operator
 from typing import Optional, Iterable, List, Tuple, Union
 from mabel.errors import InvalidSyntaxError
-from mabel.logging import get_logger
-from mabel.utils.text import like, similar_to
+from mabel.utils.text import like, not_like, similar_to
 
 
 def _in(x, y):
@@ -34,11 +33,13 @@ OPERATORS = {
     "==": operator.eq,
     "is": operator.eq,
     "!=": operator.ne,
+    "<>": operator.ne,
     "<": operator.lt,
     ">": operator.gt,
     "<=": operator.le,
     ">=": operator.ge,
     "like": like,
+    "not like": not_like,
     "~": similar_to,
     "in": _in,
     "!in": _nin,
@@ -77,12 +78,12 @@ def evaluate(predicate: Union[tuple, list], record: Tuple, headers: List) -> boo
         # Are all of the entries tuples?
         # We AND them together (_all_ are True)
         if all([isinstance(p, tuple) for p in predicate]):
-            return all([evaluate(p, record) for p in predicate])
+            return all([evaluate(p, record, headers) for p in predicate])
 
         # Are all of the entries lists?
         # We OR them together (_any_ are True)
         if all([isinstance(p, list) for p in predicate]):
-            return any([evaluate(p, record) for p in predicate])
+            return any([evaluate(p, record, headers) for p in predicate])
 
         # if we're here the structure of the filter is wrong
         raise InvalidSyntaxError("Unable to evaluate Filter")  # pragma: no cover

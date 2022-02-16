@@ -22,6 +22,7 @@ def test_ignore_non_complete_frames():
         start_date=DATA_DATE,
         end_date=DATA_DATE,
     )
+    records = iter(records)
     print(next(records))
     assert next(records).get("test") == 1
 

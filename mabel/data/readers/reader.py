@@ -33,7 +33,6 @@ RULES = [
     {"name": "partitioning", "required": False, "warning": None, "incompatible_with": []},
     {"name": "select", "required": False, "warning": None, "incompatible_with": []},
     {"name": "start_date", "required": False, "warning": None, "incompatible_with": []},
-    {"name": "filters", "required": False, "warning": "", "incompatible_with": []},
     {"name": "project", "required": False, "warning": "", "incompatible_with": []},
     {"name": "override_format", "required": False, "warning": "", "incompatible_with": []},
     {"name": "valid_dataset_prefixes", "required": False},
@@ -213,13 +212,6 @@ class _LowLevelReader(object):
         self.cursor = cursor
         self._inner_line_reader = None
 
-        if isinstance(filters, str):
-            self.filters = Expression(filters)
-        elif isinstance(filters, (tuple, list)):
-            self.filters = DnfFilters(filters)
-        else:
-            self.filters = None
-
         if select != "*":
             self.select = Evaluator(select)
         else:
@@ -268,7 +260,6 @@ class _LowLevelReader(object):
         parallel = ParallelReader(
             reader=self.reader_class,
             columns=self.select,
-            filters=self.filters or pass_thru,
             override_format=self.override_format,
         )
 

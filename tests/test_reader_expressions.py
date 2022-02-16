@@ -49,29 +49,29 @@ def test_simple_equals_expressions():
 
     DATA = Relation(TEST_DATA)
 
-    assert DATA.select("name == 'James Potter'").count() == 2
-    assert DATA.select("age == 10").count() == 1
-    assert DATA.select("alive == true").count() == 3
-    assert DATA.select("affiliations is none").count() == 4
-    assert DATA.select("name like '%Potter%'").count() == 4
+    assert DATA.apply_selection(("name", "=", "James Potter")).count() == 2
+    assert DATA.apply_selection(("age", "=", 10)).count() == 1
+    assert DATA.apply_selection(("alive", "=", True)).count() == 3
+    assert DATA.apply_selection(("affiliations", "is", None)).count() == 4
+    assert DATA.apply_selection(("name", "like", "%Potter%")).count() == 4
 
 
 def test_simple_not_expressions():
 
     DATA = Relation(TEST_DATA)
 
-    assert DATA.select("name <> 'James Potter'").count() == 5
-    assert DATA.select("not age == 10").count() == 6
-    assert DATA.select("alive == false").count() == 4
-    assert DATA.select("affiliations is not none").count() == 3
-    assert DATA.select("name not like '%Potter%'").count() == 3
+    assert DATA.apply_selection(("name", "<>", "James Potter")).count() == 5
+    assert DATA.apply_selection(("age", "<>", 10)).count() == 6
+    assert DATA.apply_selection(("alive", "=", False)).count() == 4
+    assert DATA.apply_selection(("affiliations", "!=", None)).count() == 3
+    assert DATA.apply_selection(("name", "not like", "%Potter%")).count() == 3
 
 
 def test_simple_compound_expressions():
     DATA = Relation(TEST_DATA)
 
-    assert DATA.select("name like '%Potter' and alive == true").count() == 2
-    assert DATA.select("name like '%Potter' or alive == true").count() == 5
+    assert DATA.apply_selection([("name", "like", "%Potter"), ("alive", "=", True)]).count() == 2
+    assert DATA.apply_selection([[("name", "like", "%Potter")], [("alive", "=", True)]]).count() == 5
 
 
 if __name__ == "__main__":  # pragma: no cover

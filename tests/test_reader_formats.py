@@ -17,14 +17,14 @@ def test_reader_can_read_csv():
     )
 
     # can we read the file into dictionaries
-    print(r.first())
+    print(r.fetchone())
     assert r.count() == 33529, r.count()
-    assert isinstance(r.first(), dict)
+    assert isinstance(r.fetchone(), dict)
 
     # are the dictionaries well-formed?
-    keys = r.keys(1)
-    for row in r:
-        assert keys == r.keys(), r.keys()
+    keys = r.columns
+    for row in r.i_fetchall():
+        assert keys == list(row.keys()), keys
 
 
 def test_reader_can_read_zipped_csv():
@@ -36,12 +36,12 @@ def test_reader_can_read_zipped_csv():
 
     # can we read the file into dictionaries
     assert r.count() == 33529, r.count()
-    assert isinstance(r.first(), dict)
+    assert isinstance(r.fetchone(), dict)
 
     # are the dictionaries well-formed?
-    keys = r.keys(1)
-    for row in r:
-        assert keys == r.keys(), r.keys()
+    keys = r.columns
+    for row in r.i_fetchall():
+        assert keys == list(row.keys()), keys
 
 
 if __name__ == "__main__":  # pragma: no cover

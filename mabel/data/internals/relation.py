@@ -86,11 +86,14 @@ class Relation:
 
         first = None
         if type(data).__name__ == "generator":
-            first = next(data)
-            if isinstance(first, dict):
-                self.from_dictionaries(_union([first], data))
-            else:
-                self.data = list(_union([first], data))
+            try:
+                first = next(data)
+                if isinstance(first, dict):
+                    self.from_dictionaries(_union([first], data))
+                else:
+                    self.data = list(_union([first], data))
+            except StopIteration:
+                self.data = []
         elif isinstance(data, list):
             first = data[0]
             if isinstance(first, dict):
@@ -219,6 +222,11 @@ class Relation:
         """
         return self.count()
 
+    def __iter__(self):
+        from mabel.data.internals.dumb_iterator import DumbIterator
+        return DumbIterator(self.i_fetchall())
+
+
     def serialize(self):
         """
         Serialize to Parquet, this is used for communicating and saving the Relation.
@@ -254,6 +262,21 @@ class Relation:
         import orjson
 
         return b"\n".join(map(orjson.dumps, self.fetchall()))
+
+    def to_pandas(self):
+        """
+        Load the contents of the _DictSet_ to a _Pandas_ DataFrame.
+
+        Returns:
+            Pandas DataFrame
+        """
+        try:
+            import pandas
+        except ImportError:  # pragma: no cover
+            raise MissingDependencyError(
+                "`pandas` is missing, please install or include in requirements.txt"
+            )
+        return pandas.DataFrame(self.i_fetchall())
 
     def fetchone(self, offset: int = 0):
         self.materialize()
