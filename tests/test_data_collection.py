@@ -2,11 +2,10 @@ import datetime
 import sys
 import os
 
-from mabel.data.internals.relation import Relation
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.data.internals.collected_set import CollectedSet
-from mabel import Relation
+from mabel.data.internals.relation import Relation
 from rich import traceback
 
 traceback.install()
@@ -68,7 +67,7 @@ def test_group_by():
     assert len(groups) == 3
 
     # the groups have the right number of records
-    assert groups.count("bob") == 2
+    assert groups.count("bob") == 2, groups.count("bob")
     assert groups.count("alice") == 3
     assert groups.count("eve") == 2
 

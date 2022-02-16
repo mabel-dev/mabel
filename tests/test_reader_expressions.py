@@ -7,7 +7,6 @@ import os
 import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
-from mabel.data import STORAGE_CLASS
 from mabel.data.internals.relation import Relation
 from mabel.data.internals.expression import Expression
 from rich import traceback
@@ -48,7 +47,7 @@ def test_expression_compilation():
 
 def test_simple_equals_expressions():
 
-    DATA = Relation(TEST_DATA, storage_class=STORAGE_CLASS.MEMORY)
+    DATA = Relation(TEST_DATA)
 
     assert DATA.select("name == 'James Potter'").count() == 2
     assert DATA.select("age == 10").count() == 1
@@ -59,7 +58,7 @@ def test_simple_equals_expressions():
 
 def test_simple_not_expressions():
 
-    DATA = Relation(TEST_DATA, storage_class=STORAGE_CLASS.MEMORY)
+    DATA = Relation(TEST_DATA)
 
     assert DATA.select("name <> 'James Potter'").count() == 5
     assert DATA.select("not age == 10").count() == 6
@@ -69,7 +68,7 @@ def test_simple_not_expressions():
 
 
 def test_simple_compound_expressions():
-    DATA = Relation(TEST_DATA, storage_class=STORAGE_CLASS.MEMORY)
+    DATA = Relation(TEST_DATA)
 
     assert DATA.select("name like '%Potter' and alive == true").count() == 2
     assert DATA.select("name like '%Potter' or alive == true").count() == 5
