@@ -3,7 +3,6 @@ import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel import Reader
-from mabel.data import STORAGE_CLASS
 from mabel.adapters.disk import DiskReader
 from rich import traceback
 
@@ -14,8 +13,7 @@ def test_reader_can_read_csv():
     r = Reader(
         inner_reader=DiskReader,
         dataset="tests/data/formats/csv",
-        partitioning=[],
-        persistence=STORAGE_CLASS.MEMORY,
+        partitioning=[]
     )
 
     # can we read the file into dictionaries
@@ -33,8 +31,7 @@ def test_reader_can_read_zipped_csv():
     r = Reader(
         inner_reader=DiskReader,
         dataset="tests/data/formats/zipped_csv",
-        partitioning=[],
-        persistence=STORAGE_CLASS.MEMORY,
+        partitioning=[]
     )
 
     # can we read the file into dictionaries

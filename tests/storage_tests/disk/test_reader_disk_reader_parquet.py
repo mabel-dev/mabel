@@ -2,7 +2,7 @@ import os
 import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], "../../.."))
-from mabel import STORAGE_CLASS, Reader
+from mabel import Reader
 from mabel.adapters.disk import DiskReader
 from rich import traceback
 
@@ -14,7 +14,6 @@ def test_can_read_parquet():
         inner_reader=DiskReader,
         dataset="tests/data/formats/parquet",
         partitioning=None,
-        persistence=STORAGE_CLASS.MEMORY,
     )
 
     assert r.count() == 57581, r.count()

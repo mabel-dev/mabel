@@ -4,7 +4,7 @@ import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], "../../.."))
 from mabel.adapters.google import GoogleCloudStorageWriter, GoogleCloudStorageReader
-from mabel import STORAGE_CLASS, Reader
+from mabel import Reader
 from mabel.data import BatchWriter
 from google.auth.credentials import AnonymousCredentials
 from google.cloud import storage
@@ -22,8 +22,7 @@ def set_up():
     os.environ["STORAGE_EMULATOR_HOST"] = "http://localhost:9090"
 
     client = storage.Client(
-        credentials=AnonymousCredentials(),
-        project="testing",
+        credentials=AnonymousCredentials()
     )
     bucket = client.bucket(BUCKET_NAME)
     try:
@@ -52,9 +51,7 @@ def test_gcs_binary():
     # read over both paritions.
     r = Reader(
         inner_reader=GoogleCloudStorageReader,
-        project="testing",
-        dataset=f"{BUCKET_NAME}/test/gcs/dataset/binary",
-        persistence=STORAGE_CLASS.MEMORY,
+        dataset=f"{BUCKET_NAME}/test/gcs/dataset/binary"
     )
 
     assert r.count() == 200, r.count()
@@ -67,7 +64,6 @@ def test_gcs_text():
 
     w = BatchWriter(
         inner_writer=GoogleCloudStorageWriter,
-        project="testing",
         blob_size=1024,
         format="jsonl",
         dataset=f"{BUCKET_NAME}/test/gcs/dataset/text",
@@ -80,9 +76,7 @@ def test_gcs_text():
     # read over both paritions.
     r = Reader(
         inner_reader=GoogleCloudStorageReader,
-        project="testing",
         dataset=f"{BUCKET_NAME}/test/gcs/dataset/text",
-        persistence=STORAGE_CLASS.MEMORY,
     )
 
     assert r.count() == 250, r
