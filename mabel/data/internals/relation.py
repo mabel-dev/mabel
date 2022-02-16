@@ -25,7 +25,7 @@ Some naive benchmarking with 135k records (with 269 columns) vs lists of diction
 
 
 - self.data is a list of tuples
-- self.header is a dictionary
+- self.schema is a dictionary
     {
         "attribute": {
             "type": type (domain)
@@ -53,16 +53,20 @@ from mabel.data.types import (
 )
 from mabel.errors import MissingDependencyError
 
+def _union(*its):
+    for it in its:
+        yield from it 
+
 
 class Relation:
 
-    __slots__ = ("header", "data", "name")
+    __slots__ = ("schema", "data", "name")
 
     def __init__(
         self,
         data: Iterable[Tuple] = [],
         *,
-        header: dict = {},
+        schema: dict = {},
         name: str = None,
         **kwargs,
     ):
@@ -72,14 +76,22 @@ class Relation:
         Parameters:
             data: Iterable
                 An iterable which is the data in the Relation
-            header: Dictionary (optional)
+            schema: Dictionary (optional)
                 Schema and profile information for this Relation
             name: String (optional)
                 A handle for this Relation, cosmetic only
         """
-        self.data = data
-        self.header = header
+        self.schema = schema
         self.name = name
+
+        if type(data).__name__ == "generator" or len(data) > 0:
+            first = next(iter(data))
+            if isinstance(first, dict):
+                self.from_dictionaries(_union([first], data))
+            else:
+                self.data = list(_union([first], data))
+        else:
+            self.data = data
 
     def apply_selection(self, predicate):
         """
@@ -94,15 +106,15 @@ class Relation:
             Relation
         """
         # selection invalidates what we thought we knew about counts etc
-        new_header = {k: {"type": v.get("type")} for k, v in self.header.items()}
-        return Relation(filter(predicate, self.data), header=new_header)
+        new_schema = {k: {"type": v.get("type")} for k, v in self.schema.items()}
+        return Relation(filter(predicate, self.data), schema=new_schema)
 
     def apply_projection(self, attributes):
         if not isinstance(attributes, (list, tuple)):
             attributes = [attributes]
         attribute_indices = []
-        new_header = {k: self.header.get(k) for k in attributes}
-        for index, attribute in enumerate(self.header.keys()):
+        new_schema = {k: self.schema.get(k) for k in attributes}
+        for index, attribute in enumerate(self.schema.keys()):
             if attribute in attributes:
                 attribute_indices.append(index)
 
@@ -110,7 +122,7 @@ class Relation:
             for tup in self.data:
                 yield tuple([tup[indice] for indice in attribute_indices])
 
-        return Relation(_inner_projection(), header=new_header)
+        return Relation(_inner_projection(), schema=new_schema)
 
     def __getitem__(self, attributes):
         """
@@ -130,7 +142,11 @@ class Relation:
     @property
     def shape(self):
         self.materialize()
-        return (len(self.header), self.count())
+        return (len(self.schema), self.count())
+
+    @property
+    def columns(self):
+        return [k for k in self.schema.keys()]
 
     def distinct(self):
         """
@@ -143,41 +159,42 @@ class Relation:
             for item in data:
                 hashed_item = hash(item)
                 if hashed_item not in hash_list:
-                    yield item
                     hash_list[hashed_item] = True
+                    yield item
 
-        return Relation(do_dedupe(self.data), header=self.header)
+        return Relation(do_dedupe(self.data), schema=self.schema)
 
-    def from_dictionaries(self, dictionaries, header=None):
+    def from_dictionaries(self, dictionaries, schema=None):
 
         from operator import itemgetter
 
-        def types(dictionaries):
+        def types(row):
             response = {}
-            for row in dictionaries:
-                for k, v in row.items():
-                    value_type = PYTHON_TYPES.get(str(type(v)), MABEL_TYPES.OTHER)
-                    if k not in response:
-                        response[k] = {"type": value_type}
-                    elif response[k] != {"type": value_type}:
-                        response[k] = {"type": MABEL_TYPES.OTHER}
+            for k, v in row.items():
+                value_type = PYTHON_TYPES.get(str(type(v).__name__), MABEL_TYPES.OTHER)
+                if k not in response:
+                    response[k] = {"type": value_type}
+                elif response[k] != {"type": value_type}:
+                    response[k] = {"type": MABEL_TYPES.OTHER}
             return response
 
-        if not header:
-            self.header = types(dictionaries)
+        first_dict = {}
+        if not schema:
+            first_dict = next(dictionaries)
+            self.schema = types(first_dict)
         self.data = [
-            tuple([coerce_types(row.get(k)) for k in self.header.keys()])
-            for row in dictionaries
+            tuple([coerce_types(row.get(k)) for k in self.schema.keys()])
+            for row in _union([first_dict], dictionaries)
         ]
 
     def attributes(self):
-        return [k for k in self.header.keys()]
+        return [k for k in self.schema.keys()]
 
     def rename_attribute(self, current_name, new_name):
-        self.header[new_name] = self.header.pop(current_name)
+        self.schema[new_name] = self.schema.pop(current_name)
 
     def __str__(self):
-        return f"{self.name or 'Relation'} ({', '.join([k + ':' + v.get('type') for k,v in self.header.items()])})"
+        return f"{self.name or 'Relation'} ({', '.join([k + ':' + v.get('type') for k,v in self.schema.items()])})"
 
     def __len__(self):
         """
@@ -224,12 +241,12 @@ class Relation:
     def fetchone(self, offset: int = 0):
         self.materialize()
         try:
-            return dict(zip(self.header.keys(), self.data[offset]))
+            return dict(zip(self.schema.keys(), self.data[offset]))
         except IndexError:
             return None
 
     def fetchmany(self, size: int = 100, offset: int = 0):
-        keys = self.header.keys()
+        keys = self.schema.keys()
         self.materialize()
 
         def _inner_fetch():
@@ -238,18 +255,37 @@ class Relation:
 
         return list(_inner_fetch())
 
-    def fetchall(self, offset: int = 0):
-        keys = self.header.keys()
+    def i_fetchall(self, offset: int = 0):
+        keys = self.schema.keys()
         self.materialize()
 
-        def _inner_fetch():
-            for index in range(offset, len(self.data)):
-                yield dict(zip(keys, self.data[index]))
+        for index in range(offset, len(self.data)):
+            yield dict(zip(keys, self.data[index]))
 
-        return list(_inner_fetch())
+    def fetchall(self, offset: int = 0):
+        return list(self.i_fetchall(offset=offset))
+
+    def collect_list(self, key: str = None):
+        """
+        Convert a _DictSet_ to a list, optionally, but probably usually, just extract
+        a specific column.
+
+        Return None if the value in the field is None, if the field doesn't exist in
+        the record, don't return anything.
+        """
+        if not key:
+            return self.fetchall()
+
+        index = self.columns.index(key)
+        return [record[index] for record in self.data]
+
+    def collect_set(self, column, dedupe: bool = False):
+        from mabel.data.internals.collected_set import CollectedSet
+
+        return CollectedSet(self, column, dedupe=dedupe)
 
     def __iter__(self):
-        keys = self.header.keys()
+        keys = self.schema.keys()
         self.materialize()
 
         def _inner_fetch():
@@ -274,11 +310,11 @@ class Relation:
                 if random_value % selector == 0:
                     yield row
 
-        return Relation(inner_sampler(self.data), header=self.header)
+        return Relation(inner_sampler(self.data), schema=self.schema)
 
     def collect_column(self, column):
         def get_column(column):
-            for index, attribute in enumerate(self.header.keys()):
+            for index, attribute in enumerate(self.schema.keys()):
                 if attribute == column:
                     return index
             raise Exception("Column not found")
@@ -324,7 +360,7 @@ class Relation:
                 }
             return schema
 
-        return Relation(_inner(table), header=pq_schema_to_rel_schema(table.schema))
+        return Relation(_inner(table), schema=pq_schema_to_rel_schema(table.schema))
 
     @staticmethod
     def load(file):
@@ -350,12 +386,12 @@ if __name__ == "__main__":
     from mabel.utils.timer import Timer
 
     with Timer("load"):
-        r = Relation.load("tests/data/parquet/tweets.parquet")
+        r = Relation.load("tests/data/formats/parquet/tweets.parquet")
     r.materialize()
 
     r.data = r.data * 10
 
-    print(r.header)
+    print(r.schema)
     print(r.data[10])
 
     print(r.count())

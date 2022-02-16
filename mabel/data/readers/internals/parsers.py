@@ -1,7 +1,7 @@
 pass_thru = lambda x: x
 
+import orjson
 import simdjson
-from mabel.logging import get_logger
 
 json_parser = simdjson.Parser()
 
@@ -13,6 +13,8 @@ def json(line):
     We do some juggling so we can delete the object which is faster than creating a
     new Parser for each record.
     """
+    return orjson.loads(line)
+
     dic = json_parser.parse(line)
     keys = dic.keys()
     values = dic.values()

@@ -1,9 +1,9 @@
-from logging import fatal
 import os
 import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel import Reader, Relation
+from mabel.data.types import MABEL_TYPES
 from mabel.adapters.disk import DiskReader
 from mabel.logging import get_logger
 
@@ -46,12 +46,12 @@ def test_repr():
 def test_collect():
     ds = get_ds()
     collection = ds.collect_list("username")
-    assert collection.count("NBCNews") == 44
+    assert collection.count("NBCNews") == 44, collection
 
 
 def test_keys():
     ds = get_ds()
-    keys = ds.keys()
+    keys = ds.columns
     assert keys == [
         "userid",
         "username",
@@ -66,23 +66,23 @@ def test_keys():
 
 def test_types():
     ds = get_ds()
-    types = ds.types()
-    assert types["userid"] == "int", types
-    assert types["username"] == "str"
-    assert types["user_verified"] == "bool"
-    assert types["followers"] == "int"
-    assert types["tweet"] == "str"
-    assert types["location"] == "str"
-    assert types["sentiment"] == "numeric"
-    assert types["timestamp"] == "str"
+    types = ds.schema
+    assert types["userid"]["type"] == MABEL_TYPES.NUMERIC, types["userid"]
+    assert types["username"]["type"] == MABEL_TYPES.VARCHAR
+    assert types["user_verified"]["type"] == MABEL_TYPES.BOOLEAN
+    assert types["followers"]["type"] == MABEL_TYPES.NUMERIC
+    assert types["tweet"]["type"] == MABEL_TYPES.VARCHAR
+    assert types["location"]["type"] == MABEL_TYPES.VARCHAR
+    assert types["sentiment"]["type"] == MABEL_TYPES.NUMERIC
+    assert types["timestamp"]["type"] == MABEL_TYPES.VARCHAR
 
 
 def test_distinct():
     ds = get_ds()
-    assert ds.distinct().count() == 50
-    assert ds.distinct("username").count() == 2
-    assert ds.distinct("username", "location").count() == 2
-    assert ds.distinct("sentiment").count() == 36
+    assert ds.distinct().count() == 50, ds.distinct().count() 
+    assert ds["username"].distinct().count() == 2, ds["username"].distinct().count()
+    assert ds["username", "location"].distinct().count() == 2
+    assert ds["sentiment"].distinct().count() == 36
 
 
 def test_summary():

@@ -37,7 +37,6 @@ RULES = [
     {"name": "select", "required": False, "warning": None, "incompatible_with": []},
     {"name": "start_date", "required": False, "warning": None, "incompatible_with": []},
     {"name": "filters", "required": False, "warning": "", "incompatible_with": []},
-    {"name": "persistence", "required": False, "warning": "", "incompatible_with": []},
     {"name": "project", "required": False, "warning": "", "incompatible_with": []},
     {"name": "override_format", "required": False, "warning": "", "incompatible_with": []},
     {"name": "valid_dataset_prefixes", "required": False},
@@ -186,15 +185,18 @@ def Reader(
         )
 
     return Relation(
-        _LowLevelReader(
+        Generator(_LowLevelReader(
             reader_class=reader_class,
             freshness_limit=freshness_limit,
             select=select,
             filters=filters,
             override_format=override_format,
             cursor=cursor,
-        ),
+        )),
     )
+
+def Generator(input):
+    yield from input
 
 
 class _LowLevelReader(object):

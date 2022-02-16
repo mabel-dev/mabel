@@ -19,7 +19,7 @@ except ImportError:  # pragma: no cover
 
 
 class GoogleCloudStorageWriter(BaseInnerWriter):
-    def __init__(self, project: str, credentials=None, **kwargs):
+    def __init__(self, project: str = None, credentials=None, **kwargs):
         if not google_cloud_storage_installed:  # pragma: no cover
             raise MissingDependencyError(
                 "`google-cloud-storage` is missing, please install or include in requirements.txt"
