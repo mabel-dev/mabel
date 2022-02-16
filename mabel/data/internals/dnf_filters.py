@@ -39,7 +39,7 @@ OPERATORS = {
     "<=": operator.le,
     ">=": operator.ge,
     "like": like,
-    "similar to": similar_to,
+    "~": similar_to,
     "in": _in,
     "!in": _nin,
     "not in": _nin,
@@ -48,7 +48,7 @@ OPERATORS = {
 }
 
 
-def evaluate(predicate: Union[tuple, list], record: dict) -> bool:
+def evaluate(predicate: Union[tuple, list], record: Tuple, headers: List) -> bool:
     """
     This is the evaluation routine for the Filter class.
 
@@ -68,8 +68,9 @@ def evaluate(predicate: Union[tuple, list], record: dict) -> bool:
     # If we have a tuple extract out the key, operator and value and do the evaluation
     if isinstance(predicate, tuple):
         key, op, value = predicate
-        if key in record:
-            return OPERATORS[op.lower()](record[key], value)
+        if key in headers:
+            idx = headers.index(key)
+            return OPERATORS[op.lower()](record[idx], value)
         return False
 
     if isinstance(predicate, list):
@@ -89,49 +90,11 @@ def evaluate(predicate: Union[tuple, list], record: dict) -> bool:
     raise InvalidSyntaxError("Unable to evaluate Filter")  # pragma: no cover
 
 
-def get_indexable_filter_columns(predicate):
-    """
-    Returns all of the columns in a filter which the operation benefits
-    from an index
-
-    This creates an list of tuples of (field,value) that we can feed to the
-    index search.
-    """
-    SARGABLE_OPS = {"=", "==", "is", "in", "contains"}
-    if predicate is None:
-        return []
-    if isinstance(predicate, tuple):
-        key, op, value = predicate
-        if op in SARGABLE_OPS:
-            return [
-                (
-                    key,
-                    value,
-                )
-            ]
-    if isinstance(predicate, list):
-        if all([isinstance(p, tuple) for p in predicate]):
-            return [
-                (
-                    k,
-                    v,
-                )
-                for k, o, v in predicate
-                if o in SARGABLE_OPS
-            ]
-        if all([isinstance(p, list) for p in predicate]):
-            columns = []
-            for p in predicate:
-                columns += get_indexable_filter_columns(p)
-            return columns
-    return []  # pragma: no cover
-
-
 class DnfFilters:
 
-    __slots__ = ("empty_filter", "predicates")
+    __slots__ = ("empty_filter", "predicates", "headers")
 
-    def __init__(self, filters: Optional[List[Tuple[str, str, object]]] = None):
+    def __init__(self, filters: Optional[List[Tuple[str, str, object]]] = None, schema: dict = None):
         """
         A class to supporting filtering data.
 
@@ -158,28 +121,12 @@ class DnfFilters:
         if filters:
             self.predicates = filters
             self.empty_filter = False
-            # record the filters, will help optimize indicies later
-            get_logger().info({"filter_columns": self._get_filter_columns(filters)})
         else:
             self.empty_filter = True
 
-    def _get_filter_columns(self, predicate):
-        if predicate is None:
-            return []
-        if isinstance(predicate, tuple):
-            key, op, value = predicate
-            return [key]
-        if isinstance(predicate, list):
-            if all([isinstance(p, tuple) for p in predicate]):
-                return [k for k, o, v in predicate]
-            if all([isinstance(p, list) for p in predicate]):
-                columns = []
-                for p in predicate:
-                    columns += self._get_filter_columns(p)
-                return columns
-        return []  # pragma: no cover
+        self.headers = tuple(schema.keys())
 
-    def filter_relation(self, relation: Iterable[dict]) -> Iterable:
+    def apply(self, relation: Iterable[dict]) -> Iterable:
         """
         Tests each entry in a Iterable against the filters
 
@@ -194,8 +141,8 @@ class DnfFilters:
             yield from relation
         else:
             for record in relation:
-                if evaluate(self.predicates, record):
+                if evaluate(self.predicates, record, self.headers):
                     yield record
 
     def __call__(self, record) -> bool:
-        return evaluate(self.predicates, record)
+        return evaluate(self.predicates, record, self.headers)

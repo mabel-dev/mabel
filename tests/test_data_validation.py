@@ -28,15 +28,15 @@ def test_validator_all_valid_values():
     }
     TEST_SCHEMA = {
         "fields": [
-            {"name": "string_field", "type": "string"},
-            {"name": "str_null_field", "type": ["string", "nullable"]},
-            {"name": "integer_field", "type": "numeric"},
-            {"name": "boolean_field", "type": "boolean"},
-            {"name": "date_field", "type": "date"},
+            {"name": "string_field", "type": "VARCHAR"},
+            {"name": "str_null_field", "type": ["VARCHAR", "nullable"]},
+            {"name": "integer_field", "type": "NUMERIC"},
+            {"name": "boolean_field", "type": "BOOLEAN"},
+            {"name": "date_field", "type": "TIMESTAMP"},
             {"name": "other_field", "type": "other"},
             {"name": "nullable_field", "type": "nullable"},
-            {"name": "list_field", "type": "list"},
-            {"name": "enum_field", "type": "enum", "symbols": ["RED", "GREEN", "BLUE"]},
+            {"name": "list_field", "type": "LIST"},
+            {"name": "enum_field", "type": "VARCHAR", "symbols": ["RED", "GREEN", "BLUE"]},
         ]
     }
 

@@ -35,7 +35,7 @@ def test_group_by():
     assert list(GroupBy(ds, "user").groups()) == [{'user': 'bob'}, {'user': 'alice'}, {'user': 'eve'}]
 
     ds = Relation(data)
-    assert list(GroupBy(ds, "user").count()) == [{'COUNT(*)': 6, 'user': 'alice'}, {'COUNT(*)': 5, 'user': 'bob'}, {'COUNT(*)': 2, 'user': 'eve'}]
+    assert list(GroupBy(ds, "user").count()) == [{'COUNT(*)': 6, 'user': 'alice'}, {'COUNT(*)': 5, 'user': 'bob'}, {'COUNT(*)': 2, 'user': 'eve'}], list(GroupBy(ds, "user").count())
 
     ds = Relation(data)
     gb = list(GroupBy(ds, "user").average("value"))

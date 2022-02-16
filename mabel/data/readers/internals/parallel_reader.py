@@ -27,8 +27,6 @@ from enum import Enum
 from functools import reduce
 from ....utils import paths
 from ....data.internals.records import flatten
-from ....data.internals.expression import Expression
-from ....data.internals.dnf_filters import DnfFilters
 
 logger = logging.get_logger()
 
@@ -106,16 +104,6 @@ class ParallelReader:
             reducer: callable
             **kwargs: kwargs
         """
-
-        # DNF form is a representation of logical expressions which it is easier
-        # to apply any indicies to - we can convert Expressions to DNF but we can't
-        # convert functions to DNF.
-        if isinstance(filters, DnfFilters):
-            self.dnf_filter = filters
-        elif isinstance(filters, Expression):
-            self.dnf_filter = DnfFilters(filters.to_dnf())
-        else:
-            self.dnf_filter = None
 
         # the reader gets the data from the storage platform e.g. read the file from
         # disk or download the file

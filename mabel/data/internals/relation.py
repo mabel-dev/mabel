@@ -84,12 +84,19 @@ class Relation:
         self.schema = schema
         self.name = name
 
-        if type(data).__name__ == "generator" or len(data) > 0:
-            first = next(iter(data))
+        first = None
+        if type(data).__name__ == "generator":
+            first = next(data)
             if isinstance(first, dict):
                 self.from_dictionaries(_union([first], data))
             else:
                 self.data = list(_union([first], data))
+        elif isinstance(data, list):
+            first = data[0]
+            if isinstance(first, dict):
+                self.from_dictionaries(data)
+            else:
+                self.data = list(data)
         else:
             self.data = data
 
@@ -107,7 +114,15 @@ class Relation:
         """
         # selection invalidates what we thought we knew about counts etc
         new_schema = {k: {"type": v.get("type")} for k, v in self.schema.items()}
-        return Relation(filter(predicate, self.data), schema=new_schema)
+
+        # DNF filtering
+        from mabel.data.internals.dnf_filters import DnfFilters
+        filter_set = DnfFilters(predicate, self.schema)
+        return Relation(
+            DnfFilters.apply(filter_set, self.data),
+            schema=new_schema,
+        )
+
 
     def apply_projection(self, attributes):
         if not isinstance(attributes, (list, tuple)):
@@ -142,7 +157,7 @@ class Relation:
     @property
     def shape(self):
         self.materialize()
-        return (len(self.schema), self.count())
+        return (len(self.schema), len(self.data))
 
     @property
     def columns(self):
@@ -178,13 +193,15 @@ class Relation:
                     response[k] = {"type": MABEL_TYPES.OTHER}
             return response
 
+        dicts = iter(dictionaries)
+
         first_dict = {}
         if not schema:
-            first_dict = next(dictionaries)
+            first_dict = next(dicts)
             self.schema = types(first_dict)
         self.data = [
             tuple([coerce_types(row.get(k)) for k in self.schema.keys()])
-            for row in _union([first_dict], dictionaries)
+            for row in _union([first_dict], dicts)
         ]
 
     def attributes(self):
@@ -279,10 +296,68 @@ class Relation:
         index = self.columns.index(key)
         return [record[index] for record in self.data]
 
+    def min_max(self, key: str):
+        """
+        Find the minimum and maximum of a column at the same time.
+
+        Parameters:
+            key: string
+                The column to perform the function on
+
+        Returns:
+            tuple (minimum, maximum)
+        """
+
+        def minmax(a, b):
+            return min(a[0], b[0]), max(a[1], b[1])
+
+        from functools import reduce
+        return reduce(minmax, map(lambda x: (x, x), self.collect_list(key)))
+
+    def min(self, key: str):
+        """
+        Find the minimum in a column of this _DictSet_.
+
+        Parameters:
+            key: string
+                The column to perform the function on
+        """
+        from functools import reduce
+        return reduce(min, self.collect_list(key))
+
+    def sum(self, key: str):
+        """
+        Find the sum of a column of this _DictSet_.
+
+        Parameters:
+            key: string
+                The column to perform the function on
+        """
+        from functools import reduce
+        return reduce(lambda x, y: x + y, self.collect_list(key), 0)
+
+    def max(self, key: str):
+        """
+        Find the maximum in a column of this _DictSet_.
+
+        Parameters:
+            key: string
+                The column to perform the function on
+        """
+        from functools import reduce
+        return reduce(max, self.collect_list(key))
+
     def collect_set(self, column, dedupe: bool = False):
         from mabel.data.internals.collected_set import CollectedSet
 
         return CollectedSet(self, column, dedupe=dedupe)
+
+    def group_by(self, group_by_columns):
+        """
+        Group a dictset by a column or group of columns. Returns a GroupBy object.
+        """
+        from mabel.data.internals.group_by import GroupBy
+        return GroupBy(self, group_by_columns)
 
     def __iter__(self):
         keys = self.schema.keys()
@@ -311,6 +386,39 @@ class Relation:
                     yield row
 
         return Relation(inner_sampler(self.data), schema=self.schema)
+
+    def mean(self, key: str):
+        """
+        Find the mean in a column of this _DictSet_.
+
+        Parameters:
+            key: string
+                The column to perform the function on
+        """
+        import statistics
+        return statistics.mean(self.collect_list(key))
+
+    def variance(self, key: str):
+        """
+        Find the variance in a column of this _DictSet_.
+
+        Parameters:
+            key: string
+                The column to perform the function on
+        """
+        import statistics
+        return statistics.variance(self.collect_list(key))
+
+    def standard_deviation(self, key: str):
+        """
+        Find the standard deviation in a column of this _DictSet_.
+
+        Parameters:
+            key: string
+                The column to perform the function on
+        """
+        import statistics
+        return statistics.stdev(self.collect_list(key))
 
     def collect_column(self, column):
         def get_column(column):
@@ -380,6 +488,25 @@ class Relation:
         else:
             return ascii_table(iter(self), 10)
 
+    def __hash__(self, seed: int = 703115) -> int:
+        """
+        Creates a consistent hash of the _DictSet_ regardless of the order of
+        the items in the _DictSet_.
+        """
+        from siphashc import siphash
+        from functools import reduce
+
+        def sip(v):
+            return siphash("TheApolloMission", str(v))
+
+        def sip_tuple(tup):
+            hashed = map(sip, tup)
+            return reduce(lambda x, y: x ^ y, hashed, seed)
+
+        # The seed is the mission duration of the Apollo 11 mission.
+        #   703115 = 8 days, 3 hours, 18 minutes, 35 seconds
+        hashed = map(sip_tuple, self.data)
+        return reduce(lambda x, y: x ^ y, hashed, seed)
 
 if __name__ == "__main__":
 
@@ -401,10 +528,13 @@ if __name__ == "__main__":
     print(r.apply_projection(["user_verified"]).distinct().count())
     print(len(r.fetchall()))
 
-    with Timer("s"):
-        s = r.serialize()
+#    with Timer("s"):
+#        s = r.serialize()
 
-    with Timer("d"):
-        s = Relation.deserialize(s)
+#    with Timer("d"):
+#        s = Relation.deserialize(s)
+
+    s = r.apply_selection(('followers', '=', 1234))
 
     print(s.count())
+    print(s.to_json())

@@ -77,12 +77,12 @@ class GroupBy:
 
         for record in self._relation:
             try:
-                group_key: cython.ulong = siphash(
+                group_key: cython.uint64_t = siphash(
                     HASH_SEED,
                     "".join([str(record[column]) for column in self._columns]),
                 )
             except KeyError:
-                group_key: cython.ulong = siphash(
+                group_key: cython.uint64_t = siphash(
                     HASH_SEED,
                     "".join([f"{record.get(column, '')}" for column in self._columns]),
                 )
