@@ -108,6 +108,7 @@ def test_validator_nonnative_types():
         "integer_field": "100",
         "boolean_field": "True",
         "date_field": "2000-01-01 00:00:00.0000",
+        "date_field2": "2022-02-16T23:27:08.892Z",
         "nullable_field": "",
     }
     TEST_SCHEMA = {
@@ -115,6 +116,7 @@ def test_validator_nonnative_types():
             {"name": "integer_field", "type": "numeric"},
             {"name": "boolean_field", "type": "boolean"},
             {"name": "date_field", "type": "date"},
+            {"name": "date_field2", "type": "TIMESTAMP"},
             {"name": "nullable_field", "type": "nullable"},
         ]
     }
