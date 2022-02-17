@@ -481,8 +481,6 @@ class DictSet(object):
         if not isinstance(columns, (list, set, tuple)):
             columns = list([columns])
 
-        columns = set(columns)
-
         if "*" in columns:
 
             def inner_select(it):
