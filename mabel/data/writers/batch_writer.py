@@ -2,10 +2,10 @@ import os
 import datetime
 import orjson
 from typing import Any
-from .writer import Writer
-from .internals.blob_writer import BlobWriter
-from ...utils import paths
-from ...logging import get_logger
+from mabel.data.writers.writer import Writer
+from mabel.data.writers.internals.blob_writer import BlobWriter
+from mabel.utils import paths
+from mabel.logging import get_logger
 
 
 class BatchWriter(Writer):
@@ -21,7 +21,7 @@ class BatchWriter(Writer):
         date: Any = None,
         frame_id: str = None,
         metadata: dict = None,
-        partitioning=("year_{yyyy}", "month_{mm}", "day_{dd}"),
+        date_partitions=("year_{yyyy}", "month_{mm}", "day_{dd}"),
         **kwargs,
     ):
         """
@@ -66,8 +66,8 @@ class BatchWriter(Writer):
             as_at = datetime.datetime.utcnow().strftime("as_at_%Y%m%d-%H%M%S")
             self.batch_date = self._get_writer_date(date)
 
-            if "{" not in dataset and partitioning:
-                dataset += "/" + "/".join(partitioning)
+            if "{" not in dataset and date_partitions:
+                dataset += "/" + "/".join(date_partitions)
             frame_id = paths.build_path(
                 dataset + "/" + as_at,  # type:ignore
                 self.batch_date,
@@ -81,7 +81,7 @@ class BatchWriter(Writer):
         kwargs["raw_path"] = True  # we've just added the dates
         kwargs["format"] = format
         kwargs["dataset"] = frame_id
-        kwargs["partitioning"] = partitioning
+        kwargs["date_partitions"] = date_partitions
 
         super().__init__(**kwargs)
 
@@ -123,7 +123,7 @@ class BatchWriter(Writer):
             self.metadata["schema"] = self.schema
         flag = self.blob_writer.inner_writer.commit(
             byte_data=orjson.dumps(self.metadata),
-            override_blob_name=completion_path,
+            blob_name=completion_path,
         )
         get_logger().debug(f"Frame completion file `{flag}` written")
         return final

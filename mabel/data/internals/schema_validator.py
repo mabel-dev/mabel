@@ -112,20 +112,16 @@ class Schema:
 
         try:
             # read the schema and look up the validators
-            self._validators = {  # type:ignore
-                item.get("name"): self._get_validators(  # type:ignore
-                    item["type"],  # type:ignore
-                    symbols=item.get("symbols"),  # type:ignore
-                    min=item.get("min"),  # type:ignore
-                    max=item.get("max"),  # type:ignore
-                    format=item.get("format"),  # type:ignore
-                )  # type:ignore
-                for item in definition  # type:ignore
+            self._validators = {
+                item.get("name"): self._get_validators(
+                    type_descriptor=str(item["type"]).upper()
+                )
+                for item in definition
             }
 
         except KeyError:
             raise ValueError(
-                "Invalid type specified in schema - valid types are: string, numeric, date, boolean, nullable, list, enum"
+                f"Invalid type specified in schema - valid types are: {', '.join(sorted(list(VALIDATORS.keys())))}"
             )
         if len(self._validators) == 0:
             raise ValueError("Invalid schema specification")

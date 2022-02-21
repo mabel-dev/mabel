@@ -22,11 +22,11 @@ def test_can_find_files():
         the test folder has two files in it
         """
         # with a trailing /
-        r = DiskReader(dataset=p, partitioning=None)
+        r = DiskReader(dataset=p, date_partitions=None)
         assert len(list(r.get_list_of_blobs())) == 2  # 2 data, 2 index
 
         # without a trailing /
-        r = DiskReader(dataset=p, partitioning=None)
+        r = DiskReader(dataset=p, date_partitions=None)
         assert len(list(r.get_list_of_blobs())) == 2  # 2 data, 2 index
 
     _inner("tests/data/tweets/")
@@ -36,7 +36,7 @@ def test_can_find_files():
 def test_can_read_files():
     def _inner(p):
         """ensure we can read the test files"""
-        r = DiskReader(dataset=p, partitioning=None)
+        r = DiskReader(dataset=p, date_partitions=None)
         for file in [b for b in r.get_list_of_blobs() if "/_SYS." not in b]:
             for index, item in enumerate(r.get_blob_bytes(file).splitlines()):
                 pass
@@ -52,7 +52,7 @@ def test_freshness_limits():
         r = Reader(
             inner_reader=DiskReader,
             dataset=p,
-            partitioning=part,
+            date_partitions=part,
             start_date=datetime.date(2021, 1, 1),
             end_date=datetime.date(2021, 1, 1),
             freshness_limit="30d",
@@ -69,7 +69,7 @@ def test_step_past():
         r = Reader(
             inner_reader=DiskReader,
             dataset=p,
-            partitioning=part,
+            date_partitions=part,
             start_date=datetime.date(2021, 1, 1),
             end_date=datetime.date(2021, 1, 1),
             freshness_limit="5d",

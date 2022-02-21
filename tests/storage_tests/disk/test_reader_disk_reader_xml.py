@@ -13,7 +13,7 @@ def test_can_read_lxml():
     r = Reader(
         inner_reader=DiskReader,
         dataset="tests/data/formats/lxml",
-        partitioning=None,
+        date_partitions=None,
     )
 
     assert r.count() == 5, r.count()
@@ -24,7 +24,7 @@ def test_can_read_xml():
     r = Reader(
         inner_reader=DiskReader,
         dataset="tests/data/formats/xml",
-        partitioning=None,
+        date_partitions=None,
         persistence=STORAGE_CLASS.MEMORY,
     )
 

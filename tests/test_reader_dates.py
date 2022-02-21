@@ -73,7 +73,7 @@ def test_short_dates():
     subject = Reader(
         inner_reader=DiskReader,
         dataset="tests/data/dated/",
-        partitioning=["{yyyy}", "{mm}", "{dd}"],
+        date_partitions=["{yyyy}", "{mm}", "{dd}"],
         start_date="1979-08-23",
         end_date="1979-08-23",
     )

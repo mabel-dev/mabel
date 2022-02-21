@@ -13,7 +13,7 @@ def test_can_read_parquet():
     r = Reader(
         inner_reader=DiskReader,
         dataset="tests/data/formats/parquet",
-        partitioning=None,
+        date_partitions=None,
     )
 
     assert r.count() == 57581, r.count()

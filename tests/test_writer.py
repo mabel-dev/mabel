@@ -116,7 +116,7 @@ def test_write_to_path_logged():
 
 
 def get_data():
-    r = Reader(inner_reader=DiskReader, dataset="tests/data/tweets", partitioning=[])
+    r = Reader(inner_reader=DiskReader, dataset="tests/data/tweets", date_partitions=[])
     return r
 
 

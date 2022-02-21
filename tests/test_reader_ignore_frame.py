@@ -22,8 +22,7 @@ def test_ignore_flag():
         start_date=DATA_DATE,
         end_date=DATA_DATE,
     )
-    print(next(records))
-    assert next(records).get("test") == 1
+    assert records.fetchone().get("test") == 1
 
 
 def test_ignore_flag_step_back_days():
@@ -38,7 +37,7 @@ def test_ignore_flag_step_back_days():
         end_date=DATA_DATE,
         freshness_limit="24h",
     )
-    print(next(records))
+    records.fetchone()
 
 
 if __name__ == "__main__":  # pragma: no cover

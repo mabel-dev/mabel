@@ -14,7 +14,6 @@ from mabel.data.readers.internals.parallel_reader import (
 )
 
 from mabel.data.readers.internals.cursor import Cursor
-from mabel.data.readers.internals.inline_evaluator import Evaluator
 from mabel.data.internals.relation import Relation
 
 from mabel.logging import get_logger
@@ -30,8 +29,8 @@ RULES = [
     {"name": "end_date", "required": False, "warning": None, "incompatible_with": []},
     {"name": "freshness_limit", "required": False, "warning": None, "incompatible_with": []},
     {"name": "inner_reader", "required": False, "warning": None, "incompatible_with": []},
-    {"name": "partitioning", "required": False, "warning": None, "incompatible_with": []},
-    {"name": "select", "required": False, "warning": None, "incompatible_with": []},
+    {"name": "date_partitions", "required": False, "warning": None, "incompatible_with": []},
+    {"name": "partition", "required": False, "warning": None, "incompartible_with": []},
     {"name": "start_date", "required": False, "warning": None, "incompatible_with": []},
     {"name": "project", "required": False, "warning": "", "incompatible_with": []},
     {"name": "override_format", "required": False, "warning": "", "incompatible_with": []},
@@ -49,11 +48,9 @@ class AccessDenied(Exception):
 @validate(RULES)
 def Reader(
     *,  # force all paramters to be keyworded
-    select: str = "*",
     dataset: str = "",
-    filters: Optional[str] = None,
     inner_reader=None,
-    partitioning=("year_{yyyy}", "month_{mm}", "day_{dd}"),
+    date_partitions=("year_{yyyy}", "month_{mm}", "day_{dd}"),
     override_format: Optional[str] = None,
     cursor: Optional[Union[str, Dict]] = None,
     valid_dataset_prefixes: Optional[list] = None,
@@ -108,8 +105,8 @@ def Reader(
             incidates the maximum age of a dataset before it is no longer
             considered fresh. Where the 'time' of a dataset cannot be
             determined, it will be treated as midnight (00:00) for the date.
-        partitioning: tuple of strings (optional):
-            define a pattern for partitioning - this defaults to the following date
+        date_partitions: tuple of strings (optional):
+            define a pattern for date_partitions - this defaults to the following date
             based partitions 'year_YYYY/month_MM/day_DD'.
         cursor: dictionary (or string)
             Resume read from a given point (assumes other parameters are the same).
@@ -160,14 +157,12 @@ def Reader(
 
     # instantiate the injected reader class
     reader_class = inner_reader(
-        dataset=dataset, partitioning=partitioning, **kwargs
+        dataset=dataset, date_partitions=date_partitions, **kwargs
     )  # type:ignore
 
     arg_dict = kwargs.copy()
-    arg_dict["select"] = f"{select}"
     arg_dict["dataset"] = f"{dataset}"
     arg_dict["inner_reader"] = f"{inner_reader.__name__}"  # type:ignore
-    arg_dict["filters"] = filters
     get_logger().debug(arg_dict)
 
     # number of days to walk backwards to find records
@@ -181,14 +176,12 @@ def Reader(
         )
 
     return Relation(
-        Generator(_LowLevelReader(
+        _LowLevelReader(
             reader_class=reader_class,
             freshness_limit=freshness_limit,
-            select=select,
-            filters=filters,
             override_format=override_format,
             cursor=cursor,
-        )),
+        ),
     )
 
 def Generator(input):
@@ -200,22 +193,15 @@ class _LowLevelReader(object):
         self,
         reader_class,
         freshness_limit,
-        select,
-        filters,
         override_format,
         cursor,
     ):
         self.reader_class = reader_class
         self.freshness_limit = freshness_limit
-        self.select = select
         self.override_format = override_format
         self.cursor = cursor
         self._inner_line_reader = None
 
-        if select != "*":
-            self.select = Evaluator(select)
-        else:
-            self.select = pass_thru
 
     def _create_line_reader(self):
         blob_list = self.reader_class.get_list_of_blobs()
@@ -259,7 +245,6 @@ class _LowLevelReader(object):
 
         parallel = ParallelReader(
             reader=self.reader_class,
-            columns=self.select,
             override_format=self.override_format,
         )
 

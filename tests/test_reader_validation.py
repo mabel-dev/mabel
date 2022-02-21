@@ -26,7 +26,7 @@ def test_reader_all_good():
         reader = Reader(
             project="",
             select="a, b",
-            dataset="",
+            dataset="d",
             start_date=datetime.datetime.now(),
             end_date=datetime.datetime.now(),
         )

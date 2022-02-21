@@ -2,10 +2,9 @@ import os
 import orjson
 import datetime
 from pydantic import BaseModel
-from typing import Any, Optional, Union, List
+from typing import Any, Optional, Union
 from mabel.data.writers.internals.blob_writer import BlobWriter
 from mabel.data.internals.schema_validator import Schema
-from mabel.data.internals.zone_map_writer import ZoneMapWriter
 from mabel.utils import paths, dates
 from mabel.errors import ValidationError, InvalidDataSetError, MissingDependencyError
 from mabel.logging import get_logger
@@ -28,7 +27,8 @@ class Writer:
         set_of_expectations: Optional[list] = None,
         format: str = "zstd",
         date: Any = None,
-        partitioning=("year_{yyyy}", "month_{mm}", "day_{dd}"),
+        date_partitions=("year_{yyyy}", "month_{mm}", "day_{dd}"),
+        partition=None,
         **kwargs,
     ):
         """
@@ -64,10 +64,10 @@ class Writer:
         self.batch_date = self._get_writer_date(date)
 
         self.dataset_template = dataset
-        self.partitioning = partitioning
-        if partitioning:
-            self.dataset_template += "/" + "/".join(partitioning)
-            self.partitioning = None
+        self.date_partitions = date_partitions
+        if date_partitions:
+            self.dataset_template += "/" + "/".join(date_partitions)
+            self.date_partitions = None
 
         self.dataset = paths.build_path(self.dataset_template, self.batch_date)
 
@@ -75,6 +75,7 @@ class Writer:
 
         kwargs["format"] = format
         kwargs["dataset"] = self.dataset
+        kwargs["feature_partition"] = partition
 
         arg_dict = kwargs.copy()
         arg_dict["dataset"] = f"{self.dataset}"
@@ -86,7 +87,6 @@ class Writer:
         # create the writer
         self.blob_writer = BlobWriter(**kwargs)
         self.records = 0
-        self.zone_map_writer = ZoneMapWriter(self.schema)
 
     def append(self, record: Union[dict, BaseModel]):
         """
@@ -116,7 +116,6 @@ class Writer:
             de.evaluate_record(self.expectations, record)
 
         self.blob_writer.append(record)
-        self.zone_map_writer.add(record, self.blob_writer.blob_name)
         self.records += 1
 
     def __del__(self):
@@ -128,11 +127,6 @@ class Writer:
     def finalize(self, **kwargs):
         self.finalized = True
         try:
-            zone_map_path = os.path.split(self.dataset)[0] + "/frame.metadata"
-            self.blob_writer.inner_writer.commit(
-                byte_data=self.zone_map_writer.profile(),
-                blob_name=zone_map_path,
-            )
             return self.blob_writer.commit()
         except Exception as e:
             get_logger().error(

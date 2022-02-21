@@ -29,7 +29,7 @@ def do_read():
             "=",
             10,
         ),
-        partitioning=None,
+        date_partitions=None,
     )
 
     # g = d.group_by("followers").count()

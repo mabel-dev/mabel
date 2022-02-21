@@ -84,24 +84,24 @@ class Relation:
         self.schema = schema
         self.name = name
 
-        first = None
-        if type(data).__name__ == "generator":
-            try:
-                first = next(data)
-                if isinstance(first, dict):
-                    self.from_dictionaries(_union([first], data))
-                else:
-                    self.data = list(_union([first], data))
-            except StopIteration:
-                self.data = []
-        elif isinstance(data, list):
+        if isinstance(data, list):
             first = data[0]
             if isinstance(first, dict):
                 self.from_dictionaries(data)
             else:
                 self.data = list(data)
         else:
+            # expected to be a generator of dicts
             self.data = data
+
+    @property
+    def cursor(self):
+        """
+        If the DictSet supports cursors, return the cursor.
+        """
+        if hasattr(self.data, "cursor"):
+            return self.data.cursor
+        return None
 
     def apply_selection(self, predicate):
         """
@@ -152,6 +152,8 @@ class Relation:
     def materialize(self):
         if not isinstance(self.data, list):
             self.data = list(self.data)
+        if len(self.data) >= 1 and isinstance(self.data[0], dict):
+            self.from_dictionaries(self.data)
 
     def count(self):
         self.materialize()
@@ -164,7 +166,9 @@ class Relation:
 
     @property
     def columns(self):
-        return [k for k in self.schema.keys()]
+        cols = [k for k in self.schema.copy().keys()]
+        print(cols)
+        return cols
 
     def distinct(self):
         """
@@ -183,8 +187,6 @@ class Relation:
         return Relation(do_dedupe(self.data), schema=self.schema)
 
     def from_dictionaries(self, dictionaries, schema=None):
-
-        from operator import itemgetter
 
         def types(row):
             response = {}

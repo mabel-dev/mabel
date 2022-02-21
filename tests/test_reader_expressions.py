@@ -8,7 +8,6 @@ import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.data.internals.relation import Relation
-from mabel.data.internals.expression import Expression
 from rich import traceback
 
 traceback.install()
@@ -24,25 +23,6 @@ TEST_DATA = [
     { "name": "Lily Potter", "age": 39, "alive": False, "dob": "1972-01-12", "gender": "female"}
 ]
 # fmt: on
-
-
-def test_expression_compilation():
-
-    # fmt: off
-    EXPRESSIONS = [
-        {"expression": "YEAR(dob) == 1979", "dnf": ("YEAR(dob)", "==", 1979)},
-        {"expression": "name == 'James Potter'","dnf": ("name", "==", '"James Potter"'),},
-        {"expression": "not alive == True", "dnf": ("NOT", ("alive", "==", True))},
-        {"expression": "age < 100 and alive == true","dnf": [("age", "<", 100), ("alive", "==", True)],},
-        {"expression": "dob == '1979-09-19' or name like '%potter%'","dnf": [[("dob", "==", '"1979-09-19 00:00:00"')],[("name", "LIKE", '"%potter%"')],],},
-        {"expression": "`name` == 'James Potter'", "dnf": ("`name`", "==", '"James Potter"')},
-    ]
-    # fmt: on
-
-    for e in EXPRESSIONS:
-        exp = Expression(e["expression"])
-        dnf = exp.to_dnf()
-        assert dnf == e["dnf"], dnf
 
 
 def test_simple_equals_expressions():
@@ -76,7 +56,6 @@ def test_simple_compound_expressions():
 
 if __name__ == "__main__":  # pragma: no cover
 
-    test_expression_compilation()
     test_simple_equals_expressions()
     test_simple_not_expressions()
     test_simple_compound_expressions()

@@ -13,7 +13,7 @@ def test_reader_can_read_csv():
     r = Reader(
         inner_reader=DiskReader,
         dataset="tests/data/formats/csv",
-        partitioning=[]
+        date_partitions=[]
     )
 
     # can we read the file into dictionaries
@@ -31,7 +31,7 @@ def test_reader_can_read_zipped_csv():
     r = Reader(
         inner_reader=DiskReader,
         dataset="tests/data/formats/zipped_csv",
-        partitioning=[]
+        date_partitions=[]
     )
 
     # can we read the file into dictionaries

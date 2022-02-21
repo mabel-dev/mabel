@@ -13,7 +13,7 @@ def test_can_read_zip():
     r = Reader(
         inner_reader=DiskReader,
         dataset="tests/data/formats/zip",
-        partitioning=None,
+        date_partitions=None,
     )
 
     assert r.count() == 100000, r.count()

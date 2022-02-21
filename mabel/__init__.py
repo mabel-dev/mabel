@@ -23,8 +23,6 @@ from .version import __version__
 
 __author__ = "@joocer"
 
-from .utils.resource_monitoring import ResourceMonitor
 from mabel.data.readers.reader import Reader
-from mabel.data.readers.sql_reader import SqlReader
 from mabel.data.writers.writer import Writer
 from mabel.data.internals.relation import Relation

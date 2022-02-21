@@ -9,22 +9,14 @@ dataset:
 │ Function   │ Role                                                       │
 ├────────────┼────────────────────────────────────────────────────────────┤
 │ Pre-Filter │ Pre-filter the rows based on a subset of the filters       │
-│            │                                                            │
 │ Read       │ Read the raw content from the file                         │
-│            │                                                            │
 │ Decompress │ Convert the raw content to lined data                      │
-│            │                                                            │
 │ Parse      │ Interpret the lined data into dictionaries                 │
-│            │                                                            │
-│ Filter     │ Apply full set of row filters to the read data             │
-│            │                                                            │
-│ Reduce     │ Aggregate                                                  │
 └────────────┴────────────────────────────────────────────────────────────┘
 """
 from mabel import logging
 from . import decompressors, parsers
 from enum import Enum
-from functools import reduce
 from ....utils import paths
 from ....data.internals.records import flatten
 
@@ -77,11 +69,6 @@ def expand_nested_json(row):
     return row
 
 
-def eliminate_nulls(row):
-    # remove the nulls to make the payloads smaller, missing === nulls
-    return {k: v for k, v in row.items() if v is not None}
-
-
 class ParallelReader:
 
     NOT_INDEXED = {-1}
@@ -89,9 +76,6 @@ class ParallelReader:
     def __init__(
         self,
         reader,
-        filters=no_filter,
-        columns="*",
-        reducer=pass_thru,
         override_format=None,
         **kwargs,
     ):
@@ -99,24 +83,12 @@ class ParallelReader:
 
         Parameters:
             reader: callable
-            columns: callable
-            filters: callable
-            reducer: callable
             **kwargs: kwargs
         """
 
         # the reader gets the data from the storage platform e.g. read the file from
         # disk or download the file
         self.reader = reader
-
-        self.columns = columns
-
-        # this is the filter of the collected data, this can be used
-        # against more operators
-        self.filters = filters
-
-        # this is aggregation and reducers for the data
-        self.reducer = reducer
 
         # sometimes the user knows better
         self.override_format = override_format
@@ -149,16 +121,6 @@ class ParallelReader:
             record_iterator = decompressor(record_iterator)
             # Parse
             record_iterator = map(parser, record_iterator)
-            # remove empty fields
-            # record_iterator = map(eliminate_nulls, record_iterator)
-            # Expand Nested JSON
-            # record_iterator = map(expand_nested_json, record_iterator)
-            # Transform
-            record_iterator = map(self.columns, record_iterator)
-            # Filter
-            record_iterator = filter(self.filters, record_iterator)
-            # Reduce
-            record_iterator = self.reducer(record_iterator)
             # Yield
             yield from record_iterator
             # print(blob_name, "out")

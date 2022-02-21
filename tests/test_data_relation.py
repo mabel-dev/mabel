@@ -12,7 +12,7 @@ get_logger().setLevel(5)
 
 def get_ds(**kwargs):
     ds = Reader(
-        inner_reader=DiskReader, dataset="tests/data/tweets", partitioning=[], **kwargs
+        inner_reader=DiskReader, dataset="tests/data/tweets", date_partitions=None, **kwargs
     )
     return ds
 
@@ -34,7 +34,7 @@ def test_sample():
     ds = get_ds()
     sample = ds.sample(0.50)
     assert isinstance(sample, Relation)
-    assert 20 < sample.count() < 30, sample.count()
+    assert 15 < sample.count() < 35, sample.count()
 
 
 def test_repr():
@@ -45,13 +45,14 @@ def test_repr():
 
 def test_collect():
     ds = get_ds()
+    print(ds)
     collection = ds.collect_list("username")
     assert collection.count("NBCNews") == 44, collection
 
 
 def test_keys():
     ds = get_ds()
-    keys = ds.columns
+    keys = ds.columns.copy()
     assert keys == [
         "userid",
         "username",
