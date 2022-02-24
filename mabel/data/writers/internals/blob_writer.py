@@ -1,6 +1,6 @@
 import threading
 from typing import Any
-from orjson import dumps
+from json import dumps
 import zstandard
 from ...internals.index import IndexBuilder
 from ...internals.records import flatten
