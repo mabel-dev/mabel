@@ -1,6 +1,7 @@
 import threading
 from typing import Any
-from orjson import dumps
+import orjson
+import json
 import zstandard
 from ...internals.index import IndexBuilder
 from ...internals.records import flatten
@@ -54,11 +55,14 @@ class BlobWriter(object):
             else:
                 serialized = str(record).encode() + b"\n"
         elif self.format == "flat":
-            serialized = dumps(flatten(record)) + b"\n"  # type:ignore
+            serialized = orjson.dumps(flatten(record)) + b"\n"  # type:ignore
         elif hasattr(record, "mini"):
             serialized = record.mini + b"\n"  # type:ignore
         else:
-            serialized = dumps(record) + b"\n"  # type:ignore
+            try:
+                serialized = orjson.dumps(record) + b"\n"  # type:ignore
+            except TypeError:
+                serialized = json.dumps(record).encode() + b"\n"
 
         # add the columns to the index
         for column in self.indexes:
