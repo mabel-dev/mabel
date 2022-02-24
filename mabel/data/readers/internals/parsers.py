@@ -5,8 +5,13 @@ def json(ds):
     import simdjson
 
     """parse each line in the file to a dictionary"""
-    json_parser = simdjson.Parser()
-    return json_parser.parse(ds)
+    try:
+        json_parser = simdjson.Parser()
+        return json_parser.parse(ds)
+    except ValueError:
+        # fall back
+        import json
+        return json.loads(ds)
 
 
 def pass_thru_block(ds):
