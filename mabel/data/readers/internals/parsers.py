@@ -11,6 +11,7 @@ def json(ds):
     except ValueError:
         # fall back
         import json
+
         return json.loads(ds)
 
 
