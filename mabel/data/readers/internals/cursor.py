@@ -103,6 +103,7 @@ class Cursor:
 
     def __getitem__(self, item):
         from bitarray import bitarray
+
         if item == "map":
             blob_map = bitarray(
                 "".join(
