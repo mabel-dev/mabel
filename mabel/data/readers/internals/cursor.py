@@ -9,9 +9,6 @@ Cursor is made of three parts:
 - location : the record in the active partition (blob), so we can resume reading
              midway through the blob if required.
 """
-from multiprocessing import Value
-from urllib.parse import non_hierarchical
-from bitarray import bitarray
 from siphashc import siphash
 import orjson
 
@@ -32,6 +29,8 @@ class Cursor:
             self.load_cursor(cursor)
 
     def load_cursor(self, cursor):
+        from bitarray import bitarray
+
         if cursor is None:
             return
 
@@ -103,6 +102,8 @@ class Cursor:
         }
 
     def __getitem__(self, item):
+        from bitarray import bitarray
+
         if item == "map":
             blob_map = bitarray(
                 "".join(

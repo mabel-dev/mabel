@@ -54,10 +54,11 @@ def parquet(stream):
             "`pyarrow` is missing, please install or include in requirements.txt"
         )
     table = pq.read_table(stream)
-    for batch in table.to_batches():
-        dict_batch = batch.to_pydict()
-        for index in range(len(batch)):
-            yield {k: v[index] for k, v in dict_batch.items()}
+    for index in range(table.num_rows):
+        row = table.take([index]).to_pydict()
+        for k, v in row.items():
+            row[k] = v[0]
+        yield row
 
 
 def lines(stream):
