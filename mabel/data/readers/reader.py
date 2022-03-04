@@ -32,7 +32,7 @@ RULES = [
     {"name": "end_date", "required": False, "warning": None, "incompatible_with": []},
     {"name": "freshness_limit", "required": False, "warning": None, "incompatible_with": []},
     {"name": "inner_reader", "required": False, "warning": None, "incompatible_with": []},
-    {"name": "raw_path", "required": False, "warning": None, "incompatible_with": ["freshness_limit"]},
+    {"name": "raw_path", "required": False, "warning": "raw_path will be deprecated, use `partitions` with an empty list", "incompatible_with": ["freshness_limit"]},
     {"name": "select", "required": False, "warning": None, "incompatible_with": []},
     {"name": "start_date", "required": False, "warning": None, "incompatible_with": []},
     {"name": "filters", "required": False, "warning": "", "incompatible_with": []},
@@ -41,6 +41,7 @@ RULES = [
     {"name": "override_format", "required": False, "warning": "", "incompatible_with": []},
     {"name": "multiprocess", "required": False, "warning": "", "incompatible_with": ["cursor"]},
     {"name": "valid_dataset_prefixes", "required": False},
+    {"name": "partitions", "required": False, "warning": None, "incompatible_with": ["raw_path"]},
 ]
 # fmt:on
 
@@ -64,6 +65,7 @@ def Reader(
     multiprocess: bool = False,
     cursor: Optional[Union[str, Dict]] = None,
     valid_dataset_prefixes: Optional[list] = None,
+    partitions=["year_{yyyy}/month_{mm}/day_{dd}"],
     **kwargs,
 ) -> DictSet:
     """
@@ -162,9 +164,17 @@ def Reader(
 
         inner_reader = GoogleCloudStorageReader
 
+
+    # handle transitional states - use the new features to override the legacy features
+    if raw_path is not None:
+        logger.warning("`raw_path` is being deprecated, set `partitions` to `None` instead.")
+    if str(raw_path).upper() == "TRUE":
+        partitions = None
+
+
     # instantiate the injected reader class
     reader_class = inner_reader(
-        dataset=dataset, raw_path=raw_path, **kwargs
+        dataset=dataset, partitions=partitions, **kwargs
     )  # type:ignore
 
     arg_dict = kwargs.copy()

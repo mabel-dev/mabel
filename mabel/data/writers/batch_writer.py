@@ -8,6 +8,9 @@ from ...utils import paths
 from ...logging import get_logger
 
 
+logger = get_logger()
+
+
 class BatchWriter(Writer):
     """
     Extend the functionality of the Writer to better support batch data
@@ -19,6 +22,7 @@ class BatchWriter(Writer):
         dataset: str,
         format: str = "zstd",
         date: Any = None,
+        partitions=["year_{yyyy}/month_{mm}/day_{dd}"],
         frame_id: str = None,
         metadata: dict = None,
         **kwargs,
@@ -67,8 +71,11 @@ class BatchWriter(Writer):
             as_at = datetime.datetime.utcnow().strftime("as_at_%Y%m%d-%H%M%S")
             self.batch_date = self._get_writer_date(date)
 
-            if "{date" not in dataset and not kwargs.get("raw_path", False):
-                dataset += "/{datefolders}"
+            # we now use partitions
+            #if "{date" not in dataset and not kwargs.get("raw_path", False):
+            #    dataset += "/{datefolders}"
+            if partitions:
+                dataset += "/" + "/".join(partitions)
             frame_id = paths.build_path(
                 dataset + "/" + as_at,  # type:ignore
                 self.batch_date,
@@ -79,9 +86,10 @@ class BatchWriter(Writer):
         else:
             self.metadata = {}
 
-        kwargs["raw_path"] = True  # we've just added the dates
+        #kwargs["raw_path"] = True  # we've just added the dates
         kwargs["format"] = format
         kwargs["dataset"] = frame_id
+        kwargs["partitions"] = partitions
 
         super().__init__(**kwargs)
 

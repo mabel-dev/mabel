@@ -47,27 +47,29 @@ def test_can_read_files():
 
 
 def test_freshness_limits():
-    def _inner(p):
+    def _inner(p, pt):
         # step back through time
         r = Reader(
             inner_reader=DiskReader,
             dataset=p,
+            partitions=pt,
             start_date=datetime.date(2021, 1, 1),
             end_date=datetime.date(2021, 1, 1),
             freshness_limit="30d",
         )
         assert len(list(r)) == 50
 
-    _inner("tests/data/dated/{date}")
-    _inner(os.getcwd() + "/tests/data/dated/{date}")
+    _inner("tests/data/dated/", ["{yyyy}-{mm}-{dd}"])
+    _inner(os.getcwd() + "/tests/data/dated/", ["{yyyy}-{mm}-{dd}"])
 
 
 def test_step_past():
-    def _inner(p):
+    def _inner(p, pt):
         # step back through time
         r = Reader(
             inner_reader=DiskReader,
             dataset=p,
+            partitions=pt,
             start_date=datetime.date(2021, 1, 1),
             end_date=datetime.date(2021, 1, 1),
             freshness_limit="5d",
@@ -75,8 +77,8 @@ def test_step_past():
         with pytest.raises(DataNotFoundError):
             assert len(list(r)) == 0
 
-    _inner("tests/data/dated/{date}")
-    _inner(os.getcwd() + "/tests/data/dated/{date}")
+    _inner("tests/data/dated/", ["{yyyy}-{mm}-{dd}"])
+    _inner(os.getcwd() + "/tests/data/dated/", ["{yyyy}-{mm}-{dd}"])
 
 
 def test_disk_binary():

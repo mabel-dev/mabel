@@ -50,23 +50,23 @@ def test_blob_paths_get_paths():
 def test_blob_paths_builder():
 
     # without trailing /, the / should be added
-    template = "{datefolders}/{date}"
+    template = "year_{yyyy}/month_{mm}/day_{dd}/{yyyy}-{mm}-{dd}/{HH}"
     path = paths.build_path(template, datetime.datetime(2000, 9, 19, 1, 36, 42, 365))
     assert (
         path
         == str(
-            pathlib.PurePosixPath("year_2000") / "month_09" / "day_19" / "2000-09-19"
+            pathlib.PurePosixPath("year_2000") / "month_09" / "day_19" / "2000-09-19" / "01"
         )
         + "/"
     )
 
     # with trailing /, the / should be retained
-    template = "{datefolders}/{date}/"
+    template = "year_{yyyy}/month_{mm}/day_{dd}/{yyyy}-{mm}-{dd}/{HH}/"
     path = paths.build_path(template, datetime.datetime(2000, 9, 19, 1, 36, 42, 365))
     assert (
         path
         == str(
-            pathlib.PurePosixPath("year_2000") / "month_09" / "day_19" / "2000-09-19"
+            pathlib.PurePosixPath("year_2000") / "month_09" / "day_19" / "2000-09-19" / "01"
         )
         + "/"
     )
