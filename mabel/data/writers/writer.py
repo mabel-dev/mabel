@@ -8,7 +8,7 @@ from ...utils import paths, dates
 from ...errors import ValidationError, InvalidDataSetError, MissingDependencyError
 from ...logging import get_logger
 
-logger = get_logger
+logger = get_logger()
 
 
 class Writer:
@@ -104,7 +104,7 @@ class Writer:
         arg_dict[
             "inner_writer"
         ] = f"{arg_dict.get('inner_writer', type(None)).__name__}"  # type:ignore
-        get_logger().debug(orjson.dumps(arg_dict))
+        logger.debug(orjson.dumps(arg_dict))
 
         # default index
         kwargs["index_on"] = kwargs.get("index_on", [])
@@ -145,7 +145,7 @@ class Writer:
 
     def __del__(self):
         if hasattr(self, "finalized") and not self.finalized and self.records > 0:
-            get_logger().error(
+            logger.error(
                 f"{type(self).__name__} has not been finalized - {self.records} may have been lost, use `.finalize()` to finalize writers."
             )
 
@@ -154,7 +154,7 @@ class Writer:
         try:
             return self.blob_writer.commit()
         except Exception as e:
-            get_logger().error(
+            logger.error(
                 f"{type(self).__name__} failed to close pool: {type(e).__name__} - {e}"
             )
         return None
