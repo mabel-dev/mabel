@@ -72,7 +72,8 @@ def test_reading_across_dates():
 def test_short_dates():
     subject = Reader(
         inner_reader=DiskReader,
-        dataset="tests/data/dated/{datefolders_short}",
+        dataset="tests/data/dated",
+        partitions=["{yyyy}/{mm}/{dd}"],
         start_date="1979-08-23",
         end_date="1979-08-23",
     )

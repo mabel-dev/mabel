@@ -32,7 +32,7 @@ RULES = [
     {"name": "end_date", "required": False, "warning": None, "incompatible_with": []},
     {"name": "freshness_limit", "required": False, "warning": None, "incompatible_with": []},
     {"name": "inner_reader", "required": False, "warning": None, "incompatible_with": []},
-    {"name": "raw_path", "required": False, "warning": None, "incompatible_with": ["freshness_limit"]},
+    {"name": "raw_path", "required": False, "warning": "raw_path will be deprecated, use `partitions` with an empty list", "incompatible_with": ["freshness_limit"]},
     {"name": "select", "required": False, "warning": None, "incompatible_with": []},
     {"name": "start_date", "required": False, "warning": None, "incompatible_with": []},
     {"name": "filters", "required": False, "warning": "", "incompatible_with": []},
@@ -41,6 +41,8 @@ RULES = [
     {"name": "override_format", "required": False, "warning": "", "incompatible_with": []},
     {"name": "multiprocess", "required": False, "warning": "", "incompatible_with": ["cursor"]},
     {"name": "valid_dataset_prefixes", "required": False},
+    {"name": "partitions", "required": False, "warning": None, "incompatible_with": ["raw_path"]},
+    {"name": "partition_filter", "required":False, "warning":"`partition_filter` is not expected to be a permanent addition to the API"}
 ]
 # fmt:on
 
@@ -64,6 +66,8 @@ def Reader(
     multiprocess: bool = False,
     cursor: Optional[Union[str, Dict]] = None,
     valid_dataset_prefixes: Optional[list] = None,
+    partitions=["year_{yyyy}/month_{mm}/day_{dd}"],
+    partition_filter=None,
     **kwargs,
 ) -> DictSet:
     """
@@ -134,6 +138,9 @@ def Reader(
             intended use is for situations where an external agent can initiate
             the request (such as the Query application). This allows a whitelist
             of allowable resources to be defined.
+        partitions: list (optional)
+        partition_filter: tuple (optional)
+            provide a hint on how to filter the partitions, this may be ignored.
 
     Returns:
         DictSet
@@ -162,9 +169,20 @@ def Reader(
 
         inner_reader = GoogleCloudStorageReader
 
+    # handle transitional states - use the new features to override the legacy features
+    if raw_path is not None:
+        logger.warning(
+            "`raw_path` is being deprecated, set `partitions` to `None` instead."
+        )
+    if str(raw_path).upper() == "TRUE":
+        partitions = None
+
     # instantiate the injected reader class
     reader_class = inner_reader(
-        dataset=dataset, raw_path=raw_path, **kwargs
+        dataset=dataset,
+        partitions=partitions,
+        partition_filter=partition_filter,
+        **kwargs,
     )  # type:ignore
 
     arg_dict = kwargs.copy()
@@ -230,9 +248,10 @@ class _LowLevelReader(object):
             self.select = pass_thru
 
     def _create_line_reader(self):
+        # get list of blobs handles as_at, by and frames
         blob_list = self.reader_class.get_list_of_blobs()
 
-        # handle stepping back if the option is set
+        # Handle stepping back if the option is set
         if self.freshness_limit > datetime.timedelta(seconds=1):
             while not bool(blob_list) and self.freshness_limit >= datetime.timedelta(
                 days=self.reader_class.days_stepped_back
@@ -250,7 +269,7 @@ class _LowLevelReader(object):
                     f"Read looked back {self.reader_class.days_stepped_back} day(s) to {self.reader_class.start_date}, limit is {self.freshness_limit} ({self.reader_class.dataset})"
                 )
 
-        # filter the list to items we know what to do with
+        # Build lists of blobs we have handlers for, based on the file extensions
         supported_blobs = [
             b for b in blob_list if f".{b.split('.')[-1]}" in KNOWN_EXTENSIONS
         ]
@@ -260,14 +279,13 @@ class _LowLevelReader(object):
             if KNOWN_EXTENSIONS[f".{b.split('.')[-1]}"][2] == EXTENSION_TYPE.DATA
         ]
 
+        # Log debug information or an error if there's no blobs to read
+        message = f"Reader found {len(readable_blobs)} sources to read data from in `{self.reader_class.dataset}`."
         if len(readable_blobs) == 0:
-            message = f"Reader found {len(readable_blobs)} sources to read data from in `{self.reader_class.dataset}`."
             logger.error(message)
             raise DataNotFoundError(message)
         else:
-            logger.debug(
-                f"Reader found {len(readable_blobs)} sources to read data from in `{self.reader_class.dataset}`."
-            )
+            logger.debug(message)
 
         parallel = ParallelReader(
             reader=self.reader_class,
