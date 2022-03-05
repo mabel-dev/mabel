@@ -49,11 +49,15 @@ class Writer:
 
         # handle transitional states - use the new features to override the legacy features
         if kwargs.get("raw_path") is not None:
-            logger.warning("`raw_path` is being deprecated, set `partitions` to `None` instead.")
+            logger.warning(
+                "`raw_path` is being deprecated, set `partitions` to `None` instead."
+            )
         if str(kwargs.get("raw_path", "")).upper() == "TRUE":
             partitions = None
         if "{date" in dataset:
-            logger.warning("settting the date partition in the dataset name is being deprecated, use `partitions` instead.")
+            logger.warning(
+                "settting the date partition in the dataset name is being deprecated, use `partitions` instead."
+            )
             if "{datefolders}" in dataset:
                 logger.warning("Overriding {datefolders} in dataset name")
                 dataset = dataset.replace("{datefolders}", "")
@@ -91,7 +95,7 @@ class Writer:
         self.dataset = paths.build_path(self.dataset_template, self.batch_date)
 
         # add the values to kwargs
-        #kwargs["raw_path"] = True  # we've just added the dates
+        # kwargs["raw_path"] = True  # we've just added the dates
         kwargs["format"] = format
         kwargs["dataset"] = self.dataset
 

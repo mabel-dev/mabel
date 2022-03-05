@@ -55,7 +55,11 @@ def test_blob_paths_builder():
     assert (
         path
         == str(
-            pathlib.PurePosixPath("year_2000") / "month_09" / "day_19" / "2000-09-19" / "01"
+            pathlib.PurePosixPath("year_2000")
+            / "month_09"
+            / "day_19"
+            / "2000-09-19"
+            / "01"
         )
         + "/"
     )
@@ -66,7 +70,11 @@ def test_blob_paths_builder():
     assert (
         path
         == str(
-            pathlib.PurePosixPath("year_2000") / "month_09" / "day_19" / "2000-09-19" / "01"
+            pathlib.PurePosixPath("year_2000")
+            / "month_09"
+            / "day_19"
+            / "2000-09-19"
+            / "01"
         )
         + "/"
     )

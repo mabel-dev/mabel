@@ -169,17 +169,20 @@ def Reader(
 
         inner_reader = GoogleCloudStorageReader
 
-
     # handle transitional states - use the new features to override the legacy features
     if raw_path is not None:
-        logger.warning("`raw_path` is being deprecated, set `partitions` to `None` instead.")
+        logger.warning(
+            "`raw_path` is being deprecated, set `partitions` to `None` instead."
+        )
     if str(raw_path).upper() == "TRUE":
         partitions = None
 
-
     # instantiate the injected reader class
     reader_class = inner_reader(
-        dataset=dataset, partitions=partitions, partition_filter=partition_filter, **kwargs
+        dataset=dataset,
+        partitions=partitions,
+        partition_filter=partition_filter,
+        **kwargs,
     )  # type:ignore
 
     arg_dict = kwargs.copy()

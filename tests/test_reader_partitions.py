@@ -25,9 +25,10 @@ def test_reader_partitions_read_without_referring_to_partition():
         inner_reader=DiskReader,
         start_date=DATA_DATE,
         end_date=DATA_DATE,
-        persistence=STORAGE_CLASS.MEMORY
+        persistence=STORAGE_CLASS.MEMORY,
     )
-    assert records.count() == 25, records.count() 
+    assert records.count() == 25, records.count()
+
 
 def test_reader_partitions_read_without_referring_to_partition():
     """
@@ -40,9 +41,10 @@ def test_reader_partitions_read_without_referring_to_partition():
         inner_reader=DiskReader,
         start_date=DATA_DATE,
         end_date=DATA_DATE,
-        persistence=STORAGE_CLASS.MEMORY
+        persistence=STORAGE_CLASS.MEMORY,
     )
-    assert records.count() == 25, records.count() 
+    assert records.count() == 25, records.count()
+
 
 def test_reader_partitions_read_referring_to_specific_partition():
     """
@@ -53,38 +55,39 @@ def test_reader_partitions_read_referring_to_specific_partition():
     records = Reader(
         dataset="tests/data/partitioned",
         partitions=["year_{yyyy}/month_{mm}/day_{dd}"],
-        partition_filter=("userid","=", "14173315"),
+        partition_filter=("userid", "=", "14173315"),
         inner_reader=DiskReader,
         start_date=DATA_DATE,
         end_date=DATA_DATE,
-        persistence=STORAGE_CLASS.MEMORY
+        persistence=STORAGE_CLASS.MEMORY,
     )
-    assert records.count() == 5, records.count() 
+    assert records.count() == 5, records.count()
 
     DATA_DATE = datetime.date(2020, 2, 3)
     records = Reader(
         dataset="tests/data/partitioned",
         partitions=["year_{yyyy}/month_{mm}/day_{dd}"],
-        partition_filter=("username","=", "BBCNews"),
+        partition_filter=("username", "=", "BBCNews"),
         inner_reader=DiskReader,
         start_date=DATA_DATE,
         end_date=DATA_DATE,
-        persistence=STORAGE_CLASS.MEMORY
+        persistence=STORAGE_CLASS.MEMORY,
     )
-    assert records.count() == 4, records.count() 
+    assert records.count() == 4, records.count()
 
     with pytest.raises(DataNotFoundError):
         DATA_DATE = datetime.date(2020, 2, 3)
         records = Reader(
             dataset="tests/data/partitioned",
             partitions=["year_{yyyy}/month_{mm}/day_{dd}"],
-            partition_filter=("username","=", "CNNNews"),
+            partition_filter=("username", "=", "CNNNews"),
             inner_reader=DiskReader,
             start_date=DATA_DATE,
             end_date=DATA_DATE,
-            persistence=STORAGE_CLASS.MEMORY
+            persistence=STORAGE_CLASS.MEMORY,
         )
-        assert records.count() == 0, records.count() 
+        assert records.count() == 0, records.count()
+
 
 if __name__ == "__main__":  # pragma: no cover
     test_reader_partitions_read_without_referring_to_partition()

@@ -24,11 +24,16 @@ def test_null_writer():
 
 
 def test_hourly_partitions():
-    nw = BatchWriter(inner_writer=NullWriter, dataset="bucket/path", partitions=["year_{yyyy}/month_{mm}/day_{dd}/by_hour/hour={HH}"])
+    nw = BatchWriter(
+        inner_writer=NullWriter,
+        dataset="bucket/path",
+        partitions=["year_{yyyy}/month_{mm}/day_{dd}/by_hour/hour={HH}"],
+    )
     for i in range(1):
-        nw.append({"@":[' '] * BLOB_SIZE})
+        nw.append({"@": [" "] * BLOB_SIZE})
     res = nw.finalize()
     assert "by_hour/hour=" in res
+
 
 if __name__ == "__main__":  # pragma: no cover
     test_null_writer()

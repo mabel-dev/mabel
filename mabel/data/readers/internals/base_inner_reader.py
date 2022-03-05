@@ -72,7 +72,7 @@ class BaseInnerReader(abc.ABC):
             raise ValueError("Readers must have the `dataset` parameter set")
         if not self.dataset.endswith("/"):
             self.dataset += "/"
-        #if "{" not in self.dataset and not kwargs.get("raw_path", False):
+        # if "{" not in self.dataset and not kwargs.get("raw_path", False):
         #    self.dataset += "{datefolders}/"
         if partitions:
             self.dataset += "/".join(partitions) + "/"
@@ -152,7 +152,7 @@ class BaseInnerReader(abc.ABC):
             # so we don't want to include in when reading
             cycle_blobs = [blob for blob in cycle_blobs if "BACKOUT" not in blob]
 
-            # The partitions are stored in folders with the prefix 'by_', as in, 
+            # The partitions are stored in folders with the prefix 'by_', as in,
             # partitioned **by** field name
             list_of_partitions = {
                 self._extract_by(blob) for blob in cycle_blobs if "/by_" in blob
@@ -162,33 +162,52 @@ class BaseInnerReader(abc.ABC):
             # first to prune data
             if self.partition_filter:
                 from mabel.utils import text
+
                 # break the filter into parts, and make sure they're safe and valid
-                partition_filter_field, partition_filter_op, partition_filter_value = self.partition_filter
-                if partition_filter_op not in ('=', '=='):
-                    raise NotImplementedError("`partition_filter` operation can only be equals (`=`)")
+                (
+                    partition_filter_field,
+                    partition_filter_op,
+                    partition_filter_value,
+                ) = self.partition_filter
+                if partition_filter_op not in ("=", "=="):
+                    raise NotImplementedError(
+                        "`partition_filter` operation can only be equals (`=`)"
+                    )
                 partition_filter_field = text.sanitize(partition_filter_field)
                 partition_filter_value = text.sanitize(partition_filter_value)
                 partition_filter = f"/by_{partition_filter_field}/{partition_filter_field}={partition_filter_value}/"
 
                 # If we can find the partition in the folder set, then prune to it
-                if any([f"by_{partition_filter_field}" in by for by in list_of_partitions]):
+                if any(
+                    [f"by_{partition_filter_field}" in by for by in list_of_partitions]
+                ):
                     # Do the pruning
-                    cycle_blobs = [blob for blob in cycle_blobs if partition_filter in blob]  
+                    cycle_blobs = [
+                        blob for blob in cycle_blobs if partition_filter in blob
+                    ]
                     #  We only have one partition now
                     list_of_partitions = [f"by_{partition_filter_field}"]
-                    get_logger().debug(f"Applied partition filter by: `{partition_filter}`")
+                    get_logger().debug(
+                        f"Applied partition filter by: `{partition_filter}`"
+                    )
                 else:
-                    get_logger().debug(f"Wasn't able to find partition to filter by: `{partition_filter}`")
+                    get_logger().debug(
+                        f"Wasn't able to find partition to filter by: `{partition_filter}`"
+                    )
 
             # If we have multiple 'by_' partitions, pick one (pick the first one)
             if list_of_partitions:
                 list_of_partitions = sorted(list_of_partitions)
                 chosen_partition = list_of_partitions.pop()
                 if list_of_partitions:
-                    get_logger().info(f"Ignoring {len(list_of_partitions)} 'by' partitionings, reading from '{chosen_partition}'")
+                    get_logger().info(
+                        f"Ignoring {len(list_of_partitions)} 'by' partitionings, reading from '{chosen_partition}'"
+                    )
                 # Do the pruning
-                cycle_blobs = [blob for blob in cycle_blobs if f"/{chosen_partition}/" in blob]
-                
+                cycle_blobs = [
+                    blob for blob in cycle_blobs if f"/{chosen_partition}/" in blob
+                ]
+
             # Work out if there's an as_at part
             as_ats = {
                 self._extract_as_at(blob) for blob in cycle_blobs if "as_at_" in blob

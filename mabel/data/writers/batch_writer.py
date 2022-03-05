@@ -72,7 +72,7 @@ class BatchWriter(Writer):
             self.batch_date = self._get_writer_date(date)
 
             # we now use partitions
-            #if "{date" not in dataset and not kwargs.get("raw_path", False):
+            # if "{date" not in dataset and not kwargs.get("raw_path", False):
             #    dataset += "/{datefolders}"
             if partitions:
                 dataset += "/" + "/".join(partitions)
@@ -86,7 +86,7 @@ class BatchWriter(Writer):
         else:
             self.metadata = {}
 
-        #kwargs["raw_path"] = True  # we've just added the dates
+        # kwargs["raw_path"] = True  # we've just added the dates
         kwargs["format"] = format
         kwargs["dataset"] = frame_id
         kwargs["partitions"] = partitions
