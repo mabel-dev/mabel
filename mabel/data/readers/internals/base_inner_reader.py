@@ -8,8 +8,6 @@ import pathlib
 import datetime
 from io import IOBase
 from typing import Iterable
-
-from numpy import TooHardError, partition
 from mabel.utils import paths, dates
 from mabel.logging import get_logger
 
