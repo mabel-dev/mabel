@@ -8,8 +8,10 @@ import pathlib
 import datetime
 from io import IOBase
 from typing import Iterable
-from ....utils import paths, dates
-from ....logging import get_logger
+
+from numpy import TooHardError, partition
+from mabel.utils import paths, dates
+from mabel.logging import get_logger
 
 
 BUFFER_SIZE: int = 64 * 1024 * 1024  # 64Mb
@@ -58,7 +60,13 @@ class BaseInnerReader(abc.ABC):
                 return part
         return ""
 
-    def __init__(self, partitions=None, **kwargs):
+    def _extract_by(self, path):
+        parts = path.split("/")
+        for part in parts:
+            if part.startswith("by_"):
+                return part
+
+    def __init__(self, partitions=None, partition_filter=None, **kwargs):
         self.dataset = kwargs.get("dataset")
         if self.dataset is None:
             raise ValueError("Readers must have the `dataset` parameter set")
@@ -68,6 +76,7 @@ class BaseInnerReader(abc.ABC):
         #    self.dataset += "{datefolders}/"
         if partitions:
             self.dataset += "/".join(partitions) + "/"
+        self.partition_filter = partition_filter
 
         start_date = dates.extract_date(kwargs.get("start_date"))
         end_date = dates.extract_date(kwargs.get("end_date"))
@@ -131,18 +140,56 @@ class BaseInnerReader(abc.ABC):
     def get_list_of_blobs(self):
 
         blobs = []
-        # for each day in the range, get the blobs for us to read
+        # For each day in the range, get the blobs for us to read
         for cycle_date in dates.date_range(self.start_date, self.end_date):
-            # build the path name
+            # Build the path name
             cycle_path = pathlib.Path(
                 paths.build_path(path=self.dataset, date=cycle_date)
             )
             cycle_blobs = list(self.get_blobs_at_path(path=cycle_path))
 
-            # remove any BACKOUT data
+            # Remove any BACKOUT data - this is essentially a DEAD LETTER queue
+            # so we don't want to include in when reading
             cycle_blobs = [blob for blob in cycle_blobs if "BACKOUT" not in blob]
 
-            # work out if there's an as_at part
+            # The partitions are stored in folders with the prefix 'by_', as in, 
+            # partitioned **by** field name
+            list_of_partitions = {
+                self._extract_by(blob) for blob in cycle_blobs if "/by_" in blob
+            }
+
+            # If we've been provided a partition_filter search hint, try to use this
+            # first to prune data
+            if self.partition_filter:
+                from mabel.utils import text
+                # break the filter into parts, and make sure they're safe and valid
+                partition_filter_field, partition_filter_op, partition_filter_value = self.partition_filter
+                if partition_filter_op not in ('=', '=='):
+                    raise NotImplementedError("`partition_filter` operation can only be equals (`=`)")
+                partition_filter_field = text.sanitize(partition_filter_field)
+                partition_filter_value = text.sanitize(partition_filter_value)
+                partition_filter = f"/by_{partition_filter_field}/{partition_filter_field}={partition_filter_value}/"
+
+                # If we can find the partition in the folder set, then prune to it
+                if any([f"by_{partition_filter_field}" in by for by in list_of_partitions]):
+                    # Do the pruning
+                    cycle_blobs = [blob for blob in cycle_blobs if partition_filter in blob]  
+                    #  We only have one partition now
+                    list_of_partitions = [f"by_{partition_filter_field}"]
+                    get_logger().debug(f"Applied partition filter by: `{partition_filter}`")
+                else:
+                    get_logger().debug(f"Wasn't able to find partition to filter by: `{partition_filter}`")
+
+            # If we have multiple 'by_' partitions, pick one (pick the first one)
+            if list_of_partitions:
+                list_of_partitions = sorted(list_of_partitions)
+                chosen_partition = list_of_partitions.pop()
+                if list_of_partitions:
+                    get_logger().info(f"Ignoring {len(list_of_partitions)} 'by' partitionings, reading from '{chosen_partition}'")
+                # Do the pruning
+                cycle_blobs = [blob for blob in cycle_blobs if f"/{chosen_partition}/" in blob]
+                
+            # Work out if there's an as_at part
             as_ats = {
                 self._extract_as_at(blob) for blob in cycle_blobs if "as_at_" in blob
             }
