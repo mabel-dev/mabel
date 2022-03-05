@@ -8,6 +8,8 @@ from ...utils import paths, dates
 from ...errors import ValidationError, InvalidDataSetError, MissingDependencyError
 from ...logging import get_logger
 
+logger = get_logger()
+
 
 class Writer:
     def _get_writer_date(self, date):
@@ -26,6 +28,7 @@ class Writer:
         set_of_expectations: Optional[list] = None,
         format: str = "zstd",
         date: Any = None,
+        partitions=["year_{yyyy}/month_{mm}/day_{dd}"],
         **kwargs,
     ):
         """
@@ -43,6 +46,26 @@ class Writer:
             InvalidDataSetError("Dataset names cannot contain { or }")
         if "%" in dataset:
             InvalidDataSetError("Dataset names cannot contain %")
+
+        # handle transitional states - use the new features to override the legacy features
+        if kwargs.get("raw_path") is not None:
+            logger.warning(
+                "`raw_path` is being deprecated, set `partitions` to `None` instead."
+            )
+        if str(kwargs.get("raw_path", "")).upper() == "TRUE":
+            partitions = None
+        if "{date" in dataset:
+            logger.warning(
+                "settting the date partition in the dataset name is being deprecated, use `partitions` instead."
+            )
+            if "{datefolders}" in dataset:
+                logger.warning("Overriding {datefolders} in dataset name")
+                dataset = dataset.replace("{datefolders}", "")
+                partitions = ["year_{yyyy}/month_{mm}/day_{dd}"]
+            if "{datefolders_short}" in dataset:
+                logger.warning("Overriding {datefolders_short} in dataset name")
+                dataset = dataset.replace("{datefolders_short}", "")
+                partitions = ["{yyyy}/{mm}/{dd}"]
 
         self.schema = None
         if isinstance(schema, list):
@@ -64,14 +87,15 @@ class Writer:
         self.batch_date = self._get_writer_date(date)
 
         self.dataset_template = dataset
-        if "{date" not in self.dataset_template and not kwargs.get("raw_path", False):
-            self.dataset_template += "/{datefolders}"
-            self.raw_path = True
+        self.date_partitions = partitions
+        if partitions:
+            self.dataset_template += "/" + "/".join(partitions)
+            self.date_partitions = None
 
         self.dataset = paths.build_path(self.dataset_template, self.batch_date)
 
         # add the values to kwargs
-        kwargs["raw_path"] = True  # we've just added the dates
+        # kwargs["raw_path"] = True  # we've just added the dates
         kwargs["format"] = format
         kwargs["dataset"] = self.dataset
 
@@ -80,7 +104,7 @@ class Writer:
         arg_dict[
             "inner_writer"
         ] = f"{arg_dict.get('inner_writer', type(None)).__name__}"  # type:ignore
-        get_logger().debug(orjson.dumps(arg_dict))
+        logger.debug(orjson.dumps(arg_dict))
 
         # default index
         kwargs["index_on"] = kwargs.get("index_on", [])
@@ -121,7 +145,7 @@ class Writer:
 
     def __del__(self):
         if hasattr(self, "finalized") and not self.finalized and self.records > 0:
-            get_logger().error(
+            logger.error(
                 f"{type(self).__name__} has not been finalized - {self.records} may have been lost, use `.finalize()` to finalize writers."
             )
 
@@ -130,7 +154,7 @@ class Writer:
         try:
             return self.blob_writer.commit()
         except Exception as e:
-            get_logger().error(
+            logger.error(
                 f"{type(self).__name__} failed to close pool: {type(e).__name__} - {e}"
             )
         return None
