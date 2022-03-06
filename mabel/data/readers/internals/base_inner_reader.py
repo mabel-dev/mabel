@@ -158,6 +158,8 @@ class BaseInnerReader(abc.ABC):
 
             # If we've been provided a partition_filter search hint, try to use this
             # first to prune data
+            chosen_partition = ""
+
             if self.partition_filter:
                 from mabel.utils import text
 
@@ -206,41 +208,61 @@ class BaseInnerReader(abc.ABC):
                     blob for blob in cycle_blobs if f"/{chosen_partition}/" in blob
                 ]
 
-            # Work out if there's an as_at part
-            as_ats = {
-                self._extract_as_at(blob) for blob in cycle_blobs if "as_at_" in blob
-            }
-            if as_ats:
-                as_ats = sorted(as_ats)
-                as_at = as_ats.pop()
+            def safe_get_next(lst, item):
+                try:
+                    index = lst.index(item)
+                    return lst[index + 1]
+                except:
+                    return None
 
-                is_complete = lambda blobs: any(
-                    [blob for blob in blobs if as_at + "/frame.complete" in blob]
-                )
-                is_invalid = lambda blobs: any(
-                    [blob for blob in blobs if (as_at + "/frame.ignore" in blob)]
-                )
+            # Cycle over the list of partitions (e.g. the hour=02 bits) we can't use
+            # the frame id of one on the rest
+            if chosen_partition == "":
+                partitioned_folders = { "" }
+            else:
+                partitioned_folders = { safe_get_next(blob.split("/"), chosen_partition) for blob in cycle_blobs }
 
-                while not is_complete(cycle_blobs) or is_invalid(cycle_blobs):
-                    if not is_complete(cycle_blobs):
-                        get_logger().debug(
-                            f"Frame `{as_at}` is not complete - `frame.complete` file is not present - skipping this frame."
-                        )
-                    if is_invalid(cycle_blobs):
-                        get_logger().debug(
-                            f"Frame `{as_at}` is invalid - `frame.ignore` file is present - skipping this frame."
-                        )
-                    if len(as_ats) > 0:
-                        as_at = as_ats.pop()
-                    else:
-                        return []
-                get_logger().debug(f"Reading from DataSet frame `{as_at}`")
-                cycle_blobs = [
-                    blob
-                    for blob in cycle_blobs
-                    if (as_at in blob) and ("/frame.complete" not in blob)
-                ]
+            print(f"***************************************\n{partitioned_folders}\n***************************************")
 
-            blobs += cycle_blobs
+            for partitioned_folder in partitioned_folders:
+
+                partitioned_blobs = [blob for blob in cycle_blobs if f"{chosen_partition}/{partitioned_folder}" in blob]
+
+                # Work out if there's an as_at part
+                as_ats = {
+                    self._extract_as_at(blob) for blob in partitioned_blobs if "as_at_" in blob
+                }
+                if as_ats:
+                    as_ats = sorted(as_ats)
+                    as_at = as_ats.pop()
+
+                    is_complete = lambda blobs: any(
+                        [blob for blob in blobs if as_at + "/frame.complete" in blob]
+                    )
+                    is_invalid = lambda blobs: any(
+                        [blob for blob in blobs if (as_at + "/frame.ignore" in blob)]
+                    )
+
+                    while not is_complete(partitioned_blobs) or is_invalid(partitioned_blobs):
+                        if not is_complete(partitioned_blobs):
+                            get_logger().debug(
+                                f"Frame `{partitioned_folder}/{as_at}` is not complete - `frame.complete` file is not present - skipping this frame."
+                            )
+                        if is_invalid(partitioned_blobs):
+                            get_logger().debug(
+                                f"Frame `{partitioned_folder}/{as_at}` is invalid - `frame.ignore` file is present - skipping this frame."
+                            )
+                        if len(as_ats) > 0:
+                            as_at = as_ats.pop()
+                        else:
+                            return []
+                    get_logger().debug(f"Reading from DataSet frame `{as_at}`")
+                    partitioned_blobs = [
+                        blob
+                        for blob in partitioned_blobs
+                        if (as_at in blob) and ("/frame.complete" not in blob)
+                    ]
+
+                blobs += partitioned_blobs
 
         return sorted(blobs)
