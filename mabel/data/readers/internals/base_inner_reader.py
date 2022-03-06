@@ -218,19 +218,30 @@ class BaseInnerReader(abc.ABC):
             # Cycle over the list of partitions (e.g. the hour=02 bits) we can't use
             # the frame id of one on the rest
             if chosen_partition == "":
-                partitioned_folders = { "" }
+                partitioned_folders = {""}
             else:
-                partitioned_folders = { safe_get_next(blob.split("/"), chosen_partition) for blob in cycle_blobs }
+                partitioned_folders = {
+                    safe_get_next(blob.split("/"), chosen_partition)
+                    for blob in cycle_blobs
+                }
 
-            print(f"***************************************\n{partitioned_folders}\n***************************************")
+            print(
+                f"***************************************\n{partitioned_folders}\n***************************************"
+            )
 
             for partitioned_folder in partitioned_folders:
 
-                partitioned_blobs = [blob for blob in cycle_blobs if f"{chosen_partition}/{partitioned_folder}" in blob]
+                partitioned_blobs = [
+                    blob
+                    for blob in cycle_blobs
+                    if f"{chosen_partition}/{partitioned_folder}" in blob
+                ]
 
                 # Work out if there's an as_at part
                 as_ats = {
-                    self._extract_as_at(blob) for blob in partitioned_blobs if "as_at_" in blob
+                    self._extract_as_at(blob)
+                    for blob in partitioned_blobs
+                    if "as_at_" in blob
                 }
                 if as_ats:
                     as_ats = sorted(as_ats)
@@ -243,7 +254,9 @@ class BaseInnerReader(abc.ABC):
                         [blob for blob in blobs if (as_at + "/frame.ignore" in blob)]
                     )
 
-                    while not is_complete(partitioned_blobs) or is_invalid(partitioned_blobs):
+                    while not is_complete(partitioned_blobs) or is_invalid(
+                        partitioned_blobs
+                    ):
                         if not is_complete(partitioned_blobs):
                             get_logger().debug(
                                 f"Frame `{partitioned_folder}/{as_at}` is not complete - `frame.complete` file is not present - skipping this frame."
