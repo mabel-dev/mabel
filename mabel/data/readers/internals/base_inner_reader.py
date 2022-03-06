@@ -222,8 +222,6 @@ class BaseInnerReader(abc.ABC):
             else:
                 partitioned_folders = { safe_get_next(blob.split("/"), chosen_partition) for blob in cycle_blobs }
 
-            print(f"***************************************\n{partitioned_folders}\n***************************************")
-
             for partitioned_folder in partitioned_folders:
 
                 partitioned_blobs = [blob for blob in cycle_blobs if f"{chosen_partition}/{partitioned_folder}" in blob]
