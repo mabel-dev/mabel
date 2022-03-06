@@ -225,10 +225,6 @@ class BaseInnerReader(abc.ABC):
                     for blob in cycle_blobs
                 }
 
-            print(
-                f"***************************************\n{partitioned_folders}\n***************************************"
-            )
-
             for partitioned_folder in partitioned_folders:
 
                 partitioned_blobs = [
