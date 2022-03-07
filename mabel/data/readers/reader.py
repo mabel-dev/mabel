@@ -42,7 +42,7 @@ RULES = [
     {"name": "multiprocess", "required": False, "warning": "", "incompatible_with": ["cursor"]},
     {"name": "valid_dataset_prefixes", "required": False},
     {"name": "partitions", "required": False, "warning": None, "incompatible_with": ["raw_path"]},
-    {"name": "partition_filter", "required":False, "warning":"`partition_filter` is not expected to be a permanent addition to the API"}
+    {"name": "partition_filter", "required":False, "warning":"`partition_filter` is not expected to be a permanent addition to the API", "incompatible_with": ["freshness_limit"] }
 ]
 # fmt:on
 
@@ -159,7 +159,7 @@ def Reader(
                 if str(dataset).startswith(prefix)
             ]
         ):
-            raise AccessDenied("Access has been denied to this Dataset.")
+            raise AccessDenied("Access has been denied to this Dataset (prefix).")
 
     # lazy loading of dependency - in this case the Google GCS Reader
     # eager loading will cause failures when we try to load the google-cloud
@@ -172,7 +172,7 @@ def Reader(
     # handle transitional states - use the new features to override the legacy features
     if raw_path is not None:
         logger.warning(
-            "`raw_path` is being deprecated, set `partitions` to `None` instead."
+            "`raw_path` is being deprecated, set `partitions` to an empty list `[]` instead."
         )
     if str(raw_path).upper() == "TRUE":
         partitions = None
@@ -262,7 +262,7 @@ class _LowLevelReader(object):
                 days=self.reader_class.days_stepped_back
             ):
                 message = f"No data found in last {self.freshness_limit} - aborting ({self.reader_class.dataset})"
-                logger.alert(message)
+                logger.warning(message)
                 raise DataNotFoundError(message)
             if self.reader_class.days_stepped_back > 0:
                 logger.warning(
@@ -271,7 +271,7 @@ class _LowLevelReader(object):
 
         # Build lists of blobs we have handlers for, based on the file extensions
         supported_blobs = [
-            b for b in blob_list if f".{b.split('.')[-1]}" in KNOWN_EXTENSIONS
+            b for b in blob_list if f".{ b.split('.')[-1] }" in KNOWN_EXTENSIONS
         ]
         readable_blobs = [
             b
