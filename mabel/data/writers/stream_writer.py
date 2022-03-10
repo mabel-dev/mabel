@@ -143,7 +143,6 @@ class StreamWriter(Writer):
                         "{" + k + "}", text.sanitize(str(v))
                     )
 
-                print(this_identity)
                 # get the writer and save the record
                 blob_writer = self.writer_pool.get_writer(this_identity)
                 blob_writer.append(record)
