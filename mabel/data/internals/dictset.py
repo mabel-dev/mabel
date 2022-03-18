@@ -379,13 +379,20 @@ class DictSet(object):
         Returns:
             Pandas DataFrame
         """
+
+        def to_dict(obj):
+            import orjson
+            if hasattr(obj, "mini"):
+                return orjson.loads(obj.mini)
+            return obj
+
         try:
             import pandas
         except ImportError:  # pragma: no cover
             raise MissingDependencyError(
                 "`pandas` is missing, please install or include in requirements.txt"
             )
-        return pandas.DataFrame(iter(self._iterator))
+        return pandas.DataFrame([to_dict(r) for r in iter(self._iterator)])
 
     def first(self) -> dict:
         """
