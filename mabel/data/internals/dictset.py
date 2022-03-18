@@ -382,6 +382,7 @@ class DictSet(object):
 
         def to_dict(obj):
             import orjson
+
             if hasattr(obj, "mini"):
                 return orjson.loads(obj.mini)
             return obj
