@@ -136,11 +136,17 @@ def test_take():
         {"key": 4, "value": "four", "plus1": 5},
     ]
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
-    assert ds.take(1).collect_list().pop() == {"key": 1, "value": "one", "plus1": 2}, ds.take(1).collect_list()
+    assert ds.take(1).collect_list().pop() == {
+        "key": 1,
+        "value": "one",
+        "plus1": 2,
+    }, ds.take(1).collect_list()
     assert ds.take(2).count() == 2, ds.take(2).count()
-    
+
     # we had a problem where spendable dictsets were taking n+1 records, but only returning n
-    burnable = DictSet((a for a in ds.collect_list()), storage_class=STORAGE_CLASS.NO_PERSISTANCE)
+    burnable = DictSet(
+        (a for a in ds.collect_list()), storage_class=STORAGE_CLASS.NO_PERSISTANCE
+    )
     print(burnable.take(3))
     l = len(list(burnable.take(10)))
     assert l == 1, l

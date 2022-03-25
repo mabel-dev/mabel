@@ -32,7 +32,9 @@ def test_cursor():
     cursor = reader.cursor
 
     print(cursor)
-    assert cursor["location"] == ((lim - 1) % 25), f"{cursor['location']}, {lim}, {(lim % 25)}"
+    assert cursor["location"] == (
+        (lim - 1) % 25
+    ), f"{cursor['location']}, {lim}, {(lim % 25)}"
     assert cursor["partition"] == 5122091051124077700, cursor["partition"]
 
     reader = Reader(
@@ -45,7 +47,9 @@ def test_cursor():
     for i, row in enumerate(reader):
         test_counter += 1
 
-    assert number_of_records == test_counter, f"{number_of_records} - {test_counter}, {i}"
+    assert (
+        number_of_records == test_counter
+    ), f"{number_of_records} - {test_counter}, {i}"
 
 
 def test_cursor_as_text():
@@ -68,15 +72,13 @@ def test_cursor_as_text():
 def test_base():
 
     reader = Reader(
-        inner_reader=DiskReader,
-        dataset="tests/data/tweets/",
-        partitions=[]
+        inner_reader=DiskReader, dataset="tests/data/tweets/", partitions=[]
     )
 
     for i in range(50):
         next(reader)
         assert reader.cursor["location"] == (i % 25), reader.cursor
-    
+
     assert len(range(50)) == 50
 
 
