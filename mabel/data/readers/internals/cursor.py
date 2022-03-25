@@ -90,7 +90,7 @@ class Cursor:
         # cycle through the iterator to the cursor location
         if self.location < 0:
             return 0
-        for index in range(self.location):
+        for index in range(self.location + 1):
             next(iterator, None)
         return self.location
 
