@@ -41,7 +41,9 @@ def test_cursor():
     cursor = reader.cursor
 
     print(cursor)
-    assert cursor["location"] == ((lim - 1) % 25), f"{cursor['location']}, {lim}, {(lim % 25)}"
+    assert cursor["location"] == (
+        (lim - 1) % 25
+    ), f"{cursor['location']}, {lim}, {(lim % 25)}"
     assert cursor["partition"] == 5122091051124077700, cursor["partition"]
 
     reader = Reader(
@@ -56,7 +58,9 @@ def test_cursor():
         test_counter += 1
 
     # we should have read the number of expected records
-    assert number_of_records == test_counter, f"{number_of_records} - {test_counter}, {i}"
+    assert (
+        number_of_records == test_counter
+    ), f"{number_of_records} - {test_counter}, {i}"
     # we shouldn't have captured any duplicates
     assert len(hashes) == len(set(hashes)), f"{len(hashes)} == {len(set(hashes))}"
 
@@ -78,15 +82,14 @@ def test_cursor_as_text():
         # 24 because we count from zero (the first row in the file is the 0th record)
         assert len(l) + offset == 24, f"{len(l) + offset} == {24}, {reader.cursor}"
 
+
 def test_move_to_cursor():
 
     offsets = [1, 6, 8, 13, 22]
 
     for offset in offsets:
         reader = Reader(
-            inner_reader=DiskReader,
-            dataset="tests/data/tweets/",
-            partitions=[]
+            inner_reader=DiskReader, dataset="tests/data/tweets/", partitions=[]
         )
         next(reader)
         steps = 1
@@ -99,12 +102,11 @@ def test_move_to_cursor():
         # we stepped offset number of records and then read l more, this should be 50
         assert steps + l == 50
 
+
 def test_base():
 
     reader = Reader(
-        inner_reader=DiskReader,
-        dataset="tests/data/tweets/",
-        partitions=[]
+        inner_reader=DiskReader, dataset="tests/data/tweets/", partitions=[]
     )
 
     # we read 50 records
@@ -115,7 +117,7 @@ def test_base():
     # we can't read 51
     with pytest.raises(StopIteration):
         next(reader)
-    
+
     # range 50 actually is 50
     assert len(range(50)) == 50
 
