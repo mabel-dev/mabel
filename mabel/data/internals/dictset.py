@@ -418,12 +418,13 @@ class DictSet(object):
         This returns a generator.
         """
         for count, item in enumerate(iter(self._iterator)):
-            if count == items:
-                return
             if isinstance(item, dict):
                 yield item
             else:
                 yield item.as_dict()
+            # count is zero-based, if we've read the itemth item, quit
+            if (count + 1) == items:
+                return
 
     def filter(self, filters):
         """
