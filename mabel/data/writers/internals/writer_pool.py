@@ -28,9 +28,7 @@ class WriterPool:
         try:
             # if a writer with the specified identity exists then return it
             # update the last_access status so we can determin the LRU
-            writer = [
-                writer for writer in self.writers if writer["identity"] == identity
-            ].pop()
+            writer = [w for w in self.writers if w["identity"] == identity].pop()
             writer["last_access"] = time.time()
             return writer["writer"]
         except IndexError:
@@ -53,13 +51,15 @@ class WriterPool:
     def remove_writer(self, identity):
         # remove a writer from the pool and commit
         with threading.Lock():
-            writer = [
-                writer for writer in self.writers if writer.get("identity") == identity
-            ].pop()
-            self.writers = [
-                writer for writer in self.writers if writer.get("identity") != identity
-            ]
-        writer.get("writer").commit()
+            writers = [w for w in self.writers if w.get("identity") == identity]
+            if len(writers) != 1:
+                import mabel.logging
+                logger = mabel.logging.get_logger()
+                logger.error(f"Unable to find writer to remove - indentity={identity}, poolsize={len(self.writers)}")
+            else:
+                writer = writers[0]
+                self.writers = [w for w in self.writers if w.get("identity") != identity]
+                writer.get("writer").commit()
 
     def close(self):
         # evict everyone from the pool
