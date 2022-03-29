@@ -54,11 +54,16 @@ class WriterPool:
             writers = [w for w in self.writers if w.get("identity") == identity]
             if len(writers) != 1:
                 import mabel.logging
+
                 logger = mabel.logging.get_logger()
-                logger.error(f"Unable to find writer to remove - indentity={identity}, poolsize={len(self.writers)}")
+                logger.error(
+                    f"Unable to find writer to remove - indentity={identity}, poolsize={len(self.writers)}"
+                )
             else:
                 writer = writers[0]
-                self.writers = [w for w in self.writers if w.get("identity") != identity]
+                self.writers = [
+                    w for w in self.writers if w.get("identity") != identity
+                ]
                 writer.get("writer").commit()
 
     def close(self):
