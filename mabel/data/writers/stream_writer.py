@@ -155,7 +155,7 @@ class StreamWriter(Writer):
             for blob_writer_identity in self.writer_pool.writers:
                 try:
                     get_logger().debug(
-                        f"Removing {blob_writer_identity} from the writer pool during finalization"
+                        f"Removing from the writer pool during finalization, identity={blob_writer_identity}, poolsize={len(self.writer_pool.writers)}"
                     )
                     self.writer_pool.remove_writer(blob_writer_identity)
                 except Exception as err:
@@ -175,7 +175,7 @@ class StreamWriter(Writer):
                     self.idle_timeout_seconds
                 ):
                     get_logger().debug(
-                        f"Evicting {blob_writer_identity} from the writer pool due to inactivity - limit is {self.idle_timeout_seconds} seconds"
+                        f"Evicting {blob_writer_identity} from the writer pool due to inactivity - limit is {self.idle_timeout_seconds} seconds, poolsize={len(self.writer_pool.writers)}"
                     )
                     self.writer_pool.remove_writer(blob_writer_identity)
                 # if we're over capacity, evict the LRU writers
@@ -183,7 +183,7 @@ class StreamWriter(Writer):
                     blob_writer_identity
                 ) in self.writer_pool.nominate_writers_to_evict():
                     get_logger().debug(
-                        f"Evicting {blob_writer_identity} from the writer pool due the pool being over its {self.writer_pool_capacity} capacity"
+                        f"Evicting {blob_writer_identity} from the writer pool due the pool being over its {self.writer_pool_capacity} capacity, poolsize={len(self.writer_pool.writers)}"
                     )
                     self.writer_pool.remove_writer(blob_writer_identity)
             time.sleep(1)
