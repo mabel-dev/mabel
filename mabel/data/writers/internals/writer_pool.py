@@ -50,7 +50,9 @@ class WriterPool:
 
     def remove_writer(self, identity):
         # remove a writer from the pool and commit
-        with threading.Lock():
+        lock = threading.Lock()
+        try:
+            lock.acquire(blocking=True, timeout=10)
             writers = [w for w in self.writers if w.get("identity") == identity]
             if len(writers) != 1:
                 import mabel.logging
@@ -65,12 +67,18 @@ class WriterPool:
                     w for w in self.writers if w.get("identity") != identity
                 ]
                 writer.get("writer").commit()
+        finally:
+            lock.release()
 
     def close(self):
         # evict everyone from the pool
-        with threading.Lock():
+        lock = threading.Lock()
+        try:
+            lock.acquire(blocking=True, timeout=10)
             [self.remove_writer(writer.get("identity")) for writer in self.writers]
             self.writers = []
+        finally:
+            lock.release()
 
     def nominate_writers_to_evict(self):
         # if there are more than pool_size writers in the pool, get a list of
@@ -86,11 +94,12 @@ class WriterPool:
     def get_stale_writers(self, seconds_since_last_use):
         """get the identities of writers which haven't been accessed recently"""
         now = time.time()
-        return [
+        stale_writers = [
             writer.get("identity")
             for writer in self.writers
             if now - writer.get("last_access") > seconds_since_last_use
         ]
+        return stale_writers
 
     def __str__(self):
         # much easier to read

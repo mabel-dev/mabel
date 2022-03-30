@@ -4,7 +4,7 @@ import datetime
 import threading
 import itertools
 from pydantic import BaseModel  # type:ignore
-from typing import Any, Union
+from typing import Any, Union, final
 from .writer import Writer
 from .internals.writer_pool import WriterPool
 from ...utils import paths, text
@@ -22,7 +22,7 @@ class StreamWriter(Writer):
         dataset: str,
         format: str = "zstd",
         idle_timeout_seconds: int = 30,
-        writer_pool_capacity: int = 5,
+        writer_pool_capacity: int = 10,
         **kwargs,
     ):
         """
@@ -74,7 +74,9 @@ class StreamWriter(Writer):
         self.thread = threading.Thread(target=self.pool_attendant)
         self.thread.name = "mabel-writer-pool-attendant"
         self.thread.daemon = True
+        self.run_pool_attendant = True
         self.thread.start()
+        get_logger().debug("Pool attendant on-duty")
 
     def append(self, record: Union[dict, BaseModel]):
         """
@@ -110,7 +112,9 @@ class StreamWriter(Writer):
                 f"Schema Validation Failed ({self.schema.last_error}) - message being written to {identity}"
             )
 
-        with threading.Lock():
+        lock = threading.Lock()
+        try:
+            lock.acquire(blocking=True, timeout=10)
 
             # get the placeholders from the dataset name
             placeholders = set(re.findall(r"\{(.*?)\}", identity))
@@ -147,29 +151,39 @@ class StreamWriter(Writer):
                 blob_writer = self.writer_pool.get_writer(this_identity)
                 blob_writer.append(record)
                 writes += 1
+        finally:
+            lock.release()
 
         return writes
 
     def finalize(self, **kwargs):
-        with threading.Lock():
+        self.run_pool_attendant = False
+        lock = threading.Lock()
+        try:
+            lock.acquire(blocking=True, timeout=10)
             for blob_writer_identity in self.writer_pool.writers:
                 try:
                     get_logger().debug(
-                        f"Removing from the writer pool during finalization, identity={blob_writer_identity}, poolsize={len(self.writer_pool.writers)}"
+                        f"Removing from the writer pool during finalization, identity={blob_writer_identity['identity']}, poolsize={len(self.writer_pool.writers)}"
                     )
-                    self.writer_pool.remove_writer(blob_writer_identity)
+                    self.writer_pool.remove_writer(blob_writer_identity["identity"])
                 except Exception as err:
                     get_logger().debug(
                         f"Error finalizing `{blob_writer_identity}`, {type(err).__name__} - {err}"
                     )
+        finally:
+            lock.release()
         return super().finalize()
 
     def pool_attendant(self):
         """
         Writer Pool Management
         """
-        while True:
-            with threading.Lock():
+        while self.run_pool_attendant:
+            lock = threading.Lock()
+            try:
+                lock.acquire(blocking=True, timeout=10)
+
                 # search for pool occupants who haven't had a write recently
                 for blob_writer_identity in self.writer_pool.get_stale_writers(
                     self.idle_timeout_seconds
@@ -186,4 +200,10 @@ class StreamWriter(Writer):
                         f"Evicting {blob_writer_identity} from the writer pool due the pool being over its {self.writer_pool_capacity} capacity, poolsize={len(self.writer_pool.writers)}"
                     )
                     self.writer_pool.remove_writer(blob_writer_identity)
-            time.sleep(1)
+
+            finally:
+                lock.release()
+
+            time.sleep(0.1)
+
+        get_logger().debug("Pool attendant off-duty")

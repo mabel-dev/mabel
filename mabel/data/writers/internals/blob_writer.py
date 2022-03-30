@@ -1,5 +1,4 @@
 import threading
-from typing import Any
 import orjson
 import json
 import zstandard
@@ -87,7 +86,10 @@ class BlobWriter(object):
 
         if len(self.buffer) > 0:
 
-            with threading.Lock():
+            lock = threading.Lock()
+
+            try:
+                lock.acquire(blocking=True, timeout=10)
 
                 if self.format == "parquet":
                     try:
@@ -144,6 +146,8 @@ class BlobWriter(object):
                         "bytes": len(self.buffer),
                     }
                 )
+            finally:
+                lock.release()
 
         self.buffer = bytearray()
         return committed_blob_name
