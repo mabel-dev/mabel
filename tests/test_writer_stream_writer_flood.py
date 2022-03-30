@@ -19,7 +19,7 @@ def test_writer_flood():
 
     for i in range(100000):
 
-        record = { "identity": str(os.urandom(1)), "cycle": i }
+        record = {"identity": str(os.urandom(1)), "cycle": i}
         w.append(record)
 
     print(len(w.writer_pool.writers))
