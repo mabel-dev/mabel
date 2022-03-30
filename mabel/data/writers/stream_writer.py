@@ -4,11 +4,11 @@ import datetime
 import threading
 import itertools
 from pydantic import BaseModel  # type:ignore
-from typing import Any, Union, final
+from typing import Union
 from .writer import Writer
 from .internals.writer_pool import WriterPool
-from ...utils import paths, text
-from ...logging import get_logger
+from mabel.utils import paths, text
+from mabel.logging import get_logger
 
 
 class StreamWriter(Writer):
