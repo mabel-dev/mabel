@@ -203,7 +203,7 @@ class StreamWriter(Writer):
 
             finally:
                 lock.release()
-        
+
             time.sleep(0.1)
 
         get_logger().debug("Pool attendant off-duty")
