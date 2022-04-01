@@ -60,7 +60,7 @@ class SqlParser:
         return str(
             {
                 "select": self.select_expression,
-                "disctinct": self.distinct,
+                "distinct": self.distinct,
                 "from": self.dataset,
                 "where": self.where_expression,
                 "group by": self.group_by,
@@ -343,7 +343,7 @@ def SqlReader(sql_statement: str, **kwargs):
         reader = DictSet(map(_perform_renames, reader))
 
     reader = reader.select(sql.select_evaluator.fields())  # type:ignore
-    # disctinct now we have only the columns we're interested in
+    # distinct now we have only the columns we're interested in
     if sql.distinct:
         reader = reader.distinct()
 
