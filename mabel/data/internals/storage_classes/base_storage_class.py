@@ -20,13 +20,11 @@ class BaseStorageClass(ABC):
     iterator = None
     length = -1
 
-    @abstractclassmethod
     def __init__(self, iterator):
-        pass
+        raise NotImplementedError()
 
-    @abstractclassmethod
     def _inner_reader(self, *locations):
-        pass
+        raise NotImplementedError()
 
     def __iter__(self):
         self.iterator = self._inner_reader()

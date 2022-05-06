@@ -53,11 +53,9 @@ def parquet(stream):
         raise MissingDependencyError(
             "`pyarrow` is missing, please install or include in requirements.txt"
         )
+
     table = pq.read_table(stream)
-    for batch in table.to_batches():
-        dict_batch = batch.to_pydict()
-        for index in range(len(batch)):
-            yield {k: v[index] for k, v in dict_batch.items()}
+    yield from table.to_pylist()
 
 
 def lines(stream):
