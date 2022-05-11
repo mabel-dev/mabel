@@ -104,7 +104,9 @@ class BlobWriter(object):
 
                     tempfile = io.BytesIO()
 
-                    temp_list = [orjson.loads(record) for record in self.buffer.splitlines()]
+                    temp_list = [
+                        orjson.loads(record) for record in self.buffer.splitlines()
+                    ]
                     pytable = pyarrow.Table.from_pylist(temp_list)
                     pyarrow.parquet.write_table(
                         pytable, where=tempfile, compression="zstd"
