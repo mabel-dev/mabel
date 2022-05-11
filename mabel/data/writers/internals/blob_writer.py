@@ -100,23 +100,18 @@ class BlobWriter(object):
                             "`pyarrow` is missing, please install or includein requirements.txt"
                         )
 
-                    # pyarrow is opinionated to dealing with files - so we use files
-                    # to load into and read from pyarrow
-                    # first, we load the buffer into a file and then into pyarrow
-                    import tempfile
+                    import io
 
-                    buffer_temp_file = tempfile.TemporaryFile()
-                    buffer_temp_file.write(self.buffer)
-                    buffer_temp_file.seek(0, 0)
-                    in_pyarrow_buffer = pyarrow.json.read_json(buffer_temp_file)
-                    buffer_temp_file.close()
+                    tempfile = io.BytesIO()
 
-                    # then we save from pyarrow into another file which we read
-                    pq_temp_file = tempfile.TemporaryFile()
-                    pq.write_table(in_pyarrow_buffer, pq_temp_file, compression="ZSTD")
-                    pq_temp_file.seek(0, 0)
-                    self.buffer = pq_temp_file.read()
-                    pq_temp_file.close()
+                    temp_list = [orjson.loads(record) for record in self.buffer.splitlines()]
+                    pytable = pyarrow.Table.from_pylist(temp_list)
+                    pyarrow.parquet.write_table(
+                        pytable, where=tempfile, compression="zstd"
+                    )
+
+                    tempfile.seek(0)
+                    self.buffer = tempfile.read()
 
                 if self.format == "zstd":
                     # zstandard is an non-optional installed dependency
