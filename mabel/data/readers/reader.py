@@ -60,7 +60,7 @@ def Reader(
     dataset: str = "",
     filters: Optional[str] = None,
     inner_reader=None,  # type:ignore
-    raw_path: bool = False,
+    raw_path: bool = None,
     persistence: STORAGE_CLASS = STORAGE_CLASS.NO_PERSISTANCE,
     override_format: Optional[str] = None,
     multiprocess: bool = False,
@@ -170,10 +170,6 @@ def Reader(
         inner_reader = GoogleCloudStorageReader
 
     # handle transitional states - use the new features to override the legacy features
-    if raw_path is not None:
-        logger.warning(
-            "`raw_path` is being deprecated, set `partitions` to an empty list `[]` instead."
-        )
     if str(raw_path).upper() == "TRUE":
         partitions = None
 
