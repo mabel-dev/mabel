@@ -100,23 +100,41 @@ class BlobWriter(object):
                             "`pyarrow` is missing, please install or includein requirements.txt"
                         )
 
-                    # pyarrow is opinionated to dealing with files - so we use files
-                    # to load into and read from pyarrow
-                    # first, we load the buffer into a file and then into pyarrow
-                    import tempfile
+                    import io
+                    from functools import reduce
 
-                    buffer_temp_file = tempfile.TemporaryFile()
-                    buffer_temp_file.write(self.buffer)
-                    buffer_temp_file.seek(0, 0)
-                    in_pyarrow_buffer = pyarrow.json.read_json(buffer_temp_file)
-                    buffer_temp_file.close()
+                    tempfile = io.BytesIO()
 
-                    # then we save from pyarrow into another file which we read
-                    pq_temp_file = tempfile.TemporaryFile()
-                    pq.write_table(in_pyarrow_buffer, pq_temp_file, compression="ZSTD")
-                    pq_temp_file.seek(0, 0)
-                    self.buffer = pq_temp_file.read()
-                    pq_temp_file.close()
+                    # convert to a list of dicts
+                    temp_list = [
+                        orjson.loads(record) for record in self.buffer.splitlines()
+                    ]
+
+                    # When writing to Parquet, the table gets the schema from the first
+                    # row, if this row is missing columns (shouldn't, but it happens)
+                    # it will be missing for all records, so get the columns from the
+                    # entire dataset and ensure all records have the same columns.
+
+                    # first, we get all the columns, from all the records
+                    columns = reduce(
+                        lambda x, y: x + [a for a in y.keys() if a not in x],
+                        temp_list,
+                        [],
+                    )
+
+                    # then we make sure each row has all the columns
+                    temp_list = [
+                        {column: row.get(column) for column in columns}
+                        for row in temp_list
+                    ]
+
+                    pytable = pyarrow.Table.from_pylist(temp_list)
+                    pyarrow.parquet.write_table(
+                        pytable, where=tempfile, compression="zstd"
+                    )
+
+                    tempfile.seek(0)
+                    self.buffer = tempfile.read()
 
                 if self.format == "zstd":
                     # zstandard is an non-optional installed dependency

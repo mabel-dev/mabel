@@ -8,6 +8,7 @@ try:
         json_parser = simdjson.Parser()
         return json_parser.parse(ds)
 
+
 except ImportError:
     import orjson
 
