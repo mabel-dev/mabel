@@ -101,10 +101,33 @@ class BlobWriter(object):
                         )
 
                     import io
+                    from functools import reduce
 
                     tempfile = io.BytesIO()
 
-                    temp_list = [orjson.loads(record) for record in self.buffer.splitlines()]
+                    # convert to a list of dicts
+                    temp_list = [
+                        orjson.loads(record) for record in self.buffer.splitlines()
+                    ]
+
+                    # When writing to Parquet, the table gets the schema from the first
+                    # row, if this row is missing columns (shouldn't, but it happens)
+                    # it will be missing for all records, so get the columns from the
+                    # entire dataset and ensure all records have the same columns.
+
+                    # first, we get all the columns, from all the records
+                    columns = reduce(
+                        lambda x, y: x + [a for a in y.keys() if a not in x],
+                        temp_list,
+                        [],
+                    )
+
+                    # then we make sure each row has all the columns
+                    temp_list = [
+                        {column: row.get(column) for column in columns}
+                        for row in temp_list
+                    ]
+
                     pytable = pyarrow.Table.from_pylist(temp_list)
                     pyarrow.parquet.write_table(
                         pytable, where=tempfile, compression="zstd"

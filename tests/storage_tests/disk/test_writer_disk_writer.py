@@ -41,6 +41,7 @@ def do_writer_compressed(algo):
     for i in range(int(1e5)):
         w.append({"test": True})
         w.append({"test": False})
+    w.append({"not_test": True})
     w.finalize()
     del w
 
@@ -87,7 +88,7 @@ def test_reader_writer_format_zstd():
     r = Reader(inner_reader=DiskReader, dataset="_temp")
     l = len(list(r))
     shutil.rmtree("_temp", ignore_errors=True)
-    assert l == 200000, l
+    assert l == 200001, l
 
 
 def test_reader_writer_format_jsonl():
@@ -103,7 +104,7 @@ def test_reader_writer_format_jsonl():
     r = Reader(inner_reader=DiskReader, dataset="_temp")
     l = len(list(r))
     shutil.rmtree("_temp", ignore_errors=True)
-    assert l == 200000, l
+    assert l == 200001, l
 
 
 def test_reader_writer_format_parquet():
@@ -119,7 +120,7 @@ def test_reader_writer_format_parquet():
     r = Reader(inner_reader=DiskReader, dataset="_temp")
     l = len(list(r))
     shutil.rmtree("_temp", ignore_errors=True)
-    assert l == 200000, l
+    assert l == 200001, l
 
 
 def test_reader_writer_format_default():
