@@ -29,8 +29,6 @@ class BlobWriter(object):
         **kwargs,
     ):
 
-        self.indexes = kwargs.get("index_on", [])
-
         self.format = format
         self.maximum_blob_size = blob_size
 
@@ -62,10 +60,6 @@ class BlobWriter(object):
                 serialized = orjson.dumps(record) + b"\n"  # type:ignore
             except TypeError:
                 serialized = json.dumps(record).encode() + b"\n"
-
-        # add the columns to the index
-        for column in self.indexes:
-            self.index_builders[column].add(self.records_in_buffer, record)
 
         # the newline isn't counted so add 1 to get the actual length
         # if this write would exceed the blob size, close it so another
@@ -144,15 +138,6 @@ class BlobWriter(object):
                     byte_data=bytes(self.buffer), override_blob_name=None
                 )
 
-                for column in self.indexes:
-                    index = self.index_builders[column].build()
-
-                    bucket, path, stem, suffix = get_parts(committed_blob_name)
-                    index_name = f"{bucket}/{path}{stem}.{safe_field_name(column)}.idx"
-                    committed_index_name = self.inner_writer.commit(
-                        byte_data=index.bytes(), override_blob_name=index_name
-                    )
-
                 if "BACKOUT" in committed_blob_name:
                     get_logger().warning(
                         f"{self.records_in_buffer:n} failed records written to BACKOUT partition `{committed_blob_name}`"
@@ -172,12 +157,6 @@ class BlobWriter(object):
 
     def open_buffer(self):
         self.buffer = bytearray()
-
-        # create index builders
-        self.index_builders = {}
-        for column in self.indexes:
-            self.index_builders[column] = IndexBuilder(column)
-
         self.records_in_buffer = 0
 
     def __del__(self):
