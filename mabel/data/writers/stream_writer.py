@@ -7,7 +7,7 @@ from pydantic import BaseModel  # type:ignore
 from typing import Union
 from .writer import Writer
 from .internals.writer_pool import WriterPool
-from mabel.utils import paths, text
+from mabel.utils import paths, text, dates
 from mabel.logging import get_logger
 
 
@@ -64,6 +64,8 @@ class StreamWriter(Writer):
 
         super().__init__(**kwargs)
 
+        self.date = dates.parse_iso(kwargs.get("date"))
+
         self.idle_timeout_seconds = idle_timeout_seconds
 
         # we have a pool of writers of size maximum_writers
@@ -100,7 +102,9 @@ class StreamWriter(Writer):
         # partition
 
         writes = 0
-        identity = paths.date_format(self.dataset_template, datetime.date.today())
+        identity = paths.date_format(
+            self.dataset_template, (self.date or datetime.datetime.utcnow().date())
+        )
 
         if isinstance(record, BaseModel):
             record = record.dict()
