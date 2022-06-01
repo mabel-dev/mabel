@@ -44,7 +44,7 @@ def test_fixed_dates():
         inner_writer=NullWriter,
         idle_timeout_seconds=10,
         format="text",
-        date='2022-01-01'
+        date="2022-01-01",
     )
 
     # when we fix the date (use the data param), we always write to the same date
