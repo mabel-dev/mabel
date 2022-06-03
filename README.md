@@ -18,7 +18,7 @@ for deployments to platforms like Kubernetes, GCP Cloud Run, AWS Fargate and Kna
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square)](https://github.com/psf/black)
 [![commit_freq](https://img.shields.io/github/commit-activity/m/mabel-dev/mabel)](https://github.com/mabel-dev/mabel/commits)
 [![last_commit](https://img.shields.io/github/last-commit/mabel-dev/mabel)](https://github.com/mabel-dev/mabel/commits)
-[![PyPI Latest Release](https://img.shields.io/badge/Python-3.7%20%7C%203.8%20%7C%203.9-blue)](https://pypi.org/project/mabel/)
+[![PyPI Latest Release](https://img.shields.io/badge/Python-3.7%20%7C%203.8%20%7C%203.9%20%7C%203.10-blue)](https://pypi.org/project/mabel/)
 
 
 - **Documentation** [GitHub Wiki](https://github.com/mabel-dev/mabel/wiki)  
