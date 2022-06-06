@@ -5,16 +5,18 @@ to be manually enabled.
 When a reliable use case for multiprocessing is identified it may be included into the
 automatic running of the data accesses.
 """
+import csimdjson
+import datetime
+import lz4.frame
+import logging
+import multiprocessing
 import os
 import time
-import datetime
-import csimdjson
-from queue import Empty
-import multiprocessing
-import logging
+
 from .parsers import json
-import lz4.frame
+
 from multiprocessing import Queue
+from queue import Empty
 
 
 TERMINATE_SIGNAL = -1

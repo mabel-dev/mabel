@@ -66,7 +66,7 @@ class Cursor:
             self.read_blobs.append(previous_blob)
             self.partition = ""
             self.location = -1
-        if self.partition and self.location > 0:
+        if self.partition and self.location >= 0:
             if self.partition in self.readable_blobs:
                 return self.partition
             partition_finder = [
