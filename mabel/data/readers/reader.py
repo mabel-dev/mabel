@@ -330,8 +330,7 @@ class _LowLevelReader(object):
 
     def __next__(self):
         if self._inner_line_reader is None:
-            line_reader = self._create_line_reader()
-            self._inner_line_reader = line_reader
+            self._inner_line_reader = self._create_line_reader()
 
         # get the the next line from the reader
         return self._inner_line_reader.__next__()
