@@ -1,18 +1,20 @@
 """
 Test the file reader
 """
-from itertools import count
 import os
 import sys
+
+sys.path.insert(1, os.path.join(sys.path[0], ".."))
+
 import orjson
 import pytest
 
-sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.data.internals.dictset import STORAGE_CLASS
 from mabel.adapters.disk import DiskReader
 from mabel.adapters.null import NullReader
 from mabel.data import Reader
 from mabel.utils import entropy
+
 from rich import traceback
 
 traceback.install()
@@ -27,22 +29,20 @@ def get_records():
 
 def test_cursor():
     """
-    We're going to test the cursor by doing math on the records, if we don't get the
-    right result, it's because we have more or less records than expected.
+    We're going to test the cursor by collecting the records and comparing them to
+    a representation of the original dataset.
 
     To make life easier, we're going to use a literal dataset.
     """
 
-    number_of_records = 10
+    number_of_records = 1000
 
     data = []
     for i in range(number_of_records):
         data.append({"one": 1, "index": i})
 
-    reader = Reader(inner_reader=NullReader, dataset="none", partitions=None, data=data)
-
     # create random offsets for testing - it's illogical to have a 0 cursor
-    offsets = (entropy.random_range(1, number_of_records) for i in range(20))
+    offsets = (entropy.random_range(1, number_of_records) for i in range(100))
 
     for offset in offsets:
 
@@ -81,8 +81,8 @@ def test_cursor():
             counter += record["one"]
             tracker.append(record["index"])
 
-        assert counter == number_of_records
-        assert tracker == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], tracker
+        #assert counter == number_of_records
+        assert tracker == list(range(number_of_records)), tracker
 
 
 def test_cursor_as_text():
