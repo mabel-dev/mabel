@@ -45,10 +45,10 @@ def test_bytes_to_int():
     assert entropy.bytes_to_int(b1) == 0
 
     b2 = [255] * 4
-    assert entropy.bytes_to_int(b2) == (2 ** 32 - 1)
+    assert entropy.bytes_to_int(b2) == (2**32 - 1)
 
     b3 = [255] * 8
-    assert entropy.bytes_to_int(b3) == (2 ** 64 - 1)
+    assert entropy.bytes_to_int(b3) == (2**64 - 1)
 
 
 def test_random_choice():
