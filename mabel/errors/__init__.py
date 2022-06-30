@@ -1,11 +1,42 @@
-from .base_exception import BaseException
 from .render_error_stack import render_error_stack
-from .validation_error import ValidationError
-from .invalid_combination_error import InvalidCombinationError
-from .invalid_data_set_error import InvalidDataSetError
-from .integrity_error import IntegrityError
-from .invalid_reader_configuration import InvalidReaderConfigError
-from .invalid_syntax import InvalidSyntaxError
-from .missing_dependency_error import MissingDependencyError
-from .data_not_found_error import DataNotFoundError
-from .invalid_argument import InvalidArgument
+
+
+class BaseException(Exception):
+    def __call__(self, *args):  # pragma: no cover
+        return self.__class__(*(self.args + args))
+
+
+class DataNotFoundError(BaseException):
+    pass
+
+
+class IntegrityError(BaseException):
+    pass
+
+
+class InvalidArgument(BaseException):
+    pass
+
+
+class InvalidCombinationError(BaseException):
+    pass
+
+
+class InvalidDataSetError(BaseException):
+    pass
+
+
+class InvalidReaderConfigError(BaseException):
+    pass
+
+
+class InvalidSyntaxError(BaseException):
+    pass
+
+
+class MissingDependencyError(BaseException):
+    pass
+
+
+class ValidationError(BaseException):
+    pass
