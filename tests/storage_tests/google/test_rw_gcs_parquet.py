@@ -11,7 +11,7 @@ from rich import traceback
 
 traceback.install()
 
-BUCKET_NAME = "PYTEST"
+BUCKET_NAME = "pytest"
 
 
 def set_up():

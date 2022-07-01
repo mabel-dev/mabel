@@ -1,17 +1,46 @@
-import threading
-import orjson
 import json
+import orjson
+import sys
+import threading
 import zstandard
-from ...internals.index import IndexBuilder
-from ...internals.records import flatten
-from ....logging import get_logger
-from ....utils.paths import get_parts
-from ....utils import safe_field_name
-from ....errors import MissingDependencyError
+
+from mabel.data.internals.records import flatten
+from mabel.logging import get_logger
+from mabel.errors import MissingDependencyError
 
 
 BLOB_SIZE = 64 * 1024 * 1024  # 64Mb, 16 files per gigabyte
 SUPPORTED_FORMATS_ALGORITHMS = ("jsonl", "zstd", "parquet", "text", "flat")
+
+
+def get_size(obj, seen=None):
+    """Recursively finds size of objects"""
+    size = sys.getsizeof(obj)
+
+    if seen is None:
+        seen = set()
+    obj_id = id(obj)
+    if obj_id in seen:
+        return 0
+
+    if isinstance(obj, (int, float)):
+        size = 8  # probably 4 bytes
+    if isinstance(obj, bool):
+        size = 1
+    if isinstance(obj, (str, bytes, bytearray)):
+        size = len(obj) + 1
+
+    # Important mark as seen *before* entering recursion to gracefully handle
+    # self-referential objects
+    seen.add(obj_id)
+    if isinstance(obj, dict):
+        size = sum([get_size(v, seen) for v in obj.values()])
+    #        size += sum([get_size(k, seen) for k in obj.keys()])
+    elif hasattr(obj, "__dict__"):
+        size += get_size(obj.__dict__, seen)
+    elif hasattr(obj, "__iter__") and not isinstance(obj, (str, bytes, bytearray)):
+        size += sum([get_size(i, seen) for i in obj])
+    return size
 
 
 class BlobWriter(object):
@@ -19,6 +48,7 @@ class BlobWriter(object):
     # in som failure scenarios commit is called before __init__, so we need to define
     # this variable outside the __init__.
     buffer = bytearray()
+    byte_count = 0
 
     def __init__(
         self,
@@ -42,7 +72,25 @@ class BlobWriter(object):
 
         self.open_buffer()
 
-    def append(self, record: dict = {}):
+        if self.format == "parquet":
+            self.append = self.arrow_append
+        else:
+            self.append = self.text_append
+
+    def arrow_append(self, record: dict = {}):
+        record_length = get_size(record)
+        # if this write would exceed the blob size, close it
+        if (
+            self.byte_count + record_length
+        ) > self.maximum_blob_size and self.records_in_buffer > 0:
+            self.commit()
+            self.open_buffer()
+
+        self.byte_count += record_length
+        self.records_in_buffer += 1
+        self.buffer.append(record)  # type:ignore
+
+    def text_append(self, record: dict = {}):
         # serialize the record
         if self.format == "text":
             if isinstance(record, bytes):
@@ -61,9 +109,8 @@ class BlobWriter(object):
             except TypeError:
                 serialized = json.dumps(record).encode() + b"\n"
 
-        # the newline isn't counted so add 1 to get the actual length
-        # if this write would exceed the blob size, close it so another
-        # blob will be created
+        # the newline isn't counted so add 1 to get the actual length if this write
+        # would exceed the blob size, close it so another blob will be created
         if len(self.buffer) > self.maximum_blob_size and self.records_in_buffer > 0:
             self.commit()
             self.open_buffer()
@@ -99,11 +146,6 @@ class BlobWriter(object):
 
                     tempfile = io.BytesIO()
 
-                    # convert to a list of dicts
-                    temp_list = [
-                        orjson.loads(record) for record in self.buffer.splitlines()
-                    ]
-
                     # When writing to Parquet, the table gets the schema from the first
                     # row, if this row is missing columns (shouldn't, but it happens)
                     # it will be missing for all records, so get the columns from the
@@ -112,17 +154,17 @@ class BlobWriter(object):
                     # first, we get all the columns, from all the records
                     columns = reduce(
                         lambda x, y: x + [a for a in y.keys() if a not in x],
-                        temp_list,
+                        self.buffer,
                         [],
                     )
 
                     # then we make sure each row has all the columns
-                    temp_list = [
+                    self.buffer = [
                         {column: row.get(column) for column in columns}
-                        for row in temp_list
+                        for row in self.buffer
                     ]
 
-                    pytable = pyarrow.Table.from_pylist(temp_list)
+                    pytable = pyarrow.Table.from_pylist(self.buffer)
                     pyarrow.parquet.write_table(
                         pytable, where=tempfile, compression="zstd"
                     )
@@ -144,19 +186,29 @@ class BlobWriter(object):
                     )
                 get_logger().debug(
                     {
+                        "format": self.format,
                         "committed_blob": committed_blob_name,
-                        "records": self.records_in_buffer,
-                        "bytes": len(self.buffer),
+                        "records": len(self.buffer)
+                        if self.format == "parquet"
+                        else self.records_in_buffer,
+                        "bytes": self.byte_count
+                        if self.format == "parquet"
+                        else len(self.buffer),
                     }
                 )
             finally:
                 lock.release()
 
-        self.buffer = bytearray()
+        self.open_buffer()
         return committed_blob_name
 
     def open_buffer(self):
-        self.buffer = bytearray()
+        if self.format == "parquet":
+            self.buffer = []
+            self.byte_count = 10000  # parquet has headers etc
+        else:
+            self.buffer = bytearray()
+            self.byte_count = 0
         self.records_in_buffer = 0
 
     def __del__(self):
