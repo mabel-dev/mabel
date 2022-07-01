@@ -42,8 +42,22 @@ def do_writer_compressed(algo):
     print(algo)
     w = BatchWriter(inner_writer=DiskWriter, dataset="_temp", format=algo)
     for i in range(int(1e5)):
-        w.append({"test": True, "another": "value", "list": list(range(100)), "today": datetime.datetime.now()})
-        w.append({"test": False, "fill": 1, "float": 1.0, "numbers": ["one", "two", "three", "four", "five"]})
+        w.append(
+            {
+                "test": True,
+                "another": "value",
+                "list": list(range(100)),
+                "today": datetime.datetime.now(),
+            }
+        )
+        w.append(
+            {
+                "test": False,
+                "fill": 1,
+                "float": 1.0,
+                "numbers": ["one", "two", "three", "four", "five"],
+            }
+        )
     w.append({"not_test": True})
     w.finalize()
     del w
@@ -121,10 +135,16 @@ def test_reader_writer_format_parquet():
     len(c) == 0, c
 
     print("written")
-    parq = Reader(inner_reader=DiskReader, dataset="_temp", persistence=STORAGE_CLASS.MEMORY)
+    parq = Reader(
+        inner_reader=DiskReader, dataset="_temp", persistence=STORAGE_CLASS.MEMORY
+    )
     records = parq.count()
     tests = parq.collect_list("test")
-    dates = [isinstance(a, datetime.datetime) for a in parq.collect_list("today") if a is not None]
+    dates = [
+        isinstance(a, datetime.datetime)
+        for a in parq.collect_list("today")
+        if a is not None
+    ]
     shutil.rmtree("_temp", ignore_errors=True)
     assert records == 200001, records
     assert tests.count(True) == 100000, tests.count(True)

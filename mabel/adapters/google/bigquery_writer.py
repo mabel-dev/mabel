@@ -12,7 +12,7 @@ from mabel.data.writers.internals.base_inner_writer import BaseInnerWriter
 from mabel.errors import MissingDependencyError
 
 try:
-    from google.cloud import bigquery
+    from google.cloud import bigquery  # type:ignore
 
     google_bigquery_installed = True
 except ImportError:  # pragma: no cover
@@ -23,9 +23,9 @@ logger = get_logger()
 MILLISECONDS_PER_DAY = 86400000
 
 
-class FieldNode(str, Enum):
-    REQUIRED: "REQUIRED"
-    NULLABLE: "NULLABLE"
+class FieldMode(str, Enum):
+    REQUIRED = "REQUIRED"
+    NULLABLE = "NULLABLE"
 
 
 FieldTypeMapping = {
@@ -62,10 +62,14 @@ class GoogleBigQueryWriter(BaseInnerWriter):
             # we need to work this out programatically
             schema = [
                 bigquery.SchemaField(
-                    name="_system_date", field_type="TIMESTAMP", mode="REQUIRED"
+                    name="_system_date", field_type="TIMESTAMP", mode=FieldMode.REQUIRED
                 ),
-                bigquery.SchemaField(name="name", field_type="STRING", mode="REQUIRED"),
-                bigquery.SchemaField(name="age", field_type="INTEGER", mode="REQUIRED"),
+                bigquery.SchemaField(
+                    name="name", field_type="STRING", mode=FieldMode.REQUIRED
+                ),
+                bigquery.SchemaField(
+                    name="age", field_type="INTEGER", mode=FieldMode.REQUIRED
+                ),
             ]
             table = bigquery.Table(table_ref, schema=schema)
 

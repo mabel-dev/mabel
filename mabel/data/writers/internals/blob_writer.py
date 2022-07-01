@@ -35,10 +35,10 @@ def get_size(obj, seen=None):
     seen.add(obj_id)
     if isinstance(obj, dict):
         size = sum([get_size(v, seen) for v in obj.values()])
-#        size += sum([get_size(k, seen) for k in obj.keys()])
-    elif hasattr(obj, '__dict__'):
+    #        size += sum([get_size(k, seen) for k in obj.keys()])
+    elif hasattr(obj, "__dict__"):
         size += get_size(obj.__dict__, seen)
-    elif hasattr(obj, '__iter__') and not isinstance(obj, (str, bytes, bytearray)):
+    elif hasattr(obj, "__iter__") and not isinstance(obj, (str, bytes, bytearray)):
         size += sum([get_size(i, seen) for i in obj])
     return size
 
@@ -80,13 +80,15 @@ class BlobWriter(object):
     def arrow_append(self, record: dict = {}):
         record_length = get_size(record)
         # if this write would exceed the blob size, close it
-        if (self.byte_count + record_length) > self.maximum_blob_size and self.records_in_buffer > 0:
+        if (
+            self.byte_count + record_length
+        ) > self.maximum_blob_size and self.records_in_buffer > 0:
             self.commit()
             self.open_buffer()
 
         self.byte_count += record_length
         self.records_in_buffer += 1
-        self.buffer.append(record)
+        self.buffer.append(record)  # type:ignore
 
     def text_append(self, record: dict = {}):
         # serialize the record
@@ -186,8 +188,12 @@ class BlobWriter(object):
                     {
                         "format": self.format,
                         "committed_blob": committed_blob_name,
-                        "records": len(self.buffer) if self.format == "parquet" else self.records_in_buffer,
-                        "bytes": self.byte_count if self.format == "parquet" else len(self.buffer),
+                        "records": len(self.buffer)
+                        if self.format == "parquet"
+                        else self.records_in_buffer,
+                        "bytes": self.byte_count
+                        if self.format == "parquet"
+                        else len(self.buffer),
                     }
                 )
             finally:
