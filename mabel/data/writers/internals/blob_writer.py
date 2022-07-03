@@ -1,3 +1,4 @@
+import datetime
 import json
 import orjson
 import sys
@@ -14,7 +15,12 @@ SUPPORTED_FORMATS_ALGORITHMS = ("jsonl", "zstd", "parquet", "text", "flat")
 
 
 def get_size(obj, seen=None):
-    """Recursively finds size of objects"""
+    """
+    Recursively approximate the size of objects.
+    We don't know the actual size until we save, so we approximate the size based
+    on some rules - this will be wrong due to RLE, headers, precision and other
+    factors.
+    """
     size = sys.getsizeof(obj)
 
     if seen is None:
@@ -28,18 +34,21 @@ def get_size(obj, seen=None):
     if isinstance(obj, bool):
         size = 1
     if isinstance(obj, (str, bytes, bytearray)):
-        size = len(obj) + 1
+        size = len(obj) + 4
+    if obj is None:
+        size = 1
+    if isinstance(obj, datetime.datetime):
+        size = 8
 
     # Important mark as seen *before* entering recursion to gracefully handle
     # self-referential objects
     seen.add(obj_id)
     if isinstance(obj, dict):
-        size = sum([get_size(v, seen) for v in obj.values()])
-    #        size += sum([get_size(k, seen) for k in obj.keys()])
+        size = sum([get_size(v, seen) for v in obj.values()]) + 8
     elif hasattr(obj, "__dict__"):
-        size += get_size(obj.__dict__, seen)
+        size += get_size(obj.__dict__, seen) + 8
     elif hasattr(obj, "__iter__") and not isinstance(obj, (str, bytes, bytearray)):
-        size += sum([get_size(i, seen) for i in obj])
+        size += sum([get_size(i, seen) for i in obj]) + 8
     return size
 
 
@@ -86,7 +95,7 @@ class BlobWriter(object):
             self.commit()
             self.open_buffer()
 
-        self.byte_count += record_length
+        self.byte_count += record_length + 8
         self.records_in_buffer += 1
         self.buffer.append(record)  # type:ignore
 
