@@ -1,10 +1,10 @@
+import orjson
 import os
 import re
-import orjson
-import datetime
+
 from typing import Any, Union, List, Dict
-from ...errors import ValidationError
-from mabel.data.internals.display import ascii_table
+
+from mabel.errors import ValidationError
 
 
 DEFAULT_MIN = -9223372036854775808
@@ -119,6 +119,7 @@ VALIDATORS = {
     "string": is_string,
     "boolean": is_boolean,
     "cve": is_cve,
+
     "TIMESTAMP": is_date,
     "OTHER": other_validator,
     "LIST": is_list,
@@ -126,6 +127,7 @@ VALIDATORS = {
     "BOOLEAN": is_boolean,
     "NUMERIC": is_numeric,
     "STRUCT": other_validator,
+    "NULLABLE": is_null,
 }
 
 

@@ -95,7 +95,7 @@ class BlobWriter(object):
             self.commit()
             self.open_buffer()
 
-        self.byte_count += record_length + 8
+        self.byte_count += record_length + 16
         self.records_in_buffer += 1
         self.buffer.append(record)  # type:ignore
 
@@ -214,7 +214,7 @@ class BlobWriter(object):
     def open_buffer(self):
         if self.format == "parquet":
             self.buffer = []
-            self.byte_count = 10000  # parquet has headers etc
+            self.byte_count = 10240  # parquet has headers etc
         else:
             self.buffer = bytearray()
             self.byte_count = 0
