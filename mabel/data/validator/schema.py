@@ -113,7 +113,7 @@ class Schema:
         try:
             # read the schema and look up the validators
             self._validators = {  # type:ignore
-                item.get("name"): VALIDATORS[item.get("type")]()
+                item.get("name"): VALIDATORS[item.get("type")]()  # type:ignore
                 for item in definition  # type:ignore
             }
 

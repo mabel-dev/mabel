@@ -130,12 +130,12 @@ def date_range(
     end_date = parse_iso(end_date)
     if end_date is None:
         end_date = datetime.datetime.utcnow()
-    end_date = end_date.replace(minute=0, second=0, microsecond=0)
+    end_date = end_date.replace(minute=0, second=0, microsecond=0)  # type:ignore
 
     start_date = parse_iso(start_date)
     if start_date is None:
         start_date = datetime.datetime.utcnow()
-    start_date = start_date.replace(minute=0, second=0, microsecond=0)
+    start_date = start_date.replace(minute=0, second=0, microsecond=0)  # type:ignore
 
     if end_date < start_date:  # type:ignore
         raise ValueError(
@@ -143,6 +143,7 @@ def date_range(
         )
 
     for n in range(
-        int((end_date - start_date).total_seconds() // SECONDS_PER_HOUR) + 1
+        int((end_date - start_date).total_seconds() // SECONDS_PER_HOUR)
+        + 1  # type:ignore
     ):  # type:ignore
         yield start_date + datetime.timedelta(hours=n)  # type:ignore
