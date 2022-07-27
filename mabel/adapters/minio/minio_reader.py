@@ -55,4 +55,3 @@ class MinIoReader(BaseInnerReader):
             return stream.read()
         finally:
             stream.close()
-

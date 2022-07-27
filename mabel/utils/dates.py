@@ -143,7 +143,7 @@ def date_range(
         )
 
     for n in range(
-        int((end_date - start_date).total_seconds() // SECONDS_PER_HOUR)
+        int((end_date - start_date).total_seconds() // SECONDS_PER_HOUR)  # type:ignore
         + 1  # type:ignore
     ):  # type:ignore
         yield start_date + datetime.timedelta(hours=n)  # type:ignore
