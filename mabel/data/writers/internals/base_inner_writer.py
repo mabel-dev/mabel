@@ -5,12 +5,14 @@ Google Cloud Storage or MinIO.
 
 The primary activity is contained in the .commit() method.
 """
-import os
 import abc
-import uuid
+import os
 import time
+import uuid
+
 from functools import lru_cache
-from ....utils import paths
+
+from mabel.utils import paths
 
 STEM = "{stem}"
 

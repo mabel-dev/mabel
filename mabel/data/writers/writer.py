@@ -1,12 +1,16 @@
-import orjson
 import datetime
-from pydantic import BaseModel
+
 from typing import Any, Optional, Union
-from .internals.blob_writer import BlobWriter
-from ..validator import Schema
-from ...utils import paths, dates
-from ...errors import ValidationError, InvalidDataSetError, MissingDependencyError
-from ...logging import get_logger
+
+import orjson
+
+from pydantic import BaseModel
+
+from mabel.data.writers.internals.blob_writer import BlobWriter
+from mabel.data.validator import Schema
+from mabel.errors import ValidationError, InvalidDataSetError, MissingDependencyError
+from mabel.logging import get_logger
+from mabel.utils import paths, dates
 
 logger = get_logger()
 
@@ -70,6 +74,8 @@ class Writer:
         self.schema = None
         if isinstance(schema, list):
             schema = Schema(schema)
+        if isinstance(schema, dict):
+            schema = Schema(schema)
         if isinstance(schema, Schema):
             self.schema = schema
 
@@ -106,8 +112,9 @@ class Writer:
         ] = f"{arg_dict.get('inner_writer', type(None)).__name__}"  # type:ignore
         logger.debug(orjson.dumps(arg_dict))
 
-        # default index
-        kwargs["index_on"] = kwargs.get("index_on", [])
+        # add the schema to the writer - pyarrow uses this
+        # add after the config has been written to the logs
+        kwargs["schema"] = self.schema
 
         # create the writer
         self.blob_writer = BlobWriter(**kwargs)
