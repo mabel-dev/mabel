@@ -139,13 +139,15 @@ def Reader(
             the request (such as the Query application). This allows a whitelist
             of allowable resources to be defined.
         partitions: list (optional)
+            List of folder names, with datetime placeholders, to use to build a path
+            to the data files.
         partition_filter: tuple (optional)
-            provide a hint on how to filter the partitions, this may be ignored.
+            Provide a hint on how to filter the partitions, as a single tuple in DNF
+            notiation, this may be ignored.
 
     Returns:
         DictSet
 
-    Raises:
 
     """
     # We can provide an optional whitelist of prefixes that we allow access to

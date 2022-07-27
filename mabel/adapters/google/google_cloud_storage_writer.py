@@ -60,7 +60,7 @@ class GoogleCloudStorageWriter(BaseInnerWriter):
                 byte_data, content_type="application/octet-stream"
             )
             return blob_name
-        except Exception as err:
+        except Exception as err:  # pragma: no cover
             import traceback
 
             logger = get_logger()

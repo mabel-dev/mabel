@@ -28,15 +28,15 @@ class EmptyReader(BaseInnerReader):
         pass
 
 
-START_DATE = datetime.date(2000, 1, 1)
-END_DATE = datetime.date(2010, 6, 15)
-TODAY = datetime.date.today()
+START_DATE = datetime.datetime(2000, 1, 1)
+END_DATE = datetime.datetime(2010, 6, 15)
+TODAY = datetime.datetime.utcnow().replace(minute=0, second=0, microsecond=0)
 
 
 def test_start_date_only():
     subject = EmptyReader(dataset="", start_date=START_DATE)
     assert subject.start_date == START_DATE, subject.start_date
-    assert subject.end_date == TODAY
+    assert subject.end_date == TODAY, subject.end_date
 
 
 def test_end_date_only():

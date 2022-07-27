@@ -6,6 +6,7 @@ import threading
 import zstandard
 
 from mabel.data.internals.records import flatten
+from mabel.data.validator import Schema
 from mabel.logging import get_logger
 from mabel.errors import MissingDependencyError
 
@@ -30,7 +31,7 @@ def get_size(obj, seen=None):
         return 0
 
     if isinstance(obj, (int, float)):
-        size = 8  # probably 4 bytes
+        size = 6  # probably 4 bytes, could be 8
     if isinstance(obj, bool):
         size = 1
     if isinstance(obj, (str, bytes, bytearray)):
@@ -65,6 +66,7 @@ class BlobWriter(object):
         inner_writer=None,  # type:ignore
         blob_size: int = BLOB_SIZE,
         format: str = "zstd",
+        schema: Schema = None,
         **kwargs,
     ):
 
@@ -85,6 +87,8 @@ class BlobWriter(object):
             self.append = self.arrow_append
         else:
             self.append = self.text_append
+
+        self.schema = schema
 
     def arrow_append(self, record: dict = {}):
         record_length = get_size(record)
@@ -130,6 +134,41 @@ class BlobWriter(object):
 
         return self.records_in_buffer
 
+    def _normalize_arrow_schema(self, table, mabel_schema):
+        """
+        Because we partition the data, there are instances where nulls in one of the
+        columns isn't being correctly identified as the target type.
+
+        We only handle a subset of types here, so it doesn't remove the problem.
+        """
+        try:
+            import pyarrow
+        except ImportError:
+            raise MissingDependencyError(
+                "`pyarrow` missing, please install or include in `requirements.txt`."
+            )
+
+        type_map = {
+            "TIMESTAMP": pyarrow.timestamp("us"),
+            "VARCHAR": pyarrow.string(),
+            "BOOLEAN": pyarrow.bool_(),
+            "NUMERIC": pyarrow.float64(),
+        }
+
+        schema = table.schema
+
+        for column in schema.names:
+            # if we know about the column and it's a type we handle
+            if column in mabel_schema and mabel_schema[column] in type_map:
+                index = table.column_names.index(column)
+                # update the schema
+                schema = schema.set(
+                    index, pyarrow.field(column, type_map[mabel_schema[column]])
+                )
+        # apply the updated schema
+        table = table.cast(target_schema=schema)
+        return table
+
     def commit(self):
 
         committed_blob_name = ""
@@ -143,11 +182,10 @@ class BlobWriter(object):
 
                 if self.format == "parquet":
                     try:
-                        import pyarrow.json
-                        import pyarrow.parquet as pq  # type:ignore
+                        import pyarrow
                     except ImportError as err:  # pragma: no cover
                         raise MissingDependencyError(
-                            "`pyarrow` is missing, please install or includein requirements.txt"
+                            "`pyarrow` is missing, please install or include in requirements.txt"
                         )
 
                     import io
@@ -174,6 +212,11 @@ class BlobWriter(object):
                     ]
 
                     pytable = pyarrow.Table.from_pylist(self.buffer)
+
+                    # if we have a schema, make effort to align the parquet file to it
+                    if self.schema:
+                        pytable = self._normalize_arrow_schema(pytable, self.schema)
+
                     pyarrow.parquet.write_table(
                         pytable, where=tempfile, compression="zstd"
                     )
@@ -214,7 +257,7 @@ class BlobWriter(object):
     def open_buffer(self):
         if self.format == "parquet":
             self.buffer = []
-            self.byte_count = 10240  # parquet has headers etc
+            self.byte_count = 5120  # parquet has headers etc
         else:
             self.buffer = bytearray()
             self.byte_count = 0

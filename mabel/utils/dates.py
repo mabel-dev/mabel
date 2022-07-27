@@ -15,15 +15,7 @@ TIMEDELTA_REGEX = (
     r"((?P<seconds>-?\d+)s)?"
 )
 TIMEDELTA_PATTERN = re.compile(TIMEDELTA_REGEX, re.IGNORECASE)
-
-
-def extract_date(value):
-    if isinstance(value, str):
-        value = parse_iso(value)
-    if isinstance(value, (datetime.date, datetime.datetime)):
-        return datetime.date(value.year, value.month, value.day)
-    return datetime.date.today()
-
+SECONDS_PER_HOUR: int = 3600
 
 # based on:
 # https://gist.github.com/santiagobasulto/698f0ff660968200f873a2f9d1c4113c#file-parse_timedeltas-py
@@ -132,16 +124,26 @@ def date_range(
     end_date: Optional[Union[str, datetime.date]],
 ):
     """
-    An interator over a range of dates
+    An interator over a range of dates, hour-by-hour
     """
     # if dates aren't provided, use today
-    end_date = extract_date(end_date)
-    start_date = extract_date(start_date)
+    end_date = parse_iso(end_date)
+    if end_date is None:
+        end_date = datetime.datetime.utcnow()
+    end_date = end_date.replace(minute=0, second=0, microsecond=0)  # type:ignore
+
+    start_date = parse_iso(start_date)
+    if start_date is None:
+        start_date = datetime.datetime.utcnow()
+    start_date = start_date.replace(minute=0, second=0, microsecond=0)  # type:ignore
 
     if end_date < start_date:  # type:ignore
         raise ValueError(
             "date_range: end_date must be the same or later than the start_date "
         )
 
-    for n in range(int((end_date - start_date).days) + 1):  # type:ignore
-        yield start_date + datetime.timedelta(n)  # type:ignore
+    for n in range(
+        int((end_date - start_date).total_seconds() // SECONDS_PER_HOUR)  # type:ignore
+        + 1  # type:ignore
+    ):  # type:ignore
+        yield start_date + datetime.timedelta(hours=n)  # type:ignore

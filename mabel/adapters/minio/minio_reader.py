@@ -55,10 +55,3 @@ class MinIoReader(BaseInnerReader):
             return stream.read()
         finally:
             stream.close()
-
-    @lru_cache(4)
-    def get_object_size(self, bucket_name, blob_name):
-        try:
-            return self.minio.stat_object(bucket_name, blob_name).size
-        except:
-            return 0

@@ -94,6 +94,7 @@ class BatchWriter(Writer):
         super().__init__(**kwargs)
 
         self.dataset = frame_id
+        kwargs["schema"] = self.schema
 
         # create the writer
         self.blob_writer = BlobWriter(**kwargs)
