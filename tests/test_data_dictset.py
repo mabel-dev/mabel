@@ -179,6 +179,10 @@ def test_filters():
     assert dnf.count() == 1
     assert dnf.first() == {"key": 1, "value": "one", "plus1": 2}
 
+    call = ds.filter(lambda x: x["key"] == 1)
+    assert call.count() == 1
+    assert call.first() == {"key": 1, "value": "one", "plus1": 2}
+
 
 def test_hash():
     data = [

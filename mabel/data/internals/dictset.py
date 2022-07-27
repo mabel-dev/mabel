@@ -345,7 +345,7 @@ class DictSet(object):
             return
 
         # if the iterator allows us to access items directly, use that
-        if hasattr(self._iterator, "__getitem__"):
+        if hasattr(self._iterator, "__getitem__"):  # pragma: no cover
             yield from [self._iterator[i] for i in locations]
             return
 
