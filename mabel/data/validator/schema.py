@@ -154,6 +154,11 @@ class Schema:
         result = True
         self.last_error = ""
 
+        difference = set(subject.keys()).difference(self._validators.keys())
+        if len(difference) != 0:
+            self.last_error += f"Column names in record do not match the Schema - {', '.join(difference)}"
+            result = False
+
         for key, value in self._validators.items():
             if not self._field_validator(subject.get(key), value):
                 result = False
