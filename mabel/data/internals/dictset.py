@@ -24,30 +24,28 @@ limitations under the License.
 # python setup.py build_ext --inplace
 
 import os
-import orjson
 import statistics
 
-from siphashc import siphash
-from operator import itemgetter
+from enum import Enum
 from functools import reduce
-
 from typing import Iterable, Dict, Any, Union
+from warnings import warn
 
-from ...errors import MissingDependencyError
-from ...utils.ipython import is_running_from_ipython
+import orjson
 
-from .display import html_table, ascii_table
-from .storage_classes import (
-    StorageClassMemory,
-    StorageClassDisk,
-    StorageClassCompressedMemory,
-)
+from siphashc import siphash
+
+from mabel.errors import MissingDependencyError
+from mabel.utils.ipython import is_running_from_ipython
+
 from .expression import Expression
+from .display import html_table, ascii_table
 from .dnf_filters import DnfFilters
 from .dumb_iterator import DumbIterator
 from .group_by import GroupBy
-
-from enum import Enum
+from .storage_classes import StorageClassCompressedMemory
+from .storage_classes import StorageClassDisk
+from .storage_classes import StorageClassMemory
 
 
 class STORAGE_CLASS(int, Enum):
@@ -307,10 +305,9 @@ class DictSet(object):
                         "".join([str(item.get(c, "$$")) for c in columns])
                     )
                 else:
-                    # ensure the fields are in the same order
-                    # this is quicker than dealing with dictionaries
-                    hashed_item = hash(
-                        "".join([f"{k}:{item[k]}" for k in sorted(item.keys())])
+                    hashed_item = reduce(
+                        lambda x, y: x ^ y,
+                        [hash(f"{i},{v}") for i, v in enumerate(item.values())], 0
                     )
                 if hashed_item not in hash_list:
                     yield item
@@ -379,30 +376,19 @@ class DictSet(object):
         Returns:
             Pandas DataFrame
         """
-
-        def to_dict(obj):
-            import orjson
-
-            if hasattr(obj, "mini"):
-                return orjson.loads(obj.mini)
-            return obj
-
         try:
             import pandas
         except ImportError:  # pragma: no cover
             raise MissingDependencyError(
                 "`pandas` is missing, please install or include in requirements.txt"
             )
-        return pandas.DataFrame([to_dict(r) for r in iter(self._iterator)])
+        return pandas.DataFrame([r for r in iter(self._iterator)])
 
     def first(self) -> dict:
         """
         Retun the first item in the DictSet
         """
-        oneth = next(iter(self._iterator), None)
-        if hasattr(oneth, "as_dict"):
-            return oneth.as_dict()  # type:ignore
-        return oneth  # type:ignore
+        return next(iter(self._iterator), None)
 
     def take(self, items: int):
         """
@@ -478,6 +464,9 @@ class DictSet(object):
         if hasattr(self._iterator, "cursor"):
             return self._iterator.cursor
         return None
+
+    def project(self, columns):
+        return self.select(columns)
 
     def select(self, columns):
         """

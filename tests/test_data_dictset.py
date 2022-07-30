@@ -160,7 +160,7 @@ def test_items():
         {"key": 4, "value": "four", "plus1": 5},
     ]
     ds = DictSet(data, storage_class=STORAGE_CLASS.DISK)
-    items = list([i.as_dict() for i in ds.get_items(0, 2)])
+    items = list(ds.get_items(0, 2))
     assert items == [
         {"key": 1, "value": "one", "plus1": 2},
         {"key": 3, "value": "three", "plus1": 4},

@@ -1,8 +1,7 @@
-orjson
 bitarray
-zstandard
+cython
 lz4
+orjson
 pydantic
 siphashc
-pysimdjson
-cython
+zstandard

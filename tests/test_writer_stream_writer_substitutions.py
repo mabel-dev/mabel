@@ -2,7 +2,6 @@ import os
 import sys
 
 import orjson
-import simdjson
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.adapters.null import NullWriter
@@ -30,11 +29,9 @@ def test_writer_substitutions():
 
         # convert to a simd object to test behavior
         as_json = orjson.dumps(record)
-        parser = simdjson.Parser()
-        as_simd = parser.parse(as_json)
 
-        combinations = w.append(as_simd)
-        assert combinations == as_simd["combinations"], combinations
+        combinations = w.append(record)
+        assert combinations == record["combinations"], combinations
 
 
 if __name__ == "__main__":  # pragma: no cover

@@ -30,7 +30,6 @@ def test_validator_all_valid_values():
     TEST_SCHEMA = {
         "fields": [
             {"name": "string_field", "type": "VARCHAR"},
-            {"name": "str_null_field", "type": "VARCHAR"},
             {"name": "integer_field", "type": "NUMERIC"},
             {"name": "boolean_field", "type": "BOOLEAN"},
             {"name": "date_field", "type": "TIMESTAMP"},
@@ -214,8 +213,8 @@ def test_unknown_type():
 def test_raise_exception():
 
     INVALID_FORM_DATA = {"number_field": "one hundred"}
-    EXTRA_FIELD_DATA = {"number_field":100, "extra": True}
-    MISSING_FIELD_DATA = {"correct":False}
+    EXTRA_FIELD_DATA = {"number_field": 100, "extra": True}
+    MISSING_FIELD_DATA = {}
     TEST_SCHEMA = {"fields": [{"name": "number_field", "type": "NUMERIC"}]}
 
     test = Schema(TEST_SCHEMA)
@@ -223,8 +222,10 @@ def test_raise_exception():
         test.validate(INVALID_FORM_DATA, raise_exception=True)
     with pytest.raises(ValidationError):
         test.validate(EXTRA_FIELD_DATA, raise_exception=True)
-    with pytest.raises(ValidationError):
-        test.validate(MISSING_FIELD_DATA, raise_exception=True)
+
+    # missing data is None - don't fail schema validation
+    # if it should fail it needs an Expectation
+    test.validate(MISSING_FIELD_DATA, raise_exception=True)
 
 
 def test_call_alias():

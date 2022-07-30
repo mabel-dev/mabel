@@ -1,4 +1,3 @@
-import datetime
 import pytest
 import os
 import sys
@@ -12,9 +11,8 @@ traceback.install()
 
 def test_blockers():
 
-    # project is required
-    with pytest.raises((ValueError, TypeError)):
-        r = GoogleCloudStorageReader(dataset="path")
+    # project is no longer required
+    r = GoogleCloudStorageReader(dataset="path")
 
     # path is required
     with pytest.raises((ValueError, TypeError)):

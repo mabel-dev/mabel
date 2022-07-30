@@ -125,6 +125,8 @@ class Schema:
         if len(self._validators) == 0:
             raise ValueError("Invalid schema specification")
 
+        self._validator_columns = set(self._validators.keys())
+
     def _field_validator(self, value, validator) -> bool:
         """
         Execute a set of validator functions (the _is_x) against a value.
@@ -154,9 +156,11 @@ class Schema:
         result = True
         self.last_error = ""
 
-        difference = set(subject.keys()).difference(self._validators.keys())
-        if len(difference) != 0:
-            self.last_error += f"Column names in record do not match the Schema - {', '.join(difference)}"
+        # find columns in the data, not in the schema
+        # Note: fields in the schema but not in the data passes schema validation
+        additional_columns = set(subject.keys()) - self._validator_columns
+        if len(additional_columns) > 0:
+            self.last_error += f"Column names in record not found in Schema - {', '.join(additional_columns)}"
             result = False
 
         for key, value in self._validators.items():

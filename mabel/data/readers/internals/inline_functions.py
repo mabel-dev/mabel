@@ -4,7 +4,7 @@ These are a set of functions that can be applied to data as it passes through.
 These are the function definitions, the processor which uses these is in the
 'inline_evaluator' module.
 """
-from os import truncate
+from math import trunc
 import orjson
 import datetime
 from siphashc import siphash
@@ -134,7 +134,7 @@ def concat(*items):
     """
     sep = ""
     if len(items) == 1 and (
-        isinstance(items[0], (list, tuple, set)) or hasattr(items[0], "as_list")
+        isinstance(items[0], (list, tuple, set))
     ):
         items = items[0]
         sep = ", "
@@ -217,7 +217,7 @@ FUNCTIONS = {
     "CONCAT": concat,
     # NUMBERS
     "ROUND": round,
-    "TRUNC": parse_number(float, truncate),
+    "TRUNC": parse_number(float, trunc),
     "INTEGER": parse_number(float, int),
     "DOUBLE": parse_number(float, float),
     # BOOLEAN

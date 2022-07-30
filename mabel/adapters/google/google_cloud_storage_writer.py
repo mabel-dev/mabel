@@ -1,8 +1,10 @@
 import os
+
 from urllib3.exceptions import ProtocolError  # type:ignore
-from ...logging.create_logger import get_logger
-from ...data.writers.internals.base_inner_writer import BaseInnerWriter
-from ...errors import MissingDependencyError
+
+from mabel.logging.create_logger import get_logger
+from mabel.data.writers.internals.base_inner_writer import BaseInnerWriter
+from mabel.errors import MissingDependencyError
 
 try:
     from google.auth.credentials import AnonymousCredentials  # type:ignore
@@ -19,14 +21,13 @@ except ImportError:  # pragma: no cover
 
 
 class GoogleCloudStorageWriter(BaseInnerWriter):
-    def __init__(self, project: str, credentials=None, **kwargs):
+    def __init__(self, credentials=None, **kwargs):
         if not google_cloud_storage_installed:  # pragma: no cover
             raise MissingDependencyError(
                 "`google-cloud-storage` is missing, please install or include in requirements.txt"
             )
 
         super().__init__(**kwargs)
-        self.project = project
         self.credentials = credentials
 
         predicate = retry.if_exception_type(
@@ -39,11 +40,10 @@ class GoogleCloudStorageWriter(BaseInnerWriter):
         # this means we're testing
         if os.environ.get("STORAGE_EMULATOR_HOST") is not None:
             client = storage.Client(
-                credentials=AnonymousCredentials(),
-                project=self.project,
+                credentials=AnonymousCredentials()
             )
         else:  # pragma: no cover
-            client = storage.Client(project=self.project, credentials=self.credentials)
+            client = storage.Client(credentials=self.credentials)
         self.gcs_bucket = client.get_bucket(self.bucket)
         self.filename = self.filename_without_bucket
 

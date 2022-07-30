@@ -19,8 +19,7 @@ def set_up():
     os.environ["STORAGE_EMULATOR_HOST"] = "http://localhost:9090"
 
     client = storage.Client(
-        credentials=AnonymousCredentials(),
-        project="testing",
+        credentials=AnonymousCredentials()
     )
     bucket = client.bucket(BUCKET_NAME)
     try:
@@ -38,7 +37,6 @@ def test_gcs_parquet():
 
         w = BatchWriter(
             inner_writer=GoogleCloudStorageWriter,
-            project="testing",
             format="parquet",
             dataset=f"{BUCKET_NAME}/test/gcs/dataset",
         )
@@ -50,7 +48,6 @@ def test_gcs_parquet():
         # read over both paritions.
         r = Reader(
             inner_reader=GoogleCloudStorageReader,
-            project="testing",
             dataset=f"{BUCKET_NAME}/test/gcs/dataset",
         )
         l = list(r)
