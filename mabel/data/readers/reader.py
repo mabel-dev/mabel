@@ -148,7 +148,6 @@ def Reader(
     Returns:
         DictSet
 
-
     """
     # We can provide an optional whitelist of prefixes that we allow access to
     # - this doesn't replace a proper ACL and permissions model, but can provide
@@ -280,7 +279,7 @@ class _LowLevelReader(object):
         # Log debug information or an error if there's no blobs to read
         message = f"Reader found {len(readable_blobs)} sources to read data from in `{self.reader_class.dataset}`."
         if len(readable_blobs) == 0:
-            logger.error(message)
+            logger.warning(message)
             raise DataNotFoundError(message)
         else:
             logger.debug(message)
