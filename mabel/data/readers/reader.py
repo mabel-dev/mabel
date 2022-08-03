@@ -37,7 +37,6 @@ RULES = [
     {"name": "start_date", "required": False, "warning": None, "incompatible_with": []},
     {"name": "filters", "required": False, "warning": "", "incompatible_with": []},
     {"name": "persistence", "required": False, "warning": "", "incompatible_with": []},
-    {"name": "project", "required": False, "warning": "", "incompatible_with": []},
     {"name": "override_format", "required": False, "warning": "", "incompatible_with": []},
     {"name": "multiprocess", "required": False, "warning": "", "incompatible_with": ["cursor"]},
     {"name": "valid_dataset_prefixes", "required": False},

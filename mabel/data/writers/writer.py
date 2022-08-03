@@ -164,4 +164,4 @@ class Writer:
             logger.error(
                 f"{type(self).__name__} failed to close pool: {type(e).__name__} - {e}"
             )
-        return None
+            raise e

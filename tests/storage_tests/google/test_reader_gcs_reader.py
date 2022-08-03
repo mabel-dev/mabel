@@ -16,7 +16,7 @@ def test_blockers():
 
     # path is required
     with pytest.raises((ValueError, TypeError)):
-        r = GoogleCloudStorageReader(project="project")
+        r = GoogleCloudStorageReader()
 
 
 if __name__ == "__main__":  # pragma: no cover

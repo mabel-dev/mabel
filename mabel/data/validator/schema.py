@@ -193,6 +193,7 @@ class Schema:
         return name in self._validators
 
     def __getitem__(self, name):
+        """ to avoid errors, do `name in schema` first """
         for item in self.definition:
             if item.get("name") == name:
                 return item.get("type")
