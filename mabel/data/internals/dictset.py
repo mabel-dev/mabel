@@ -307,7 +307,8 @@ class DictSet(object):
                 else:
                     hashed_item = reduce(
                         lambda x, y: x ^ y,
-                        [hash(f"{i},{v}") for i, v in enumerate(item.values())], 0
+                        [hash(f"{i},{v}") for i, v in enumerate(item.values())],
+                        0,
                     )
                 if hashed_item not in hash_list:
                     yield item

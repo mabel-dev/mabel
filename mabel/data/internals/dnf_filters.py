@@ -90,6 +90,7 @@ def evaluate(predicate: Union[tuple, list], record: dict) -> bool:
 
     raise InvalidSyntaxError("Unable to evaluate Filter")  # pragma: no cover
 
+
 class DnfFilters:
 
     __slots__ = ("empty_filter", "predicates")

@@ -18,9 +18,7 @@ def set_up():
 
     os.environ["STORAGE_EMULATOR_HOST"] = "http://localhost:9090"
 
-    client = storage.Client(
-        credentials=AnonymousCredentials()
-    )
+    client = storage.Client(credentials=AnonymousCredentials())
     bucket = client.bucket(BUCKET_NAME)
     try:
         bucket.delete(force=True)

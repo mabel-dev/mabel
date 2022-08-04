@@ -39,9 +39,7 @@ class GoogleCloudStorageWriter(BaseInnerWriter):
 
         # this means we're testing
         if os.environ.get("STORAGE_EMULATOR_HOST") is not None:
-            client = storage.Client(
-                credentials=AnonymousCredentials()
-            )
+            client = storage.Client(credentials=AnonymousCredentials())
         else:  # pragma: no cover
             client = storage.Client(credentials=self.credentials)
         self.gcs_bucket = client.get_bucket(self.bucket)

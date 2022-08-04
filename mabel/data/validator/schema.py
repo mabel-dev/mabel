@@ -6,12 +6,12 @@ from typing import Any, Union, List, Dict
 
 import orjson
 
-from mabel.errors import MissingDependencyError, ValidationError
+from mabel.errors import ValidationError
 
 
 def is_boolean(**kwargs):
     def _inner(value: Any) -> bool:
-        """boolean"""
+        """BOOLEAN"""
         if hasattr(value, "as_py"):
             value = value.as_py()
         return isinstance(value, bool) or value is None
@@ -21,7 +21,7 @@ def is_boolean(**kwargs):
 
 def is_date(**kwargs):
     def _inner(value: Any) -> bool:
-        """date"""
+        """TIMESTAMP"""
         if hasattr(value, "as_py"):
             value = value.as_py()
         return isinstance(value, datetime.datetime) or value is None
@@ -31,7 +31,7 @@ def is_date(**kwargs):
 
 def is_list(**kwargs):
     def _inner(value: Any) -> bool:
-        """list"""
+        """LIST"""
         if hasattr(value, "as_py"):
             value = value.as_py()
         return isinstance(value, list) or value is None
@@ -41,7 +41,7 @@ def is_list(**kwargs):
 
 def is_numeric(**kwargs):
     def _inner(value: Any) -> bool:
-        """numeric"""
+        """NUMERIC"""
         if hasattr(value, "as_py"):
             value = value.as_py()
         return isinstance(value, (int, float, decimal.Decimal)) or value is None
@@ -51,7 +51,7 @@ def is_numeric(**kwargs):
 
 def is_string(**kwargs):
     def _inner(value: Any) -> bool:
-        """string"""
+        """VARCHAR"""
         if hasattr(value, "as_py"):
             value = value.as_py()
         return isinstance(value, str) or value is None
@@ -61,7 +61,7 @@ def is_string(**kwargs):
 
 def is_struct(**kwargs):
     def _inner(value: Any) -> bool:
-        """string"""
+        """STRUCT"""
         if hasattr(value, "as_py"):
             value = value.as_py()
         return isinstance(value, dict) or value is None
@@ -193,8 +193,13 @@ class Schema:
         return name in self._validators
 
     def __getitem__(self, name):
-        """ to avoid errors, do `name in schema` first """
+        """to avoid errors, do `name in schema` first"""
         for item in self.definition:
             if item.get("name") == name:
                 return item.get("type")
         raise IndexError(f"'{name}' not in schema")
+
+    def get(self, name, default=None):
+        if name in self:
+            return self[name]
+        return default

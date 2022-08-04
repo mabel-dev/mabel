@@ -17,7 +17,6 @@ except ImportError:  # pragma: no cover
 
 
 class GoogleCloudStorageReader(BaseInnerReader):
-
     def __init__(self, credentials=None, **kwargs):
         if not google_cloud_storage_installed:  # pragma: no cover
             raise MissingDependencyError(
@@ -41,9 +40,7 @@ class GoogleCloudStorageReader(BaseInnerReader):
 
         # this means we're testing
         if os.environ.get("STORAGE_EMULATOR_HOST") is not None:
-            client = storage.Client(
-                credentials=AnonymousCredentials()
-            )
+            client = storage.Client(credentials=AnonymousCredentials())
         else:  # pragma: no cover
             client = storage.Client()
 
@@ -59,9 +56,7 @@ def get_blob(bucket: str = None, blob_name: str = None):
 
     # this means we're testing
     if os.environ.get("STORAGE_EMULATOR_HOST") is not None:
-        client = storage.Client(
-            credentials=AnonymousCredentials()
-        )
+        client = storage.Client(credentials=AnonymousCredentials())
     else:  # pragma: no cover
         client = storage.Client()
 

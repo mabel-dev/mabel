@@ -133,9 +133,7 @@ def concat(*items):
     Turn each item to a string and concatenate the strings together
     """
     sep = ""
-    if len(items) == 1 and (
-        isinstance(items[0], (list, tuple, set))
-    ):
+    if len(items) == 1 and (isinstance(items[0], (list, tuple, set))):
         items = items[0]
         sep = ", "
     return sep.join(map(str, items))
