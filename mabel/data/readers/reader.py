@@ -41,7 +41,8 @@ RULES = [
     {"name": "multiprocess", "required": False, "warning": "", "incompatible_with": ["cursor"]},
     {"name": "valid_dataset_prefixes", "required": False},
     {"name": "partitions", "required": False, "warning": None, "incompatible_with": ["raw_path"]},
-    {"name": "partition_filter", "required":False, "warning":"`partition_filter` is not expected to be a permanent addition to the API", "incompatible_with": ["freshness_limit"] }
+    {"name": "partition_filter", "required":False, "warning":"`partition_filter` is not expected to be a permanent addition to the API", "incompatible_with": ["freshness_limit"] },
+    {"name": "project", "required":False, "warning":"`project` is no longer required for most Readers", "incompatible_with": []}
 ]
 # fmt:on
 
