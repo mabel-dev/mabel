@@ -120,13 +120,20 @@ def parse_iso(value):
 
 
 def date_range(
-    start_date: Optional[Union[str, datetime.date]],
-    end_date: Optional[Union[str, datetime.date]],
+    start_date: Optional[Union[str, datetime.date, datetime.datetime]],
+    end_date: Optional[Union[str, datetime.date, datetime.datetime]],
 ):
     """
     An interator over a range of dates, hour-by-hour
     """
     # if dates aren't provided, use today
+
+    # cover the full day if we've only been given a date
+    if type(end_date) == datetime.date:
+        end_date.replace(hour=23)
+    if isinstance(end_date, str) and len(end_date) == 10:
+        end_date += "T23:00:00"
+
     end_date = parse_iso(end_date)
     if end_date is None:
         end_date = datetime.datetime.utcnow()

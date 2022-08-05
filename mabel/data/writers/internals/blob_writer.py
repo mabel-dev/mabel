@@ -205,6 +205,7 @@ class BlobWriter(object):
                         self.buffer,
                         [],
                     )
+                    columns = sorted(columns)
 
                     # then we make sure each row has all the columns
                     self.buffer = [
