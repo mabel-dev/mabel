@@ -130,7 +130,7 @@ def date_range(
 
     # cover the full day if we've only been given a date
     if type(end_date) == datetime.date:
-        end_date = datetime.datetime.combine(end_date, datetime.datetime.max)
+        end_date = datetime.datetime.combine(end_date, datetime.time.max)
     if isinstance(end_date, str) and len(end_date) == 10:
         end_date += "T23:00:00"
 
