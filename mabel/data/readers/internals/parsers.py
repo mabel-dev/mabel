@@ -1,18 +1,8 @@
+import orjson
+
 pass_thru = lambda x: x
 
-
-def json(ds):
-    import simdjson
-
-    """parse each line in the file to a dictionary"""
-    try:
-        json_parser = simdjson.Parser()
-        return json_parser.parse(ds)
-    except ValueError:
-        # fall back
-        import json
-
-        return json.loads(ds)
+json = orjson.loads
 
 
 def pass_thru_block(ds):

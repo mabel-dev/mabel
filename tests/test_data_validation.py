@@ -5,6 +5,8 @@ import datetime
 import os
 import sys
 
+import pytest
+
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.data.validator import Schema
 from mabel.errors import ValidationError
@@ -21,7 +23,6 @@ def test_validator_all_valid_values():
         "integer_field": 100,
         "boolean_field": True,
         "date_field": datetime.datetime.today(),
-        "other_field": ["abc"],
         "nullable_field": None,
         "list_field": ["a", "b", "c"],
         "enum_field": "RED",
@@ -29,11 +30,9 @@ def test_validator_all_valid_values():
     TEST_SCHEMA = {
         "fields": [
             {"name": "string_field", "type": "VARCHAR"},
-            {"name": "str_null_field", "type": "VARCHAR"},
             {"name": "integer_field", "type": "NUMERIC"},
             {"name": "boolean_field", "type": "BOOLEAN"},
             {"name": "date_field", "type": "TIMESTAMP"},
-            #            {"name": "other_field", "type": "other"},
             {"name": "nullable_field", "type": "VARCHAR"},
             {"name": "list_field", "type": "LIST"},
             {
@@ -213,17 +212,20 @@ def test_unknown_type():
 
 def test_raise_exception():
 
-    TEST_DATA = {"number_field": "one hundred"}
+    INVALID_FORM_DATA = {"number_field": "one hundred"}
+    EXTRA_FIELD_DATA = {"number_field": 100, "extra": True}
+    MISSING_FIELD_DATA = {}
     TEST_SCHEMA = {"fields": [{"name": "number_field", "type": "NUMERIC"}]}
 
     test = Schema(TEST_SCHEMA)
-    failed = False
-    try:
-        test.validate(TEST_DATA, raise_exception=True)
-    except ValidationError:  # pragma: no cover
-        failed = True
+    with pytest.raises(ValidationError):
+        test.validate(INVALID_FORM_DATA, raise_exception=True)
+    with pytest.raises(ValidationError):
+        test.validate(EXTRA_FIELD_DATA, raise_exception=True)
 
-    assert failed
+    # missing data is None - don't fail schema validation
+    # if it should fail it needs an Expectation
+    test.validate(MISSING_FIELD_DATA, raise_exception=True)
 
 
 def test_call_alias():

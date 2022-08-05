@@ -5,7 +5,6 @@ to be manually enabled.
 When a reliable use case for multiprocessing is identified it may be included into the
 automatic running of the data accesses.
 """
-import csimdjson
 import datetime
 import lz4.frame
 import logging
@@ -32,16 +31,13 @@ def fix_dict(obj: dict) -> dict:
             return dt.mini.decode("UTF8")
         if dt_type == dict:
             return str(fix_dict(dt))
-        if dt_type in (list, tuple, set, csimdjson.Array):
+        if dt_type in (list, tuple, set):
             return str([fix_fields(i) for i in dt])
         if dt_type in (datetime.date, datetime.datetime):
             return dt.isoformat()
         if dt_type == bytes:
             return dt.decode("UTF8")
         return str(dt)
-
-    if hasattr(obj, "mini"):
-        return obj.mini.decode("UTF8")  # type:ignore
 
     if not isinstance(obj, dict):
         return obj  # type:ignore
@@ -52,8 +48,6 @@ def fix_dict(obj: dict) -> dict:
 
 
 def serialize(ob):
-    if hasattr(ob, "mini"):
-        return ob.mini
     import orjson
 
     return orjson.dumps(fix_dict(ob))

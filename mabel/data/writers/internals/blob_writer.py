@@ -183,6 +183,7 @@ class BlobWriter(object):
                 if self.format == "parquet":
                     try:
                         import pyarrow
+                        import pyarrow.parquet
                     except ImportError as err:  # pragma: no cover
                         raise MissingDependencyError(
                             "`pyarrow` is missing, please install or include in requirements.txt"

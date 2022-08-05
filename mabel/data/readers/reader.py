@@ -37,12 +37,12 @@ RULES = [
     {"name": "start_date", "required": False, "warning": None, "incompatible_with": []},
     {"name": "filters", "required": False, "warning": "", "incompatible_with": []},
     {"name": "persistence", "required": False, "warning": "", "incompatible_with": []},
-    {"name": "project", "required": False, "warning": "", "incompatible_with": []},
     {"name": "override_format", "required": False, "warning": "", "incompatible_with": []},
     {"name": "multiprocess", "required": False, "warning": "", "incompatible_with": ["cursor"]},
     {"name": "valid_dataset_prefixes", "required": False},
     {"name": "partitions", "required": False, "warning": None, "incompatible_with": ["raw_path"]},
-    {"name": "partition_filter", "required":False, "warning":"`partition_filter` is not expected to be a permanent addition to the API", "incompatible_with": ["freshness_limit"] }
+    {"name": "partition_filter", "required":False, "warning":"`partition_filter` is not expected to be a permanent addition to the API", "incompatible_with": ["freshness_limit"] },
+    {"name": "project", "required":False, "warning":"`project` is no longer required for most Readers", "incompatible_with": []}
 ]
 # fmt:on
 
@@ -147,7 +147,6 @@ def Reader(
 
     Returns:
         DictSet
-
 
     """
     # We can provide an optional whitelist of prefixes that we allow access to
@@ -280,7 +279,7 @@ class _LowLevelReader(object):
         # Log debug information or an error if there's no blobs to read
         message = f"Reader found {len(readable_blobs)} sources to read data from in `{self.reader_class.dataset}`."
         if len(readable_blobs) == 0:
-            logger.error(message)
+            logger.warning(message)
             raise DataNotFoundError(message)
         else:
             logger.debug(message)
