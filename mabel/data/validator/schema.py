@@ -34,7 +34,9 @@ def is_list(**kwargs):
         """LIST"""
         if hasattr(value, "as_py"):
             value = value.as_py()
-        return isinstance(value, list) or value is None
+        if isinstance(value, list) or value is None:
+            return all(type(i) == str for i in value)
+        return False
 
     return _inner
 
@@ -78,7 +80,7 @@ VALIDATORS = {
     "VARCHAR": is_string,
     "BOOLEAN": is_boolean,
     "NUMERIC": is_numeric,
-    "STRUCT": is_struct,
+    "STRUCT": is_struct
 }
 
 
@@ -172,6 +174,10 @@ class Schema:
                 f"Record does not conform to schema - {self.last_error}. "
             )
         return result
+
+    @property
+    def columns(self):
+        return self._validator_columns
 
     def __call__(self, subject: dict = {}, raise_exception=False) -> bool:
         """

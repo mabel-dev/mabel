@@ -29,6 +29,8 @@ def do_writer():
                 {"name": "alias", "type": "VARCHAR"},
                 {"name": "season", "type": "NUMERIC"},
                 {"name": "recurring", "type": "BOOLEAN"},
+                {"name": "list_test", "type": "LIST"},
+                {"name": "dict_test", "type": "STRUCT"}
             ]
         },
     )
@@ -39,6 +41,8 @@ def do_writer():
                 "alias": entropy.random_string(256),
                 "season": None,
                 "recurring": None,
+                "list_test": [],
+                "dict_test": {"one": "1"},
             }
         )
     for i in range(int(1e5)):
@@ -48,6 +52,8 @@ def do_writer():
                 "alias": "Lorenzo Von Matterhorn",
                 "season": 4,
                 "recurring": False,
+                "list_test": ["a"],
+                "dict_test": {"a": "b"},
             }
         )
         w.append(
@@ -56,6 +62,8 @@ def do_writer():
                 "alias": "Jackie Daytona",
                 "season": 3,
                 "recurring": True,
+                "list_test": ["ai", "bee", "see", "dee", "eff", "ghee"],
+                "dict_test": {"alpha": "bet", "a": "gamma"},
             }
         )
     w.finalize()
