@@ -34,7 +34,9 @@ def is_list(**kwargs):
         """LIST"""
         if hasattr(value, "as_py"):
             value = value.as_py()
-        if isinstance(value, list) or value is None:
+        if value is None:
+            return True
+        if isinstance(value, list):
             return all(type(i) == str for i in value)
         return False
 
