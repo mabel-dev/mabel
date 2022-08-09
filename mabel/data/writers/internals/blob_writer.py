@@ -152,7 +152,9 @@ class BlobWriter(object):
             "TIMESTAMP": pyarrow.timestamp("us"),
             "VARCHAR": pyarrow.string(),
             "BOOLEAN": pyarrow.bool_(),
-            "NUMERIC": pyarrow.float64(),
+            "NUMERIC": pyarrow.decimal128(precision=38, scale=9),  # 29digits.9digits
+            "LIST": pyarrow.list_(pyarrow.string()),
+            #            "STRUCT": pyarrow.map_(pyarrow.string(), pyarrow.string())
         }
 
         schema = table.schema
@@ -218,6 +220,8 @@ class BlobWriter(object):
                     # if we have a schema, make effort to align the parquet file to it
                     if self.schema:
                         pytable = self._normalize_arrow_schema(pytable, self.schema)
+
+                    print(pytable)
 
                     pyarrow.parquet.write_table(
                         pytable, where=tempfile, compression="zstd"
