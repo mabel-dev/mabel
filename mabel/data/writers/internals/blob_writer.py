@@ -221,8 +221,6 @@ class BlobWriter(object):
                     if self.schema:
                         pytable = self._normalize_arrow_schema(pytable, self.schema)
 
-                    print(pytable)
-
                     pyarrow.parquet.write_table(
                         pytable, where=tempfile, compression="zstd"
                     )
