@@ -30,7 +30,7 @@ def do_writer():
                 {"name": "season", "type": "NUMERIC"},
                 {"name": "recurring", "type": "BOOLEAN"},
                 {"name": "list_test", "type": "LIST"},
-                {"name": "dict_test", "type": "STRUCT"}
+                {"name": "dict_test", "type": "STRUCT"},
             ]
         },
     )

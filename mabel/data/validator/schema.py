@@ -80,7 +80,7 @@ VALIDATORS = {
     "VARCHAR": is_string,
     "BOOLEAN": is_boolean,
     "NUMERIC": is_numeric,
-    "STRUCT": is_struct
+    "STRUCT": is_struct,
 }
 
 
