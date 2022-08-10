@@ -154,7 +154,7 @@ class BlobWriter(object):
             "BOOLEAN": pyarrow.bool_(),
             "NUMERIC": pyarrow.float64(),
             "LIST": pyarrow.list_(pyarrow.string())
-#            "STRUCT": pyarrow.map_(pyarrow.string(), pyarrow.string())
+            #            "STRUCT": pyarrow.map_(pyarrow.string(), pyarrow.string())
         }
 
         schema = table.schema
