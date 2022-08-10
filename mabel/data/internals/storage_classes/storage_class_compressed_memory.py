@@ -8,9 +8,10 @@ memory, or you are doing a lot of operations on the data.
 If you're doing few operations on the the data and it is easily recreated or local
 storage is fast, this isn't a good option.
 """
-import orjson
-import lz4.frame
 from itertools import zip_longest
+
+import lz4.frame
+
 from . import BaseStorageClass
 
 BATCH_SIZE = 500
@@ -35,7 +36,7 @@ class StorageClassCompressedMemory(BaseStorageClass):
                 )
                 self.batches.append(compressor.compress(json_batch))
             else:
-                self.batches.append(compressor.compress(orjson.dumps(batch)))
+                self.batches.append(compressor.compress(self.dump_json(batch)))
 
         # the last batch fills with Nones
         if batch:

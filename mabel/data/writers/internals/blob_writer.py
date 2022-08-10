@@ -152,8 +152,8 @@ class BlobWriter(object):
             "TIMESTAMP": pyarrow.timestamp("us"),
             "VARCHAR": pyarrow.string(),
             "BOOLEAN": pyarrow.bool_(),
-            "NUMERIC": pyarrow.decimal128(precision=38, scale=9),  # 29digits.9digits
-            "LIST": pyarrow.list_(pyarrow.string()),
+            "NUMERIC": pyarrow.float64(),
+            "LIST": pyarrow.list_(pyarrow.string())
 #            "STRUCT": pyarrow.map_(pyarrow.string(), pyarrow.string())
         }
 

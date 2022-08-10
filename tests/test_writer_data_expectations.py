@@ -21,11 +21,18 @@ VALID_TARGET = {
     ],
 }
 
-INVALID_TARGET = {
+MISSING_COLUMN = {
     "dataset": "_temp",
     "set_of_expectations": [
         {"expectation": "expect_column_to_exist", "column": "show"}
     ],
+}
+
+INVALID_VALUE = {
+    "dataset": "_temp",
+    "set_of_expectations": [
+        {"expectation": "expect_column_values_to_be_in_set", "column": "name", "symbols": ["Laszlo Cravensworth"]}
+    ]
 }
 
 
@@ -38,11 +45,16 @@ def test_validator_expected_to_work():
 
 
 def test_validator_expected_to_not_work():
-    w = Writer(inner_writer=NullWriter, **INVALID_TARGET)
+    w = Writer(inner_writer=NullWriter, **INVALID_VALUE)
+    with pytest.raises(ExpectationNotMetError):
+        w.append({"name": "Barney Stinson", "alter": "Lorenzo Von Matterhorn"})
+    w.append({"name": "Laszlo Cravensworth", "alter": "Jackie Daytona"})
+
+    w = Writer(inner_writer=NullWriter, **MISSING_COLUMN)
     with pytest.raises(ExpectationNotMetError):
         w.append({"name": "Barney Stinson", "alter": "Lorenzo Von Matterhorn"})
     with pytest.raises(ExpectationNotMetError):
-        w.append({"name": "Laszlo Cravensworth", "alter": "Jackie Daytona"})
+        w.append({"name": "Laszlo Cravensworth", "alter": "Jackie Daytona"}) 
     w.finalize()
 
 

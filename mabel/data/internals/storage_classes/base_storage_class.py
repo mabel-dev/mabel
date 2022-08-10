@@ -1,18 +1,8 @@
-from abc import ABC, abstractclassmethod
+import decimal
 
-try:
-    import simdjson
+from abc import ABC
 
-    def json(ds):
-        """parse each line in the file to a dictionary"""
-        json_parser = simdjson.Parser()
-        return json_parser.parse(ds)
-
-except ImportError:
-    import orjson
-
-    def json(ds):
-        return orjson.loads(ds)
+import orjson
 
 
 class BaseStorageClass(ABC):
@@ -39,4 +29,13 @@ class BaseStorageClass(ABC):
         return self.length
 
     def parse_json(self, ds):
-        return json(ds)
+        return orjson.loads(ds)
+
+    def dump_json(self, ds):
+
+        def handler(obj):
+            if isinstance(obj, decimal.Decimal):
+                return str(obj)
+            raise TypeError
+
+        return orjson.dumps(ds, default=handler)
