@@ -5,12 +5,13 @@ for the DISK variation of the STORAGE CLASSES.
 The Reader and Writer are pretty fast, the bottleneck is the parsing and serialization
 of JSON data - this accounts for over 50% of the read/write times.
 """
-import os
-import mmap
-import orjson
 import atexit
+import mmap
+import os
+
 from tempfile import NamedTemporaryFile
-from ....utils.paths import silent_remove
+
+from mabel.utils.paths import silent_remove
 from . import BaseStorageClass
 
 
@@ -37,7 +38,7 @@ class StorageClassDisk(BaseStorageClass):
                 if hasattr(row, "mini"):
                     buffer.extend(row.mini + b"\n")
                 else:
-                    buffer.extend(orjson.dumps(row) + b"\n")
+                    buffer.extend(self.dump_json(row) + b"\n")
                 if len(buffer) > (BUFFER_SIZE):
                     f.write(buffer)
                     buffer = bytearray()
