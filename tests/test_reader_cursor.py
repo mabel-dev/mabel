@@ -1,7 +1,6 @@
 """
-Test the file reader
+Test the cursor
 """
-from itertools import count
 import os
 import sys
 import orjson
@@ -83,6 +82,50 @@ def test_cursor():
 
         assert counter == number_of_records
         assert tracker == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], tracker
+
+
+def test_cursor_multiple_times():
+    """
+    There appears to be a bug with the cursor being used to seek more
+    than once in the same file
+    """
+
+    number_of_records = 500
+
+    data = []
+    for i in range(number_of_records):
+        data.append({"one": 1, "index": i})
+
+    cursor = None
+    record_counter = 0
+    keep_going = True
+    times_around = 0
+
+    while keep_going:
+
+        # load the reader
+        reader = Reader(
+            inner_reader=NullReader,
+            dataset="none",
+            partitions=None,
+            data=data,
+            cursor=cursor,
+        )
+
+        # read a random number of records
+        for burner in range(entropy.random_range(10, 50)):
+            try:
+                next(reader)
+                record_counter += 1
+            except:
+                keep_going = False
+
+        cursor = reader.cursor
+        times_around += 1
+
+    assert record_counter == number_of_records
+    assert times_around > 0
+    assert cursor.location == -1
 
 
 def test_cursor_as_text():
@@ -167,6 +210,7 @@ def test_zero_based_cursor():
 
 
 if __name__ == "__main__":  # pragma: no cover
+    test_cursor_multiple_times()
     test_cursor()
     test_move_to_cursor()
     test_cursor_as_text()
