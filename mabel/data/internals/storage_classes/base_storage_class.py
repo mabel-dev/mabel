@@ -32,7 +32,6 @@ class BaseStorageClass(ABC):
         return orjson.loads(ds)
 
     def dump_json(self, ds):
-
         def handler(obj):
             if isinstance(obj, decimal.Decimal):
                 return str(obj)

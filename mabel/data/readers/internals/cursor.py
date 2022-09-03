@@ -92,7 +92,7 @@ class Cursor:
             return 0
         for index in range(self.location + 1):
             next(iterator, None)
-        return self.location
+        return self.location + 1
 
     def get(self):
         return {

@@ -31,8 +31,12 @@ MISSING_COLUMN = {
 INVALID_VALUE = {
     "dataset": "_temp",
     "set_of_expectations": [
-        {"expectation": "expect_column_values_to_be_in_set", "column": "name", "symbols": ["Laszlo Cravensworth"]}
-    ]
+        {
+            "expectation": "expect_column_values_to_be_in_set",
+            "column": "name",
+            "symbols": ["Laszlo Cravensworth"],
+        }
+    ],
 }
 
 
@@ -54,7 +58,7 @@ def test_validator_expected_to_not_work():
     with pytest.raises(ExpectationNotMetError):
         w.append({"name": "Barney Stinson", "alter": "Lorenzo Von Matterhorn"})
     with pytest.raises(ExpectationNotMetError):
-        w.append({"name": "Laszlo Cravensworth", "alter": "Jackie Daytona"}) 
+        w.append({"name": "Laszlo Cravensworth", "alter": "Jackie Daytona"})
     w.finalize()
 
 
