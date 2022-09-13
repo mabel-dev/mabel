@@ -73,6 +73,14 @@ def is_struct(**kwargs):
     return _inner
 
 
+def pass_anything(**kwargs):
+    def _inner(value: Any) -> bool:
+        """OTHER"""
+        return True
+
+    return _inner
+
+
 """
 Create dictionaries to look up the type validators
 """
@@ -83,6 +91,7 @@ VALIDATORS = {
     "BOOLEAN": is_boolean,
     "NUMERIC": is_numeric,
     "STRUCT": is_struct,
+    "OTHER": pass_anything,
 }
 
 

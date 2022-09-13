@@ -237,6 +237,19 @@ def test_call_alias():
     assert test(TEST_DATA)
 
 
+def test_validator_other():
+
+    TEST_DATA = {"list_of_structs": [{"a": "b"}]}
+    SCHEMA_LISTS = {"fields": [{"name": "list_of_structs", "type": "LIST"}]}
+    SCHEMA_OTHER = {"fields": [{"name": "list_of_structs", "type": "OTHER"}]}
+
+    list_test = Schema(SCHEMA_LISTS)
+    assert not list_test(TEST_DATA)
+
+    other_test = Schema(SCHEMA_OTHER)
+    assert other_test(TEST_DATA)
+
+
 if __name__ == "__main__":  # pragma: no cover
     test_validator_all_valid_values()
     test_validator_invalid_string()
@@ -251,5 +264,6 @@ if __name__ == "__main__":  # pragma: no cover
     test_unknown_type()
     test_raise_exception()
     test_call_alias()
+    test_validator_other()
 
     print("okay")

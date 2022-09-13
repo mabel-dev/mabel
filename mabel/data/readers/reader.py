@@ -1,4 +1,3 @@
-import sys
 import datetime
 
 from typing import Optional, Dict, Union
@@ -45,8 +44,6 @@ RULES = [
     {"name": "project", "required":False, "warning":"`project` is no longer required for most Readers", "incompatible_with": []}
 ]
 # fmt:on
-
-logger = get_logger()
 
 
 class AccessDenied(Exception):
@@ -259,10 +256,10 @@ class _LowLevelReader(object):
                 days=self.reader_class.days_stepped_back
             ):
                 message = f"No data found in last {self.freshness_limit} - aborting ({self.reader_class.dataset})"
-                logger.warning(message)
+                get_logger().warning(message)
                 raise DataNotFoundError(message)
             if self.reader_class.days_stepped_back > 0:
-                logger.warning(
+                get_logger().warning(
                     f"Read looked back {self.reader_class.days_stepped_back} day(s) to {self.reader_class.start_date}, limit is {self.freshness_limit} ({self.reader_class.dataset})"
                 )
 
@@ -279,10 +276,10 @@ class _LowLevelReader(object):
         # Log debug information or an error if there's no blobs to read
         message = f"Reader found {len(readable_blobs)} sources to read data from in `{self.reader_class.dataset}`."
         if len(readable_blobs) == 0:
-            logger.warning(message)
+            get_logger().warning(message)
             raise DataNotFoundError(message)
         else:
-            logger.debug(message)
+            get_logger().debug(message)
 
         parallel = ParallelReader(
             reader=self.reader_class,
@@ -300,7 +297,7 @@ class _LowLevelReader(object):
         )
 
         if not use_multiprocess:
-            logger.debug(f"Serial Reader {self.cursor}")
+            get_logger().debug(f"Serial Reader {self.cursor}")
             if not isinstance(self.cursor, Cursor):
                 cursor = Cursor(readable_blobs=readable_blobs, cursor=self.cursor)
                 self.cursor = cursor
@@ -323,7 +320,7 @@ class _LowLevelReader(object):
                 blob_to_read = self.cursor.next_blob(blob_to_read)
 
         else:
-            logger.debug("Parallel Reader")
+            get_logger().debug("Parallel Reader")
             yield from processed_reader(parallel, readable_blobs, supported_blobs)
 
     def __iter__(self):
