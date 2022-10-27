@@ -8,9 +8,12 @@ exec(vers)  # nosec
 with open("README.md", "r") as rm:
     long_description = rm.read()
 
-with open("requirements.txt") as f:
-    required = f.read().splitlines()
-
+try:
+    with open("requirements.txt", "r") as f:
+        required = f.read().splitlines()
+except:
+    with open("mabel.egg-info/requires.txt", "r") as f:
+        required = f.read().splitlines()
 
 ext_modules = cythonize(
     [
