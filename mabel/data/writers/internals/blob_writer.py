@@ -1,8 +1,9 @@
 import datetime
 import json
-import orjson
 import sys
 import threading
+
+import orjson
 import zstandard
 
 from mabel.data.internals.records import flatten
@@ -207,7 +208,10 @@ class BlobWriter(object):
                         self.buffer,
                         [],
                     )
-                    columns = sorted(columns)
+                    # Add in any columns from the schema
+                    if self.schema:
+                        columns += self.schema.columns
+                    columns = sorted(dict.fromkeys(columns))
 
                     # then we make sure each row has all the columns
                     self.buffer = [
