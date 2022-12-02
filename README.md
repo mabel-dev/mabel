@@ -19,6 +19,7 @@ for deployments to platforms like Kubernetes, GCP Cloud Run, AWS Fargate and Kna
 [![commit_freq](https://img.shields.io/github/commit-activity/m/mabel-dev/mabel)](https://github.com/mabel-dev/mabel/commits)
 [![last_commit](https://img.shields.io/github/last-commit/mabel-dev/mabel)](https://github.com/mabel-dev/mabel/commits)
 [![PyPI Latest Release](https://img.shields.io/badge/Python-3.7%20%7C%203.8%20%7C%203.9%20%7C%203.10-blue)](https://pypi.org/project/mabel/)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmabel-dev%2Fmabel.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmabel-dev%2Fmabel?ref=badge_shield)
 
 
 - **Documentation** [GitHub Wiki](https://github.com/mabel-dev/mabel/wiki)  
@@ -130,3 +131,6 @@ Want to help build mabel? See the [contribution guidance](https://github.com/mab
 ## License
 
 [Apache 2.0](LICENSE)
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmabel-dev%2Fmabel.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmabel-dev%2Fmabel?ref=badge_large)
