@@ -18,7 +18,7 @@ logger = get_logger()
 class Writer:
     def _get_writer_date(self, date):
         # default to today if not given a date
-        batch_date = datetime.datetime.now()
+        batch_date = datetime.datetime.utcnow()
         if isinstance(date, datetime.date):
             batch_date = date  # type:ignore
         if isinstance(date, str):
