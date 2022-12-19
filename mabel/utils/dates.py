@@ -77,6 +77,8 @@ def parse_iso(value):
                 value = value[:-1]
             if "+" in value:
                 value = value.split("+")[0]
+                if not 10 <= len(value) <= 28:
+                    return None
             val_len = len(value)
             if not value[4] in DATE_SEPARATORS or not value[7] in DATE_SEPARATORS:
                 return None
