@@ -55,6 +55,7 @@ def parse_iso(value):
     #   YYYY-MM-DD HH:MM:SS.mmmm   <- date and time with milliseconds
     #
     # If the last character is a Z, we ignore it.
+    # If we have +0000 notation on the end, we ignore it.
     try:
 
         input_type = type(value)
@@ -71,9 +72,13 @@ def parse_iso(value):
             return datetime.datetime.combine(value, datetime.time.min)
         if input_type in (int, float):
             return datetime.datetime.fromtimestamp(value)
-        if input_type == str and 10 <= len(value) <= 28:
+        if input_type == str and 10 <= len(value) <= 33:
             if value[-1] == "Z":
                 value = value[:-1]
+            if "+" in value:
+                value = value.split("+")[0]
+                if not 10 <= len(value) <= 28:
+                    return None
             val_len = len(value)
             if not value[4] in DATE_SEPARATORS or not value[7] in DATE_SEPARATORS:
                 return None
