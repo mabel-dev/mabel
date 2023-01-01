@@ -13,7 +13,12 @@ logger = get_logger()
 
 class BatchWriter(Writer):
     """
-    Extend the functionality of the Writer to better support batch data
+    Extend the functionality of the Writer to better support batch data.
+
+    The key difference from the generic writer is the concept of completion; the
+    generic writer and the stream writer do not complete their datasets. This writer
+    writes a 'frame.complete' file when it believes it has finished writing data
+    to indicate that the data is now complete.
     """
 
     def __init__(

@@ -8,8 +8,8 @@ import zstandard
 
 from mabel.data.internals.records import flatten
 from mabel.data.validator import Schema
-from mabel.logging import get_logger
 from mabel.errors import MissingDependencyError
+from mabel.logging import get_logger
 
 
 BLOB_SIZE = 64 * 1024 * 1024  # 64Mb, 16 files per gigabyte
@@ -56,7 +56,7 @@ def get_size(obj, seen=None):
 
 class BlobWriter(object):
 
-    # in som failure scenarios commit is called before __init__, so we need to define
+    # in some failure scenarios commit is called before __init__, so we need to define
     # this variable outside the __init__.
     buffer = bytearray()
     byte_count = 0

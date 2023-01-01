@@ -1,19 +1,25 @@
+import datetime
+import itertools
+import threading
 import re
 import time
-import datetime
-import threading
-import itertools
-from pydantic import BaseModel  # type:ignore
+
+from pydantic import BaseModel
 from typing import Union
-from .writer import Writer
-from .internals.writer_pool import WriterPool
-from mabel.utils import paths, text, dates
+
+from mabel.data.writers.writer import Writer
+from mabel.data.writers.internals.writer_pool import WriterPool
 from mabel.logging import get_logger
+from mabel.utils import paths, text, dates
 
 
 class StreamWriter(Writer):
     """
-    Extend the functionality of the Writer to better support streaming data
+    Extend the functionality of the Writer to better support streaming data.
+
+    The key difference from the generic and batch writers is the ability to write to
+    multiple targets at the same time. The stream writer does path substitutions and
+    maintains multiple buffers for writing.
     """
 
     def __init__(
