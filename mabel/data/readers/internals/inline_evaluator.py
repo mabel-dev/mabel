@@ -21,9 +21,11 @@ will perform the function LEFT on the NAME field from the dict and return AGE
 from the dict
 """
 import re
-from .inline_functions import FUNCTIONS
-from ....utils.dates import parse_iso
-from ....utils.token_labeler import TOKENS, get_token_type
+
+from mabel.data.readers.internals.inline_functions import FUNCTIONS
+from mabel.utils.dates import parse_iso
+from mabel.utils.token_labeler import TOKENS
+from mabel.utils.token_labeler import get_token_type
 
 
 class InvalidEvaluator(Exception):

@@ -25,27 +25,26 @@ limitations under the License.
 
 import os
 import statistics
-
 from enum import Enum
 from functools import reduce
-from typing import Iterable, Dict, Any, Union
-from warnings import warn
+from typing import Any
+from typing import Dict
+from typing import Iterable
+from typing import Union
 
 import orjson
-
-from siphashc import siphash
-
+from mabel.data.internals.display import ascii_table
+from mabel.data.internals.display import html_table
+from mabel.data.internals.dnf_filters import DnfFilters
+from mabel.data.internals.dumb_iterator import DumbIterator
+from mabel.data.internals.expression import Expression
+from mabel.data.internals.group_by import GroupBy
+from mabel.data.internals.storage_classes import StorageClassCompressedMemory
+from mabel.data.internals.storage_classes import StorageClassDisk
+from mabel.data.internals.storage_classes import StorageClassMemory
 from mabel.errors import MissingDependencyError
 from mabel.utils.ipython import is_running_from_ipython
-
-from .expression import Expression
-from .display import html_table, ascii_table
-from .dnf_filters import DnfFilters
-from .dumb_iterator import DumbIterator
-from .group_by import GroupBy
-from .storage_classes import StorageClassCompressedMemory
-from .storage_classes import StorageClassDisk
-from .storage_classes import StorageClassMemory
+from siphashc import siphash
 
 
 class STORAGE_CLASS(int, Enum):
@@ -536,7 +535,8 @@ class DictSet(object):
 
     def __repr__(self):  # pragma: no cover
         if is_running_from_ipython():
-            from IPython.display import HTML, display  # type:ignore
+            from IPython.display import HTML  # type:ignore
+            from IPython.display import display
 
             html = html_table(iter(self._iterator), 10)
             display(HTML(html))

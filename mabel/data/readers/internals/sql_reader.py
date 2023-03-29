@@ -18,10 +18,12 @@ LIMIT clause
 
 import re
 from typing import Optional
-from ....data.readers.internals.inline_evaluator import Evaluator, get_function_name
-from ....utils.token_labeler import TOKENS, Tokenizer
-from ....logging import get_logger
 
+from mabel.data.readers.internals.inline_evaluator import Evaluator
+from mabel.data.readers.internals.inline_evaluator import get_function_name
+from mabel.logging import get_logger
+from mabel.utils.token_labeler import TOKENS
+from mabel.utils.token_labeler import Tokenizer
 
 SQL_PARTS = [
     r"SELECT",
@@ -243,7 +245,8 @@ def SqlReader(sql_statement: str, **kwargs):
     """
 
     # some imports here to remove cyclic imports
-    from mabel import DictSet, Reader
+    from mabel import DictSet
+    from mabel import Reader
 
     sql = SqlParser(sql_statement)
     get_logger().info(repr(sql))

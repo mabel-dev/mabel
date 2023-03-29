@@ -5,15 +5,16 @@ a label to them. Doing this in a helper module means a) it only needs to be main
 in one place b) different parts of the system behave consistently.
 """
 
-from functools import lru_cache
-import re
 import operator
+import re
+from functools import lru_cache
 
-from mabel import data
-from .text import like, not_like, matches
-from .dates import parse_iso
-from ..data.readers.internals.inline_functions import FUNCTIONS
-from ..data.internals.group_by import AGGREGATORS
+from mabel.data.internals.group_by import AGGREGATORS
+from mabel.data.readers.internals.inline_functions import FUNCTIONS
+from mabel.utils.dates import parse_iso
+from mabel.utils.text import like
+from mabel.utils.text import matches
+from mabel.utils.text import not_like
 
 # These are the characters we should escape in our regex
 REGEX_CHARACTERS = {ch: "\\" + ch for ch in ".^$*+?{}[]|()\\"}

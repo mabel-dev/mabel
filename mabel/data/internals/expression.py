@@ -15,9 +15,11 @@ expression tree as it's only doing boolean logic.
 
 Derived from: https://gist.github.com/leehsueh/1290686
 """
-from ..readers.internals.inline_evaluator import *
-from ...utils.dates import parse_iso
-from ...utils.token_labeler import Tokenizer, TOKENS, OPERATORS
+from mabel.data.readers.internals.inline_evaluator import *
+from mabel.utils.dates import parse_iso
+from mabel.utils.token_labeler import OPERATORS
+from mabel.utils.token_labeler import TOKENS
+from mabel.utils.token_labeler import Tokenizer
 
 
 class InvalidExpression(BaseException):
