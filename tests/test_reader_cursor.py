@@ -18,9 +18,7 @@ traceback.install()
 
 
 def get_records():
-    r = Reader(
-        inner_reader=DiskReader, dataset="tests/data/formats/jsonl", partitions=None
-    )
+    r = Reader(inner_reader=DiskReader, dataset="tests/data/formats/jsonl", partitions=None)
     return len(list(r))
 
 
@@ -44,7 +42,6 @@ def test_cursor():
     offsets = (entropy.random_range(1, number_of_records) for i in range(20))
 
     for offset in offsets:
-
         first_reader = Reader(
             inner_reader=NullReader,
             dataset="none",
@@ -102,7 +99,6 @@ def test_cursor_multiple_times():
     times_around = 0
 
     while keep_going:
-
         # load the reader
         reader = Reader(
             inner_reader=NullReader,
@@ -150,9 +146,7 @@ def test_cursor_as_text():
         # the offset is zero-based, for example it says 10, but it's 11 records
         assert (
             offset + 1
-        ) + records_left == number_of_records, (
-            f"{offset + 1 + records_left} != {number_of_records}"
-        )
+        ) + records_left == number_of_records, f"{offset + 1 + records_left} != {number_of_records}"
 
 
 def test_move_to_cursor():
@@ -173,26 +167,20 @@ def test_move_to_cursor():
             persistence=STORAGE_CLASS.NO_PERSISTANCE,
         )
 
-        assert (
-            offset == reader.cursor["location"]
-        ), f"{offset}, {reader.cursor['location']}"
+        assert offset == reader.cursor["location"], f"{offset}, {reader.cursor['location']}"
 
         records_left = len(list(reader))
         # the offset is zero-based, for example it says 10, but it's 11 records
         assert (
             offset + 1
-        ) + records_left == number_of_records, (
-            f"{offset + 1 + records_left} != {number_of_records}"
-        )
+        ) + records_left == number_of_records, f"{offset + 1 + records_left} != {number_of_records}"
 
 
 def test_zero_based_cursor():
     """
     Test that the cursor is actually zero-based
     """
-    reader = Reader(
-        inner_reader=DiskReader, dataset="tests/data/formats/jsonl", partitions=[]
-    )
+    reader = Reader(inner_reader=DiskReader, dataset="tests/data/formats/jsonl", partitions=[])
     number_of_records = get_records()
 
     # we read all of the records, one-by-one

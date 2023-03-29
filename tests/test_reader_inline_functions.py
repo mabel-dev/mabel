@@ -16,7 +16,6 @@ print(FIXED_DATE)
 
 
 def test_inline_date_functions():
-
     assert inline_functions.get_year("2021-01-02") == 2021
     assert inline_functions.get_year("2021-01-02T00:00") == 2021
     assert inline_functions.get_year(FIXED_DATE) == 2000
@@ -55,9 +54,7 @@ def test_inline_date_functions():
 
     assert inline_functions.get_week("2021-01-10T10:12:03") == 1
     assert inline_functions.get_week("2021-01-02T00:00") == 53
-    assert inline_functions.get_week(FIXED_DATE) == 24, inline_functions.get_week(
-        FIXED_DATE
-    )
+    assert inline_functions.get_week(FIXED_DATE) == 24, inline_functions.get_week(FIXED_DATE)
 
     assert inline_functions.add_days("2021-01-10T10:12:03", 10) == datetime.datetime(
         2021, 1, 20, 10, 12, 3
@@ -65,9 +62,7 @@ def test_inline_date_functions():
     assert inline_functions.add_days("2021-01-02T00:00", -10) == datetime.datetime(
         2020, 12, 23, 0, 0
     )
-    assert inline_functions.add_days(FIXED_DATE, 10) == datetime.datetime(
-        2000, 6, 22, 8, 43, 22
-    )
+    assert inline_functions.add_days(FIXED_DATE, 10) == datetime.datetime(2000, 6, 22, 8, 43, 22)
 
     assert inline_functions.diff_days("2021-01-10T10:12:03", FIXED_DATE) == -7518
 
@@ -84,10 +79,7 @@ def test_inline_other():
 
     assert inline_functions.get_md5("a") == "0cc175b9c0f1b6a831c399e269772661"
 
-    assert (
-        inline_functions.to_string({"apples": 2, "pears": 4})
-        == '\\{"apples":2,"pears":4}\\'
-    )
+    assert inline_functions.to_string({"apples": 2, "pears": 4}) == '\\{"apples":2,"pears":4}\\'
 
 
 if __name__ == "__main__":  # pragma: no cover

@@ -13,14 +13,12 @@ traceback.install()
 
 
 def test_random_string():
-
     """test the string is the right length"""
     rnd_str = entropy.random_string(length=32)
     assert len(rnd_str) == 32
 
 
 def test_random_int():
-
     # this test will eventually fail
     rnd_1 = entropy.random_int()
     rnd_2 = entropy.random_int()
@@ -30,7 +28,6 @@ def test_random_int():
 
 
 def test_random_range():
-
     vals = []
     for i in range(5000):
         vals.append(entropy.random_range(10, 20))
@@ -40,7 +37,6 @@ def test_random_range():
 
 
 def test_bytes_to_int():
-
     b1 = [0] * 8
     assert entropy.bytes_to_int(b1) == 0
 
@@ -52,7 +48,6 @@ def test_bytes_to_int():
 
 
 def test_random_choice():
-
     options = ["one", "two", "three"]
 
     for i in range(100):

@@ -21,9 +21,7 @@ def build_context(**kwargs: dict):
                 config = orjson.loads(f.read())
             return config
         except IndexError as e:
-            raise IndexError(
-                f"Error: {e}, Likely Cause: Config file `{config_file}` not found"
-            )
+            raise IndexError(f"Error: {e}, Likely Cause: Config file `{config_file}` not found")
         except ValueError as e:
             raise ValueError(
                 f"Error: {e}, Likely Cause: Config file `{config_file}` incorrectly formatted"

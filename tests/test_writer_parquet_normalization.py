@@ -70,7 +70,6 @@ def do_writer():
 
 
 def test_reader_writer_parquet_normalization():
-
     do_writer()
 
     parquet_files = glob.glob("_temp/**/*.parquet", recursive=True)
@@ -85,15 +84,11 @@ def test_reader_writer_parquet_normalization():
     len(c) == 0, c
 
     print("written")
-    parq = Reader(
-        inner_reader=DiskReader, dataset="_temp", persistence=STORAGE_CLASS.MEMORY
-    )
+    parq = Reader(inner_reader=DiskReader, dataset="_temp", persistence=STORAGE_CLASS.MEMORY)
     records = parq.count()
     recurring = parq.collect_list("recurring")
     aliases = [
-        isinstance(a, datetime.datetime)
-        for a in parq.collect_list("alias")
-        if a is not None
+        isinstance(a, datetime.datetime) for a in parq.collect_list("alias") if a is not None
     ]
     shutil.rmtree("_temp", ignore_errors=True)
     assert records == 700000, records

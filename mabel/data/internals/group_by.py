@@ -131,7 +131,6 @@ class GroupBy:
             # values as they come in - the collector holds the result up to this
             # point in the set.
             for func, col in aggregations:
-
                 if col != record[1]:
                     continue
 
@@ -163,16 +162,12 @@ class GroupBy:
 
         # We now need to expand out the hashed column names
         for group, results in collector.items():
-
             for func, col in requested_aggs:
                 if func == "AVG":
-                    results[f"AVG({col})"] = (
-                        results[f"SUM({col})"] / results[f"COUNT({col})"]
-                    )
+                    results[f"AVG({col})"] = results[f"SUM({col})"] / results[f"COUNT({col})"]
 
             results = {
-                f"{func}({col})": results.get(f"{func}({col})")
-                for func, col in requested_aggs
+                f"{func}({col})": results.get(f"{func}({col})") for func, col in requested_aggs
             }
 
             keys = self._group_keys[group]

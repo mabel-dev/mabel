@@ -96,9 +96,7 @@ results.append(result)
 # results.append(result)
 result = {
     "function": "write_file_zstandard",
-    "time": execute_test(
-        write_file_zstandard, filename="_temp/wfz.zstd", content=lines
-    ),
+    "time": execute_test(write_file_zstandard, filename="_temp/wfz.zstd", content=lines),
 }
 results.append(result)
 result = {

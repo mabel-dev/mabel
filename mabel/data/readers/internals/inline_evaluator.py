@@ -89,7 +89,6 @@ def build(tokens):
         token = ts.token()
         ts.step()  # move along
         if token["type"] in (TOKENS.FUNCTION, TOKENS.AGGREGATOR):
-
             token["value"] = token["value"].upper()
 
             if not ts.token()["type"] == TOKENS.LEFTPARENTHESES:

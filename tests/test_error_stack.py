@@ -18,7 +18,6 @@ def create_stack():
 
 
 def test_error_stack():
-
     stack = ""
     try:
         create_stack()

@@ -41,9 +41,7 @@ class Writer:
         dataset = kwargs.get("dataset", "")
 
         if "BACKOUT" in dataset:
-            InvalidDataSetError(
-                "BACKOUT is a reserved word and cannot be used in Dataset names"
-            )
+            InvalidDataSetError("BACKOUT is a reserved word and cannot be used in Dataset names")
         if dataset.endswith("/"):
             InvalidDataSetError("Dataset names cannot end with /")
         if "{" in dataset or "}" in dataset:
@@ -53,9 +51,7 @@ class Writer:
 
         # handle transitional states - use the new features to override the legacy features
         if kwargs.get("raw_path") is not None:
-            logger.warning(
-                "`raw_path` is being deprecated, set `partitions` to `None` instead."
-            )
+            logger.warning("`raw_path` is being deprecated, set `partitions` to `None` instead.")
         if str(kwargs.get("raw_path", "")).upper() == "TRUE":
             partitions = None
         if "{date" in dataset:
@@ -135,12 +131,8 @@ class Writer:
         if isinstance(record, BaseModel):
             record = record.dict()
 
-        if self.schema and not self.schema.validate(
-            subject=record, raise_exception=False
-        ):
-            raise ValidationError(
-                f"Schema Validation Failed ({self.schema.last_error})"
-            )
+        if self.schema and not self.schema.validate(subject=record, raise_exception=False):
+            raise ValidationError(f"Schema Validation Failed ({self.schema.last_error})")
 
         if self.expectations:
             import data_expectations as de  # type: ignore
@@ -161,7 +153,5 @@ class Writer:
         try:
             return self.blob_writer.commit()
         except Exception as e:
-            logger.error(
-                f"{type(self).__name__} failed to close pool: {type(e).__name__} - {e}"
-            )
+            logger.error(f"{type(self).__name__} failed to close pool: {type(e).__name__} - {e}")
             raise e

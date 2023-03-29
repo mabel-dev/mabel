@@ -35,7 +35,6 @@ SNIPPET = """
 
 
 def test_tokenizer():
-
     assert text.tokenize("the") == ["the"]
     assert text.tokenize("CVE-2017-0144") == ["cve20170144"]
     assert text.tokenize(QUOTE) == [

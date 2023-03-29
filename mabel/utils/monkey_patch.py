@@ -10,6 +10,7 @@ if hasattr(ctypes.pythonapi, "Py_InitModule4_64"):
 else:
     _Py_ssize_t = ctypes.c_int  # type:ignore
 
+
 # regular python
 class _PyObject(ctypes.Structure):
     pass
@@ -43,9 +44,7 @@ def reveal_dict(proxy):
         raise TypeError("dictproxy expected")
     dp = _DictProxy.from_address(id(proxy))
     ns = {}
-    ctypes.pythonapi.PyDict_SetItem(
-        ctypes.py_object(ns), ctypes.py_object(None), dp.dict
-    )
+    ctypes.pythonapi.PyDict_SetItem(ctypes.py_object(ns), ctypes.py_object(None), dp.dict)
     return ns[None]
 
 

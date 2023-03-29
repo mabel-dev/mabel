@@ -11,7 +11,6 @@ traceback.install()
 
 
 def test_utils_config():
-
     config = {}
     with pytest.raises((IndexError)):
         common.build_context(config_file="not existent config file")

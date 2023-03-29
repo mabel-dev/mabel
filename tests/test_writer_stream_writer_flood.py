@@ -10,7 +10,6 @@ traceback.install()
 
 
 def test_writer_flood():
-
     w = StreamWriter(
         dataset="path/{identity}/path",
         inner_writer=NullWriter,
@@ -18,7 +17,6 @@ def test_writer_flood():
     )
 
     for i in range(100000):
-
         record = {"identity": str(os.urandom(1)), "cycle": i}
         w.append(record)
 

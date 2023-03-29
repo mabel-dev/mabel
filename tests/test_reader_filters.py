@@ -55,25 +55,21 @@ def test_reader_filters_multiple_filter():
 
 
 def test_filters():
-
     d = DnfFilters(filters=[("age", "==", 11), ("gender", "in", ("a", "b", "male"))])
     assert len(list(d.filter_dictset(TEST_DATA))) == 1
 
 
 def test_empty_filters():
-
     d = DnfFilters(filters=None)
     assert len(list(d.filter_dictset(TEST_DATA))) == 6
 
 
 def test_like_filters():
-
     d = DnfFilters(filters=[("dob", "like", "%-12-%")])
     assert len(list(d.filter_dictset(TEST_DATA))) == 3
 
 
 def test_combined_filters():
-
     # just a tuple
     filter01 = DnfFilters(("name", "==", "Harry Potter"))
     # a tuple in a list
@@ -97,15 +93,11 @@ def test_combined_filters():
         ]
     )
     # ORed conditions
-    filter04 = DnfFilters(
-        [[("name", "==", "Harry Potter")], [("name", "==", "Hermione Grainger")]]
-    )
+    filter04 = DnfFilters([[("name", "==", "Harry Potter")], [("name", "==", "Hermione Grainger")]])
     # no conditions
     filter05 = DnfFilters()
     # IN conditions
-    filter06 = DnfFilters(
-        ("name", "in", ["Fleur Isabelle Delacour", "Hermione Grainger"])
-    )
+    filter06 = DnfFilters(("name", "in", ["Fleur Isabelle Delacour", "Hermione Grainger"]))
     # contains conditions - on lists
     filter07 = DnfFilters(("affiliations", "contains", "Griffindor"))
     # contains conditions

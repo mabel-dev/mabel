@@ -15,7 +15,6 @@ except ImportError:  # pragma: no cover
 
 
 class MinIoReader(BaseInnerReader):
-
     RULES = [
         {"name": "end_point", "required": True},
         {"name": "access_key", "required": True},
@@ -24,7 +23,6 @@ class MinIoReader(BaseInnerReader):
     ]
 
     def __init__(self, end_point: str, access_key: str, secret_key: str, **kwargs):
-
         if not minio_installed:  # pragma: no cover
             raise MissingDependencyError(
                 "`minio` is missing, please install or include in requirements.txt"
@@ -38,9 +36,7 @@ class MinIoReader(BaseInnerReader):
         bucket, object_path, _, _ = paths.get_parts(path)
         for cycle_date in dates.date_range(self.start_date, self.end_date):
             cycle_path = paths.build_path(path=object_path, date=cycle_date)
-            blobs = self.minio.list_objects(
-                bucket_name=bucket, prefix=cycle_path, recursive=True
-            )
+            blobs = self.minio.list_objects(bucket_name=bucket, prefix=cycle_path, recursive=True)
 
             yield from [
                 bucket + "/" + blob.object_name

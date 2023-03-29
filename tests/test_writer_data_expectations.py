@@ -23,9 +23,7 @@ VALID_TARGET = {
 
 MISSING_COLUMN = {
     "dataset": "_temp",
-    "set_of_expectations": [
-        {"expectation": "expect_column_to_exist", "column": "show"}
-    ],
+    "set_of_expectations": [{"expectation": "expect_column_to_exist", "column": "show"}],
 }
 
 INVALID_VALUE = {

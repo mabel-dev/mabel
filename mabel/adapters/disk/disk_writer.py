@@ -9,7 +9,6 @@ class DiskWriter(BaseInnerWriter):
         super().__init__(**kwargs)
 
     def commit(self, byte_data, override_blob_name=None):
-
         try:
             # if we've been given the filename, use that, otherwise get the
             # name from the path builder

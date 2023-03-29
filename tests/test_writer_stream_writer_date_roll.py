@@ -12,7 +12,6 @@ traceback.install()
 
 
 def test_stream_rollover():
-
     # none of these should do anything
     w = StreamWriter(
         dataset="bucket/path/file.extension",
@@ -37,7 +36,6 @@ def test_stream_rollover():
 
 
 def test_fixed_dates():
-
     # none of these should do anything
     w = StreamWriter(
         dataset="bucket/path/file.extension",

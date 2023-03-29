@@ -11,7 +11,6 @@ traceback.install()
 
 
 def test_where():
-
     s = SqlReader(
         "SELECT * FROM tests.data.tweets WHERE username == 'BBCNews'",
         inner_reader=DiskReader,
@@ -85,7 +84,6 @@ def test_sql_returned_rows():
 
 
 def test_sql_to_dictset():
-
     s = SqlReader(
         sql_statement="SELECT * FROM tests.data.index.not",
         inner_reader=DiskReader,
@@ -100,7 +98,6 @@ def test_sql_to_dictset():
 
 
 def test_sql_returned_cols():
-
     # fmt:off
     SQL_TESTS = [
         {"statement":"SELECT tweet_id, user_name FROM tests.data.index.not LIMIT 1", "keys":["tweet_id","user_name"]},
@@ -123,7 +120,6 @@ def test_sql_returned_cols():
 
 
 def test_limit():
-
     s = SqlReader(
         sql_statement="SELECT tweet_id, user_name FROM tests.data.index.not LIMIT 12",
         inner_reader=DiskReader,
@@ -135,7 +131,6 @@ def test_limit():
 
 
 def test_group_by_count():
-
     s = SqlReader(
         sql_statement="SELECT COUNT(*) FROM tests.data.index.not GROUP BY user_verified",
         inner_reader=DiskReader,

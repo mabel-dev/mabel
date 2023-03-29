@@ -48,9 +48,7 @@ def test_combined_deltas():
 
 def test_invalid_scenarios():
     assert parse_delta("") == timedelta(seconds=0), parse_delta("")
-    assert parse_delta("five seconds") == timedelta(seconds=-0), parse_delta(
-        "five seconds"
-    )
+    assert parse_delta("five seconds") == timedelta(seconds=-0), parse_delta("five seconds")
     assert parse_delta("tjyhrsdy") == timedelta(seconds=0), parse_delta("tjyhrsdy")
     assert parse_delta("1m") == timedelta(seconds=60), parse_delta("1m")
     assert parse_delta("6m 1x") == timedelta(seconds=360), parse_delta("6m 1x")

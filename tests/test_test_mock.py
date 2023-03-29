@@ -5,10 +5,7 @@ traceback.install()
 
 
 def test_mock():
-
-    mock = Mock(
-        {"name": "I'm a Mock", "child": Mock({"name": "My parent is a Mock"})}, ["name"]
-    )
+    mock = Mock({"name": "I'm a Mock", "child": Mock({"name": "My parent is a Mock"})}, ["name"])
 
     assert mock.name == "I'm a Mock"
     assert mock.rank() == "rank"

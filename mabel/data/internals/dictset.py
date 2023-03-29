@@ -144,9 +144,7 @@ class DictSet(object):
                 if random_value % selector == 0:
                     yield row
 
-        return DictSet(
-            inner_sampler(iter(self._iterator)), storage_class=self.storage_class
-        )
+        return DictSet(inner_sampler(iter(self._iterator)), storage_class=self.storage_class)
 
     def collect_list(self, key: str = None) -> Union[list, map]:
         """
@@ -175,9 +173,7 @@ class DictSet(object):
         """
         if number_of_rows > 0:
             rows = self.itake(number_of_rows)
-            return reduce(
-                lambda x, y: x + [a for a in y.keys() if a not in x], rows, []
-            )
+            return reduce(lambda x, y: x + [a for a in y.keys() if a not in x], rows, [])
         return reduce(
             lambda x, y: x + [a for a in y.keys() if a not in x],
             iter(self._iterator),
@@ -188,9 +184,7 @@ class DictSet(object):
         top = self.take(number_of_rows)
         response = {}
         for key in top.keys():
-            key_type = {
-                type(val).__name__ for val in top.collect_list(key) if val != None
-            }
+            key_type = {type(val).__name__ for val in top.collect_list(key) if val != None}
             if len(key_type) == 0:  # pragma: no cover
                 response[key] = "empty"
             if len(key_type) == 1:
@@ -301,9 +295,7 @@ class DictSet(object):
         def do_dedupe(data):
             for item in data:
                 if columns:
-                    hashed_item = hash(
-                        "".join([str(item.get(c, "$$")) for c in columns])
-                    )
+                    hashed_item = hash("".join([str(item.get(c, "$$")) for c in columns]))
                 else:
                     hashed_item = reduce(
                         lambda x, y: x ^ y,
@@ -314,9 +306,7 @@ class DictSet(object):
                     yield item
                     hash_list[hashed_item] = True
 
-        return DictSet(
-            do_dedupe(iter(self._iterator)), storage_class=self.storage_class
-        )
+        return DictSet(do_dedupe(iter(self._iterator)), storage_class=self.storage_class)
 
     def group_by(self, group_by_columns):
         """
@@ -492,9 +482,7 @@ class DictSet(object):
                 for record in it:
                     yield {k: record.get(k, None) for k in columns}
 
-        return DictSet(
-            inner_select(iter(self._iterator)), storage_class=self.storage_class
-        )
+        return DictSet(inner_select(iter(self._iterator)), storage_class=self.storage_class)
 
     def sort_and_take(self, column, take: int = 5000, descending: bool = False):
         def safety_key(column):
@@ -506,9 +494,7 @@ class DictSet(object):
             )
 
         if self.storage_class == STORAGE_CLASS.MEMORY:
-            yield from sorted(
-                self._iterator, key=safety_key(column), reverse=descending
-            )[:take]
+            yield from sorted(self._iterator, key=safety_key(column), reverse=descending)[:take]
 
         else:
             # In a low-memory environment we probably can't store all of the records

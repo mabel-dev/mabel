@@ -10,7 +10,6 @@ traceback.install()
 
 
 def test_parser():
-
     # fmt:off
     STATEMENTS = [
         {"SQL": "SELECT * FROM TABLE", "select": "*", "from": "TABLE"},
@@ -58,7 +57,6 @@ def test_invalid_sql():
 
 
 def test_from_validator():
-
     assert SqlParser.validate_dataset(None, "table")
     assert SqlParser.validate_dataset(None, "data.set/is_valid")
 
@@ -75,7 +73,6 @@ def test_from_validator():
 
 
 if __name__ == "__main__":
-
     test_parser()
     test_invalid_sql()
     test_from_validator()

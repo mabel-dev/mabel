@@ -77,7 +77,6 @@ class GoogleLogger(object):
         severity: Optional[int] = logging.DEBUG,
         spanId: Optional[str] = None,
     ):
-
         # supress duplicate warnings
         if severity == LEVELS.WARNING:  # warnings
             hashed = hash(str(message))
@@ -109,9 +108,7 @@ class GoogleLogger(object):
         if isinstance(message, dict):
             formatter = LogFormatter(None)
             message = formatter.clean_record(message, False)
-            structured_log["message"] = (
-                str(message) + " *"
-            )  # We don't want valid JSON here
+            structured_log["message"] = str(message) + " *"  # We don't want valid JSON here
             structured_log.update(message)  # type:ignore
             return log_it(structured_log)
         else:
@@ -134,9 +131,7 @@ class GoogleLogger(object):
         from .create_logger import LOG_NAME
 
         def base_logger(message):
-            return GoogleLogger.write_event(
-                message=message, system=LOG_NAME, severity=level
-            )
+            return GoogleLogger.write_event(message=message, system=LOG_NAME, severity=level)
 
         def do_nothing(message):
             pass

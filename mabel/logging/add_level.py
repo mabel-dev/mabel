@@ -63,7 +63,6 @@ def add_logging_level(level_name, level_num, method_name=None):
         if isinstance(message, bytes):
             message = message.decode()
         if self.isEnabledFor(level_num):
-
             # supress duplicate warnings
             if level_num == 30:  # warnings
                 hashed = hash(message)

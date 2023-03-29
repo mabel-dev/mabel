@@ -150,13 +150,7 @@ def Reader(
     # - this doesn't replace a proper ACL and permissions model, but can provide
     # some control if other options are limited or unavailable.
     if valid_dataset_prefixes:
-        if not any(
-            [
-                True
-                for prefix in valid_dataset_prefixes
-                if str(dataset).startswith(prefix)
-            ]
-        ):
+        if not any([True for prefix in valid_dataset_prefixes if str(dataset).startswith(prefix)]):
             raise AccessDenied("Access has been denied to this Dataset (prefix).")
 
     # lazy loading of dependency - in this case the Google GCS Reader
@@ -189,9 +183,7 @@ def Reader(
     # number of days to walk backwards to find records
     freshness_limit = parse_delta(kwargs.get("freshness_limit", ""))
 
-    if (
-        freshness_limit and reader_class.start_date != reader_class.end_date
-    ):  # pragma: no cover
+    if freshness_limit and reader_class.start_date != reader_class.end_date:  # pragma: no cover
         raise InvalidCombinationError(
             "freshness_limit can only be used when the start and end dates are the same"
         )
@@ -252,9 +244,7 @@ class _LowLevelReader(object):
             ):
                 self.reader_class.step_back_a_day()
                 blob_list = self.reader_class.get_list_of_blobs()
-            if self.freshness_limit < datetime.timedelta(
-                days=self.reader_class.days_stepped_back
-            ):
+            if self.freshness_limit < datetime.timedelta(days=self.reader_class.days_stepped_back):
                 message = f"No data found in last {self.freshness_limit} - aborting ({self.reader_class.dataset})"
                 get_logger().warning(message)
                 raise DataNotFoundError(message)
@@ -264,9 +254,7 @@ class _LowLevelReader(object):
                 )
 
         # Build lists of blobs we have handlers for, based on the file extensions
-        supported_blobs = [
-            b for b in blob_list if f".{ b.split('.')[-1] }" in KNOWN_EXTENSIONS
-        ]
+        supported_blobs = [b for b in blob_list if f".{ b.split('.')[-1] }" in KNOWN_EXTENSIONS]
         readable_blobs = [
             b
             for b in supported_blobs
@@ -313,9 +301,7 @@ class _LowLevelReader(object):
                     ],
                 )
                 location = self.cursor.skip_to_cursor(blob_reader)
-                for self.cursor.location, record in enumerate(
-                    blob_reader, start=location
-                ):
+                for self.cursor.location, record in enumerate(blob_reader, start=location):
                     yield record
                 blob_to_read = self.cursor.next_blob(blob_to_read)
 

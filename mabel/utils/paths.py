@@ -18,9 +18,7 @@ def get_parts(path_string: str):
         stem = None
         suffix = None
     elif path.suffix == "":
-        parts = (
-            pathlib.PurePosixPath("/".join(path.parts[1:-1])) / path.stem  # type:ignore
-        )
+        parts = pathlib.PurePosixPath("/".join(path.parts[1:-1])) / path.stem  # type:ignore
         stem = None
         suffix = None
     else:
@@ -32,7 +30,6 @@ def get_parts(path_string: str):
 
 
 def build_path(path: str, date: datetime.date = None):
-
     if not path:
         raise ValueError("build_path: path must have a value")
 
@@ -48,7 +45,6 @@ def build_path(path: str, date: datetime.date = None):
 
 
 def date_format(path_string: str, date: datetime.date = None):
-
     if not date:
         date = datetime.datetime.utcnow()
 

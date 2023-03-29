@@ -51,9 +51,7 @@ def test_simple_functions():
 def test_concat():
     pf = "CONCAT(name,' ',name,' table')"
     res = Evaluator(pf)(TEST_DATA)
-    assert res == {
-        "CONCAT(name,' ',name,' table')": "Sirius Black Sirius Black table"
-    }, res
+    assert res == {"CONCAT(name,' ',name,' table')": "Sirius Black Sirius Black table"}, res
 
 
 def test_as():

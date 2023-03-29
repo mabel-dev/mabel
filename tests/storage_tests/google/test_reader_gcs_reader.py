@@ -10,7 +10,6 @@ traceback.install()
 
 
 def test_blockers():
-
     # project is no longer required
     r = GoogleCloudStorageReader(dataset="path")
 

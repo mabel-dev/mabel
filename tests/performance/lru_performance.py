@@ -20,7 +20,6 @@ with open("tests/data/word_list.txt") as words:
 
 
 def lru_performance():
-
     lru = LruIndex(size=1000)
 
     values = []

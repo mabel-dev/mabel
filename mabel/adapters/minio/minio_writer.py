@@ -12,15 +12,8 @@ except ImportError:  # pragma: no cover
 
 class MinIoWriter(BaseInnerWriter):
     def __init__(
-        self,
-        *,
-        end_point: str,
-        access_key: str,
-        secret_key: str,
-        secure: bool = False,
-        **kwargs
+        self, *, end_point: str, access_key: str, secret_key: str, secure: bool = False, **kwargs
     ):
-
         if not minio_installed:  # pragma: no cover
             raise MissingDependencyError(
                 "`minio` is missing, please install or include in requirements.txt"
@@ -31,7 +24,6 @@ class MinIoWriter(BaseInnerWriter):
         self.filename = self.filename_without_bucket
 
     def commit(self, byte_data, override_blob_name=None):
-
         # if we've been given the filename, use that, otherwise get the
         # name from the path builder
         if override_blob_name:
@@ -39,8 +31,6 @@ class MinIoWriter(BaseInnerWriter):
         else:
             blob_name = self._build_path()
 
-        self.client.put_object(
-            self.bucket, blob_name, io.BytesIO(byte_data), len(byte_data)
-        )
+        self.client.put_object(self.bucket, blob_name, io.BytesIO(byte_data), len(byte_data))
 
         return blob_name

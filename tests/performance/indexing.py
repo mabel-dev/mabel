@@ -77,9 +77,7 @@ for record in lines:
     writer.append(record)
 writer.finalize()
 
-reader = Reader(
-    inner_reader=DiskReader, dataset="_temp/idx", filters=("user_name", "==", "Remy")
-)
+reader = Reader(inner_reader=DiskReader, dataset="_temp/idx", filters=("user_name", "==", "Remy"))
 i = 0
 for i, r in enumerate(reader):
     print(i, r)

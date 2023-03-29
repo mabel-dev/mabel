@@ -36,7 +36,6 @@ class GoogleCloudStorageWriter(BaseInnerWriter):
         self.retry = retry.Retry(predicate)
 
     def commit(self, byte_data, override_blob_name=None):
-
         # this means we're testing
         if os.environ.get("STORAGE_EMULATOR_HOST") is not None:
             client = storage.Client(credentials=AnonymousCredentials())
@@ -54,9 +53,7 @@ class GoogleCloudStorageWriter(BaseInnerWriter):
 
         try:
             blob = self.gcs_bucket.blob(blob_name)
-            self.retry(blob.upload_from_string)(
-                byte_data, content_type="application/octet-stream"
-            )
+            self.retry(blob.upload_from_string)(byte_data, content_type="application/octet-stream")
             return blob_name
         except Exception as err:  # pragma: no cover
             import traceback

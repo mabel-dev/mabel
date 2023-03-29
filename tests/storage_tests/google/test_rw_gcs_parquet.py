@@ -15,7 +15,6 @@ BUCKET_NAME = "pytest"
 
 
 def set_up():
-
     os.environ["STORAGE_EMULATOR_HOST"] = "http://localhost:9090"
 
     client = storage.Client(credentials=AnonymousCredentials())
@@ -28,7 +27,6 @@ def set_up():
 
 
 def test_gcs_parquet():
-
     try:
         # set up the stub
         set_up()

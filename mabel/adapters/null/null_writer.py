@@ -15,7 +15,6 @@ class NullWriter(BaseInnerWriter):
         self.formatted_args = ", ".join(kwargs_passed)
 
     def commit(self, byte_data, override_blob_name=None):
-
         # if we've been given the filename, use that, otherwise get the
         # name from the path builder
         if override_blob_name:  # prgama: no cover

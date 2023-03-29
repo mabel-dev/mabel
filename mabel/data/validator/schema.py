@@ -19,12 +19,32 @@ def is_boolean(**kwargs):
     return _inner
 
 
-def is_date(**kwargs):
+def is_datetime(**kwargs):
     def _inner(value: Any) -> bool:
         """TIMESTAMP"""
         if hasattr(value, "as_py"):
             value = value.as_py()
         return isinstance(value, datetime.datetime) or value is None
+
+    return _inner
+
+
+def is_date_only(**kwargs):
+    def _inner(value: Any) -> bool:
+        """DATE"""
+        if hasattr(value, "as_py"):
+            value = value.as_py()
+        return isinstance(value, datetime.date) or value is None
+
+    return _inner
+
+
+def is_time(**kwargs):
+    def _inner(value: Any) -> bool:
+        """TIME"""
+        if hasattr(value, "as_py"):
+            value = value.as_py()
+        return isinstance(value, datetime.time) or value is None
 
     return _inner
 
@@ -53,12 +73,42 @@ def is_numeric(**kwargs):
     return _inner
 
 
+def is_integer(**kwargs):
+    def _inner(value: Any) -> bool:
+        """INTEGER"""
+        if hasattr(value, "as_py"):
+            value = value.as_py()
+        return isinstance(value, int) or value is None
+
+    return _inner
+
+
+def is_float(**kwargs):
+    def _inner(value: Any) -> bool:
+        """FLOAT"""
+        if hasattr(value, "as_py"):
+            value = value.as_py()
+        return isinstance(value, float) or value is None
+
+    return _inner
+
+
 def is_string(**kwargs):
     def _inner(value: Any) -> bool:
         """VARCHAR"""
         if hasattr(value, "as_py"):
             value = value.as_py()
         return isinstance(value, str) or value is None
+
+    return _inner
+
+
+def is_bytes(**kwargs):
+    def _inner(value: Any) -> bool:
+        """BLOB"""
+        if hasattr(value, "as_py"):
+            value = value.as_py()
+        return isinstance(value, bytes) or value is None
 
     return _inner
 
@@ -85,11 +135,16 @@ def pass_anything(**kwargs):
 Create dictionaries to look up the type validators
 """
 VALIDATORS = {
-    "TIMESTAMP": is_date,
+    "TIMESTAMP": is_datetime,
+    "DATE": is_date_only,
+    "TIME": is_time,
     "LIST": is_list,
     "VARCHAR": is_string,
     "BOOLEAN": is_boolean,
     "NUMERIC": is_numeric,
+    "INTEGER": is_integer,
+    "FLOAT": is_float,
+    "BLOB": is_bytes,
     "STRUCT": is_struct,
     "OTHER": pass_anything,
 }
@@ -111,9 +166,7 @@ class Schema:
         # if we have a schema as a string, load it into a dictionary
         if isinstance(definition, str):
             if os.path.exists(definition):  # type:ignore
-                definition = orjson.loads(
-                    open(definition, mode="r").read()
-                )  # type:ignore
+                definition = orjson.loads(open(definition, mode="r").read())  # type:ignore
             else:
                 definition = orjson.loads(definition)  # type:ignore
 
@@ -173,17 +226,19 @@ class Schema:
         # Note: fields in the schema but not in the data passes schema validation
         additional_columns = set(subject.keys()) - self._validator_columns
         if len(additional_columns) > 0:
-            self.last_error += f"Column names in record not found in Schema - {', '.join(additional_columns)}"
+            self.last_error += (
+                f"Column names in record not found in Schema - {', '.join(additional_columns)}"
+            )
             result = False
 
         for key, value in self._validators.items():
             if not self._field_validator(subject.get(key), value):
                 result = False
-                self.last_error += f"'{key}' (`{subject.get(key)}`) did not pass `{value.__doc__}` validator.\n"
+                self.last_error += (
+                    f"'{key}' (`{subject.get(key)}`) did not pass `{value.__doc__}` validator.\n"
+                )
         if raise_exception and not result:
-            raise ValidationError(
-                f"Record does not conform to schema - {self.last_error}. "
-            )
+            raise ValidationError(f"Record does not conform to schema - {self.last_error}. ")
         return result
 
     @property

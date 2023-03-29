@@ -56,9 +56,7 @@ def set_value(record: dict, field_name: str, setter: Callable) -> dict:
     return copy
 
 
-def flatten(
-    dictionary: MutableMapping[Any, Any], separator: str = ".", parent_key=False
-):
+def flatten(dictionary: MutableMapping[Any, Any], separator: str = ".", parent_key=False):
     """
     Turn a nested dictionary into a flattened dictionary
 
@@ -77,11 +75,7 @@ def flatten(
     for key, value in dictionary.items():
         new_key = str(parent_key) + separator + key if parent_key else key
         if hasattr(value, "items"):
-            items.extend(
-                flatten(
-                    dictionary=value, separator=separator, parent_key=new_key
-                ).items()
-            )
+            items.extend(flatten(dictionary=value, separator=separator, parent_key=new_key).items())
         elif isinstance(value, list):
             for k, v in enumerate(value):
                 items.extend(flatten({str(k): v}, new_key).items())

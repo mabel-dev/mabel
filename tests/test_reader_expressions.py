@@ -28,7 +28,6 @@ TEST_DATA = [
 
 
 def test_expression_compilation():
-
     # fmt: off
     EXPRESSIONS = [
         {"expression": "YEAR(dob) == 1979", "dnf": ("YEAR(dob)", "==", 1979)},
@@ -47,7 +46,6 @@ def test_expression_compilation():
 
 
 def test_simple_equals_expressions():
-
     DATA = DictSet(TEST_DATA, storage_class=STORAGE_CLASS.MEMORY)
 
     assert DATA.filter("name == 'James Potter'").count() == 2
@@ -58,7 +56,6 @@ def test_simple_equals_expressions():
 
 
 def test_simple_not_expressions():
-
     DATA = DictSet(TEST_DATA, storage_class=STORAGE_CLASS.MEMORY)
 
     assert DATA.filter("name <> 'James Potter'").count() == 5
@@ -76,7 +73,6 @@ def test_simple_compound_expressions():
 
 
 if __name__ == "__main__":  # pragma: no cover
-
     test_expression_compilation()
     test_simple_equals_expressions()
     test_simple_not_expressions()

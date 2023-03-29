@@ -17,7 +17,6 @@ BUCKET_NAME = "pytest"
 
 
 def set_up():
-
     shutil.rmtree(".cloudstorage", ignore_errors=True)
 
     os.environ["STORAGE_EMULATOR_HOST"] = "http://localhost:9090"
@@ -35,7 +34,6 @@ def set_up():
 
 
 def test_gcs_binary():
-
     # set up
     set_up()
 
@@ -62,7 +60,6 @@ def test_gcs_binary():
 
 
 def test_gcs_text():
-
     # set up
     set_up()
 

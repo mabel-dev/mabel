@@ -47,13 +47,10 @@ class GoogleCloudStorageReader(BaseInnerReader):
         gcs_bucket = client.get_bucket(bucket)
         blobs = list(client.list_blobs(bucket_or_name=gcs_bucket, prefix=object_path))
 
-        yield from [
-            bucket + "/" + blob.name for blob in blobs if not blob.name.endswith("/")
-        ]
+        yield from [bucket + "/" + blob.name for blob in blobs if not blob.name.endswith("/")]
 
 
 def get_blob(bucket: str = None, blob_name: str = None):
-
     # this means we're testing
     if os.environ.get("STORAGE_EMULATOR_HOST") is not None:
         client = storage.Client(credentials=AnonymousCredentials())

@@ -2,7 +2,6 @@ from ...data.readers.internals.base_inner_reader import BaseInnerReader
 
 
 class NullReader(BaseInnerReader):
-
     RULES = [{"name": "data", "required": True}]
 
     def __init__(self, **kwargs):

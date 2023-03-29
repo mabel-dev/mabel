@@ -37,7 +37,6 @@ def _create_bucket():
 
 
 def test_using_batch_writer():
-
     errored = False
     # try:
     if True:

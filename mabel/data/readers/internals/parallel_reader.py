@@ -82,7 +82,6 @@ def expand_nested_json(row):
 
 
 class ParallelReader:
-
     NOT_INDEXED = {-1}
 
     def __init__(
@@ -162,9 +161,7 @@ class ParallelReader:
                 if operator in SARGABLE_OPERATORS:
                     # do I have an index for this field?
                     for index_file in [
-                        index_file
-                        for index_file in index_files
-                        if f".{key}." in index_file
+                        index_file for index_file in index_files if f".{key}." in index_file
                     ]:
                         index = Index(self.reader.get_blob_stream(index_file))
                         return index.search(values)
@@ -191,9 +188,7 @@ class ParallelReader:
                         return self.NOT_INDEXED
                     else:
                         # join the data sets together by adding them
-                        rows = reduce(
-                            lambda x, y: x + _inner_prefilter(y), predicate, []
-                        )
+                        rows = reduce(lambda x, y: x + _inner_prefilter(y), predicate, [])
                     return rows
 
                 # if we're here the structure of the filter is wrong

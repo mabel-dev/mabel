@@ -14,7 +14,6 @@ EXPECTED_RESULTS = {1: 1, 2: 2, 3: 3, 4: 1}
 
 
 def test_writer_timeout():
-
     # none of these should do anything
     w = StreamWriter(
         dataset="bucket/path/file.extension",

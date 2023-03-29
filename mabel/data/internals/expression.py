@@ -48,9 +48,7 @@ class Expression(object):
 
     def parse_expression(self):
         andTerm1 = self.parse_and_term()
-        while (
-            self.tokenizer.has_next() and self.tokenizer.next_token_type() == TOKENS.OR
-        ):
+        while self.tokenizer.has_next() and self.tokenizer.next_token_type() == TOKENS.OR:
             self.tokenizer.next()
             andTermX = self.parse_and_term()
             andTerm = TreeNode(TOKENS.OR, None)
@@ -61,9 +59,7 @@ class Expression(object):
 
     def parse_and_term(self):
         condition1 = self.parse_condition()
-        while (
-            self.tokenizer.has_next() and self.tokenizer.next_token_type() == TOKENS.AND
-        ):
+        while self.tokenizer.has_next() and self.tokenizer.next_token_type() == TOKENS.AND:
             self.tokenizer.next()
             conditionX = self.parse_condition()
             condition = TreeNode(TOKENS.AND, None)
@@ -73,7 +69,6 @@ class Expression(object):
         return condition1
 
     def parse_condition(self):
-
         terminal1 = None
 
         if self.tokenizer.has_next() and self.tokenizer.next_token_type() == TOKENS.NOT:
@@ -118,10 +113,7 @@ class Expression(object):
 
             terminal1 = TreeNode(TOKENS.VARIABLE, "".join(collector))
 
-        if (
-            self.tokenizer.has_next()
-            and self.tokenizer.next_token_type() == TOKENS.LEFTPARENTHESES
-        ):
+        if self.tokenizer.has_next() and self.tokenizer.next_token_type() == TOKENS.LEFTPARENTHESES:
             # If we have a ( then go looking for the matching )
 
             self.tokenizer.next()
@@ -147,9 +139,7 @@ class Expression(object):
                 condition.left = terminal1
                 condition.right = terminal2
                 return condition
-            raise InvalidExpression(
-                f"Operator expected, but got `{self.tokenizer.next()}`"
-            )
+            raise InvalidExpression(f"Operator expected, but got `{self.tokenizer.next()}`")
         raise InvalidExpression("Operator expected, but got nothing")
 
     def parse_terminal(self):
@@ -257,9 +247,7 @@ class Expression(object):
         if treeNode.token_type == TOKENS.OR:
             return left or right
 
-        raise InvalidExpression(
-            f"Unexpected value of type `{str(treeNode.token_type)}`"
-        )
+        raise InvalidExpression(f"Unexpected value of type `{str(treeNode.token_type)}`")
 
     def to_dnf(self):
         """

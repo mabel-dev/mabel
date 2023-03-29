@@ -19,14 +19,12 @@ DATA_SET = [
 
 
 def test_writer_substitutions():
-
     w = StreamWriter(
         dataset="TEST/{key}/{value}",
         inner_writer=NullWriter,
     )
 
     for record in DATA_SET:
-
         # convert to a simd object to test behavior
         as_json = orjson.dumps(record)
 

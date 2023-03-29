@@ -6,7 +6,6 @@ BAR_CHARS = [r" ", r"▁", r"▂", r"▃", r"▄", r"▅", r"▆", r"▇", r"█
 
 class Histogram:
     def __init__(self, values, *, key: str, number_of_bins: int = 10):
-
         if isinstance(values, DictSet):
             values = values.collect_list(key)
 

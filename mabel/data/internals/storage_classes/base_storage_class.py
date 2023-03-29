@@ -6,7 +6,6 @@ import orjson
 
 
 class BaseStorageClass(ABC):
-
     iterator = None
     length = -1
 

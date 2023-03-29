@@ -19,9 +19,7 @@ STORAGE_CLASSES = [
 
 
 def get_ds(**kwargs):
-    ds = Reader(
-        inner_reader=DiskReader, dataset="tests/data/tweets", raw_path=True, **kwargs
-    )
+    ds = Reader(inner_reader=DiskReader, dataset="tests/data/tweets", raw_path=True, **kwargs)
     return ds
 
 
@@ -144,9 +142,7 @@ def test_take():
     assert ds.take(2).count() == 2, ds.take(2).count()
 
     # we had a problem where spendable dictsets were taking n+1 records, but only returning n
-    burnable = DictSet(
-        (a for a in ds.collect_list()), storage_class=STORAGE_CLASS.NO_PERSISTANCE
-    )
+    burnable = DictSet((a for a in ds.collect_list()), storage_class=STORAGE_CLASS.NO_PERSISTANCE)
     print(burnable.take(3))
     l = len(list(burnable.take(10)))
     assert l == 1, l

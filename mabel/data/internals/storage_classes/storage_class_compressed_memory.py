@@ -30,9 +30,7 @@ class StorageClassCompressedMemory(BaseStorageClass):
             # pay for fast deserialization here:
             if hasattr(batch[0], "mini"):
                 json_batch = (
-                    b"["
-                    + b",".join([item.mini for item in batch if not item is None])
-                    + b"]"
+                    b"[" + b",".join([item.mini for item in batch if not item is None]) + b"]"
                 )
                 self.batches.append(compressor.compress(json_batch))
             else:
@@ -55,9 +53,7 @@ class StorageClassCompressedMemory(BaseStorageClass):
             for i in ordered_location:
                 requested_batch = i % BATCH_SIZE
                 if requested_batch != batch_number:
-                    batch = self.parse_json(
-                        decompressor.decompress(self.batches[requested_batch])
-                    )
+                    batch = self.parse_json(decompressor.decompress(self.batches[requested_batch]))
                 yield batch[i - i % BATCH_SIZE]
 
         else:

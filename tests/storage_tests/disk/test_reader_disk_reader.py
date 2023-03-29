@@ -82,7 +82,6 @@ def test_step_past():
 
 
 def test_disk_binary():
-
     try:
         w = BatchWriter(
             inner_writer=DiskWriter,
@@ -107,9 +106,7 @@ def test_disk_binary():
 
 
 def test_disk_text():
-
     try:
-
         w = BatchWriter(
             inner_writer=DiskWriter,
             blob_size=1024,

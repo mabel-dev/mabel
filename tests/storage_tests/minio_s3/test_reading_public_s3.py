@@ -15,7 +15,6 @@ BUCKET_NAME = "mabel.labs"
 
 # this data is used for the labs
 def test_reading_aws_using_minio():
-
     reader = Reader(
         end_point="s3.eu-west-2.amazonaws.com",
         access_key=None,

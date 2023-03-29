@@ -19,7 +19,6 @@ STEM = "{stem}"
 
 class BaseInnerWriter(abc.ABC):
     def __init__(self, **kwargs):
-
         dataset = kwargs.get("dataset")
         self.bucket, path, _, _ = paths.get_parts(dataset)
 

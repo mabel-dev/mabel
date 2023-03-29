@@ -92,7 +92,6 @@ def evaluate(predicate: Union[tuple, list], record: dict) -> bool:
 
 
 class DnfFilters:
-
     __slots__ = ("empty_filter", "predicates")
 
     def __init__(self, filters: Optional[List[Tuple[str, str, object]]] = None):

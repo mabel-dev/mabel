@@ -51,7 +51,6 @@ def page_dictset(dictset: Iterator[dict], page_size: int) -> Iterator:
 
 
 def _inner_process(func, source_queue, reply_queue):  # pragma: no cover
-
     try:
         source = source_queue.get(timeout=1)
     except Empty:  # pragma: no cover
@@ -70,7 +69,6 @@ def _inner_process(func, source_queue, reply_queue):  # pragma: no cover
 
 
 def processed_reader(func, items_to_read, support_files):  # pragma: no cover
-
     process_pool = []
 
     slots = 8

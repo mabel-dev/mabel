@@ -17,9 +17,7 @@ Results (seconds to process 10m rows):
 import time
 
 
-def _inner_file_reader(
-    file_name: str, chunk_size: int = 32 * 1024 * 1024, delimiter: str = b"\n"
-):
+def _inner_file_reader(file_name: str, chunk_size: int = 32 * 1024 * 1024, delimiter: str = b"\n"):
     """
     This is the guts of the reader - it opens a file and reads through it
     chunk by chunk. This allows huge files to be processed as only a chunk

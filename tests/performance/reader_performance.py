@@ -2,7 +2,6 @@ import cProfile
 
 
 def do_read():
-
     import os
     import sys
 

@@ -178,7 +178,6 @@ COMPOUNDS = [
 
 
 def test_data_index():
-
     idx = Index.build_index(THE_LIST, "description")
 
     for loc, entry in enumerate(THE_LIST):

@@ -81,7 +81,6 @@ def read_file(filename, chunk_size=32 * 1024 * 1024, delimiter="\n"):
 
 
 def execute_test(compress, schema, reader):
-
     # reader = read_jsonl('tweets.jsonl')
 
     res = []

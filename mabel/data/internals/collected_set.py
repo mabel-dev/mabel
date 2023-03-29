@@ -3,7 +3,6 @@ from mabel.data.internals.dictset import STORAGE_CLASS, DictSet
 
 
 class CollectedSet:
-
     __slots__ = ["_collections"]
 
     def __init__(self, dictset: DictSet, column: str, dedupe: bool = False):
@@ -58,9 +57,7 @@ class CollectedSet:
             return {x: len(y) for x, y in self._collections.items()}
         else:
             try:
-                return [
-                    len(y) for x, y in self._collections.items() if x == collection
-                ].pop()
+                return [len(y) for x, y in self._collections.items() if x == collection].pop()
             except IndexError:
                 return 0
 
@@ -80,9 +77,7 @@ class CollectedSet:
         """
         response = {}
         for key, items in self._collections.items():
-            values = [
-                item.get(column) for item in items if item.get(column) is not None
-            ]
+            values = [item.get(column) for item in items if item.get(column) is not None]
             response[key] = method(values)
         return response
 
@@ -133,7 +128,6 @@ class CollectedSet:
 
 
 class SubCollection:
-
     __slots__ = ["values"]
 
     def __init__(self, values):

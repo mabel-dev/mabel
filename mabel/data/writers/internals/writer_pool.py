@@ -13,11 +13,9 @@ from .blob_writer import BlobWriter
 
 
 class WriterPool:
-
     __slots__ = ("writers", "pool_size", "kwargs")
 
     def __init__(self, pool_size: int = 5, **kwargs):
-
         self.writers: list = []
         self.pool_size = pool_size
         self.kwargs = kwargs.copy()
@@ -63,9 +61,7 @@ class WriterPool:
                 )
             else:
                 writer = writers[0]
-                self.writers = [
-                    w for w in self.writers if w.get("identity") != identity
-                ]
+                self.writers = [w for w in self.writers if w.get("identity") != identity]
                 writer.get("writer").commit()
         finally:
             lock.release()

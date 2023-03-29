@@ -12,14 +12,11 @@ get_logger().setLevel(5)
 
 
 def get_ds(**kwargs):
-    ds = Reader(
-        inner_reader=DiskReader, dataset="tests/data/tweets", raw_path=True, **kwargs
-    )
+    ds = Reader(inner_reader=DiskReader, dataset="tests/data/tweets", raw_path=True, **kwargs)
     return ds
 
 
 def test_html_table():
-
     ds = get_ds(persistence=STORAGE_CLASS.MEMORY)
     html = html_table(ds)
 

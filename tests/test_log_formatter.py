@@ -15,9 +15,7 @@ traceback.install()
 def test_sanitizing_log_formatter_pass_thru():
     # test we can just pass-thru a basic formatted message
     sanitizer = LogFormatter(None)
-    sanitized = sanitizer.sanitize_record(
-        "log name | log level | date | location | message"
-    )
+    sanitized = sanitizer.sanitize_record("log name | log level | date | location | message")
     assert "log name" in sanitized
     assert "log level" in sanitized
     assert "date" in sanitized

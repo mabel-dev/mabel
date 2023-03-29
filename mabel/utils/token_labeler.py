@@ -210,7 +210,6 @@ def build_splitter():
 
 
 class Tokenizer:
-
     slots = ("i", "tokens")
 
     def __init__(self, exp):

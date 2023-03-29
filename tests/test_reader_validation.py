@@ -35,14 +35,11 @@ def test_reader_all_good():
 
 
 def test_dataset_prefix_validator():
-
     with pytest.raises(AccessDenied):
         reader = Reader(dataset="dataset", valid_dataset_prefixes=["drive/"])
 
     with pytest.raises(AccessDenied):
-        reader = Reader(
-            dataset="dataset", valid_dataset_prefixes=["list", "of", "items"]
-        )
+        reader = Reader(dataset="dataset", valid_dataset_prefixes=["list", "of", "items"])
 
     # no whitelist - allow all
     reader = Reader(project="", dataset="dataset")

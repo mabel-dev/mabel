@@ -85,7 +85,6 @@ class Index:
 
 
 class IndexBuilder:
-
     slots = ("column_name", "temporary_index")
 
     def __init__(self, column_name: str):

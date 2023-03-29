@@ -56,7 +56,6 @@ class LogFormatter(logging.Formatter):
 
     @lru_cache(1)
     def _can_colorize(self):
-
         if self.suppress_color:
             return False
         if is_running_from_ipython():
@@ -108,17 +107,12 @@ class LogFormatter(logging.Formatter):
                     PURPLE + "<redacted:" + self.hash_it(str(value)) + ">" + OFF
                 )
             else:
-                value = re.sub(
-                    r"`([^`]*)`", r"`" + YELLOW + r"\1" + GREEN + r"`", f"{value}"
-                )
-                value = re.sub(
-                    r"'([^']*)'", r"'" + YELLOW + r"\1" + GREEN + r"'", f"{value}"
-                )
+                value = re.sub(r"`([^`]*)`", r"`" + YELLOW + r"\1" + GREEN + r"`", f"{value}")
+                value = re.sub(r"'([^']*)'", r"'" + YELLOW + r"\1" + GREEN + r"'", f"{value}")
                 clean_record[BLUE + key + OFF] = GREEN + f"{value}" + OFF
         return clean_record
 
     def sanitize_record(self, record):
-
         record = self.color_code(record)
         parts = record.split("|")
         json_part = parts.pop()

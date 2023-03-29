@@ -14,7 +14,6 @@ traceback.install()
 
 
 def test_can_read_null():
-
     data = [
         {"name": "Barney Stinson", "alter": "Lorenzo Von Matterhorn"},
         {"name": "Laszlo Cravensworth", "alter": "Jackie Daytona"},

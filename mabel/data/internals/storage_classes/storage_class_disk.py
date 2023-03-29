@@ -24,7 +24,6 @@ class StorageClassDisk(BaseStorageClass):
     """
 
     def __init__(self, iterator):
-
         self.inner_reader = None
         self.length = -1
 
@@ -54,9 +53,7 @@ class StorageClassDisk(BaseStorageClass):
         MMAP is by far the fastest way to read files in Python.
         """
         with open(self.file, mode="rb") as file_obj:
-            with mmap.mmap(
-                file_obj.fileno(), length=0, access=mmap.ACCESS_READ
-            ) as mmap_obj:
+            with mmap.mmap(file_obj.fileno(), length=0, access=mmap.ACCESS_READ) as mmap_obj:
                 line = mmap_obj.readline()
                 while line:
                     yield line

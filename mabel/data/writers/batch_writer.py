@@ -66,7 +66,6 @@ class BatchWriter(Writer):
         """
         # because jobs can be split, allow a frame_id to be passed in
         if not frame_id:
-
             # as_ats are in UTC
             as_at = datetime.datetime.utcnow().strftime("as_at_%Y%m%d-%H%M%S")
             self.batch_date = self._get_writer_date(date)
@@ -110,9 +109,7 @@ class BatchWriter(Writer):
 
         if has_failure:
             self.seen_failures = True
-            get_logger().debug(
-                f"Error found in the stack, not marking frame as complete."
-            )
+            get_logger().debug(f"Error found in the stack, not marking frame as complete.")
             return -1
 
         if self.seen_failures:

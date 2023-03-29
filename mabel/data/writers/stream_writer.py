@@ -108,9 +108,7 @@ class StreamWriter(Writer):
 
         if isinstance(record, BaseModel):
             record = record.dict()
-        elif self.schema and not self.schema.validate(
-            subject=record, raise_exception=False
-        ):
+        elif self.schema and not self.schema.validate(subject=record, raise_exception=False):
             identity += "/BACKOUT/"
             get_logger().warning(
                 f"Schema Validation Failed ({self.schema.last_error}) - message being written to {identity}"
@@ -143,13 +141,10 @@ class StreamWriter(Writer):
 
             # for every variation in the cartesian product
             for values in value_combinations:  # type:ignore
-
                 this_identity = identity
                 # do the actual replacing of the placeholders
                 for k, v in zip(placeholders, values):
-                    this_identity = this_identity.replace(
-                        "{" + k + "}", text.sanitize(str(v))
-                    )
+                    this_identity = this_identity.replace("{" + k + "}", text.sanitize(str(v)))
 
                 # get the writer and save the record
                 blob_writer = self.writer_pool.get_writer(this_identity)
@@ -197,9 +192,7 @@ class StreamWriter(Writer):
                     )
                     self.writer_pool.remove_writer(blob_writer_identity)
                 # if we're over capacity, evict the LRU writers
-                for (
-                    blob_writer_identity
-                ) in self.writer_pool.nominate_writers_to_evict():
+                for blob_writer_identity in self.writer_pool.nominate_writers_to_evict():
                     get_logger().debug(
                         f"Evicting {blob_writer_identity} from the writer pool due the pool being over its {self.writer_pool_capacity} capacity, poolsize={len(self.writer_pool.writers)}"
                     )

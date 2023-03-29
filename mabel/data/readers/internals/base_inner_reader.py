@@ -67,7 +67,6 @@ class BaseInnerReader(abc.ABC):
                 return part
 
     def __init__(self, partitions=None, partition_filter=None, **kwargs):
-
         today = datetime.datetime.utcnow().replace(minute=0, second=0, microsecond=0)
 
         self.dataset = kwargs.get("dataset")
@@ -141,17 +140,13 @@ class BaseInnerReader(abc.ABC):
         return io.BytesIO(result)
 
     def get_list_of_blobs(self):
-
         visited = {}
         blobs = []
         # For each day in the range, get the blobs for us to read
         for cycle_date in dates.date_range(self.start_date, self.end_date):
             # Build the path name
-            cycle_path = pathlib.Path(
-                paths.build_path(path=self.dataset, date=cycle_date)
-            )
+            cycle_path = pathlib.Path(paths.build_path(path=self.dataset, date=cycle_date))
             if not cycle_path in visited:
-
                 visited[cycle_path] = True
 
                 cycle_blobs = list(self.get_blobs_at_path(path=cycle_path))
@@ -188,21 +183,12 @@ class BaseInnerReader(abc.ABC):
                     partition_filter = f"/by_{partition_filter_field}/{partition_filter_field}={partition_filter_value}/"
 
                     # If we can find the partition in the folder set, then prune to it
-                    if any(
-                        [
-                            f"by_{partition_filter_field}" in by
-                            for by in list_of_partitions
-                        ]
-                    ):
+                    if any([f"by_{partition_filter_field}" in by for by in list_of_partitions]):
                         # Do the pruning
-                        cycle_blobs = [
-                            blob for blob in cycle_blobs if partition_filter in blob
-                        ]
+                        cycle_blobs = [blob for blob in cycle_blobs if partition_filter in blob]
                         #  We only have one partition now
                         list_of_partitions = [f"by_{partition_filter_field}"]
-                        get_logger().debug(
-                            f"Applied partition filter by: `{partition_filter}`"
-                        )
+                        get_logger().debug(f"Applied partition filter by: `{partition_filter}`")
                     else:
                         get_logger().debug(
                             f"Wasn't able to find partition to filter by: `{partition_filter}`"
@@ -217,9 +203,7 @@ class BaseInnerReader(abc.ABC):
                             f"Ignoring {len(list_of_partitions)} 'by' partitionings, reading from '{chosen_partition}'"
                         )
                     # Do the pruning
-                    cycle_blobs = [
-                        blob for blob in cycle_blobs if f"/{chosen_partition}/" in blob
-                    ]
+                    cycle_blobs = [blob for blob in cycle_blobs if f"/{chosen_partition}/" in blob]
 
                 def safe_get_next(lst, item):
                     try:
@@ -234,12 +218,10 @@ class BaseInnerReader(abc.ABC):
                     partitioned_folders = {""}
                 else:
                     partitioned_folders = {
-                        safe_get_next(blob.split("/"), chosen_partition)
-                        for blob in cycle_blobs
+                        safe_get_next(blob.split("/"), chosen_partition) for blob in cycle_blobs
                     }
 
                 for partitioned_folder in partitioned_folders:
-
                     partitioned_blobs = [
                         blob
                         for blob in cycle_blobs
@@ -248,32 +230,20 @@ class BaseInnerReader(abc.ABC):
 
                     # Work out if there's an as_at part
                     as_ats = {
-                        self._extract_as_at(blob)
-                        for blob in partitioned_blobs
-                        if "as_at_" in blob
+                        self._extract_as_at(blob) for blob in partitioned_blobs if "as_at_" in blob
                     }
                     if as_ats:
                         as_ats = sorted(as_ats)
                         as_at = as_ats.pop()
 
                         is_complete = lambda blobs: any(
-                            [
-                                blob
-                                for blob in blobs
-                                if as_at + "/frame.complete" in blob
-                            ]
+                            [blob for blob in blobs if as_at + "/frame.complete" in blob]
                         )
                         is_invalid = lambda blobs: any(
-                            [
-                                blob
-                                for blob in blobs
-                                if (as_at + "/frame.ignore" in blob)
-                            ]
+                            [blob for blob in blobs if (as_at + "/frame.ignore" in blob)]
                         )
 
-                        while not is_complete(partitioned_blobs) or is_invalid(
-                            partitioned_blobs
-                        ):
+                        while not is_complete(partitioned_blobs) or is_invalid(partitioned_blobs):
                             if not is_complete(partitioned_blobs):
                                 get_logger().debug(
                                     f"Frame `{partitioned_folder}/{as_at}` is not complete - `frame.complete` file is not present - skipping this frame."

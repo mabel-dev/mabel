@@ -17,6 +17,7 @@ TIMEDELTA_REGEX = (
 TIMEDELTA_PATTERN = re.compile(TIMEDELTA_REGEX, re.IGNORECASE)
 SECONDS_PER_HOUR: int = 3600
 
+
 # based on:
 # https://gist.github.com/santiagobasulto/698f0ff660968200f873a2f9d1c4113c#file-parse_timedeltas-py
 def parse_delta(delta: str) -> datetime.timedelta:
@@ -39,7 +40,6 @@ def parse_delta(delta: str) -> datetime.timedelta:
 
 
 def parse_iso(value):
-
     DATE_SEPARATORS = {"-", ":"}
     # date validation at speed is hard, dateutil is great but really slow, this is fast
     # but error-prone. It assumes it is a date or it really nothing like a date.
@@ -57,7 +57,6 @@ def parse_iso(value):
     # If the last character is a Z, we ignore it.
     # If we have +0000 notation on the end, we ignore it.
     try:
-
         input_type = type(value)
 
         if numpy:
@@ -84,9 +83,7 @@ def parse_iso(value):
                 return None
             if val_len == 10:
                 # YYYY-MM-DD
-                return datetime.datetime(
-                    *map(int, [value[:4], value[5:7], value[8:10]])
-                )
+                return datetime.datetime(*map(int, [value[:4], value[5:7], value[8:10]]))
             if val_len >= 16:
                 if not (value[10] in ("T", " ") and value[13] in DATE_SEPARATORS):
                     return False
@@ -150,9 +147,7 @@ def date_range(
     start_date = start_date.replace(minute=0, second=0, microsecond=0)  # type:ignore
 
     if end_date < start_date:  # type:ignore
-        raise ValueError(
-            "date_range: end_date must be the same or later than the start_date "
-        )
+        raise ValueError("date_range: end_date must be the same or later than the start_date ")
 
     for n in range(
         int((end_date - start_date).total_seconds() // SECONDS_PER_HOUR)  # type:ignore

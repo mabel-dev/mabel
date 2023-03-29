@@ -60,15 +60,6 @@ From GitHub
 pip install --upgrade git+https://github.com/mabel-dev/mabel
 ~~~
 
-A preview release of mabel is available from PyPI
-~~~
-pip install --upgrade mabelbeta
-~~~
-You may need to manually uninstall mabel before the test version will install.
-
-These versions are usually labelled with an `a` (signifying alpha status) in the
-library version. Alpha versions are more likely to have functional issues.
-
 
 ## Guides
 
@@ -77,12 +68,10 @@ library version. Alpha versions are more likely to have functional issues.
 ## Dependencies
 
 >-  **[orjson](https://github.com/ijl/orjson)** for JSON (de)serialization
->-  **[bitarray](https://github.com/ilanschnell/bitarray)** for handling high density boolean data
 >-  **[siphashc](https://github.com/WeblateOrg/siphashc)** for non-cryptographic hashing
 >-  **[pydantic](https://pydantic-docs.helpmanual.io/)** to define internal data models  
 >-  **[zstandard](https://github.com/indygreg/python-zstandard)** for real-time on disk compression
 >-  **[LZ4](https://github.com/python-lz4/python-lz4)** for real-time in memory compression
->-  **[simdjson](https://pysimdjson.tkte.ch/index.html)** for fast JSON deserialization
 >-  **[cython](https://cython.readthedocs.io/en/latest/index.html#)** for precompilation
 
 

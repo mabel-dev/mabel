@@ -55,7 +55,6 @@ def get_size(obj, seen=None):
 
 
 class BlobWriter(object):
-
     # in som failure scenarios commit is called before __init__, so we need to define
     # this variable outside the __init__.
     buffer = bytearray()
@@ -70,7 +69,6 @@ class BlobWriter(object):
         schema: Schema = None,
         **kwargs,
     ):
-
         self.format = format
         self.maximum_blob_size = blob_size
 
@@ -165,19 +163,15 @@ class BlobWriter(object):
             if column in mabel_schema and mabel_schema[column] in type_map:
                 index = table.column_names.index(column)
                 # update the schema
-                schema = schema.set(
-                    index, pyarrow.field(column, type_map[mabel_schema[column]])
-                )
+                schema = schema.set(index, pyarrow.field(column, type_map[mabel_schema[column]]))
         # apply the updated schema
         table = table.cast(target_schema=schema)
         return table
 
     def commit(self):
-
         committed_blob_name = ""
 
         if len(self.buffer) > 0:
-
             lock = threading.Lock()
 
             try:
@@ -215,8 +209,7 @@ class BlobWriter(object):
 
                     # then we make sure each row has all the columns
                     self.buffer = [
-                        {column: row.get(column) for column in columns}
-                        for row in self.buffer
+                        {column: row.get(column) for column in columns} for row in self.buffer
                     ]
 
                     pytable = pyarrow.Table.from_pylist(self.buffer)
@@ -225,9 +218,7 @@ class BlobWriter(object):
                     if self.schema:
                         pytable = self._normalize_arrow_schema(pytable, self.schema)
 
-                    pyarrow.parquet.write_table(
-                        pytable, where=tempfile, compression="zstd"
-                    )
+                    pyarrow.parquet.write_table(pytable, where=tempfile, compression="zstd")
 
                     tempfile.seek(0)
                     self.buffer = tempfile.read()
@@ -251,9 +242,7 @@ class BlobWriter(object):
                         "records": len(self.buffer)
                         if self.format == "parquet"
                         else self.records_in_buffer,
-                        "bytes": self.byte_count
-                        if self.format == "parquet"
-                        else len(self.buffer),
+                        "bytes": self.byte_count if self.format == "parquet" else len(self.buffer),
                     }
                 )
             finally:
