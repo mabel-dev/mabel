@@ -1,16 +1,18 @@
 import datetime
-
-from typing import Any, Optional, Union
+from typing import Any
+from typing import Optional
+from typing import Union
 
 import orjson
-
-from pydantic import BaseModel
-
-from mabel.data.writers.internals.blob_writer import BlobWriter
 from mabel.data.validator import Schema
-from mabel.errors import ValidationError, InvalidDataSetError, MissingDependencyError
+from mabel.data.writers.internals.blob_writer import BlobWriter
+from mabel.errors import InvalidDataSetError
+from mabel.errors import MissingDependencyError
+from mabel.errors import ValidationError
 from mabel.logging import get_logger
-from mabel.utils import paths, dates
+from mabel.utils import dates
+from mabel.utils import paths
+from pydantic import BaseModel
 
 logger = get_logger()
 

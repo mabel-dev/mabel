@@ -1,12 +1,14 @@
-import os
-import re
 import hashlib
 import logging
-import orjson as json
+import os
+import re
 from functools import lru_cache
-from ..utils.colors import COLORS, colorize
-from ..utils.ipython import is_running_from_ipython
 
+import orjson as json
+
+from ..utils.colors import COLORS
+from ..utils.colors import colorize
+from ..utils.ipython import is_running_from_ipython
 
 # if we find a key which matches these strings, we hash the contents
 KEYS_TO_SANITIZE = [

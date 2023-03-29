@@ -17,10 +17,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-import os
 import base64
+import os
 from math import ceil
-from typing import Any, Union
+from typing import Any
+from typing import Union
 
 
 def random_string(length: int = 64, encoder=base64.b64encode) -> str:

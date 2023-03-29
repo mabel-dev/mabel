@@ -7,8 +7,9 @@ BlobWriters to be evicted. Note the pool_size is not a hard limit, there
 can be more active BlobWriters, this is used to determine how many
 BlobWriters to recommend for evict.
 """
-import time
 import threading
+import time
+
 from .blob_writer import BlobWriter
 
 

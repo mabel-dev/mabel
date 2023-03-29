@@ -1,14 +1,18 @@
-import re
-import time
 import datetime
-import threading
 import itertools
-from pydantic import BaseModel  # type:ignore
+import re
+import threading
+import time
 from typing import Union
-from .writer import Writer
-from .internals.writer_pool import WriterPool
-from mabel.utils import paths, text, dates
+
 from mabel.logging import get_logger
+from mabel.utils import dates
+from mabel.utils import paths
+from mabel.utils import text
+from pydantic import BaseModel  # type:ignore
+
+from .internals.writer_pool import WriterPool
+from .writer import Writer
 
 
 class StreamWriter(Writer):

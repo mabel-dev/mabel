@@ -1,8 +1,11 @@
 """
 Functions to help with handling file paths
 """
-import pathlib
 import datetime
+import errno
+import os
+import pathlib
+
 from mabel.utils.entropy import random_string
 
 
@@ -64,7 +67,6 @@ def date_format(path_string: str, date: datetime.date = None):
     return path_string
 
 
-import os, errno
 
 
 def silent_remove(filename):

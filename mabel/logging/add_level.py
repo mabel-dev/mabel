@@ -4,10 +4,11 @@ from: https://stackoverflow.com/a/35804945
 #nodoc - don't add to the documentation wiki
 """
 
-import logging
-import orjson
 import atexit
+import logging
 from typing import Dict
+
+import orjson
 
 logging_seen_warnings: Dict[int, int] = {}
 

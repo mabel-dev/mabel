@@ -11,9 +11,14 @@ MIT Licence
 import os.path
 import pathlib
 import sys
-from typing import Dict, List, Optional, Any, Generator
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from dataclasses import field
 from traceback import walk_tb
+from typing import Any
+from typing import Dict
+from typing import Generator
+from typing import List
+from typing import Optional
 
 LINE_LENGTH = 120
 BAR = " " * LINE_LENGTH

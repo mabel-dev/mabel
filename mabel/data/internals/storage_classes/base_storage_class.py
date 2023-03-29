@@ -1,5 +1,4 @@
 import decimal
-
 from abc import ABC
 
 import orjson

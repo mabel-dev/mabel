@@ -6,17 +6,16 @@ When a reliable use case for multiprocessing is identified it may be included in
 automatic running of the data accesses.
 """
 import datetime
-import lz4.frame
 import logging
 import multiprocessing
 import os
 import time
-
-from .parsers import json
-
 from multiprocessing import Queue
 from queue import Empty
 
+import lz4.frame
+
+from .parsers import json
 
 TERMINATE_SIGNAL = -1
 MAXIMUM_SECONDS_PROCESSES_CAN_RUN = 600

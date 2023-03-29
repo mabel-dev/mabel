@@ -5,14 +5,13 @@ import abc
 import datetime
 import io
 import pathlib
-
-from io import IOBase
 from functools import lru_cache
+from io import IOBase
 from typing import Iterable
 
-from mabel.utils import paths, dates
 from mabel.logging import get_logger
-
+from mabel.utils import dates
+from mabel.utils import paths
 
 BUFFER_SIZE: int = 64 * 1024 * 1024  # 64Mb
 

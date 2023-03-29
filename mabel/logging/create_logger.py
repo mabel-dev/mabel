@@ -1,10 +1,12 @@
-import os
 import logging
+import os
 from functools import lru_cache
+
 from .add_level import add_logging_level
-from .log_formatter import LogFormatter
-from .levels import LEVELS_TO_STRING, LEVELS
 from .google_cloud_logger import GoogleLogger
+from .levels import LEVELS
+from .levels import LEVELS_TO_STRING
+from .log_formatter import LogFormatter
 
 LOG_NAME: str = "MABEL"
 LOG_FORMAT: str = "{BOLD_CYAN}%(name)s{OFF} | %(levelname)-8s | %(asctime)s | {GREEN}%(funcName)s(){OFF} | {YELLOW}%(filename)s{OFF}:{PURPLE}%(lineno)s{OFF} | %(message)s"

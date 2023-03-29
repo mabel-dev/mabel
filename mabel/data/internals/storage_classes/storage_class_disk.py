@@ -8,12 +8,11 @@ of JSON data - this accounts for over 50% of the read/write times.
 import atexit
 import mmap
 import os
-
 from tempfile import NamedTemporaryFile
 
 from mabel.utils.paths import silent_remove
-from . import BaseStorageClass
 
+from . import BaseStorageClass
 
 BUFFER_SIZE = 16 * 1024 * 1024  # 16Mb
 

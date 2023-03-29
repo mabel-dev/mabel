@@ -4,7 +4,7 @@ target-version = ["py310"]
 
 [tool.isort]
 profile = "black"
-src_paths = ["mabel"]
+src_paths = ["mabel/mabel"]
 extend_skip_glob = ["tests/**", "*.pyx"]
 line_length = 100
 multi_line_output = 9

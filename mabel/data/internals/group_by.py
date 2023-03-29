@@ -5,9 +5,10 @@ will be effective:
 
 python setup.py build_ext --inplace
 """
+from collections import defaultdict
+
 import cython
 from siphashc import siphash
-from collections import defaultdict
 
 
 def summer(x, y):

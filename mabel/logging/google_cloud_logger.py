@@ -1,16 +1,20 @@
 """
 https://cloud.google.com/logging/docs/reference/v2/rest/v2/LogEntry
 """
-import os
 import atexit
-import logging
 import datetime
-import orjson as json
-from typing import Union, Optional, Dict
-from ..logging.levels import LEVELS, LEVELS_TO_STRING
-from ..utils import is_running_from_ipython
-from ..logging.log_formatter import LogFormatter
+import logging
+import os
+from typing import Dict
+from typing import Optional
+from typing import Union
 
+import orjson as json
+
+from ..logging.levels import LEVELS
+from ..logging.levels import LEVELS_TO_STRING
+from ..logging.log_formatter import LogFormatter
+from ..utils import is_running_from_ipython
 
 logging_seen_warnings: Dict[int, int] = {}
 
@@ -50,8 +54,8 @@ def log_it(payload):
 
 
 def extract_caller():
-    import traceback
     import os.path
+    import traceback
 
     frames = traceback.extract_stack()
     if len(frames) < 4:

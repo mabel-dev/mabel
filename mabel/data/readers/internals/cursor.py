@@ -9,8 +9,8 @@ Cursor is made of three parts:
 - location : the record in the active partition (blob), so we can resume reading
              midway through the blob if required.
 """
-from siphashc import siphash
 import orjson
+from siphashc import siphash
 
 
 class InvalidCursor(Exception):

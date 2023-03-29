@@ -1,6 +1,5 @@
 from ...data.internals.dictset import DictSet
 
-
 BAR_CHARS = [r" ", r"▁", r"▂", r"▃", r"▄", r"▅", r"▆", r"▇", r"█"]
 
 

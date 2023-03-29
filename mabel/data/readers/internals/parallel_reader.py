@@ -21,15 +21,18 @@ dataset:
 │ Reduce     │ Aggregate                                                  │
 └────────────┴────────────────────────────────────────────────────────────┘
 """
-from mabel import logging
-from . import decompressors, parsers
 from enum import Enum
 from functools import reduce
-from ....utils import paths
-from ....data.internals.records import flatten
-from ....data.internals.index import Index
-from ....data.internals.expression import Expression
+
+from mabel import logging
+
 from ....data.internals.dnf_filters import DnfFilters
+from ....data.internals.expression import Expression
+from ....data.internals.index import Index
+from ....data.internals.records import flatten
+from ....utils import paths
+from . import decompressors
+from . import parsers
 
 logger = logging.get_logger()
 

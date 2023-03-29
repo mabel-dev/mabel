@@ -2,10 +2,16 @@
 This is a filtering mechanism to be applied when reading data.
 """
 import operator
-from typing import Optional, Iterable, List, Tuple, Union
+from typing import Iterable
+from typing import List
+from typing import Optional
+from typing import Tuple
+from typing import Union
+
 from ...errors import InvalidSyntaxError
 from ...logging import get_logger
-from ...utils.text import like, matches
+from ...utils.text import like
+from ...utils.text import matches
 
 
 def _in(x, y):

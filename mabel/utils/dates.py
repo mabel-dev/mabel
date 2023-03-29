@@ -1,7 +1,7 @@
-import re
 import datetime
-
-from typing import Optional, Union
+import re
+from typing import Optional
+from typing import Union
 
 try:
     import numpy

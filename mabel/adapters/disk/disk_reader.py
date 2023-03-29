@@ -1,4 +1,5 @@
-from ...data.readers.internals.base_inner_reader import BaseInnerReader, BUFFER_SIZE
+from ...data.readers.internals.base_inner_reader import BUFFER_SIZE
+from ...data.readers.internals.base_inner_reader import BaseInnerReader
 
 
 class DiskReader(BaseInnerReader):

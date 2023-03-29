@@ -1,7 +1,8 @@
 import functools
 import inspect
-from ..logging import get_logger
+
 from ..errors import InvalidReaderConfigError
+from ..logging import get_logger
 
 
 def get_levenshtein_distance(word1, word2):

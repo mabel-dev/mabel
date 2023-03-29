@@ -1,4 +1,5 @@
 import io
+
 from ...data.writers.internals.base_inner_writer import BaseInnerWriter
 from ...errors import MissingDependencyError
 

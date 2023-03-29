@@ -1,4 +1,7 @@
-from typing import List, Callable, MutableMapping, Any
+from typing import Any
+from typing import Callable
+from typing import List
+from typing import MutableMapping
 
 
 def select_record_fields(record: dict, fields: List[str]) -> dict:

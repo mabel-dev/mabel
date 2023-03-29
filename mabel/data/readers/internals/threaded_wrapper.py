@@ -1,12 +1,13 @@
 """
 
 """
+import logging
+import threading
 import time
 from queue import Empty
-from typing import Iterator
-import threading
-import logging
 from queue import SimpleQueue
+from typing import Iterator
+
 import simdjson
 
 

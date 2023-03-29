@@ -27,8 +27,9 @@ def unzip(stream):
     Read ZIP compressed files
     """
     # zipfile should always be present
-    import zipfile
     import io
+    import zipfile
+
     from .parallel_reader import KNOWN_EXTENSIONS
 
     with zipfile.ZipFile(stream, "r") as zip:

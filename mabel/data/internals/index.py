@@ -6,6 +6,7 @@ Index is a json KV store:
 }
 """
 from typing import Iterable
+
 import orjson
 from siphashc import siphash
 

@@ -2,6 +2,7 @@
 XML helper function, we don't create XML data, we read it.
 """
 
+from collections import defaultdict
 from xml.etree import cElementTree as ElementTree  # nosec
 
 
@@ -22,7 +23,6 @@ def strip_namespace(entry):
                 strip_namespace(child)
 
 
-from collections import defaultdict
 
 
 def etree_to_dict(t):
