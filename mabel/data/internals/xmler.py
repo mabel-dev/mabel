@@ -23,8 +23,6 @@ def strip_namespace(entry):
                 strip_namespace(child)
 
 
-
-
 def etree_to_dict(t):
     d = {t.tag: {} if t.attrib else None}
     children = list(t)

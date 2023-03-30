@@ -67,8 +67,6 @@ def date_format(path_string: str, date: datetime.date = None):
     return path_string
 
 
-
-
 def silent_remove(filename):
     try:
         os.remove(filename)
