@@ -1,4 +1,3 @@
-from Cython.Build import cythonize
 from setuptools import find_packages
 from setuptools import setup
 
@@ -16,16 +15,6 @@ except:
     with open("mabel.egg-info/requires.txt", "r") as f:
         required = f.read().splitlines()
 
-ext_modules = cythonize(
-    [
-        "mabel/data/internals/group_by.py",
-        "mabel/data/internals/dictset.py",
-        "mabel/data/internals/expression.py",
-        "mabel/data/readers/internals/inline_evaluator.py",
-        "mabel/data/readers/internals/parallel_reader.py",
-    ]
-)
-
 setup(
     name="mabel",
     version=__version__,
@@ -38,5 +27,4 @@ setup(
     packages=find_packages(include=["mabel", "mabel.*"]),
     url="https://github.com/mabel-dev/mabel/",
     install_requires=required,
-    ext_modules=ext_modules,
 )
