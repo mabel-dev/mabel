@@ -19,11 +19,11 @@ jobs:
     - name: Build binary wheel
       run: /opt/python/cp38-cp38/bin/python setup.py bdist_wheel
 
-    - name: Apply auditwheel for manylinux wheel
-      run: auditwheel repair -w dist dist/*
-
-    - name: Remove linux wheel
-      run: rm dist/*-linux_x86_64.whl
+#    - name: Apply auditwheel for manylinux wheel
+#      run: auditwheel repair -w dist dist/*
+#
+#    - name: Remove linux wheel
+#      run: rm dist/*-linux_x86_64.whl
 
     - name: Archive dist artifacts
       uses: actions/upload-artifact@v1
@@ -45,11 +45,11 @@ jobs:
     - name: Build binary wheel
       run: /opt/python/cp39-cp39/bin/python setup.py bdist_wheel
 
-    - name: Apply auditwheel for manylinux wheel
-      run: auditwheel repair -w dist dist/*
-
-    - name: Remove linux wheel
-      run: rm dist/*-linux_x86_64.whl
+#    - name: Apply auditwheel for manylinux wheel
+#      run: auditwheel repair -w dist dist/*
+#
+#    - name: Remove linux wheel
+#      run: rm dist/*-linux_x86_64.whl
 
     - name: Archive dist artifacts
       uses: actions/upload-artifact@v1
@@ -70,11 +70,11 @@ jobs:
     - name: Build binary wheel
       run: /opt/python/cp310-cp310/bin/python setup.py bdist_wheel
 
-    - name: Apply auditwheel for manylinux wheel
-      run: auditwheel repair -w dist dist/*
-
-    - name: Remove linux wheel
-      run: rm dist/*-linux_x86_64.whl
+#    - name: Apply auditwheel for manylinux wheel
+#      run: auditwheel repair -w dist dist/*
+#
+#    - name: Remove linux wheel
+#      run: rm dist/*-linux_x86_64.whl
 
     - name: Archive dist artifacts
       uses: actions/upload-artifact@v1
