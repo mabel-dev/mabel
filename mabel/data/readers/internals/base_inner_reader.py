@@ -254,13 +254,18 @@ class BaseInnerReader(abc.ABC):
                             if len(as_ats) > 0:
                                 as_at = as_ats.pop()
                             else:
-                                return []
-                        get_logger().debug(f"Reading from DataSet frame `{as_at}`")
-                        partitioned_blobs = [
-                            blob
-                            for blob in partitioned_blobs
-                            if (as_at in blob) and ("/frame.complete" not in blob)
-                        ]
+                                as_at = None
+                                break
+                        if as_at is None:
+                            get_logger().error(f"There are no valid frames at {partitioned_folder}")
+                            partitioned_blobs = []
+                        else:
+                            get_logger().debug(f"Reading from DataSet frame `{as_at}`")
+                            partitioned_blobs = [
+                                blob
+                                for blob in partitioned_blobs
+                                if (as_at in blob) and ("/frame.complete" not in blob)
+                            ]
 
                     blobs += partitioned_blobs
 

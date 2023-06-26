@@ -1,5 +1,6 @@
 bitarray
 cython
+hadro
 lz4
 orjson
 orso
