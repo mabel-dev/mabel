@@ -2,7 +2,6 @@ bitarray
 cython
 lz4
 orjson
-orso
 pydantic
 siphashc
 zstandard
