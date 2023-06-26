@@ -257,7 +257,9 @@ class BaseInnerReader(abc.ABC):
                                 as_at = None
                                 break
                         if as_at is None:
-                            get_logger().error(f"There are no valid frames at {partitioned_folder}")
+                            get_logger().error(
+                                f"There are no valid frames at `{partitioned_folder}`"
+                            )
                             partitioned_blobs = []
                         else:
                             get_logger().debug(f"Reading from DataSet frame `{as_at}`")
