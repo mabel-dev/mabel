@@ -15,6 +15,7 @@ matplotlib
 python-dotenv
 psutil
 pyarrow
+pydantic
 rsa>=4.7 # not directly required, pinned by Snyk to avoid a vulnerability
 minio
 data_expectations
