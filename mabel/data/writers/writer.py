@@ -9,9 +9,9 @@ from mabel.data.writers.internals.blob_writer import BlobWriter
 from mabel.errors import InvalidDataSetError
 from mabel.errors import MissingDependencyError
 from mabel.errors import ValidationError
-from mabel.logging import get_logger
 from mabel.utils import dates
 from mabel.utils import paths
+from orso.logging import get_logger
 
 logger = get_logger()
 
@@ -69,9 +69,7 @@ class Writer:
                 partitions = ["{yyyy}/{mm}/{dd}"]
 
         self.schema = None
-        if isinstance(schema, list):
-            schema = Schema(schema)
-        if isinstance(schema, dict):
+        if isinstance(schema, (list, dict)):
             schema = Schema(schema)
         if isinstance(schema, Schema):
             self.schema = schema

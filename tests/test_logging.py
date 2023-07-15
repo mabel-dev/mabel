@@ -6,7 +6,7 @@ import os
 import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
-from mabel.logging import LEVELS, get_logger, set_log_name
+from orso.logging import LEVELS, get_logger, set_log_name
 from rich import traceback
 
 traceback.install()

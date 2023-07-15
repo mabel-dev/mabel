@@ -16,9 +16,9 @@ from mabel.data.readers.internals.parallel_reader import ParallelReader
 from mabel.data.readers.internals.parallel_reader import pass_thru
 from mabel.errors import DataNotFoundError
 from mabel.errors import InvalidCombinationError
-from mabel.logging import get_logger
 from mabel.utils.dates import parse_delta
 from mabel.utils.parameter_validator import validate
+from orso.logging import get_logger
 
 # fmt:off
 RULES = [

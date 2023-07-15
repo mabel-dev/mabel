@@ -6,7 +6,7 @@ from mabel import Reader, DictSet
 from mabel.data import STORAGE_CLASS
 from mabel.data.internals.display import html_table
 from mabel.adapters.disk import DiskReader
-from mabel.logging import get_logger
+from orso.logging import get_logger
 
 get_logger().setLevel(5)
 

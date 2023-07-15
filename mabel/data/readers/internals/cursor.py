@@ -10,7 +10,7 @@ Cursor is made of three parts:
              midway through the blob if required.
 """
 import orjson
-from orso.cityhash import CityHash32
+from orso.cityhash import CityHash64
 
 
 class InvalidCursor(Exception):
@@ -29,7 +29,7 @@ class Cursor:
             self.load_cursor(cursor)
 
     def load_cursor(self, cursor):
-        from orso.bitarray import bitarray
+        from bitarray import bitarray
 
         if cursor is None:
             return
@@ -46,7 +46,7 @@ class Cursor:
 
         self.location = cursor["location"]
         find_partition = [
-            blob for blob in self.readable_blobs if CityHash32(blob) == cursor["partition"]
+            blob for blob in self.readable_blobs if CityHash64(blob) == cursor["partition"]
         ]
         if len(find_partition) == 1:
             self.partition = find_partition[0]
@@ -66,7 +66,7 @@ class Cursor:
             if self.partition in self.readable_blobs:
                 return self.partition
             partition_finder = [
-                blob for blob in self.readable_blobs if CityHash32(blob) == self.partition
+                blob for blob in self.readable_blobs if CityHash64(blob) == self.partition
             ]
             if len(partition_finder) != 1:
                 raise ValueError(f"Unable to determine current partition ({self.partition})")
@@ -94,7 +94,7 @@ class Cursor:
         }
 
     def __getitem__(self, item):
-        from orso.bitarray import bitarray
+        from bitarray import bitarray
 
         if item == "map":
             blob_map = bitarray(
@@ -102,7 +102,7 @@ class Cursor:
             )
             return blob_map.tobytes().hex()
         if item == "partition":
-            return CityHash32(self.partition)
+            return CityHash64(self.partition)
         if item == "location":
             return self.location
         return None

@@ -16,7 +16,7 @@ except ImportError:  # pragma: no cover
 
 def do_writer():
     w = BatchWriter(
-        inner_writer=FileWriter, dataset="tests/data/framed", date=datetime.date.today()
+        inner_writer=FileWriter, dataset="tests/data/framed", date=datetime.datetime.utcnow().date()
     )
     for i in range(int(1e5)):
         w.append({"test": 2})

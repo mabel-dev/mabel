@@ -3,7 +3,7 @@ import os
 import threading
 from time import sleep
 
-from ..logging import get_logger
+from orso.logging import get_logger
 
 can_use_resource_lib = True
 try:

@@ -35,7 +35,10 @@ def test_group_by():
     assert list(GroupBy(ds, "user").groups()) == [{'user': 'bob'}, {'user': 'alice'}, {'user': 'eve'}]
 
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
-    assert list(GroupBy(ds, "user").count()) == [{'COUNT(*)': 6, 'user': 'alice'}, {'COUNT(*)': 5, 'user': 'bob'}, {'COUNT(*)': 2, 'user': 'eve'}]
+    gb = GroupBy(ds, "user")
+    cn = gb.count()
+    ls = list(cn)
+    assert ls == [{'COUNT(*)': 6, 'user': 'alice'}, {'COUNT(*)': 5, 'user': 'bob'}, {'COUNT(*)': 2, 'user': 'eve'}], ls
 
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
     gb = list(GroupBy(ds, "user").average("value"))

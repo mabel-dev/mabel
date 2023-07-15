@@ -27,7 +27,7 @@ def test_validator_all_valid_values():
         "enum_field": "RED",
         "integer_field": 10,
         "float_field": 10.00,
-        "date_field": datetime.date.today(),
+        "date_field": datetime.datetime.utcnow().date(),
         "time_field": datetime.time.min,
     }
     TEST_SCHEMA = {

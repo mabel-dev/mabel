@@ -88,13 +88,13 @@ class Schema:
 
     def __contains__(self, name):
         """we can short cut this check"""
-        return name in self._validators
+        return self.schema.find_column(name) is not None
 
     def __getitem__(self, name):
         """to avoid errors, do `name in schema` first"""
-        for item in self.definition:
-            if item.get("name") == name:
-                return item.get("type")
+        column = self.schema.find_column(name)
+        if column:
+            return column
         raise IndexError(f"'{name}' not in schema")
 
     def get(self, name, default=None):

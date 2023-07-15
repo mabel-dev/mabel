@@ -2,7 +2,7 @@ import os
 
 from mabel.data.writers.internals.base_inner_writer import BaseInnerWriter
 from mabel.errors import MissingDependencyError
-from mabel.logging.create_logger import get_logger
+from orso.logging.create_logger import get_logger
 from urllib3.exceptions import ProtocolError  # type:ignore
 
 try:

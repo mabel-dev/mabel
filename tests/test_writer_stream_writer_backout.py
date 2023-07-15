@@ -26,7 +26,7 @@ DATA_SET = [
     {"key": "two"},
     {"key": 1},
 ]
-SCHEMA = {"fields": [{"name": "key", "type": "NUMERIC"}]}
+SCHEMA = {"fields": [{"name": "key", "type": "INTEGER"}]}
 TEST_FOLDER = "_temp/path"
 
 

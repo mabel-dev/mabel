@@ -3,7 +3,7 @@ import os, sys
 sys.path.insert(1, os.path.join(sys.path[0], "../.."))
 from mabel.data import Reader
 from mabel.data.internals.index import IndexBuilder
-from mabel.logging import get_logger
+from orso.logging import get_logger
 from timer import Timer
 import orjson
 

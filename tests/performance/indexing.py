@@ -8,7 +8,7 @@ import statistics
 
 sys.path.insert(1, os.path.join(sys.path[0], "../.."))
 from mabel.adapters.null import NullWriter
-from mabel.logging import get_logger
+from orso.logging import get_logger
 from mabel.data.validator import Schema
 from mabel.data import BatchWriter, Reader
 from mabel.adapters.disk import DiskWriter, DiskReader

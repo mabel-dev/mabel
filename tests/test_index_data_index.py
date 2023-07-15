@@ -202,7 +202,7 @@ def test_index_types():
     ib = IndexBuilder("test")
     ib.add(1, {"test": int(123)})
     ib.add(1, {"test": float(123)})
-    ib.add(1, {"test": datetime.date.today()})
+    ib.add(1, {"test": datetime.datetime.utcnow().date()})
     ib.add(1, {"test": datetime.datetime.now()})
     ib.add(1, {"test": str("string")})
 

@@ -44,7 +44,7 @@ from mabel.data.internals.storage_classes import StorageClassDisk
 from mabel.data.internals.storage_classes import StorageClassMemory
 from mabel.errors import MissingDependencyError
 from mabel.utils.ipython import is_running_from_ipython
-from orso.cityhash import CityHash32
+from orso.cityhash import CityHash64
 
 
 class STORAGE_CLASS(int, Enum):
@@ -526,7 +526,7 @@ class DictSet(object):
         #   703115 = 8 days, 3 hours, 18 minutes, 35 seconds
         ordered = map(lambda record: dict(sorted(record.items())), iter(self._iterator))
         serialized = map(orjson.dumps, ordered)
-        hashed = map(CityHash32, serialized)
+        hashed = map(CityHash64, serialized)
         return reduce(lambda x, y: x ^ y, hashed, seed)
 
     def __repr__(self):  # pragma: no cover

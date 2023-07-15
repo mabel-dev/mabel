@@ -17,7 +17,9 @@ traceback.install()
 
 
 def do_writer():
-    w = BatchWriter(inner_writer=DiskWriter, dataset="_temp", date=datetime.date.today())
+    w = BatchWriter(
+        inner_writer=DiskWriter, dataset="_temp", date=datetime.datetime.utcnow().date()
+    )
     for i in range(int(1e5)):
         w.append({"Barney Stinson": "Lorenzo Von Matterhorn"})
         w.append({"Laszlo Cravensworth": "Jackie Daytona"})
@@ -28,7 +30,7 @@ def do_writer_abs():
     w = BatchWriter(
         inner_writer=DiskWriter,
         dataset=os.getcwd() + "/_temp",
-        date=datetime.date.today(),
+        date=datetime.datetime.utcnow().date(),
     )
     for i in range(int(1e5)):
         w.append({"Barney Stinson": "Lorenzo Von Matterhorn"})

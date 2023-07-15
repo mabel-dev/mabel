@@ -11,7 +11,7 @@ from rich import traceback
 traceback.install()
 
 
-from mabel.logging import get_logger
+from orso.logging import get_logger
 
 get_logger().setLevel(5)
 

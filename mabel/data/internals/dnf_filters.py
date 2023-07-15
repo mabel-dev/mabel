@@ -8,10 +8,9 @@ from typing import Optional
 from typing import Tuple
 from typing import Union
 
-from ...errors import InvalidSyntaxError
-from ...logging import get_logger
-from ...utils.text import like
-from ...utils.text import matches
+from mabel.errors import InvalidSyntaxError
+from mabel.utils.text import like
+from mabel.utils.text import matches
 
 
 def _in(x, y):

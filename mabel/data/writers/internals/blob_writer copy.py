@@ -8,7 +8,7 @@ import zstandard
 from mabel.data.internals.records import flatten
 from mabel.data.validator import Schema
 from mabel.errors import MissingDependencyError
-from mabel.logging import get_logger
+from orso.logging import get_logger
 
 BLOB_SIZE = 64 * 1024 * 1024  # 64Mb, 16 files per gigabyte
 SUPPORTED_FORMATS_ALGORITHMS = ("jsonl", "zstd", "parquet", "text", "flat")
@@ -85,7 +85,11 @@ class BlobWriter(object):
         else:
             self.append = self.text_append
 
-        self.schema = schema
+        self.schema = None
+        if isinstance(schema, (list, dict)):
+            schema = Schema(schema)
+        if isinstance(schema, Schema):
+            self.schema = schema
 
     def arrow_append(self, record: dict = {}):
         record_length = get_size(record)

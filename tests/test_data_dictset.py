@@ -5,7 +5,7 @@ sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel import Reader, DictSet
 from mabel.data import STORAGE_CLASS
 from mabel.adapters.disk import DiskReader
-from mabel.logging import get_logger
+from orso.logging import get_logger
 
 get_logger().setLevel(5)
 
@@ -189,7 +189,7 @@ def test_hash():
     ]
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
     hashval = hash(ds)
-    assert hashval == 5233449951214716413, hashval
+    assert hashval == 8826660322425604498, hashval
 
 
 def test_sort():

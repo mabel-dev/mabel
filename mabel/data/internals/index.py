@@ -8,7 +8,7 @@ Index is a json KV store:
 from typing import Iterable
 
 import orjson
-from orso.cityhash import CityHash32
+from orso.cityhash import CityHash64
 
 MAX_INDEX = 4294967295  # 2^32 - 1
 
@@ -67,7 +67,7 @@ class Index:
             search_term = [search_term]
         result: list = []
         for term in search_term:
-            key = format(CityHash32(f"{term}") % MAX_INDEX, "x")
+            key = format(CityHash64(f"{term}") % MAX_INDEX, "x")
             if key in self._index:  # type:ignore
                 result[0:0] = self._index[key]  # type:ignore
         return result
@@ -99,7 +99,7 @@ class IndexBuilder:
             if not isinstance(values, list):
                 values = [values]
             for value in values:
-                entry = (format(CityHash32(f"{value}") % MAX_INDEX, "x"), position)
+                entry = (format(CityHash64(f"{value}") % MAX_INDEX, "x"), position)
                 ret_val.append(entry)
         self.temporary_index += ret_val
         return ret_val

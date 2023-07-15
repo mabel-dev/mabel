@@ -9,10 +9,10 @@ from functools import lru_cache
 from io import IOBase
 from typing import Iterable
 
-from mabel.logging import get_logger
 from mabel.utils import dates
 from mabel.utils import paths
-from orso.cityhash import CityHash32
+from orso.cityhash import CityHash64
+from orso.logging import get_logger
 
 BUFFER_SIZE: int = 64 * 1024 * 1024  # 64Mb
 
@@ -125,7 +125,7 @@ class BaseInnerReader(abc.ABC):
             return io.BytesIO(result)
 
         # hash the blob name for the look up
-        blob_hash = str(CityHash32(blob))
+        blob_hash = str(CityHash64(blob))
 
         # try to fetch the cached file
         result = cache_server.get(blob_hash)

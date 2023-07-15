@@ -1,8 +1,8 @@
 import os
 
-from ...data.writers.internals.base_inner_writer import BaseInnerWriter
-from ...logging import get_logger
-from ...utils import paths
+from mabel.data.writers.internals.base_inner_writer import BaseInnerWriter
+from mabel.utils import paths
+from orso.logging import get_logger
 
 
 class DiskWriter(BaseInnerWriter):

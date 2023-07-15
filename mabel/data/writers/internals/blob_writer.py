@@ -1,15 +1,55 @@
 import datetime
+import json
 import sys
 import threading
 
-import orso
+import orjson
 import zstandard
+from mabel.data.internals.records import flatten
 from mabel.data.validator import Schema
 from mabel.errors import MissingDependencyError
-from mabel.logging import get_logger
+from orso.logging import get_logger
 
 BLOB_SIZE = 64 * 1024 * 1024  # 64Mb, 16 files per gigabyte
 SUPPORTED_FORMATS_ALGORITHMS = ("jsonl", "zstd", "parquet", "text", "flat")
+
+
+def get_size(obj, seen=None):
+    """
+    Recursively approximate the size of objects.
+    We don't know the actual size until we save, so we approximate the size based
+    on some rules - this will be wrong due to RLE, headers, precision and other
+    factors.
+    """
+    size = sys.getsizeof(obj)
+
+    if seen is None:
+        seen = set()
+    obj_id = id(obj)
+    if obj_id in seen:
+        return 0
+
+    if isinstance(obj, (int, float)):
+        size = 6  # probably 4 bytes, could be 8
+    if isinstance(obj, bool):
+        size = 1
+    if isinstance(obj, (str, bytes, bytearray)):
+        size = len(obj) + 4
+    if obj is None:
+        size = 1
+    if isinstance(obj, datetime.datetime):
+        size = 8
+
+    # Important mark as seen *before* entering recursion to gracefully handle
+    # self-referential objects
+    seen.add(obj_id)
+    if isinstance(obj, dict):
+        size = sum([get_size(v, seen) for v in obj.values()]) + 8
+    elif hasattr(obj, "__dict__"):
+        size += get_size(obj.__dict__, seen) + 8
+    elif hasattr(obj, "__iter__") and not isinstance(obj, (str, bytes, bytearray)):
+        size += sum([get_size(i, seen) for i in obj]) + 8
+    return size
 
 
 class BlobWriter(object):
@@ -38,19 +78,61 @@ class BlobWriter(object):
         kwargs["format"] = format
         self.inner_writer = inner_writer(**kwargs)  # type:ignore
 
-        self.schema = schema
         self.open_buffer()
 
-    def append(self, record: dict):
-        """
-        add a new row to the write ahead log
-        """
-        if self.wal.nbytes > BLOB_SIZE:
+        if self.format == "parquet":
+            self.append = self.arrow_append
+        else:
+            self.append = self.text_append
+
+        self.schema = None
+        if isinstance(schema, (list, dict)):
+            schema = Schema(schema)
+        if isinstance(schema, Schema):
+            self.schema = schema
+
+    def arrow_append(self, record: dict = {}):
+        record_length = get_size(record)
+        # if this write would exceed the blob size, close it
+        if (
+            self.byte_count + record_length
+        ) > self.maximum_blob_size and self.records_in_buffer > 0:
             self.commit()
             self.open_buffer()
 
-        self.wal.append(record)
+        self.byte_count += record_length + 16
         self.records_in_buffer += 1
+        self.buffer.append(record)  # type:ignore
+
+    def text_append(self, record: dict = {}):
+        # serialize the record
+        if self.format == "text":
+            if isinstance(record, bytes):
+                serialized = record + b"\n"
+            elif isinstance(record, str):
+                serialized = record.encode() + b"\n"
+            else:
+                serialized = str(record).encode() + b"\n"
+        elif self.format == "flat":
+            serialized = orjson.dumps(flatten(record)) + b"\n"  # type:ignore
+        elif hasattr(record, "mini"):
+            serialized = record.mini + b"\n"  # type:ignore
+        else:
+            try:
+                serialized = orjson.dumps(record) + b"\n"  # type:ignore
+            except TypeError:
+                serialized = json.dumps(record).encode() + b"\n"
+
+        # the newline isn't counted so add 1 to get the actual length if this write
+        # would exceed the blob size, close it so another blob will be created
+        if len(self.buffer) > self.maximum_blob_size and self.records_in_buffer > 0:
+            self.commit()
+            self.open_buffer()
+
+        # write the record to the file
+        self.buffer.extend(serialized)
+        self.records_in_buffer += 1
+
         return self.records_in_buffer
 
     def _normalize_arrow_schema(self, table, mabel_schema):
@@ -78,12 +160,15 @@ class BlobWriter(object):
 
         schema = table.schema
 
-        for column in schema.names:
+        for column in schema:
             # if we know about the column and it's a type we handle
-            if column in mabel_schema and mabel_schema[column] in type_map:
-                index = table.column_names.index(column)
+            mabel_schema_column = mabel_schema.get(column.name)
+            if mabel_schema_column and mabel_schema_column.type in type_map:
+                index = table.column_names.index(column.name)
                 # update the schema
-                schema = schema.set(index, pyarrow.field(column, type_map[mabel_schema[column]]))
+                schema = schema.set(
+                    index, pyarrow.field(column.name, type_map[mabel_schema_column.type])
+                )
         # apply the updated schema
         table = table.cast(target_schema=schema)
         return table
@@ -91,7 +176,7 @@ class BlobWriter(object):
     def commit(self):
         committed_blob_name = ""
 
-        if len(self.wal) > 0:
+        if len(self.buffer) > 0:
             lock = threading.Lock()
 
             try:
@@ -124,7 +209,7 @@ class BlobWriter(object):
                     )
                     # Add in any columns from the schema
                     if self.schema:
-                        columns += self.schema.columns
+                        columns += list(self.schema)
                     columns = sorted(dict.fromkeys(columns))
 
                     # then we make sure each row has all the columns
@@ -172,7 +257,12 @@ class BlobWriter(object):
         return committed_blob_name
 
     def open_buffer(self):
-        self.wal = orso.DataFrame(row=[], schema=self.schema)
+        if self.format == "parquet":
+            self.buffer = []
+            self.byte_count = 5120  # parquet has headers etc
+        else:
+            self.buffer = bytearray()
+            self.byte_count = 0
         self.records_in_buffer = 0
 
     def __del__(self):

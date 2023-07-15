@@ -6,7 +6,7 @@ import os
 import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
-from mabel.logging.log_formatter import LogFormatter
+from orso.logging.log_formatter import LogFormatter
 from rich import traceback
 
 traceback.install()
