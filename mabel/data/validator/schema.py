@@ -1,5 +1,3 @@
-import datetime
-import decimal
 import os
 from typing import Any
 from typing import Dict
@@ -8,147 +6,7 @@ from typing import Union
 
 import orjson
 from mabel.errors import ValidationError
-
-
-def is_boolean(**kwargs):
-    def _inner(value: Any) -> bool:
-        """BOOLEAN"""
-        if hasattr(value, "as_py"):
-            value = value.as_py()
-        return isinstance(value, bool) or value is None
-
-    return _inner
-
-
-def is_datetime(**kwargs):
-    def _inner(value: Any) -> bool:
-        """TIMESTAMP"""
-        if hasattr(value, "as_py"):
-            value = value.as_py()
-        return isinstance(value, datetime.datetime) or value is None
-
-    return _inner
-
-
-def is_date_only(**kwargs):
-    def _inner(value: Any) -> bool:
-        """DATE"""
-        if hasattr(value, "as_py"):
-            value = value.as_py()
-        return isinstance(value, datetime.date) or value is None
-
-    return _inner
-
-
-def is_time(**kwargs):
-    def _inner(value: Any) -> bool:
-        """TIME"""
-        if hasattr(value, "as_py"):
-            value = value.as_py()
-        return isinstance(value, datetime.time) or value is None
-
-    return _inner
-
-
-def is_list(**kwargs):
-    def _inner(value: Any) -> bool:
-        """LIST"""
-        if hasattr(value, "as_py"):
-            value = value.as_py()
-        if value is None:
-            return True
-        if isinstance(value, list):
-            return all(type(i) == str for i in value)
-        return False
-
-    return _inner
-
-
-def is_numeric(**kwargs):
-    def _inner(value: Any) -> bool:
-        """NUMERIC"""
-        if hasattr(value, "as_py"):
-            value = value.as_py()
-        return isinstance(value, (int, float, decimal.Decimal)) or value is None
-
-    return _inner
-
-
-def is_integer(**kwargs):
-    def _inner(value: Any) -> bool:
-        """INTEGER"""
-        if hasattr(value, "as_py"):
-            value = value.as_py()
-        return isinstance(value, int) or value is None
-
-    return _inner
-
-
-def is_float(**kwargs):
-    def _inner(value: Any) -> bool:
-        """FLOAT"""
-        if hasattr(value, "as_py"):
-            value = value.as_py()
-        return isinstance(value, float) or value is None
-
-    return _inner
-
-
-def is_string(**kwargs):
-    def _inner(value: Any) -> bool:
-        """VARCHAR"""
-        if hasattr(value, "as_py"):
-            value = value.as_py()
-        return isinstance(value, str) or value is None
-
-    return _inner
-
-
-def is_bytes(**kwargs):
-    def _inner(value: Any) -> bool:
-        """BLOB"""
-        if hasattr(value, "as_py"):
-            value = value.as_py()
-        return isinstance(value, bytes) or value is None
-
-    return _inner
-
-
-def is_struct(**kwargs):
-    def _inner(value: Any) -> bool:
-        """STRUCT"""
-        if hasattr(value, "as_py"):
-            value = value.as_py()
-        return isinstance(value, dict) or value is None
-
-    return _inner
-
-
-def pass_anything(**kwargs):
-    def _inner(value: Any) -> bool:
-        """OTHER"""
-        return True
-
-    return _inner
-
-
-"""
-Create dictionaries to look up the type validators
-"""
-VALIDATORS = {
-    "TIMESTAMP": is_datetime,
-    "DATE": is_date_only,
-    "TIME": is_time,
-    "LIST": is_list,
-    "VARCHAR": is_string,
-    "BOOLEAN": is_boolean,
-    "NUMERIC": is_numeric,
-    "INTEGER": is_integer,
-    "FLOAT": is_float,
-    "BLOB": is_bytes,
-    "STRUCT": is_struct,
-    "OTHER": pass_anything,
-}
+from orso.schema import RelationSchema
 
 
 class Schema:
@@ -173,35 +31,13 @@ class Schema:
 
         if isinstance(definition, dict):
             if definition.get("fields"):  # type:ignore
-                definition = definition["fields"]  # type:ignore
+                definition["columns"] = definition.pop("fields")  # type:ignore
 
-        self.definition = definition
+        if isinstance(definition, list):
+            definition = {"columns": definition}
+        definition["name"] = definition.get("name", "wal")
 
-        try:
-            # read the schema and look up the validators
-            self._validators = {  # type:ignore
-                item.get("name"): VALIDATORS[item.get("type")]()  # type:ignore
-                for item in definition  # type:ignore
-            }
-
-        except KeyError as e:
-            print(e)
-            raise ValueError(
-                f"Invalid type specified in schema - {e}. Valid types are: {', '.join(VALIDATORS.keys())}"
-            )
-        if len(self._validators) == 0:
-            raise ValueError("Invalid schema specification")
-
-        self._validator_columns = set(self._validators.keys())
-
-    def _field_validator(self, value, validator) -> bool:
-        """
-        Execute a set of validator functions (the _is_x) against a value.
-        Return True if any of the validators are True.
-        """
-        if validator is None:
-            return True
-        return validator(value)
+        self.schema = RelationSchema.from_dict(definition)
 
     def validate(self, subject: dict, raise_exception=False) -> bool:
         """
@@ -220,31 +56,20 @@ class Schema:
         Raises:
             ValidationError
         """
-        result = True
-        self.last_error = ""
 
-        # find columns in the data, not in the schema
-        # Note: fields in the schema but not in the data passes schema validation
-        additional_columns = set(subject.keys()) - self._validator_columns
-        if len(additional_columns) > 0:
-            self.last_error += (
-                f"Column names in record not found in Schema - {', '.join(additional_columns)}"
-            )
-            result = False
+        try:
+            self.schema.validate(subject)
+        except Exception as err:
+            self.last_error = str(err)
+            if raise_exception:
+                raise ValidationError(err) from err
+            return False
 
-        for key, value in self._validators.items():
-            if not self._field_validator(subject.get(key), value):
-                result = False
-                self.last_error += (
-                    f"'{key}' (`{subject.get(key)}`) did not pass `{value.__doc__}` validator.\n"
-                )
-        if raise_exception and not result:
-            raise ValidationError(f"Record does not conform to schema - {self.last_error}. ")
-        return result
+        return True
 
     @property
     def columns(self):
-        return self._validator_columns
+        return self.schema.columns
 
     def __call__(self, subject: dict = {}, raise_exception=False) -> bool:
         """

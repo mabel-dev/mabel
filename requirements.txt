@@ -1,7 +1,5 @@
-bitarray
 cython
 lz4
 orjson
-pydantic
-siphashc
+orso
 zstandard

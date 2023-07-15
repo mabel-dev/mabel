@@ -12,6 +12,7 @@ from typing import Iterable
 from mabel.logging import get_logger
 from mabel.utils import dates
 from mabel.utils import paths
+from orso.cityhash import CityHash32
 
 BUFFER_SIZE: int = 64 * 1024 * 1024  # 64Mb
 
@@ -124,9 +125,7 @@ class BaseInnerReader(abc.ABC):
             return io.BytesIO(result)
 
         # hash the blob name for the look up
-        from siphashc import siphash
-
-        blob_hash = str(siphash("RevengeOfTheBlob", blob))
+        blob_hash = str(CityHash32(blob))
 
         # try to fetch the cached file
         result = cache_server.get(blob_hash)

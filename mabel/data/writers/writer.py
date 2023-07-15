@@ -12,7 +12,6 @@ from mabel.errors import ValidationError
 from mabel.logging import get_logger
 from mabel.utils import dates
 from mabel.utils import paths
-from pydantic import BaseModel
 
 logger = get_logger()
 
@@ -118,7 +117,7 @@ class Writer:
         self.blob_writer = BlobWriter(**kwargs)
         self.records = 0
 
-    def append(self, record: Union[dict, BaseModel]):
+    def append(self, record: dict):
         """
         Append a new record to the Writer
 
@@ -130,8 +129,11 @@ class Writer:
             integer
                 The number of records in the current blob
         """
-        if isinstance(record, BaseModel):
-            record = record.dict()
+        if "BaseModel" in str(type(record)):
+            if hasattr(record, "dict"):
+                record = record.dict()  # type.ignore
+            if hasattr(record, "model_dump"):
+                record = record.model_dump()  # type:ignore
 
         if self.schema and not self.schema.validate(subject=record, raise_exception=False):
             raise ValidationError(f"Schema Validation Failed ({self.schema.last_error})")

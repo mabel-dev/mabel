@@ -10,7 +10,7 @@ from math import trunc
 
 import orjson
 from mabel.utils.dates import parse_iso
-from siphashc import siphash
+from orso.cityhash import CityHash32
 
 
 def get_year(input):
@@ -223,7 +223,7 @@ FUNCTIONS = {
     "BOOLEAN": lambda x: str(x).upper() != "FALSE",
     "ISNONE": lambda x: x is None,
     # HASHING & ENCODING
-    "HASH": lambda x: format(siphash("INCOMPREHENSIBLE", str(x)), "X"),
+    "HASH": lambda x: format(CityHash32(str(x)), "X"),
     "MD5": get_md5,
     "RANDOM": get_random,  # return a random number 0-99
     # OTHER

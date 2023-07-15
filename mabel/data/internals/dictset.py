@@ -44,7 +44,7 @@ from mabel.data.internals.storage_classes import StorageClassDisk
 from mabel.data.internals.storage_classes import StorageClassMemory
 from mabel.errors import MissingDependencyError
 from mabel.utils.ipython import is_running_from_ipython
-from siphashc import siphash
+from orso.cityhash import CityHash32
 
 
 class STORAGE_CLASS(int, Enum):
@@ -522,15 +522,11 @@ class DictSet(object):
         Creates a consistent hash of the _DictSet_ regardless of the order of
         the items in the _DictSet_.
         """
-
-        def sip(val):
-            return siphash("TheApolloMission", val)
-
         # The seed is the mission duration of the Apollo 11 mission.
         #   703115 = 8 days, 3 hours, 18 minutes, 35 seconds
         ordered = map(lambda record: dict(sorted(record.items())), iter(self._iterator))
         serialized = map(orjson.dumps, ordered)
-        hashed = map(sip, serialized)
+        hashed = map(CityHash32, serialized)
         return reduce(lambda x, y: x ^ y, hashed, seed)
 
     def __repr__(self):  # pragma: no cover

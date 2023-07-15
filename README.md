@@ -68,7 +68,6 @@ pip install --upgrade git+https://github.com/mabel-dev/mabel
 ## Dependencies
 
 >-  **[orjson](https://github.com/ijl/orjson)** for JSON (de)serialization
->-  **[siphashc](https://github.com/WeblateOrg/siphashc)** for non-cryptographic hashing
 >-  **[pydantic](https://pydantic-docs.helpmanual.io/)** to define internal data models  
 >-  **[zstandard](https://github.com/indygreg/python-zstandard)** for real-time on disk compression
 >-  **[LZ4](https://github.com/python-lz4/python-lz4)** for real-time in memory compression

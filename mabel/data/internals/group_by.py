@@ -8,7 +8,7 @@ python setup.py build_ext --inplace
 from collections import defaultdict
 
 import cython
-from siphashc import siphash
+from orso.cityhash import CityHash32
 
 
 def summer(x, y):
@@ -25,8 +25,6 @@ AGGREGATORS = {
     "COUNT": lambda x, y: x + 1,
     "AVG": lambda x, y: 1,
 }
-
-HASH_SEED = b"Anakin Skywalker"
 
 
 class TooManyGroups(Exception):
@@ -73,13 +71,11 @@ class GroupBy:
 
         for record in self._dictset:
             try:
-                group_key: cython.uint64_t = siphash(
-                    HASH_SEED,
+                group_key: cython.uint64_t = CityHash32(
                     "".join([str(record[column]) for column in self._columns]),
                 )
             except KeyError:
-                group_key: cython.uint64_t = siphash(
-                    HASH_SEED,
+                group_key: cython.uint64_t = CityHash32(
                     "".join([f"{record.get(column, '')}" for column in self._columns]),
                 )
             if group_key not in self._group_keys.keys():
