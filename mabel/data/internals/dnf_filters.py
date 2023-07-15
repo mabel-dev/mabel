@@ -129,22 +129,6 @@ class DnfFilters:
         else:
             self.empty_filter = True
 
-    def _get_filter_columns(self, predicate):
-        if predicate is None:
-            return []
-        if isinstance(predicate, tuple):
-            key, op, value = predicate
-            return [key]
-        if isinstance(predicate, list):
-            if all([isinstance(p, tuple) for p in predicate]):
-                return [k for k, o, v in predicate]
-            if all([isinstance(p, list) for p in predicate]):
-                columns = []
-                for p in predicate:
-                    columns += self._get_filter_columns(p)
-                return columns
-        return []  # pragma: no cover
-
     def filter_dictset(self, dictset: Iterable[dict]) -> Iterable:
         """
         Tests each entry in a Iterable against the filters
