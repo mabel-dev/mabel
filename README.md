@@ -65,10 +65,10 @@ pip install --upgrade git+https://github.com/mabel-dev/mabel
 
 ## Dependencies
 
->-  **[orjson](https://github.com/ijl/orjson)** for JSON (de)serialization
->-  **[pydantic](https://pydantic-docs.helpmanual.io/)** to define internal data models  
->-  **[zstandard](https://github.com/indygreg/python-zstandard)** for real-time on disk compression
->-  **[LZ4](https://github.com/python-lz4/python-lz4)** for real-time in memory compression
+-  **[orjson](https://github.com/ijl/orjson)** for JSON (de)serialization
+-  **[orso](https://github.com/mabel-dev/orso)** for data Schemas
+-  **[zstandard](https://github.com/indygreg/python-zstandard)** for real-time on disk compression
+-  **[LZ4](https://github.com/python-lz4/python-lz4)** for real-time in memory compression
 
 There are a number of optional dependencies which are usually only required for specific features and functionality. These are listed in [tests/requirements.txt](https://github.com/mabel-dev/mabel/blob/main/tests/requirements.txt).
 
