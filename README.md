@@ -96,9 +96,11 @@ mabel supports running on a range of platforms, including:
 | <img align="centre" alt="Kubernetes" height="48" src="icons/kubernetes-logo.svg" /> | Kubernetes
 | <img align="centre" alt="Windows" height="48" src="icons/windows-logo.png" /> | Windows (<img align="centre" alt="Notice" height="12" src="icons/note.svg" />1)
 | <img align="centre" alt="Linux" height="48" src="icons/linux-logo.jpg" /> | Linux (<img align="centre" alt="Notice" height="12" src="icons/note.svg" />2)
+| <img align="centre" alt="Linux" height="48" src="icons/mac-os.png" /> | Mac (<img align="centre" alt="Notice" height="12" src="icons/note.svg" />3)
 
 <img align="centre" alt="Notice" height="12" src="icons/note.svg" />1 - Some non-core features are not available on Windows.  
-<img align="centre" alt="Notice" height="12" src="icons/note.svg" />2 - Tested on Debian (WSL) and Ubuntu.
+<img align="centre" alt="Notice" height="12" src="icons/note.svg" />2 - Tested on Debian (WSL) and Ubuntu.   
+<img align="centre" alt="Notice" height="12" src="icons/note.svg" />3 - Tested on Apple Silicon Macs.
 
 ## How Can I Contribute?
 
