@@ -1,5 +1,4 @@
 bitarray
-cython
 lz4
 orjson
 orso

@@ -35,7 +35,7 @@ class Schema:
 
         if isinstance(definition, list):
             definition = {"columns": definition}
-        definition["name"] = definition.get("name", "wal")
+        definition["name"] = definition.get("name", "wal")  # type:ignore
 
         self.schema = RelationSchema.from_dict(definition)
 
