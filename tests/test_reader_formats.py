@@ -48,7 +48,6 @@ def test_reader_can_read_zipped_csv():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_reader_can_read_csv()
-    test_reader_can_read_zipped_csv()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

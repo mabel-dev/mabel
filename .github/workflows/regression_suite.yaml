@@ -52,7 +52,7 @@ jobs:
                      --blobHost 0.0.0.0
 
       - name: Run Regression Tests
-        run: coverage run -m pytest 
+        run: coverage run -m pytest -color=yes
         env:
           MINIO_END_POINT: 127.0.0.1:9000
           MINIO_ACCESS_KEY: minioadmin

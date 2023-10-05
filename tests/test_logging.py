@@ -17,7 +17,7 @@ LOG_NAME = "TEST_SCRIPTS"
 set_log_name(LOG_NAME)
 
 
-def test_new_log_levels(caplog):
+def test_new_log_levels(caplog=None):
     """
     caplog is a feature of pytest that allows logs to be captured and
     inspected.
@@ -85,6 +85,6 @@ def test_log_sanitizer():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_smoke_test()
-    test_log_sanitizer()
-    test_new_log_levels(None)
+    from tests.helpers.runner import run_tests
+
+    run_tests()

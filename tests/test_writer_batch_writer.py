@@ -116,10 +116,6 @@ def get_data():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_reader_writer()
-    test_reader_writer_format_zstd()
-    test_reader_writer_format_jsonl()
-    test_reader_writer_format_parquet()
-    test_reader_writer_format_default()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

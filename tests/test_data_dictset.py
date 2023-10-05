@@ -209,20 +209,7 @@ def test_sort():
     ], st
 
 
-if __name__ == "__main__":
-    test_count()
-    test_enumeration()
-    test_sample()
-    test_repr()
-    test_collect()
-    test_keys()
-    test_distinct()
-    test_types()
-    test_summary()
-    test_take()
-    test_items()
-    test_filters()
-    test_hash()
-    test_sort()
+if __name__ == "__main__":  # pragma: no cover
+    from tests.helpers.runner import run_tests
 
-    print("OKAY")
+    run_tests()

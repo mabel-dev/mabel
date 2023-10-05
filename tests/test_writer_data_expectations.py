@@ -61,7 +61,6 @@ def test_validator_expected_to_not_work():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_validator_expected_to_work()
-    test_validator_expected_to_not_work()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

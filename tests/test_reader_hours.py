@@ -28,6 +28,6 @@ def test_reader_times():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_reader_times()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

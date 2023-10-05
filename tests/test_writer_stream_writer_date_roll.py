@@ -61,7 +61,6 @@ def test_fixed_dates():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_stream_rollover()
-    test_fixed_dates()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

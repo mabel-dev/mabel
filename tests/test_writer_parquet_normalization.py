@@ -98,6 +98,6 @@ def test_reader_writer_parquet_normalization():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_reader_writer_parquet_normalization()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

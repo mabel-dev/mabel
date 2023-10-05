@@ -36,7 +36,6 @@ def test_hourly_partitions():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_null_writer()
-    test_hourly_partitions()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

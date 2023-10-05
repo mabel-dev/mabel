@@ -26,7 +26,7 @@ def test_html_table():
     assert "</table>" in html
 
 
-if __name__ == "__main__":
-    test_html_table()
+if __name__ == "__main__":  # pragma: no cover
+    from tests.helpers.runner import run_tests
 
-    print("OKAY")
+    run_tests()

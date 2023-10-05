@@ -26,5 +26,6 @@ def test_writer_flood():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_writer_flood()
-    print("okay")
+    from tests.helpers.runner import run_tests
+
+    run_tests()

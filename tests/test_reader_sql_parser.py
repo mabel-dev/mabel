@@ -72,9 +72,7 @@ def test_from_validator():
         SqlParser.validate_dataset(None, "this--is--not--okay")
 
 
-if __name__ == "__main__":
-    test_parser()
-    test_invalid_sql()
-    test_from_validator()
+if __name__ == "__main__":  # pragma: no cover
+    from tests.helpers.runner import run_tests
 
-    print("complete")
+    run_tests()

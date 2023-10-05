@@ -68,9 +68,6 @@ def test_sanitizing_log_formatter_predefined_redaction_keys():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_sanitizing_log_formatter_pass_thru()
-    test_sanitizing_log_formatter_redact_simple_case()
-    test_sanitizing_log_formatter_mixed_redact_and_keep()
-    test_sanitizing_log_formatter_predefined_redaction_keys()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

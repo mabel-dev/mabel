@@ -67,8 +67,6 @@ def test_levenshtein():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_reader_all_good()
-    test_dataset_prefix_validator()
-    test_levenshtein()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

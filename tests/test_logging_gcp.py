@@ -26,4 +26,6 @@ def test_google_logging():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_google_logging()
+    from tests.helpers.runner import run_tests
+
+    run_tests()

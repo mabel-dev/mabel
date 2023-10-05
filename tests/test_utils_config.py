@@ -19,6 +19,6 @@ def test_utils_config():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_utils_config()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

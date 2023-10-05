@@ -151,15 +151,6 @@ def test_group_by_count():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    import mabel
+    from tests.helpers.runner import run_tests
 
-    print(mabel.__version__)
-
-    test_sql_returned_rows()
-    test_sql_to_dictset()
-    test_sql_returned_cols()
-    test_where()
-    test_limit()
-    test_group_by_count()
-
-    print("okay")
+    run_tests()

@@ -31,6 +31,6 @@ def test_error_stack():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_error_stack()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

@@ -208,8 +208,6 @@ def test_index_types():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_data_index()
-    test_complex_indexes()
-    test_index_types()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

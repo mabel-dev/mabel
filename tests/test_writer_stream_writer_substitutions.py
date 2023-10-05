@@ -33,6 +33,6 @@ def test_writer_substitutions():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_writer_substitutions()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

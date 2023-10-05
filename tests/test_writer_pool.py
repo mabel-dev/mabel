@@ -56,7 +56,6 @@ def test_writer_add_and_remove():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_writer_pool_lru()
-    test_writer_add_and_remove()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

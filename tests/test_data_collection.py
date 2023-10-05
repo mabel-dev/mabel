@@ -76,7 +76,6 @@ def test_group_by():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_group_by()
-    test_group_by_advanced()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

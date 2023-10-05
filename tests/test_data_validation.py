@@ -262,19 +262,6 @@ def test_validator_other():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_validator_all_valid_values()
-    test_validator_invalid_string()
-    test_validator_invalid_number()
-    test_validator_invalid_schema()
-    test_validator_invalid_boolean()
-    test_validator_nonnative_types()
-    test_validator_extended_schema()
-    test_validator_loaders()
-    test_validator_list()
-    test_validator_datetime()
-    test_unknown_type()
-    test_raise_exception()
-    test_call_alias()
-    test_validator_other()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()
