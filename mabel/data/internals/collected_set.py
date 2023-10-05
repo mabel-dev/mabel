@@ -25,24 +25,17 @@ class CollectedSet:
         """
         collections: dict = {}
 
-        groups = dictset
-        if dedupe:
-            groups = dictset.distinct()
+        groups = dictset.distinct() if dedupe else dictset
 
         for item in groups:
-            if hasattr(item, "as_dict"):
-                my_item = item.as_dict()
-            else:
-                my_item = item.copy()
+            my_item = item.copy()
             key = my_item.pop(column, None)
-            if not key in collections:
-                collections[key] = []
-            collections[key].append(my_item)
+            collections.setdefault(key, []).append(my_item)
         if dedupe:
-            for collection in collections:
-                collections[collection] = {
-                    frozenset(item.items()): item for item in collections[collection]
-                }.values()
+            collections = {
+                k: {frozenset(i.items()): i for i in v}.values() for k, v in collections.items()
+            }
+
         self._collections = collections
 
     def count(self, collection=None):

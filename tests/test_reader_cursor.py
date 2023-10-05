@@ -1,111 +1,203 @@
 """
-Separate the implementation of the Cursor from the Reader.
-
-Cursor is made of three parts:
-- map      : a bit array representing all of the blobs in the set - unread blobs
-             are 0s and read blobs are 1s. This allows for blobs to be read in 
-             an arbitrary order - although currently only implemented linearly.
-- partition: the active parition (blob) that is being read
-- location : the record in the active partition (blob), so we can resume reading
-             midway through the blob if required.
+Test the cursor
 """
+import os
+import sys
 import orjson
-from siphashc import siphash
+import pytest
+
+sys.path.insert(1, os.path.join(sys.path[0], ".."))
+from mabel.data.internals.dictset import STORAGE_CLASS
+from mabel.adapters.disk import DiskReader
+from mabel.adapters.null import NullReader
+from mabel.data import Reader
+from mabel.utils import entropy
+from rich import traceback
+
+traceback.install()
 
 
-class InvalidCursor(Exception):
-    pass
+def get_records():
+    r = Reader(inner_reader=DiskReader, dataset="tests/data/formats/jsonl", partitions=None)
+    return len(list(r))
 
 
-class Cursor:
-    def __init__(self, readable_blobs, cursor=None):
-        # sort the readable blobs so they are in a consistent order
-        self.readable_blobs = sorted(readable_blobs)
-        self.read_blobs = []
-        self.partition = ""
-        self.location = -1
+def test_cursor():
+    """
+    We're going to test the cursor by doing math on the records, if we don't get the
+    right result, it's because we have more or less records than expected.
 
-        if cursor:
-            self.load_cursor(cursor)
+    To make life easier, we're going to use a literal dataset.
+    """
 
-    def load_cursor(self, cursor):
-        from bitarray import bitarray
+    number_of_records = 10
 
-        if cursor is None:
-            return
+    data = []
+    for i in range(number_of_records):
+        data.append({"one": 1, "index": i})
 
-        if isinstance(cursor, str):
-            cursor = orjson.loads(cursor)
+    reader = Reader(inner_reader=NullReader, dataset="none", partitions=None, data=data)
 
-        if (
-            not "location" in cursor.keys()
-            or not "map" in cursor.keys()
-            or not "partition" in cursor.keys()
-        ):
-            raise InvalidCursor(f"Cursor is malformed or corrupted {cursor}")
+    # create random offsets for testing - it's illogical to have a 0 cursor
+    offsets = (entropy.random_range(1, number_of_records) for i in range(20))
 
-        self.location = cursor["location"]
-        find_partition = [
-            blob for blob in self.readable_blobs if siphash("%" * 16, blob) == cursor["partition"]
-        ]
-        if len(find_partition) == 1:
-            self.partition = find_partition[0]
-        map_bytes = bytes.fromhex(cursor["map"])
-        blob_map = bitarray()
-        blob_map.frombytes(map_bytes)
-        self.read_blobs = [
-            self.readable_blobs[i] for i in range(len(self.readable_blobs)) if blob_map[i]
-        ]
+    for offset in offsets:
+        first_reader = Reader(
+            inner_reader=NullReader,
+            dataset="none",
+            partitions=None,
+            data=data,
+        )
 
-    def next_blob(self, previous_blob=None):
-        if previous_blob:
-            self.read_blobs.append(previous_blob)
-            self.partition = ""
-            self.location = -1
-        if self.partition and self.location >= 0:
-            if self.partition in self.readable_blobs:
-                return self.partition
-            partition_finder = [
-                blob for blob in self.readable_blobs if siphash("%" * 16, blob) == self.partition
-            ]
-            if len(partition_finder) != 1:
-                raise ValueError(f"Unable to determine current partition ({self.partition})")
-            return partition_finder[0]
-        unread = [blob for blob in self.readable_blobs if blob not in self.read_blobs]
-        if len(unread) > 0:
-            self.partition = unread[0]
-            self.location = -1
-            return self.partition
-        return None
+        # we've going to read to a position in the dataset
+        counter = 0
+        tracker = []
+        for i in range(offset):
+            record = next(first_reader)
+            counter += record["one"]
+            tracker.append(record["index"])
 
-    def skip_to_cursor(self, iterator):
-        # cycle through the iterator to the cursor location
-        if self.location < 0:
-            return 0
-        for index in range(self.location + 1):
-            next(iterator, None)
-        return self.location + 1
+        # we should have read offset records
+        assert offset == counter
+        # the cursor is zero-based, take one because we've be counting natural numbers
+        assert (first_reader.cursor["location"] + 1) == counter
 
-    def get(self):
-        return {
-            "map": self["map"],
-            "partition": self["partition"],
-            "location": self["location"],
-        }
+        # we're now going to create a second reader, and give it the cursor from the
+        # first
+        second_reader = Reader(
+            inner_reader=NullReader,
+            dataset="none",
+            partitions=None,
+            data=data,
+            cursor=first_reader.cursor,
+        )
 
-    def __getitem__(self, item):
-        from bitarray import bitarray
+        # if we keep going, we should get all of the records
+        for record in second_reader:
+            counter += record["one"]
+            tracker.append(record["index"])
 
-        if item == "map":
-            blob_map = bitarray(
-                "".join(["1" if blob in self.read_blobs else "0" for blob in self.readable_blobs])
-            )
-            return blob_map.tobytes().hex()
-        if item == "partition":
-            return siphash("%" * 16, self.partition)
-        if item == "location":
-            return self.location
-        return None
+        assert counter == number_of_records
+        assert tracker == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], tracker
 
-    def __repr__(self):
-        return orjson.dumps(self.get()).decode("UTF8")
+
+def test_cursor_multiple_times():
+    """
+    There appears to be a bug with the cursor being used to seek more
+    than once in the same file
+    """
+
+    number_of_records = 500
+
+    data = []
+    for i in range(number_of_records):
+        data.append({"one": 1, "index": i})
+
+    cursor = None
+    record_counter = 0
+    keep_going = True
+    times_around = 0
+
+    while keep_going:
+        # load the reader
+        reader = Reader(
+            inner_reader=NullReader,
+            dataset="none",
+            partitions=None,
+            data=data,
+            cursor=cursor,
+        )
+
+        # read a random number of records
+        for burner in range(entropy.random_range(10, 50)):
+            try:
+                next(reader)
+                record_counter += 1
+            except:
+                keep_going = False
+
+        cursor = reader.cursor
+        times_around += 1
+
+    assert record_counter == number_of_records
+    assert times_around > 0
+    assert cursor.location == -1
+
+
+def test_cursor_as_text():
+    """
+    Test that if we pass the cursor as text, it is parsed correctly
+    """
+    number_of_records = get_records()
+
+    # create random offsets for testing
+    offsets = (entropy.random_range(1, number_of_records - 1) for i in range(5))
+
+    for offset in offsets:
+        cursor = {"location": offset, "map": "00", "partition": 1983839293359648136}
+        reader = Reader(
+            inner_reader=DiskReader,
+            dataset="tests/data/formats/jsonl",
+            partitions=None,
+            cursor=orjson.dumps(cursor).decode(),
+        )
+
+        records_left = len(list(reader))
+        # the offset is zero-based, for example it says 10, but it's 11 records
+        assert (
+            offset + 1
+        ) + records_left == number_of_records, f"{offset + 1 + records_left} != {number_of_records}"
+
+
+def test_move_to_cursor():
+    """
+    Test when we move to a cursor position, that we read all of the records
+    """
+    number_of_records = get_records()
+
+    # create random offsets for testing
+    offsets = (entropy.random_range(1, number_of_records - 1) for i in range(5))
+
+    for offset in offsets:
+        reader = Reader(
+            inner_reader=DiskReader,
+            dataset="tests/data/formats/jsonl",
+            partitions=None,
+            cursor={"location": offset, "map": "00", "partition": 1983839293359648136},
+            persistence=STORAGE_CLASS.NO_PERSISTANCE,
+        )
+
+        assert offset == reader.cursor["location"], f"{offset}, {reader.cursor['location']}"
+
+        records_left = len(list(reader))
+        # the offset is zero-based, for example it says 10, but it's 11 records
+        assert (
+            offset + 1
+        ) + records_left == number_of_records, f"{offset + 1 + records_left} != {number_of_records}"
+
+
+def test_zero_based_cursor():
+    """
+    Test that the cursor is actually zero-based
+    """
+    reader = Reader(inner_reader=DiskReader, dataset="tests/data/formats/jsonl", partitions=[])
+    number_of_records = get_records()
+
+    # we read all of the records, one-by-one
+    for i in range(number_of_records):
+        next(reader)
+        assert reader.cursor["location"] == i, reader.cursor
+
+    # we can't read past the end
+    with pytest.raises(StopIteration):
+        next(reader)
+
+    # test our assumptions about the 'range' function
+    assert len(range(number_of_records)) == number_of_records
+    assert list(range(5)) == [0, 1, 2, 3, 4]
+
+
+if __name__ == "__main__":  # pragma: no cover
+    from tests.helpers.runner import run_tests
+
+    run_tests()

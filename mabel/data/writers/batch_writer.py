@@ -5,10 +5,9 @@ from typing import Any
 import orjson
 from orso.logging import get_logger
 
-from mabel.utils import paths
-
 from mabel.data.writers.internals.blob_writer import BlobWriter
 from mabel.data.writers.writer import Writer
+from mabel.utils import paths
 
 logger = get_logger()
 

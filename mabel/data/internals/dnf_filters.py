@@ -12,27 +12,6 @@ from mabel.errors import InvalidSyntaxError
 from mabel.utils.text import like
 from mabel.utils.text import matches
 
-
-def _in(x, y):
-    return x in y
-
-
-def _nin(x, y):
-    return x not in y
-
-
-def _con(x, y):
-    return y in x
-
-
-def _ncon(x, y):
-    return y not in x
-
-
-def true(x):
-    return True
-
-
 # convert text representation of operators to functions
 OPERATORS = {
     "=": operator.eq,
@@ -47,11 +26,11 @@ OPERATORS = {
     "like": like,
     "matches": matches,
     "~": matches,
-    "in": _in,
-    "!in": _nin,
-    "not in": _nin,
-    "contains": _con,
-    "!contains": _ncon,
+    "in": lambda x, y: x in y,
+    "!in": lambda x, y: x not in y,
+    "not in": lambda x, y: x not in y,
+    "contains": lambda x, y: y in x,
+    "!contains": lambda x, y: y not in x,
 }
 
 
@@ -75,20 +54,19 @@ def evaluate(predicate: Union[tuple, list], record: dict) -> bool:
     # If we have a tuple extract out the key, operator and value and do the evaluation
     if isinstance(predicate, tuple):
         key, op, value = predicate
-        if key in record:
-            return OPERATORS[op.lower()](record[key], value)
-        return False
+        record_value = record.get(key, None)
+        return record_value is not None and OPERATORS[op.lower()](record_value, value)
 
     if isinstance(predicate, list):
         # Are all of the entries tuples?
         # We AND them together (_all_ are True)
-        if all([isinstance(p, tuple) for p in predicate]):
-            return all([evaluate(p, record) for p in predicate])
+        if all(isinstance(p, tuple) for p in predicate):
+            return all(evaluate(p, record) for p in predicate)
 
         # Are all of the entries lists?
         # We OR them together (_any_ are True)
-        if all([isinstance(p, list) for p in predicate]):
-            return any([evaluate(p, record) for p in predicate])
+        if all(isinstance(p, list) for p in predicate):
+            return any(evaluate(p, record) for p in predicate)
 
         # if we're here the structure of the filter is wrong
         raise InvalidSyntaxError("Unable to evaluate Filter")  # pragma: no cover
@@ -123,11 +101,8 @@ class DnfFilters:
             filters = Filters([('name', '!=', 'john'),('name', '!=', 'tom')])
 
         """
-        if filters:
-            self.predicates = filters
-            self.empty_filter = False
-        else:
-            self.empty_filter = True
+        self.empty_filter = filters is None
+        self.predicates = filters if filters else []
 
     def filter_dictset(self, dictset: Iterable[dict]) -> Iterable:
         """
@@ -143,9 +118,7 @@ class DnfFilters:
         if self.empty_filter:
             yield from dictset
         else:
-            for record in dictset:
-                if evaluate(self.predicates, record):
-                    yield record
+            yield from (record for record in dictset if evaluate(self.predicates, record))
 
     def __call__(self, record) -> bool:
         return evaluate(self.predicates, record)
