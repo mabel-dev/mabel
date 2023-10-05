@@ -12,14 +12,14 @@ jobs:
 #        os: [macos-latest, ubuntu-latest, windows-latest]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: ./
   
       - name: Set Up Environment
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.9' 
+          python-version: '3.10' 
         
       - name: Install Requirements
         run: |
@@ -52,7 +52,7 @@ jobs:
                      --blobHost 0.0.0.0
 
       - name: Run Regression Tests
-        run: coverage run -m pytest -color=yes
+        run: coverage run -m pytest --color=yes
         env:
           MINIO_END_POINT: 127.0.0.1:9000
           MINIO_ACCESS_KEY: minioadmin
@@ -72,12 +72,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
   
       - name: Set Up Environment
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.8' 
+          python-version: '3.10' 
 
       - name: Install Requirements
         run: |
