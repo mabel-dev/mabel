@@ -19,11 +19,12 @@ LIMIT clause
 import re
 from typing import Optional
 
+from orso.logging import get_logger
+
 from mabel.data.readers.internals.inline_evaluator import Evaluator
 from mabel.data.readers.internals.inline_evaluator import get_function_name
 from mabel.utils.token_labeler import TOKENS
 from mabel.utils.token_labeler import Tokenizer
-from orso.logging import get_logger
 
 SQL_PARTS = [
     r"SELECT",

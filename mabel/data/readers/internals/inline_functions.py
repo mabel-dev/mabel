@@ -9,8 +9,9 @@ from functools import lru_cache
 from math import trunc
 
 import orjson
-from mabel.utils.dates import parse_iso
 from orso.cityhash import CityHash64
+
+from mabel.utils.dates import parse_iso
 
 
 def get_year(input):

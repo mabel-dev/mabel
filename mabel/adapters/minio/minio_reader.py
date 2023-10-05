@@ -1,7 +1,6 @@
 """
 MinIo Reader - also works with AWS
 """
-from functools import lru_cache
 
 from ...data.readers.internals.base_inner_reader import BaseInnerReader
 from ...errors import MissingDependencyError

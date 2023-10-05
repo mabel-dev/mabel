@@ -86,14 +86,11 @@ def time_it_4():
     return (time.perf_counter_ns() - start) / 1e9
 
 
-import json
 import ujson
 import orjson
 
 # import cysimdjson
 import simdjson
-import os
-import sys
 
 simparser = simdjson.Parser()
 

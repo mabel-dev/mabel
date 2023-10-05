@@ -3,8 +3,6 @@
 """
 import sys
 import os
-import time
-import statistics
 
 sys.path.insert(1, os.path.join(sys.path[0], "../.."))
 from mabel.adapters.null import NullWriter

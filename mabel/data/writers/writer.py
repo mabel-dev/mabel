@@ -4,6 +4,8 @@ from typing import Optional
 from typing import Union
 
 import orjson
+from orso.logging import get_logger
+
 from mabel.data.validator import Schema
 from mabel.data.writers.internals.blob_writer import BlobWriter
 from mabel.errors import InvalidDataSetError
@@ -11,7 +13,6 @@ from mabel.errors import MissingDependencyError
 from mabel.errors import ValidationError
 from mabel.utils import dates
 from mabel.utils import paths
-from orso.logging import get_logger
 
 logger = get_logger()
 

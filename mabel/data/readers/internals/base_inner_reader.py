@@ -8,9 +8,10 @@ import pathlib
 from io import IOBase
 from typing import Iterable
 
+from orso.logging import get_logger
+
 from mabel.utils import dates
 from mabel.utils import paths
-from orso.logging import get_logger
 
 BUFFER_SIZE: int = 64 * 1024 * 1024  # 64Mb
 

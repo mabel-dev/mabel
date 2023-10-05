@@ -6,14 +6,12 @@
 │ pydantic │ 2.1748749800000002 │
 └──────────┴────────────────────┘
 """
-import cProfile
 import time
 import pydantic
 import datetime
 import statistics
 from typing import Optional
 from pydantic import create_model
-import shutil
 import sys
 import os
 

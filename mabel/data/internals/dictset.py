@@ -33,6 +33,8 @@ from typing import Iterable
 from typing import Union
 
 import orjson
+from orso.cityhash import CityHash64
+
 from mabel.data.internals.display import ascii_table
 from mabel.data.internals.display import html_table
 from mabel.data.internals.dnf_filters import DnfFilters
@@ -44,7 +46,6 @@ from mabel.data.internals.storage_classes import StorageClassDisk
 from mabel.data.internals.storage_classes import StorageClassMemory
 from mabel.errors import MissingDependencyError
 from mabel.utils.ipython import is_running_from_ipython
-from orso.cityhash import CityHash64
 
 
 class STORAGE_CLASS(int, Enum):

@@ -1,9 +1,10 @@
 import os
 
-from mabel.data.writers.internals.base_inner_writer import BaseInnerWriter
-from mabel.errors import MissingDependencyError
 from orso.logging.create_logger import get_logger
 from urllib3.exceptions import ProtocolError  # type:ignore
+
+from mabel.data.writers.internals.base_inner_writer import BaseInnerWriter
+from mabel.errors import MissingDependencyError
 
 try:
     from google.api_core import retry  # type:ignore

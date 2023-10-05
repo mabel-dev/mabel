@@ -3,8 +3,9 @@ import os
 from typing import Any
 
 import orjson
-from mabel.utils import paths
 from orso.logging import get_logger
+
+from mabel.utils import paths
 
 from .internals.blob_writer import BlobWriter
 from .writer import Writer

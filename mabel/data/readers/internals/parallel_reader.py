@@ -24,12 +24,13 @@ dataset:
 from enum import Enum
 from functools import reduce
 
+from orso import logging
+
 from mabel.data.internals.dnf_filters import DnfFilters
 from mabel.data.internals.expression import Expression
 from mabel.data.internals.index import Index
 from mabel.data.internals.records import flatten
 from mabel.utils import paths
-from orso import logging
 
 from . import decompressors
 from . import parsers

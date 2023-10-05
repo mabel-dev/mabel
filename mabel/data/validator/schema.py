@@ -5,8 +5,9 @@ from typing import List
 from typing import Union
 
 import orjson
-from mabel.errors import ValidationError
 from orso.schema import RelationSchema
+
+from mabel.errors import ValidationError
 
 
 class Schema:

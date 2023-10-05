@@ -1,7 +1,6 @@
 from pyarrow import json
 import pyarrow.parquet as pq
 import pyarrow as pa
-from glob import glob
 
 import time
 

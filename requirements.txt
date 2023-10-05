@@ -1,4 +1,3 @@
-bitarray
 lz4
 orjson
 orso

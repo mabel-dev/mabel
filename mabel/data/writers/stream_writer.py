@@ -3,12 +3,12 @@ import itertools
 import re
 import threading
 import time
-from typing import Union
+
+from orso.logging import get_logger
 
 from mabel.utils import dates
 from mabel.utils import paths
 from mabel.utils import text
-from orso.logging import get_logger
 
 from .internals.writer_pool import WriterPool
 from .writer import Writer
