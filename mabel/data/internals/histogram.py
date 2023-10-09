@@ -1,4 +1,4 @@
-from ...data.internals.dictset import DictSet
+from mabel import DictSet
 
 BAR_CHARS = [r" ", r"▁", r"▂", r"▃", r"▄", r"▅", r"▆", r"▇", r"█"]
 

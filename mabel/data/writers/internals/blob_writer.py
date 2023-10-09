@@ -161,15 +161,12 @@ class BlobWriter(object):
 
         schema = table.schema
 
-        for column in schema:
+        for column in schema.names:
             # if we know about the column and it's a type we handle
-            mabel_schema_column = mabel_schema.get(column.name)
-            if mabel_schema_column and mabel_schema_column.type in type_map:
-                index = table.column_names.index(column.name)
+            if column in mabel_schema and mabel_schema[column] in type_map:
+                index = table.column_names.index(column)
                 # update the schema
-                schema = schema.set(
-                    index, pyarrow.field(column.name, type_map[mabel_schema_column.type])
-                )
+                schema = schema.set(index, pyarrow.field(column, type_map[mabel_schema[column]]))
         # apply the updated schema
         table = table.cast(target_schema=schema)
         return table
@@ -210,7 +207,7 @@ class BlobWriter(object):
                     )
                     # Add in any columns from the schema
                     if self.schema:
-                        columns += list(self.schema)
+                        columns += self.schema.columns
                     columns = sorted(dict.fromkeys(columns))
 
                     # then we make sure each row has all the columns
