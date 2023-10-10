@@ -1,7 +1,7 @@
 from orso import DataFrame
 
 
-class PostgresWriter:
+class NullWriter:
     def __init__(self, **kwargs):
         kwargs_passed = [f"{k}={v!r}" for k, v in kwargs.items()]
         self.formatted_args = ", ".join(kwargs_passed)

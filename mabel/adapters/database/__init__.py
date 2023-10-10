@@ -1,1 +1,1 @@
-from .postgres_writer import PostgresWriter
+from .null_writer import NullWriter

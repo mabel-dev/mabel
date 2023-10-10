@@ -7,7 +7,6 @@ import orjson
 import orso
 from orso.logging import get_logger
 
-from mabel.adapters.database import PostgresWriter
 from mabel.data.validator import Schema
 from mabel.errors import MissingDependencyError
 from mabel.utils import dates
@@ -34,6 +33,8 @@ class DatabaseWriter:
         *,
         schema: Optional[Union[Schema, list]] = None,
         set_of_expectations: Optional[list] = None,
+        inner_writer=None,
+        writer_config: dict = None,
         **kwargs,
     ):
         """
@@ -76,7 +77,9 @@ class DatabaseWriter:
         kwargs["schema"] = self.schema
 
         # create the writer
-        self.inner_writer = PostgresWriter(**kwargs)
+        if writer_config is None:
+            writer_config = {}
+        self.inner_writer = inner_writer(**writer_config)
         self.records = 0
 
         self.wal = orso.DataFrame(rows=[], schema=self.schema)

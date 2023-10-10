@@ -5,6 +5,7 @@ sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.data import DatabaseWriter
 from mabel.data import Reader
 from rich import traceback
+from mabel.adapters.database import NullWriter
 
 traceback.install()
 
@@ -13,6 +14,8 @@ def test_database_writer_simple():
     w = DatabaseWriter(
         dataset="_temp",
         schema=[{"name": "character", "type": "VARCHAR"}, {"name": "persona", "type": "VARCHAR"}],
+        inner_writer=NullWriter,
+        writer_config={},
     )
     for i in range(int(1e5)):
         w.append({"character": "Barney Stinson", "persona": "Lorenzo Von Matterhorn"})
