@@ -67,19 +67,15 @@ class DatabaseWriter:
 
         arg_dict = kwargs.copy()
         arg_dict["dataset"] = f"{self.dataset}"
-        arg_dict[
-            "inner_writer"
-        ] = f"{arg_dict.get('inner_writer', type(None)).__name__}"  # type:ignore
-        logger.debug(orjson.dumps(arg_dict))
+        arg_dict["inner_writer"] = f"{inner_writer.__name__}"  # type:ignore
+        logger.debug([f"{k}={v!r}" for k, v in arg_dict.items()])
 
         # add the schema to the writer - pyarrow uses this
         # add after the config has been written to the logs
         kwargs["schema"] = self.schema
 
         # create the writer
-        if writer_config is None:
-            writer_config = {}
-        self.inner_writer = inner_writer(**writer_config)
+        self.inner_writer = inner_writer(**kwargs)
         self.records = 0
 
         self.wal = orso.DataFrame(rows=[], schema=self.schema)
