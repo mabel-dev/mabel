@@ -16,7 +16,7 @@ from mabel.data.writers.internals.blob_writer import BLOB_SIZE
 
 def test_null_writer():
     # none of these should do anything
-    nw = Writer(inner_writer=NullWriter, dataset="bucket/path")
+    nw = Writer(inner_writer=NullWriter, schema=["blob"], dataset="bucket/path")
     for i in range(1):
         nw.append({"blob": ["2"] * BLOB_SIZE})
     res = nw.finalize()
@@ -27,6 +27,7 @@ def test_hourly_partitions():
     nw = BatchWriter(
         inner_writer=NullWriter,
         dataset="bucket/path",
+        schema=["@"],
         partitions=["year_{yyyy}/month_{mm}/day_{dd}/by_hour/hour={HH}"],
     )
     for i in range(1):
@@ -36,7 +37,6 @@ def test_hourly_partitions():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_null_writer()
-    test_hourly_partitions()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

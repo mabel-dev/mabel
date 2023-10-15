@@ -56,10 +56,6 @@ def test_random_choice():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_random_string()
-    test_random_int()
-    test_random_range()
-    test_bytes_to_int()
-    test_random_choice()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

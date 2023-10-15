@@ -134,7 +134,7 @@ def test_cursor_as_text():
     offsets = (entropy.random_range(1, number_of_records - 1) for i in range(5))
 
     for offset in offsets:
-        cursor = {"location": offset, "map": "00", "partition": 17668429320131150782}
+        cursor = {"location": offset, "map": "00", "partition": 1983839293359648136}
         reader = Reader(
             inner_reader=DiskReader,
             dataset="tests/data/formats/jsonl",
@@ -163,7 +163,7 @@ def test_move_to_cursor():
             inner_reader=DiskReader,
             dataset="tests/data/formats/jsonl",
             partitions=None,
-            cursor={"location": offset, "map": "00", "partition": 17668429320131150782},
+            cursor={"location": offset, "map": "00", "partition": 1983839293359648136},
             persistence=STORAGE_CLASS.NO_PERSISTANCE,
         )
 
@@ -198,10 +198,6 @@ def test_zero_based_cursor():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_cursor_multiple_times()
-    test_cursor()
-    test_move_to_cursor()
-    test_cursor_as_text()
-    test_zero_based_cursor()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

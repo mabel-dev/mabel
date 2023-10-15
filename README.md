@@ -2,8 +2,7 @@
 
 ## mabel is a Data Engineering platform designed to run in serverless environments.
 
-**mabel** just runs when you need it, scaling to zero, making it efficient and ideal
-for deployments to platforms like Kubernetes, GCP Cloud Run, AWS Fargate and Knative.
+**mabel** just runs when you need it, scaling to zero, making it efficient and ideal for deployments to platforms like Kubernetes, GCP Cloud Run, AWS Fargate and Knative.
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/mabel-dev/mabel/blob/master/LICENSE)
 [![Status](https://img.shields.io/badge/status-beta-yellowgreen)](https://github.com/mabel-dev/mabel)
@@ -30,8 +29,7 @@ for deployments to platforms like Kubernetes, GCP Cloud Run, AWS Fargate and Kna
 
 ## Focus on What Matters
 
-We've built **mabel** to enable Data Analysts to write complex data engineering tasks
-quickly and easily, so they could get on with doing what they do best.
+We've built **mabel** to enable Data Analysts to write complex data engineering tasks quickly and easily, so they could get on with doing what they do best.
 
 ~~~python
 from mabel import Reader
@@ -67,16 +65,12 @@ pip install --upgrade git+https://github.com/mabel-dev/mabel
 
 ## Dependencies
 
->-  **[orjson](https://github.com/ijl/orjson)** for JSON (de)serialization
->-  **[siphashc](https://github.com/WeblateOrg/siphashc)** for non-cryptographic hashing
->-  **[pydantic](https://pydantic-docs.helpmanual.io/)** to define internal data models  
->-  **[zstandard](https://github.com/indygreg/python-zstandard)** for real-time on disk compression
->-  **[LZ4](https://github.com/python-lz4/python-lz4)** for real-time in memory compression
->-  **[cython](https://cython.readthedocs.io/en/latest/index.html#)** for precompilation
+-  **[orjson](https://github.com/ijl/orjson)** for JSON (de)serialization
+-  **[orso](https://github.com/mabel-dev/orso)** for data Schemas
+-  **[zstandard](https://github.com/indygreg/python-zstandard)** for real-time on disk compression
+-  **[LZ4](https://github.com/python-lz4/python-lz4)** for real-time in memory compression
 
-
-There are a number of optional dependencies which are usually only required for
-specific features and functionality. These are listed in [tests/requirements.txt](https://github.com/mabel-dev/mabel/blob/main/tests/requirements.txt).
+There are a number of optional dependencies which are usually only required for specific features and functionality. These are listed in [tests/requirements.txt](https://github.com/mabel-dev/mabel/blob/main/tests/requirements.txt).
 
 ## Integrations
 
@@ -102,18 +96,17 @@ mabel supports running on a range of platforms, including:
 | <img align="centre" alt="Kubernetes" height="48" src="icons/kubernetes-logo.svg" /> | Kubernetes
 | <img align="centre" alt="Windows" height="48" src="icons/windows-logo.png" /> | Windows (<img align="centre" alt="Notice" height="12" src="icons/note.svg" />1)
 | <img align="centre" alt="Linux" height="48" src="icons/linux-logo.jpg" /> | Linux (<img align="centre" alt="Notice" height="12" src="icons/note.svg" />2)
+| <img align="centre" alt="Linux" height="48" src="icons/mac-os.png" /> | Mac (<img align="centre" alt="Notice" height="12" src="icons/note.svg" />3)
 
 <img align="centre" alt="Notice" height="12" src="icons/note.svg" />1 - Some non-core features are not available on Windows.  
-<img align="centre" alt="Notice" height="12" src="icons/note.svg" />2 - Tested on Debian (WSL) and Ubuntu.
+<img align="centre" alt="Notice" height="12" src="icons/note.svg" />2 - Tested on Debian (WSL) and Ubuntu.   
+<img align="centre" alt="Notice" height="12" src="icons/note.svg" />3 - Tested on Apple Silicon Macs.
 
 ## How Can I Contribute?
 
-All contributions, bug reports, bug fixes, documentation improvements,
-enhancements, and ideas are welcome.
+All contributions, bug reports, bug fixes, documentation improvements, enhancements, and ideas are welcome.
 
-If you have a suggestion for an improvement or a bug, 
-[raise a ticket](https://github.com/mabel-dev/mabel/issues/new/choose) or start a
-[discussion](https://github.com/mabel-dev/mabel/discussions).
+If you have a suggestion for an improvement or a bug, [raise a ticket](https://github.com/mabel-dev/mabel/issues/new/choose) or start a [discussion](https://github.com/mabel-dev/mabel/discussions).
 
 Want to help build mabel? See the [contribution guidance](https://github.com/mabel-dev/mabel/blob/main/.github/CONTRIBUTING.md).
 

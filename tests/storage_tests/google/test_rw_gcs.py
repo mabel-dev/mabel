@@ -42,6 +42,7 @@ def test_gcs_binary():
         project="testing",
         blob_size=1024,
         dataset=f"{BUCKET_NAME}/test/gcs/dataset/binary",
+        schema=["index"],
     )
     for i in range(200):
         w.append({"index": i + 300})
@@ -69,6 +70,7 @@ def test_gcs_text():
         blob_size=1024,
         format="jsonl",
         dataset=f"{BUCKET_NAME}/test/gcs/dataset/text",
+        schema=["index"],
     )
     for i in range(250):
         w.append({"index": i + 300})
@@ -87,7 +89,6 @@ def test_gcs_text():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_gcs_binary()
-    test_gcs_text()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

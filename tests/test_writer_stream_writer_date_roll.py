@@ -18,6 +18,7 @@ def test_stream_rollover():
         inner_writer=NullWriter,
         idle_timeout_seconds=1,
         format="text",
+        schema=["@"],
     )
 
     with freeze_time("2012-01-14"):
@@ -43,6 +44,7 @@ def test_fixed_dates():
         idle_timeout_seconds=10,
         format="text",
         date="2022-01-01",
+        schema=["@"],
     )
 
     # when we fix the date (use the data param), we always write to the same date
@@ -61,7 +63,6 @@ def test_fixed_dates():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_stream_rollover()
-    test_fixed_dates()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

@@ -81,11 +81,6 @@ def test_short_dates():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_start_date_only()
-    test_end_date_only()
-    test_start_and_end_dates()
-    test_dates_as_string()
-    test_short_dates()
-    test_reading_across_dates()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

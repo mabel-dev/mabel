@@ -14,6 +14,7 @@ def test_writer_flood():
         dataset="path/{identity}/path",
         inner_writer=NullWriter,
         idle_timeout_seconds=1,
+        schema=["identity", "cycle"],
     )
 
     for i in range(100000):
@@ -26,5 +27,6 @@ def test_writer_flood():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_writer_flood()
-    print("okay")
+    from tests.helpers.runner import run_tests
+
+    run_tests()

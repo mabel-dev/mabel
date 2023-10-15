@@ -3,7 +3,6 @@
 #
 #   old dictset : 6.69
 #   filter      : 5.29
-import datetime
 import time
 import os
 import sys

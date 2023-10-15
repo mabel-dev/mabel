@@ -11,7 +11,6 @@ outcome: stay with the simple JSONL format.
 import avro.schema
 from avro.datafile import DataFileReader, DataFileWriter
 from avro.io import DatumReader, DatumWriter
-import datetime
 import os
 import sys
 

@@ -10,7 +10,8 @@ Cursor is made of three parts:
              midway through the blob if required.
 """
 import orjson
-from siphashc import siphash
+from orso.bitarray import BitArray
+from orso.cityhash import CityHash64
 
 
 class InvalidCursor(Exception):
@@ -29,8 +30,6 @@ class Cursor:
             self.load_cursor(cursor)
 
     def load_cursor(self, cursor):
-        from bitarray import bitarray
-
         if cursor is None:
             return
 
@@ -46,15 +45,14 @@ class Cursor:
 
         self.location = cursor["location"]
         find_partition = [
-            blob for blob in self.readable_blobs if siphash("%" * 16, blob) == cursor["partition"]
+            blob for blob in self.readable_blobs if CityHash64(blob) == cursor["partition"]
         ]
         if len(find_partition) == 1:
             self.partition = find_partition[0]
         map_bytes = bytes.fromhex(cursor["map"])
-        blob_map = bitarray()
-        blob_map.frombytes(map_bytes)
+        blob_map = BitArray.from_array(map_bytes, len(map_bytes) * 8)
         self.read_blobs = [
-            self.readable_blobs[i] for i in range(len(self.readable_blobs)) if blob_map[i]
+            self.readable_blobs[i] for i in range(len(self.readable_blobs)) if blob_map.get(i)
         ]
 
     def next_blob(self, previous_blob=None):
@@ -66,7 +64,7 @@ class Cursor:
             if self.partition in self.readable_blobs:
                 return self.partition
             partition_finder = [
-                blob for blob in self.readable_blobs if siphash("%" * 16, blob) == self.partition
+                blob for blob in self.readable_blobs if CityHash64(blob) == self.partition
             ]
             if len(partition_finder) != 1:
                 raise ValueError(f"Unable to determine current partition ({self.partition})")
@@ -94,15 +92,13 @@ class Cursor:
         }
 
     def __getitem__(self, item):
-        from bitarray import bitarray
-
         if item == "map":
-            blob_map = bitarray(
-                "".join(["1" if blob in self.read_blobs else "0" for blob in self.readable_blobs])
-            )
-            return blob_map.tobytes().hex()
+            blob_map = BitArray(len(self.readable_blobs))
+            for i, blob in enumerate(self.readable_blobs):
+                blob_map.set(i, blob in self.read_blobs)
+            return blob_map.array.hex()
         if item == "partition":
-            return siphash("%" * 16, self.partition)
+            return CityHash64(self.partition)
         if item == "location":
             return self.location
         return None

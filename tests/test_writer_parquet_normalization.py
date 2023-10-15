@@ -21,15 +21,15 @@ def do_writer():
     w = BatchWriter(
         inner_writer=DiskWriter,
         dataset="_temp",
-        date=datetime.date.today(),
+        date=datetime.datetime.utcnow().date(),
         format="parquet",
         schema={
             "fields": [
                 {"name": "name", "type": "VARCHAR"},
                 {"name": "alias", "type": "VARCHAR"},
-                {"name": "season", "type": "NUMERIC"},
+                {"name": "season", "type": "INTEGER"},
                 {"name": "recurring", "type": "BOOLEAN"},
-                {"name": "list_test", "type": "LIST"},
+                {"name": "list_test", "type": "ARRAY"},
                 {"name": "dict_test", "type": "STRUCT"},
             ]
         },
@@ -98,6 +98,6 @@ def test_reader_writer_parquet_normalization():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_reader_writer_parquet_normalization()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

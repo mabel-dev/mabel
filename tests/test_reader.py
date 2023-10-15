@@ -11,7 +11,7 @@ from rich import traceback
 traceback.install()
 
 
-from mabel.logging import get_logger
+from orso.logging import get_logger
 
 get_logger().setLevel(5)
 
@@ -38,8 +38,6 @@ def test_reader_can_read_alot():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_reader_can_read()
-    test_reader_to_pandas()
-    test_reader_can_read_alot()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

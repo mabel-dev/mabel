@@ -1,23 +1,23 @@
 import datetime
-from typing import Any
+import threading
 from typing import Optional
 from typing import Union
 
 import orjson
+import orso
 from orso.logging import get_logger
 from orso.schema import RelationSchema
 
 from mabel.data.validator import schema_loader
-from mabel.data.writers.internals.blob_writer import BlobWriter
-from mabel.errors import InvalidDataSetError
 from mabel.errors import MissingDependencyError
 from mabel.utils import dates
-from mabel.utils import paths
 
 logger = get_logger()
 
+BATCH_SIZE: int = 100
 
-class Writer:
+
+class DatabaseWriter:
     records = 0
 
     def _get_writer_date(self, date):
@@ -34,43 +34,14 @@ class Writer:
         *,
         schema: Optional[Union[RelationSchema, list]] = None,
         set_of_expectations: Optional[list] = None,
-        format: str = "zstd",
-        date: Any = None,
-        partitions=["year_{yyyy}/month_{mm}/day_{dd}"],
+        inner_writer=None,
+        writer_config: dict = None,
         **kwargs,
     ):
         """
         Simple Writer provides a basic writer capability.
         """
-        dataset = kwargs.get("dataset", "")
-
-        if "BACKOUT" in dataset:
-            InvalidDataSetError("BACKOUT is a reserved word and cannot be used in Dataset names")
-        if dataset.endswith("/"):
-            InvalidDataSetError("Dataset names cannot end with /")
-        if "{" in dataset or "}" in dataset:
-            InvalidDataSetError("Dataset names cannot contain { or }")
-        if "%" in dataset:
-            InvalidDataSetError("Dataset names cannot contain %")
-
-        # handle transitional states - use the new features to override the legacy features
-        if kwargs.get("raw_path") is not None:
-            logger.warning("`raw_path` is being deprecated, set `partitions` to `None` instead.")
-        if str(kwargs.get("raw_path", "")).upper() == "TRUE":
-            partitions = None
-        if "{date" in dataset:
-            logger.warning(
-                "settting the date partition in the dataset name is being deprecated, use `partitions` instead."
-            )
-            if "{datefolders}" in dataset:
-                logger.warning("Overriding {datefolders} in dataset name")
-                dataset = dataset.replace("{datefolders}", "")
-                partitions = ["year_{yyyy}/month_{mm}/day_{dd}"]
-            if "{datefolders_short}" in dataset:
-                logger.warning("Overriding {datefolders_short} in dataset name")
-                dataset = dataset.replace("{datefolders_short}", "")
-                partitions = ["{yyyy}/{mm}/{dd}"]
-
+        self.dataset = kwargs.get("dataset", "")
         self.schema = schema_loader(schema)
 
         self.expectations = None
@@ -84,35 +55,24 @@ class Writer:
             self.expectations = de.Expectations(set_of_expectations=set_of_expectations)
 
         self.finalized = False
-        self.batch_date = self._get_writer_date(date)
 
-        self.dataset_template = dataset
-        self.date_partitions = partitions
-        if partitions:
-            self.dataset_template += "/" + "/".join(partitions)
-            self.date_partitions = None
-
-        self.dataset = paths.build_path(self.dataset_template, self.batch_date)
-
-        # add the values to kwargs
-        # kwargs["raw_path"] = True  # we've just added the dates
-        kwargs["format"] = format
         kwargs["dataset"] = self.dataset
 
         arg_dict = kwargs.copy()
         arg_dict["dataset"] = f"{self.dataset}"
-        arg_dict[
-            "inner_writer"
-        ] = f"{arg_dict.get('inner_writer', type(None)).__name__}"  # type:ignore
-        logger.debug(orjson.dumps(arg_dict))
+        arg_dict["inner_writer"] = f"{inner_writer.__name__}"  # type:ignore
+        logger.debug([f"{k}={v!r}" for k, v in arg_dict.items()])
 
         # add the schema to the writer - pyarrow uses this
         # add after the config has been written to the logs
         kwargs["schema"] = self.schema
 
         # create the writer
-        self.blob_writer = BlobWriter(**kwargs)
+        self.inner_writer = inner_writer(**kwargs)
         self.records = 0
+
+        self.wal = orso.DataFrame(rows=[], schema=self.schema)
+        self.records_in_buffer = 0
 
     def append(self, record: dict):
         """
@@ -137,8 +97,16 @@ class Writer:
 
             de.evaluate_record(self.expectations, record)
 
-        self.blob_writer.append(record)
+        self.wal.append(record)
+        self.records_in_buffer += 1
         self.records += 1
+        # if this write would exceed the blob size, close it
+        if self.wal.rowcount >= BATCH_SIZE:
+            self.commit()
+            self.wal = orso.DataFrame(rows=[], schema=self.schema)
+            self.records_in_buffer = 0
+
+        return self.records_in_buffer
 
     def __del__(self):
         if hasattr(self, "finalized") and not self.finalized and self.records > 0:
@@ -146,10 +114,49 @@ class Writer:
                 f"{type(self).__name__} has not been finalized - {self.records} may have been lost, use `.finalize()` to finalize writers."
             )
 
-    def finalize(self, **kwargs):
-        self.finalized = True
+    def commit(self):
+        if len(self.wal) > 0:
+            lock = threading.Lock()
+
+            try:
+                lock.acquire(blocking=True, timeout=10)
+
+                self.inner_writer.commit(self.wal)
+
+                get_logger().debug(
+                    {
+                        "action": "commit",
+                        "format": self.inner_writer.__class__.__name__,
+                        "records": len(self.wal),
+                    }
+                )
+            finally:
+                lock.release()
+
+            self.wal = orso.DataFrame(rows=[], schema=self.schema)
+            self.records_in_buffer = 0
+
+    def finalize(self):
+        lock = threading.Lock()
         try:
-            return self.blob_writer.commit()
+            lock.acquire(blocking=True, timeout=10)
+
+            self.inner_writer.finalize()
+
+            get_logger().debug(
+                {"action": "finalize", "format": self.inner_writer.__class__.__name__}
+            )
         except Exception as e:
-            logger.error(f"{type(self).__name__} failed to close pool: {type(e).__name__} - {e}")
-            raise e
+            get_logger().error(
+                f"Failed to finalize database write with {self.records} to {self.dataset}"
+            )
+            raise Exception from e
+        finally:
+            lock.release()
+
+        return self.records
+
+    def __del__(self):
+        # this should never be relied on to save data
+        self.commit()
+        self.finalize()

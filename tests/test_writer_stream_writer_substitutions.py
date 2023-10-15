@@ -19,10 +19,7 @@ DATA_SET = [
 
 
 def test_writer_substitutions():
-    w = StreamWriter(
-        dataset="TEST/{key}/{value}",
-        inner_writer=NullWriter,
-    )
+    w = StreamWriter(dataset="TEST/{key}/{value}", inner_writer=NullWriter, schema=["@"])
 
     for record in DATA_SET:
         # convert to a simd object to test behavior
@@ -33,6 +30,6 @@ def test_writer_substitutions():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_writer_substitutions()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

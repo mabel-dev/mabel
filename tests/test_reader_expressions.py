@@ -73,9 +73,6 @@ def test_simple_compound_expressions():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_expression_compilation()
-    test_simple_equals_expressions()
-    test_simple_not_expressions()
-    test_simple_compound_expressions()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

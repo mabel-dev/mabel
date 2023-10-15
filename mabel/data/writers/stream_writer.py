@@ -3,13 +3,12 @@ import itertools
 import re
 import threading
 import time
-from typing import Union
 
-from mabel.logging import get_logger
+from orso.logging import get_logger
+
 from mabel.utils import dates
 from mabel.utils import paths
 from mabel.utils import text
-from pydantic import BaseModel  # type:ignore
 
 from .internals.writer_pool import WriterPool
 from .writer import Writer
@@ -84,7 +83,7 @@ class StreamWriter(Writer):
         self.thread.start()
         get_logger().debug("Pool attendant on-duty")
 
-    def append(self, record: Union[dict, BaseModel]):
+    def append(self, record: dict):
         """
         Append a new record to the Writer
 
@@ -110,13 +109,19 @@ class StreamWriter(Writer):
             self.dataset_template, (self.date or datetime.datetime.utcnow().date())
         )
 
-        if isinstance(record, BaseModel):
+        if hasattr(record, "dict"):
             record = record.dict()
-        elif self.schema and not self.schema.validate(subject=record, raise_exception=False):
-            identity += "/BACKOUT/"
-            get_logger().warning(
-                f"Schema Validation Failed ({self.schema.last_error}) - message being written to {identity}"
-            )
+        if hasattr(record, "dump_model"):
+            record = record.dump_model()
+
+        elif self.schema:
+            try:
+                self.schema.validate(record)
+            except Exception as e:
+                identity += "/BACKOUT/"
+                get_logger().warning(
+                    f"Schema Validation Failed ({e}) - message being written to {identity}"
+                )
 
         lock = threading.Lock()
         try:

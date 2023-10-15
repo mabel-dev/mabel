@@ -3,6 +3,8 @@ from typing import Dict
 from typing import Optional
 from typing import Union
 
+from orso.logging import get_logger
+
 from mabel.data.internals.dictset import STORAGE_CLASS
 from mabel.data.internals.dictset import DictSet
 from mabel.data.internals.dnf_filters import DnfFilters
@@ -16,7 +18,6 @@ from mabel.data.readers.internals.parallel_reader import ParallelReader
 from mabel.data.readers.internals.parallel_reader import pass_thru
 from mabel.errors import DataNotFoundError
 from mabel.errors import InvalidCombinationError
-from mabel.logging import get_logger
 from mabel.utils.dates import parse_delta
 from mabel.utils.parameter_validator import validate
 

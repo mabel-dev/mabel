@@ -9,8 +9,9 @@ from functools import lru_cache
 from math import trunc
 
 import orjson
+from orso.cityhash import CityHash64
+
 from mabel.utils.dates import parse_iso
-from siphashc import siphash
 
 
 def get_year(input):
@@ -223,7 +224,7 @@ FUNCTIONS = {
     "BOOLEAN": lambda x: str(x).upper() != "FALSE",
     "ISNONE": lambda x: x is None,
     # HASHING & ENCODING
-    "HASH": lambda x: format(siphash("INCOMPREHENSIBLE", str(x)), "X"),
+    "HASH": lambda x: format(CityHash64(str(x)), "X"),
     "MD5": get_md5,
     "RANDOM": get_random,  # return a random number 0-99
     # OTHER

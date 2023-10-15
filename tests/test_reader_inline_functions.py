@@ -83,7 +83,6 @@ def test_inline_other():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_inline_date_functions()
-    test_inline_other()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

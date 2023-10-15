@@ -1,14 +1,14 @@
 """
 BigQuery Writer
 """
-import os
 from enum import Enum
 from typing import Optional
 
 from google.cloud.exceptions import NotFound
+from orso.logging.create_logger import get_logger
+
 from mabel.data.writers.internals.base_inner_writer import BaseInnerWriter
 from mabel.errors import MissingDependencyError
-from mabel.logging.create_logger import get_logger
 
 try:
     from google.cloud import bigquery  # type:ignore

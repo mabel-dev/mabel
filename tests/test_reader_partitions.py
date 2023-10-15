@@ -90,7 +90,6 @@ def test_reader_partitions_read_referring_to_specific_partition():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_reader_partitions_read_without_referring_to_partition()
-    test_reader_partitions_read_referring_to_specific_partition()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

@@ -6,7 +6,7 @@ from mabel import Reader, DictSet
 from mabel.data import STORAGE_CLASS
 from mabel.data.internals.display import html_table
 from mabel.adapters.disk import DiskReader
-from mabel.logging import get_logger
+from orso.logging import get_logger
 
 get_logger().setLevel(5)
 
@@ -26,7 +26,7 @@ def test_html_table():
     assert "</table>" in html
 
 
-if __name__ == "__main__":
-    test_html_table()
+if __name__ == "__main__":  # pragma: no cover
+    from tests.helpers.runner import run_tests
 
-    print("OKAY")
+    run_tests()

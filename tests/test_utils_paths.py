@@ -59,7 +59,6 @@ def test_blob_paths_builder():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_blob_paths_get_paths()
-    test_blob_paths_builder()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

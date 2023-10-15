@@ -61,9 +61,6 @@ def test_as():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_simple_fields()
-    test_simple_functions()
-    test_concat()
-    test_as()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

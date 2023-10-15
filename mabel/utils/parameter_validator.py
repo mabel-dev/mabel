@@ -1,8 +1,9 @@
 import functools
 import inspect
 
-from ..errors import InvalidReaderConfigError
-from ..logging import get_logger
+from orso.logging import get_logger
+
+from mabel.errors import InvalidReaderConfigError
 
 
 def get_levenshtein_distance(word1, word2):

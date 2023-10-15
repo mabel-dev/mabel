@@ -87,6 +87,7 @@ def test_disk_binary():
             inner_writer=DiskWriter,
             blob_size=1024,
             dataset=f"_temp/test/disk/dataset/binary",
+            schema=["index"],
         )
         for i in range(200):
             w.append({"index": i + 300})
@@ -112,6 +113,7 @@ def test_disk_text():
             blob_size=1024,
             format="jsonl",
             dataset=f"_temp/test/gcs/dataset/text",
+            schema=["index"],
         )
         for i in range(250):
             w.append({"index": i + 300})
@@ -131,11 +133,6 @@ def test_disk_text():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_can_find_files()
-    test_can_read_files()
-    test_step_past()
-    test_freshness_limits()
-    test_disk_text()
-    test_disk_binary()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

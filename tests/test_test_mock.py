@@ -14,4 +14,6 @@ def test_mock():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_mock()
+    from helpers.runner import run_tests
+
+    run_tests()

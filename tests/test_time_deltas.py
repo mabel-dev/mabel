@@ -54,10 +54,7 @@ def test_invalid_scenarios():
     assert parse_delta("6m 1x") == timedelta(seconds=360), parse_delta("6m 1x")
 
 
-if __name__ == "__main__":
-    test_day_deltas()
-    test_hours_deltas()
-    test_minute_deltas()
-    test_second_deltas()
-    test_invalid_scenarios()
-    test_combined_deltas()
+if __name__ == "__main__":  # pragma: no cover
+    from tests.helpers.runner import run_tests
+
+    run_tests()

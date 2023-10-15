@@ -42,7 +42,6 @@ def test_ignore_flag_step_back_days():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_ignore_flag()
-    test_ignore_flag_step_back_days()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

@@ -115,12 +115,6 @@ def test_combined_filters():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_reader_filters_no_filter()
-    test_reader_filters_single_filter()
-    test_reader_filters_multiple_filter()
-    test_filters()
-    test_empty_filters()
-    test_like_filters()
-    test_combined_filters()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

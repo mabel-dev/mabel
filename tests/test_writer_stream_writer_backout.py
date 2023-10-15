@@ -6,7 +6,7 @@ sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.adapters.disk import DiskWriter, DiskReader
 from mabel.data import StreamWriter
 from mabel.data import Reader
-from mabel.data.validator import Schema
+from mabel.data.validator import schema_loader
 import shutil
 from pathlib import Path
 from rich import traceback
@@ -26,7 +26,7 @@ DATA_SET = [
     {"key": "two"},
     {"key": 1},
 ]
-SCHEMA = {"fields": [{"name": "key", "type": "NUMERIC"}]}
+SCHEMA = {"fields": [{"name": "key", "type": "INTEGER"}]}
 TEST_FOLDER = "_temp/path"
 
 
@@ -37,7 +37,7 @@ def test_writer_backout():
     w = StreamWriter(
         dataset=TEST_FOLDER,
         inner_writer=DiskWriter,
-        schema=Schema(SCHEMA),
+        schema=SCHEMA,
         idle_timeout_seconds=1,
     )
 
@@ -52,6 +52,6 @@ def test_writer_backout():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_writer_backout()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

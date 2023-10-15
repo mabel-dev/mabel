@@ -19,6 +19,6 @@ def test_blockers():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_blockers()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

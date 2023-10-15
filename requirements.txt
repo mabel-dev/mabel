@@ -1,7 +1,5 @@
-bitarray
-cython
 lz4
 orjson
-pydantic
+orso>=0.0.112
 siphashc
 zstandard

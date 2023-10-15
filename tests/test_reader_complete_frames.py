@@ -27,6 +27,6 @@ def test_ignore_non_complete_frames():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_ignore_non_complete_frames()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

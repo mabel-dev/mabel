@@ -35,6 +35,7 @@ def test_gcs_parquet():
             inner_writer=GoogleCloudStorageWriter,
             format="parquet",
             dataset=f"{BUCKET_NAME}/test/gcs/dataset",
+            schema=["$$"],
         )
         for i in range(100):
             w.append({"$$": i * 300})
@@ -54,6 +55,6 @@ def test_gcs_parquet():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_gcs_parquet()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

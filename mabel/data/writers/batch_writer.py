@@ -3,11 +3,11 @@ import os
 from typing import Any
 
 import orjson
+from orso.logging import get_logger
 
-from ...logging import get_logger
-from ...utils import paths
-from .internals.blob_writer import BlobWriter
-from .writer import Writer
+from mabel.data.writers.internals.blob_writer import BlobWriter
+from mabel.data.writers.writer import Writer
+from mabel.utils import paths
 
 logger = get_logger()
 

@@ -54,9 +54,9 @@ class WriterPool:
             lock.acquire(blocking=True, timeout=10)
             writers = [w for w in self.writers if w.get("identity") == identity]
             if len(writers) != 1:
-                import mabel.logging
+                import orso.logging
 
-                logger = mabel.logging.get_logger()
+                logger = orso.logging.get_logger()
                 logger.error(
                     f"Unable to find writer to remove - indentity={identity}, poolsize={len(self.writers)}"
                 )

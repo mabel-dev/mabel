@@ -14,15 +14,25 @@ traceback.install()
 
 
 def do_writer():
-    w = BatchWriter(inner_writer=DiskWriter, dataset="_temp", date=datetime.date.today())
+    w = BatchWriter(
+        inner_writer=DiskWriter,
+        dataset="_temp",
+        date=datetime.datetime.utcnow().date(),
+        schema=[{"name": "character", "type": "VARCHAR"}, {"name": "persona", "type": "VARCHAR"}],
+    )
     for i in range(int(1e5)):
-        w.append({"Barney Stinson": "Lorenzo Von Matterhorn"})
-        w.append({"Laszlo Cravensworth": "Jackie Daytona"})
+        w.append({"character": "Barney Stinson", "persona": "Lorenzo Von Matterhorn"})
+        w.append({"character": "Laszlo Cravensworth", "persona": "Jackie Daytona"})
     w.finalize()
 
 
 def do_writer_compressed(algo):
-    w = BatchWriter(inner_writer=DiskWriter, dataset="_temp", format=algo)
+    w = BatchWriter(
+        inner_writer=DiskWriter,
+        dataset="_temp",
+        format=algo,
+        schema=[{"name": "test", "type": "BOOLEAN"}],
+    )
     for i in range(int(1e5)):
         w.append({"test": True})
         w.append({"test": False})
@@ -31,10 +41,14 @@ def do_writer_compressed(algo):
 
 
 def do_writer_default():
-    w = BatchWriter(inner_writer=DiskWriter, dataset="_temp")
+    w = BatchWriter(
+        inner_writer=DiskWriter,
+        dataset="_temp",
+        schema=[{"name": "character", "type": "VARCHAR"}, {"name": "persona", "type": "VARCHAR"}],
+    )
     for i in range(int(1e5)):
-        w.append({"Barney Stinson": "Lorenzo Von Matterhorn"})
-        w.append({"Laszlo Cravensworth": "Jackie Daytona"})
+        w.append({"character": "Barney Stinson", "persona": "Lorenzo Von Matterhorn"})
+        w.append({"character": "Laszlo Cravensworth", "persona": "Jackie Daytona"})
     w.finalize()
     del w
 
@@ -114,10 +128,7 @@ def get_data():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_reader_writer()
-    test_reader_writer_format_zstd()
-    test_reader_writer_format_jsonl()
-    test_reader_writer_format_parquet()
-    test_reader_writer_format_default()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    test_reader_writer()
+    run_tests()
