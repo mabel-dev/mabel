@@ -10,7 +10,7 @@ traceback.install()
 
 
 def test_writer_pool_lru():
-    pool = WriterPool(3, inner_writer=NullWriter)
+    pool = WriterPool(3, inner_writer=NullWriter, schema=["record"])
     pool.get_writer("beatle/john.txt")
     pool.get_writer("beatle/paul.txt")
     pool.get_writer("beatle/george.txt")
@@ -36,7 +36,7 @@ def test_writer_pool_lru():
 
 
 def test_writer_add_and_remove():
-    pool = WriterPool(3, inner_writer=NullWriter)
+    pool = WriterPool(3, inner_writer=NullWriter, schema=["record"])
     pool.get_writer("beatle/john.txt")
     pool.get_writer("beatle/paul.txt")
 

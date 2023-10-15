@@ -5,8 +5,9 @@ from typing import Union
 
 import orjson
 from orso.logging import get_logger
+from orso.schema import RelationSchema
 
-from mabel.data.validator import Schema
+from mabel.data.validator import schema_loader
 from mabel.data.writers.internals.blob_writer import BlobWriter
 from mabel.errors import InvalidDataSetError
 from mabel.errors import MissingDependencyError
@@ -31,7 +32,7 @@ class Writer:
     def __init__(
         self,
         *,
-        schema: Optional[Union[Schema, list]] = None,
+        schema: Optional[Union[RelationSchema, list]] = None,
         set_of_expectations: Optional[list] = None,
         format: str = "zstd",
         date: Any = None,
@@ -70,11 +71,7 @@ class Writer:
                 dataset = dataset.replace("{datefolders_short}", "")
                 partitions = ["{yyyy}/{mm}/{dd}"]
 
-        self.schema = None
-        if isinstance(schema, (list, dict)):
-            schema = Schema(schema)
-        if isinstance(schema, Schema):
-            self.schema = schema
+        self.schema = schema_loader(schema)
 
         self.expectations = None
         if set_of_expectations:

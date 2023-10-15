@@ -14,6 +14,7 @@ def test_writer_flood():
         dataset="path/{identity}/path",
         inner_writer=NullWriter,
         idle_timeout_seconds=1,
+        schema=["identity", "cycle"],
     )
 
     for i in range(100000):

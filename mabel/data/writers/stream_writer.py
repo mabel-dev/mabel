@@ -114,11 +114,14 @@ class StreamWriter(Writer):
         if hasattr(record, "dump_model"):
             record = record.dump_model()
 
-        elif self.schema and not self.schema.validate(subject=record, raise_exception=False):
-            identity += "/BACKOUT/"
-            get_logger().warning(
-                f"Schema Validation Failed ({self.schema.last_error}) - message being written to {identity}"
-            )
+        elif self.schema:
+            try:
+                self.schema.validate(record)
+            except Exception as e:
+                identity += "/BACKOUT/"
+                get_logger().warning(
+                    f"Schema Validation Failed ({e}) - message being written to {identity}"
+                )
 
         lock = threading.Lock()
         try:

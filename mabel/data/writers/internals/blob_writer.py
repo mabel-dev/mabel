@@ -6,9 +6,10 @@ import threading
 import orjson
 import zstandard
 from orso.logging import get_logger
+from orso.schema import RelationSchema
 
 from mabel.data.internals.records import flatten
-from mabel.data.validator import Schema
+from mabel.data.validator import schema_loader
 from mabel.errors import MissingDependencyError
 
 BLOB_SIZE = 64 * 1024 * 1024  # 64Mb, 16 files per gigabyte
@@ -65,7 +66,7 @@ class BlobWriter(object):
         inner_writer=None,  # type:ignore
         blob_size: int = BLOB_SIZE,
         format: str = "zstd",
-        schema: Schema = None,
+        schema: RelationSchema = None,
         **kwargs,
     ):
         self.format = format
@@ -86,11 +87,7 @@ class BlobWriter(object):
         else:
             self.append = self.text_append
 
-        self.schema = None
-        if isinstance(schema, (list, dict)):
-            schema = Schema(schema)
-        if isinstance(schema, Schema):
-            self.schema = schema
+        self.schema = schema_loader(schema)
 
     def arrow_append(self, record: dict = {}):
         record_length = get_size(record)
@@ -136,7 +133,7 @@ class BlobWriter(object):
 
         return self.records_in_buffer
 
-    def _normalize_arrow_schema(self, table, mabel_schema):
+    def _normalize_arrow_schema(self, table, mabel_schema: RelationSchema):
         """
         Because we partition the data, there are instances where nulls in one of the
         columns isn't being correctly identified as the target type.
@@ -152,10 +149,12 @@ class BlobWriter(object):
 
         type_map = {
             "TIMESTAMP": pyarrow.timestamp("us"),
+            "DATE": pyarrow.date64(),
             "VARCHAR": pyarrow.string(),
             "BOOLEAN": pyarrow.bool_(),
-            "NUMERIC": pyarrow.float64(),
-            "LIST": pyarrow.list_(pyarrow.string())
+            "INTEGER": pyarrow.int64(),
+            "DOUBLE": pyarrow.float64(),
+            "ARRAY": pyarrow.list_(pyarrow.string())
             #            "STRUCT": pyarrow.map_(pyarrow.string(), pyarrow.string())
         }
 
@@ -163,10 +162,11 @@ class BlobWriter(object):
 
         for column in schema.names:
             # if we know about the column and it's a type we handle
-            if column in mabel_schema and mabel_schema[column] in type_map:
+            mabel_column = mabel_schema.find_column(column)
+            if mabel_column and mabel_column.type in type_map:
                 index = table.column_names.index(column)
                 # update the schema
-                schema = schema.set(index, pyarrow.field(column, type_map[mabel_schema[column]]))
+                schema = schema.set(index, pyarrow.field(column, type_map[mabel_column.type]))
         # apply the updated schema
         table = table.cast(target_schema=schema)
         return table
@@ -190,25 +190,11 @@ class BlobWriter(object):
                         )
 
                     import io
-                    from functools import reduce
 
                     tempfile = io.BytesIO()
 
-                    # When writing to Parquet, the table gets the schema from the first
-                    # row, if this row is missing columns (shouldn't, but it happens)
-                    # it will be missing for all records, so get the columns from the
-                    # entire dataset and ensure all records have the same columns.
-
-                    # first, we get all the columns, from all the records
-                    columns = reduce(
-                        lambda x, y: x + [a for a in y.keys() if a not in x],
-                        self.buffer,
-                        [],
-                    )
                     # Add in any columns from the schema
-                    if self.schema:
-                        columns += self.schema.columns
-                    columns = sorted(dict.fromkeys(columns))
+                    columns = sorted(self.schema.column_names)
 
                     # then we make sure each row has all the columns
                     self.buffer = [

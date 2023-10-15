@@ -13,16 +13,16 @@ traceback.install()
 
 
 def do_writer():
-    w = Writer(inner_writer=DiskWriter, dataset="_temp")
+    w = Writer(inner_writer=DiskWriter, dataset="_temp", schema=["name", "alter"])
     for i in range(int(1e5)):
-        w.append({"Barney Stinson": "Lorenzo Von Matterhorn"})
-        w.append({"Laszlo Cravensworth": "Jackie Daytona"})
+        w.append({"name": "Barney Stinson", "alter": "Lorenzo Von Matterhorn"})
+        w.append({"name": "Laszlo Cravensworth", "alter": "Jackie Daytona"})
         w.append({"name": "Pheobe Buffay", "alter": "Regina Phalange"})
     w.finalize()
 
 
 def do_writer_compressed(algo):
-    w = Writer(inner_writer=DiskWriter, dataset="_temp", format=algo)
+    w = Writer(inner_writer=DiskWriter, dataset="_temp", format=algo, schema=["test"])
     for i in range(int(1e5)):
         w.append({"test": True})
         w.append({"test": False})
@@ -31,16 +31,16 @@ def do_writer_compressed(algo):
 
 
 def do_writer_default():
-    w = Writer(inner_writer=DiskWriter, dataset="_temp")
+    w = Writer(inner_writer=DiskWriter, dataset="_temp", schema=["name", "person"])
     for i in range(int(1e5)):
-        w.append({"Barney Stinson": "Lorenzo Von Matterhorn"})
-        w.append({"Laszlo Cravensworth": "Jackie Daytona"})
+        w.append({"name": "Barney Stinson", "person": "Lorenzo Von Matterhorn"})
+        w.append({"name": "Laszlo Cravensworth", "person": "Jackie Daytona"})
     w.finalize()
     del w
 
 
 def do_writer_csv():
-    w = Writer(inner_writer=DiskWriter, dataset="_temp", format="text")
+    w = Writer(inner_writer=DiskWriter, dataset="_temp", format="text", schema=[])
     w.append("week,volume")
     for i in range(int(100)):
         w.append(f"{i},{i}")
@@ -110,7 +110,7 @@ def test_reader_writer_format_default():
 
 def test_write_to_path_logged():
     # none of these should do anything
-    nw = Writer(inner_writer=NullWriter, to_path="bucket/path")
+    nw = Writer(inner_writer=NullWriter, to_path="bucket/path", schema=["abc"])
     nw.append({"abc": "def"})
     print(nw.finalize())
 

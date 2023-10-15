@@ -1,5 +1,5 @@
 lz4
 orjson
-orso
+orso>=0.0.112
 siphashc
 zstandard

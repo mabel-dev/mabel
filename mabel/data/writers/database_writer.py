@@ -6,8 +6,9 @@ from typing import Union
 import orjson
 import orso
 from orso.logging import get_logger
+from orso.schema import RelationSchema
 
-from mabel.data.validator import Schema
+from mabel.data.validator import schema_loader
 from mabel.errors import MissingDependencyError
 from mabel.utils import dates
 
@@ -31,7 +32,7 @@ class DatabaseWriter:
     def __init__(
         self,
         *,
-        schema: Optional[Union[Schema, list]] = None,
+        schema: Optional[Union[RelationSchema, list]] = None,
         set_of_expectations: Optional[list] = None,
         inner_writer=None,
         writer_config: dict = None,
@@ -41,15 +42,7 @@ class DatabaseWriter:
         Simple Writer provides a basic writer capability.
         """
         self.dataset = kwargs.get("dataset", "")
-
-        self.schema = None
-        if isinstance(schema, (list, dict)):
-            schema = Schema(schema)
-        if isinstance(schema, Schema):
-            self.schema = schema
-        if self.schema is None:
-            raise MissingDependencyError("Database writers must have a schema set")
-        self.schema = self.schema.schema
+        self.schema = schema_loader(schema)
 
         self.expectations = None
         if set_of_expectations:

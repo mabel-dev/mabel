@@ -19,10 +19,7 @@ DATA_SET = [
 
 
 def test_writer_substitutions():
-    w = StreamWriter(
-        dataset="TEST/{key}/{value}",
-        inner_writer=NullWriter,
-    )
+    w = StreamWriter(dataset="TEST/{key}/{value}", inner_writer=NullWriter, schema=["@"])
 
     for record in DATA_SET:
         # convert to a simd object to test behavior
