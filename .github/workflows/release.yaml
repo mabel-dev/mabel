@@ -12,6 +12,9 @@ jobs:
       max-parallel: 4
       matrix:
         python-version: ['3.10']
+    permissions:
+      # IMPORTANT: this permission is mandatory for trusted publishing
+      id-token: write
 
     steps:
     - uses: actions/checkout@master
@@ -66,11 +69,5 @@ jobs:
         name: dist-windows-3.10
     - run: mv -v dist-windows-3.10/* dist/
 
-    - name: Upload with twine
-      env:
-        TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
-        TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
-      run: |
-        ls -l dist/*
-        pip install twine
-        twine upload dist/*
+    - name: Publish package distributions to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
