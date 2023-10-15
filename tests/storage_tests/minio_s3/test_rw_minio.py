@@ -48,6 +48,7 @@ def test_using_batch_writer():
             secret_key=os.getenv("MINIO_SECRET_KEY"),
             secure=False,
             dataset=f"{BUCKET_NAME}/test_writer",
+            schema=["player", "from"],
         )
 
         for member in VAMPIRIC_COUNCIL:
@@ -61,6 +62,6 @@ def test_using_batch_writer():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_using_batch_writer()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()

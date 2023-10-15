@@ -30,6 +30,6 @@ def test_reading_aws_using_minio():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    test_reading_aws_using_minio()
+    from tests.helpers.runner import run_tests
 
-    print("okay")
+    run_tests()
