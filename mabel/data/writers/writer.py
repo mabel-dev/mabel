@@ -32,7 +32,7 @@ class Writer:
     def __init__(
         self,
         *,
-        schema: Optional[Union[RelationSchema, list]] = None,
+        schema: Union[RelationSchema, list, bool] = None,
         set_of_expectations: Optional[list] = None,
         format: str = "zstd",
         date: Any = None,
@@ -72,6 +72,8 @@ class Writer:
                 partitions = ["{yyyy}/{mm}/{dd}"]
 
         self.schema = schema_loader(schema)
+        if not self.schema and format == "parquet":
+            raise ValueError("Mabel can't write to Parquet without a schema.")
 
         self.expectations = None
         if set_of_expectations:

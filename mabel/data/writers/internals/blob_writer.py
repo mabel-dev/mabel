@@ -2,6 +2,7 @@ import datetime
 import json
 import sys
 import threading
+from typing import Optional
 
 import orjson
 import zstandard
@@ -66,7 +67,7 @@ class BlobWriter(object):
         inner_writer=None,  # type:ignore
         blob_size: int = BLOB_SIZE,
         format: str = "zstd",
-        schema: RelationSchema = None,
+        schema: Optional[RelationSchema] = None,
         **kwargs,
     ):
         self.format = format

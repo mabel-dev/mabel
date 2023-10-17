@@ -7,12 +7,19 @@ from typing import Union
 import orjson
 from orso.schema import RelationSchema
 
+__all__ = ["schema_loader"]
+
 
 def schema_loader(
-    definition: Union[str, List[Dict[str, Any]], dict, RelationSchema]
-) -> RelationSchema:
+    definition: Union[str, List[Dict[str, Any]], dict, RelationSchema, bool]
+) -> Union[RelationSchema, bool]:
     if definition is None:
-        raise ValueError("Writer is missing a schema, minimum schema is a list of the columns.")
+        raise ValueError(
+            "Writer is missing a schema, minimum schema is a list of the columns or explicitly set to 'False' is data is unschamable."
+        )
+
+    if definition is False:
+        return False
 
     if isinstance(definition, RelationSchema):
         return definition

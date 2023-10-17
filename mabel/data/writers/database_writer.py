@@ -3,7 +3,6 @@ import threading
 from typing import Optional
 from typing import Union
 
-import orjson
 import orso
 from orso.logging import get_logger
 from orso.schema import RelationSchema
@@ -32,10 +31,9 @@ class DatabaseWriter:
     def __init__(
         self,
         *,
-        schema: Optional[Union[RelationSchema, list]] = None,
+        schema: Union[RelationSchema, list] = None,
         set_of_expectations: Optional[list] = None,
         inner_writer=None,
-        writer_config: dict = None,
         **kwargs,
     ):
         """
@@ -43,6 +41,8 @@ class DatabaseWriter:
         """
         self.dataset = kwargs.get("dataset", "")
         self.schema = schema_loader(schema)
+        if not self.schema:
+            raise ValueError("Cannot use Database Writer without a schema")
 
         self.expectations = None
         if set_of_expectations:
