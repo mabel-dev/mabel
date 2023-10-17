@@ -7,12 +7,10 @@ sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.adapters.disk import DiskReader, DiskWriter
 from mabel.adapters.null import NullWriter
 from mabel.data import Reader, Writer
-from rich import traceback
-
-traceback.install()
 
 
 def do_writer():
+    shutil.rmtree("_temp", ignore_errors=True)
     w = Writer(inner_writer=DiskWriter, dataset="_temp", schema=["name", "alter"])
     for i in range(int(1e5)):
         w.append({"name": "Barney Stinson", "alter": "Lorenzo Von Matterhorn"})
