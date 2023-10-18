@@ -137,6 +137,9 @@ class DatabaseWriter:
             self.records_in_buffer = 0
 
     def finalize(self):
+        # flush the WAL into the database
+        self.commit()
+
         lock = threading.Lock()
         try:
             lock.acquire(blocking=True, timeout=10)
