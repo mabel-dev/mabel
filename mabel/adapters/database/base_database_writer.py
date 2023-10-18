@@ -20,6 +20,7 @@ class BaseDatabaseWriter:
         # you can either supply your own finalizer via setting the finalizer paramter
         # or you can overide the finalizer in your database writer.
         if self.finalizer and not self.finalized:
+            self.commit()
             self.finalizer(self)
             self.logger.debug("Database Writer Finalizer")
         self.finalized = True
