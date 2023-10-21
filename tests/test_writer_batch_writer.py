@@ -12,6 +12,7 @@ from mabel.data import Reader
 
 
 def do_writer():
+    shutil.rmtree("_temp", ignore_errors=True)
     w = BatchWriter(
         inner_writer=DiskWriter,
         dataset="_temp",
@@ -25,6 +26,7 @@ def do_writer():
 
 
 def test_writer_without_schema_jsonl():
+    shutil.rmtree("_temp", ignore_errors=True)
     w = BatchWriter(
         inner_writer=DiskWriter,
         dataset="_temp",
@@ -50,6 +52,7 @@ def test_writer_without_schema_parquet():
 
 
 def test_writer_without_schema_zstd():
+    shutil.rmtree("_temp", ignore_errors=True)
     w = BatchWriter(
         inner_writer=DiskWriter,
         dataset="_temp",
@@ -64,6 +67,7 @@ def test_writer_without_schema_zstd():
 
 
 def do_writer_compressed(algo):
+    shutil.rmtree("_temp", ignore_errors=True)
     w = BatchWriter(
         inner_writer=DiskWriter,
         dataset="_temp",
@@ -78,6 +82,7 @@ def do_writer_compressed(algo):
 
 
 def do_writer_default():
+    shutil.rmtree("_temp", ignore_errors=True)
     w = BatchWriter(
         inner_writer=DiskWriter,
         dataset="_temp",
@@ -106,7 +111,7 @@ def test_reader_writer_format_zstd():
     assert len(g) > 0, g
 
     c = glob.glob("_temp/**/*.complete", recursive=True)
-    len(c) == 0, c
+    assert len(c) == 1, c
 
     r = Reader(inner_reader=DiskReader, dataset="_temp")
     l = len(list(r))
@@ -121,7 +126,7 @@ def test_reader_writer_format_jsonl():
     assert len(g) > 0, g
 
     c = glob.glob("_temp/**/*.complete", recursive=True)
-    len(c) == 0, c
+    assert len(c) == 1, c
 
     r = Reader(inner_reader=DiskReader, dataset="_temp")
     l = len(list(r))
@@ -136,7 +141,7 @@ def test_reader_writer_format_parquet():
     assert len(g) > 0, g
 
     c = glob.glob("_temp/**/*.complete", recursive=True)
-    len(c) == 0, c
+    assert len(c) == 1, c
 
     r = Reader(inner_reader=DiskReader, dataset="_temp")
     l = len(list(r))
@@ -157,6 +162,51 @@ def test_reader_writer_format_default():
     l = len(list(r))
     shutil.rmtree("_temp", ignore_errors=True)
     assert l == 200000, l
+
+
+def test_reader_writer_complete_anyway_no_records():
+    shutil.rmtree("_temp", ignore_errors=True)
+
+    w = BatchWriter(
+        inner_writer=DiskWriter,
+        dataset="_temp",
+        always_complete=True,
+        schema=[{"name": "character", "type": "VARCHAR"}, {"name": "persona", "type": "VARCHAR"}],
+    )
+    w.finalize()
+
+    g = glob.glob("_temp/**/*.zstd", recursive=True)
+    assert len(g) == 0, g
+
+    c = glob.glob("_temp/**/*.complete", recursive=True)
+    assert len(c) == 1, c
+    shutil.rmtree("_temp", ignore_errors=True)
+
+
+def test_reader_writer_complete_anyway_with_records():
+    shutil.rmtree("_temp", ignore_errors=True)
+
+    w = BatchWriter(
+        inner_writer=DiskWriter,
+        dataset="_temp",
+        always_complete=True,
+        schema=[{"name": "character", "type": "VARCHAR"}, {"name": "persona", "type": "VARCHAR"}],
+    )
+    for i in range(int(1e2)):
+        w.append({"character": "Barney Stinson", "persona": "Lorenzo Von Matterhorn"})
+        w.append({"character": "Laszlo Cravensworth", "persona": "Jackie Daytona"})
+    w.finalize()
+
+    g = glob.glob("_temp/**/*.zstd", recursive=True)
+    assert len(g) == 1, g
+
+    c = glob.glob("_temp/**/*.complete", recursive=True)
+    assert len(c) == 1, c
+
+    r = Reader(inner_reader=DiskReader, dataset="_temp")
+    l = len(list(r))
+    shutil.rmtree("_temp", ignore_errors=True)
+    assert l == 200, l
 
 
 def get_data():
