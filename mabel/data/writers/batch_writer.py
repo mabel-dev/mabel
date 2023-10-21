@@ -26,6 +26,7 @@ class BatchWriter(Writer):
         partitions=["year_{yyyy}/month_{mm}/day_{dd}"],
         frame_id: str = None,
         metadata: dict = None,
+        always_complete: bool = False,
         **kwargs,
     ):
         """
@@ -61,6 +62,8 @@ class BatchWriter(Writer):
                 Index on these columns, the default is to not index
             metadata: dict (optional)
                 data to write into the frame.complete file
+            always_complete: bool (optional)
+                Write a frame.complete even if zero records are written.
 
         Note:
             Different inner_writers may take or require additional parameters.
@@ -103,6 +106,8 @@ class BatchWriter(Writer):
         # error cleared from the stack.
         self.seen_failures = False
 
+        self.always_complete = always_complete
+
     def finalize(self, **kwargs):
         final = super().finalize()
 
@@ -119,8 +124,10 @@ class BatchWriter(Writer):
             )
             return -1
 
-        if self.records == 0:
-            get_logger().debug(f"No records written, not marking frame as complete.")
+        if self.records == 0 and not self.always_complete:
+            get_logger().warning(
+                f"No records written, and 'always_complete' not set, so not marking frame as complete."
+            )
             return -1
 
         completion_path = self.blob_writer.inner_writer.filename

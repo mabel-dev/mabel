@@ -6,12 +6,14 @@ import time
 
 from orso.logging import get_logger
 
+from mabel.data.writers.internals.writer_pool import WriterPool
+from mabel.data.writers.writer import Writer
 from mabel.utils import dates
 from mabel.utils import paths
 from mabel.utils import text
 
-from .internals.writer_pool import WriterPool
-from .writer import Writer
+# shared lock to we're not adding and removing streams at the same time
+lock = threading.Lock()
 
 
 class StreamWriter(Writer):
@@ -123,10 +125,7 @@ class StreamWriter(Writer):
                     f"Schema Validation Failed ({e}) - message being written to {identity}"
                 )
 
-        lock = threading.Lock()
-        try:
-            lock.acquire(blocking=True, timeout=10)
-
+        with lock:
             # get the placeholders from the dataset name
             placeholders = set(re.findall(r"\{(.*?)\}", identity))
 
@@ -139,8 +138,6 @@ class StreamWriter(Writer):
             values = []
             for placeholder in placeholders:
                 value = record.get(placeholder)
-                if hasattr(value, "as_list"):
-                    value = value.as_list()  # type:ignore
                 if not isinstance(value, list):
                     value = [value]
                 values.append(value)
@@ -159,16 +156,12 @@ class StreamWriter(Writer):
                 blob_writer = self.writer_pool.get_writer(this_identity)
                 blob_writer.append(record)
                 writes += 1
-        finally:
-            lock.release()
 
         return writes
 
     def finalize(self, **kwargs):
         self.run_pool_attendant = False
-        lock = threading.Lock()
-        try:
-            lock.acquire(blocking=True, timeout=10)
+        with lock:
             for blob_writer_identity in self.writer_pool.writers:
                 try:
                     get_logger().debug(
@@ -179,8 +172,6 @@ class StreamWriter(Writer):
                     get_logger().debug(
                         f"Error finalizing `{blob_writer_identity}`, {type(err).__name__} - {err}"
                     )
-        finally:
-            lock.release()
         return super().finalize()
 
     def pool_attendant(self):
@@ -188,10 +179,7 @@ class StreamWriter(Writer):
         Writer Pool Management
         """
         while self.run_pool_attendant:
-            lock = threading.Lock()
-            try:
-                lock.acquire(blocking=True, timeout=10)
-
+            with lock:
                 # search for pool occupants who haven't had a write recently
                 for blob_writer_identity in self.writer_pool.get_stale_writers(
                     self.idle_timeout_seconds
@@ -206,9 +194,6 @@ class StreamWriter(Writer):
                         f"Evicting {blob_writer_identity} from the writer pool due the pool being over its {self.writer_pool_capacity} capacity, poolsize={len(self.writer_pool.writers)}"
                     )
                     self.writer_pool.remove_writer(blob_writer_identity)
-
-            finally:
-                lock.release()
 
             time.sleep(0.1)
 

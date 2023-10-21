@@ -58,7 +58,7 @@ class WriterPool:
 
                 logger = orso.logging.get_logger()
                 logger.error(
-                    f"Unable to find writer to remove - indentity={identity}, poolsize={len(self.writers)}"
+                    f"Unable to find writer to remove - indentity={identity}, poolsize={len(self.writers)}, found {len(writers)}"
                 )
             else:
                 writer = writers[0]
@@ -83,9 +83,10 @@ class WriterPool:
         def _inner_sort_key(row):
             return row.get("last_access")
 
+        # evict the oldest items, evicting can be time consuming so we're going to limit the
         evictees = sorted(self.writers, key=_inner_sort_key, reverse=False)[
             : len(self.writers) - self.pool_size
-        ]
+        ][: self.pool_size]
         return [writer.get("identity") for writer in evictees]
 
     def get_stale_writers(self, seconds_since_last_use):
