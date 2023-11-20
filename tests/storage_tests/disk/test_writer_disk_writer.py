@@ -3,6 +3,7 @@ import datetime
 import os
 import sys
 import glob
+import pytest
 
 
 sys.path.insert(1, os.path.join(sys.path[0], "../../.."))
@@ -40,7 +41,6 @@ def do_writer_abs():
 
 
 def do_writer_compressed(algo):
-    print(algo)
     w = BatchWriter(
         inner_writer=DiskWriter,
         dataset="_temp",
@@ -53,18 +53,21 @@ def do_writer_compressed(algo):
                 "test": True,
                 "list": list(range(100)),
                 "today": None,  # this must be none, it's part of a test
-                # another is missing as part of a test
+                "another": "",
+                "final": False,
             }
         )
         w.append(
             {
                 "test": False,
+                "final": False,
                 "another": "1",
                 "today": datetime.datetime.now(),
                 "list": [1, 2, 3, 4, 5],
             }
         )
-    w.append({"test": False, "final": True})
+    with pytest.raises(Exception):
+        w.append({"test": False, "final": True})
     w.finalize()
     del w
 
@@ -108,7 +111,7 @@ def test_reader_writer_format_zstd():
     r = Reader(inner_reader=DiskReader, dataset="_temp")
     l = len(list(r))
     shutil.rmtree("_temp", ignore_errors=True)
-    assert l == 200001, l
+    assert l == 200000, l
 
 
 def test_reader_writer_format_jsonl():
@@ -123,7 +126,7 @@ def test_reader_writer_format_jsonl():
     r = Reader(inner_reader=DiskReader, dataset="_temp")
     l = len(list(r))
     shutil.rmtree("_temp", ignore_errors=True)
-    assert l == 200001, l
+    assert l == 200000, l
 
 
 def test_reader_writer_format_parquet():
@@ -151,7 +154,7 @@ def test_reader_writer_format_parquet():
     shutil.rmtree("_temp", ignore_errors=True)
 
     # do we have the number of records we're expecting?
-    assert records == 200001, records
+    assert records == 200000, records
     # do we have the columns we're expecting?
     assert set(parq.keys()) == {"test", "another", "list", "today", "final"}, parq.keys()
     # is a populated column set correctly?
@@ -159,7 +162,7 @@ def test_reader_writer_format_parquet():
     # if a column is null in the first row, is it written correctly?
     assert dates.count(True) == 100000, dates.count(True)
     # if a column is missing, is it written correctly?
-    assert final.count(True) == 1, final.count(True)
+    assert final.count(True) == 0, final.count(True)
 
 
 #    from orso import DataFrame

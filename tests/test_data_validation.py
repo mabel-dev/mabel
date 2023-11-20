@@ -248,4 +248,5 @@ def test_validator_other():
 if __name__ == "__main__":  # pragma: no cover
     from tests.helpers.runner import run_tests
 
+    test_validator_invalid_number()
     run_tests()

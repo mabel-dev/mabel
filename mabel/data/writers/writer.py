@@ -139,6 +139,9 @@ class Writer:
 
             de.evaluate_record(self.expectations, record)
 
+        if self.schema:
+            self.schema.validate(record)
+
         self.blob_writer.append(record)
         self.records += 1
 
