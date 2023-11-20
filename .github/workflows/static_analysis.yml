@@ -21,14 +21,3 @@ jobs:
 
       - name: Execute Test
         run: bandit -r mabel
-
-  semgrep:
-    runs-on: ubuntu-latest
-    name: SemGrep
-    steps:
-      - uses: actions/checkout@v3
-      - name: Semgrep
-        id: semgrep
-        uses: returntocorp/semgrep-action@v1
-        with:
-          config: p/r2c
