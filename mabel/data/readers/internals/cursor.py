@@ -10,7 +10,6 @@ Cursor is made of three parts:
              midway through the blob if required.
 """
 import orjson
-from orso.bitarray import BitArray
 from orso.cityhash import CityHash64
 
 
@@ -30,6 +29,8 @@ class Cursor:
             self.load_cursor(cursor)
 
     def load_cursor(self, cursor):
+        from bitarray import bitarray
+
         if cursor is None:
             return
 
@@ -50,9 +51,10 @@ class Cursor:
         if len(find_partition) == 1:
             self.partition = find_partition[0]
         map_bytes = bytes.fromhex(cursor["map"])
-        blob_map = BitArray.from_array(map_bytes, len(map_bytes) * 8)
+        blob_map = bitarray()
+        blob_map.frombytes(map_bytes)
         self.read_blobs = [
-            self.readable_blobs[i] for i in range(len(self.readable_blobs)) if blob_map.get(i)
+            self.readable_blobs[i] for i in range(len(self.readable_blobs)) if blob_map[i]
         ]
 
     def next_blob(self, previous_blob=None):
@@ -92,11 +94,13 @@ class Cursor:
         }
 
     def __getitem__(self, item):
+        from bitarray import bitarray
+
         if item == "map":
-            blob_map = BitArray(len(self.readable_blobs))
-            for i, blob in enumerate(self.readable_blobs):
-                blob_map.set(i, blob in self.read_blobs)
-            return blob_map.array.hex()
+            blob_map = bitarray(
+                "".join(["1" if blob in self.read_blobs else "0" for blob in self.readable_blobs])
+            )
+            return blob_map.tobytes().hex()
         if item == "partition":
             return CityHash64(self.partition)
         if item == "location":
