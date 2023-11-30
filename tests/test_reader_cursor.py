@@ -197,6 +197,36 @@ def test_zero_based_cursor():
     assert list(range(5)) == [0, 1, 2, 3, 4]
 
 
+def test_multiple_files():
+    """
+    Test, trying to debug where continuations aren't working in real-world
+    """
+    reader = Reader(inner_reader=DiskReader, dataset="tests/data/nvd", partitions=[])
+    records = 0
+    for i in reader:
+        records += 1
+
+    going = True
+    cursor = None
+    counter = 0
+    reader = Reader(inner_reader=DiskReader, dataset="tests/data/nvd", partitions=[])
+    while going:
+        try:
+            next(reader)
+            counter += 1
+
+            if entropy.random_int() % 5000 == 0:
+                cursor = str(reader.cursor)
+                del reader
+                reader = Reader(
+                    inner_reader=DiskReader, dataset="tests/data/nvd", partitions=[], cursor=cursor
+                )
+        except StopIteration:
+            going = False
+
+    assert counter == records
+
+
 if __name__ == "__main__":  # pragma: no cover
     from tests.helpers.runner import run_tests
 
