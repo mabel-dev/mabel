@@ -59,9 +59,6 @@ class StreamWriter(Writer):
         Note:
             Different inner_writers may take or require additional parameters.
         """
-        if kwargs.get("date"):
-            get_logger().warning("Cannot specify a `date` for the StreamWriter.")
-
         # add the values to kwargs
         kwargs["format"] = format
         kwargs["dataset"] = dataset
@@ -108,7 +105,7 @@ class StreamWriter(Writer):
 
         writes = 0
         identity = paths.date_format(
-            self.dataset_template, (self.date or datetime.datetime.utcnow().date())
+            self.dataset_template, (self.date or datetime.datetime.utcnow())
         )
 
         if hasattr(record, "dict"):
