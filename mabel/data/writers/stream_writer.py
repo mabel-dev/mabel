@@ -59,15 +59,14 @@ class StreamWriter(Writer):
         Note:
             Different inner_writers may take or require additional parameters.
         """
-        if kwargs.get("date"):
-            get_logger().warning("Cannot specify a `date` for the StreamWriter.")
-
         # add the values to kwargs
         kwargs["format"] = format
         kwargs["dataset"] = dataset
         self.dataset = dataset
 
         super().__init__(**kwargs)
+
+        self.date = dates.parse_iso(kwargs.get("date"))
 
         self.idle_timeout_seconds = idle_timeout_seconds
 
@@ -105,7 +104,9 @@ class StreamWriter(Writer):
         # partition
 
         writes = 0
-        identity = paths.date_format(self.dataset_template, datetime.datetime.utcnow())
+        identity = paths.date_format(
+            self.dataset_template, (self.date or datetime.datetime.utcnow())
+        )
 
         if hasattr(record, "dict"):
             record = record.dict()

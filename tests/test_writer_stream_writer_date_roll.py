@@ -18,7 +18,7 @@ def test_stream_rollover():
         inner_writer=NullWriter,
         idle_timeout_seconds=1,
         format="text",
-        schema=["@"],
+        schema=False,
     )
 
     with freeze_time("2012-01-14"):
@@ -44,7 +44,7 @@ def test_fixed_dates():
         idle_timeout_seconds=10,
         format="text",
         date="2022-01-01",
-        schema=["@"],
+        schema=False,
     )
 
     # when we fix the date (use the data param), we always write to the same date
