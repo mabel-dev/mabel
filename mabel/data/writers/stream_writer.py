@@ -69,8 +69,6 @@ class StreamWriter(Writer):
 
         super().__init__(**kwargs)
 
-        self.date = dates.parse_iso(kwargs.get("date"))
-
         self.idle_timeout_seconds = idle_timeout_seconds
 
         # we have a pool of writers of size maximum_writers
@@ -107,9 +105,7 @@ class StreamWriter(Writer):
         # partition
 
         writes = 0
-        identity = paths.date_format(
-            self.dataset_template, (self.date or datetime.datetime.utcnow().date())
-        )
+        identity = paths.date_format(self.dataset_template, datetime.datetime.utcnow())
 
         if hasattr(record, "dict"):
             record = record.dict()
