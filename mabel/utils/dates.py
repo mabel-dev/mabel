@@ -16,6 +16,7 @@ TIMEDELTA_REGEX = (
 )
 TIMEDELTA_PATTERN = re.compile(TIMEDELTA_REGEX, re.IGNORECASE)
 SECONDS_PER_HOUR: int = 3600
+DATE_SEPARATORS = {"-", ":"}
 
 
 # based on:
@@ -39,13 +40,23 @@ def parse_delta(delta: str) -> datetime.timedelta:
     return datetime.timedelta(seconds=0)
 
 
-def parse_iso(value):
-    DATE_SEPARATORS = {"-", ":"}
-    # date validation at speed is hard, dateutil is great but really slow, this is fast
-    # but error-prone. It assumes it is a date or it really nothing like a date.
-    # Making that assumption - and accepting the consequences - we can convert upto
-    # three times faster than dateutil.
-    #
+def parse_iso(
+    value: Union[str, int, float, datetime.datetime, datetime.date]
+) -> Optional[datetime.datetime]:
+    """
+    Parses an ISO date string into a datetime object, with an emphasis on speed.
+
+    Handles various ISO date formats and converts them to datetime objects. If the input is already a
+    datetime object, date object, or a timestamp (int/float), it converts it to a datetime object.
+    Non-string inputs or strings not following the ISO format are returned as None.
+
+    Parameters:
+        value: Union[str, int, float, datetime.datetime, datetime.date, numpy.datetime64]
+            The date value to be parsed.
+
+    Returns:
+        datetime.datetime or None: The parsed datetime object, or None if parsing fails.
+    """
     # valid formats (not exhaustive):
     #
     #   YYYY-MM-DD                 <- date
@@ -60,8 +71,7 @@ def parse_iso(value):
         input_type = type(value)
 
         if numpy:
-            if input_type == numpy.datetime64:
-                # this can create dates rather than datetimes, so don't return yet
+            if isinstance(value, numpy.datetime64):
                 value = value.astype(datetime.datetime)
                 input_type = type(value)
 
@@ -86,7 +96,7 @@ def parse_iso(value):
                 return datetime.datetime(*map(int, [value[:4], value[5:7], value[8:10]]))
             if val_len >= 16:
                 if not (value[10] in ("T", " ") and value[13] in DATE_SEPARATORS):
-                    return False
+                    return None
                 if val_len >= 19 and value[16] in DATE_SEPARATORS:
                     # YYYY-MM-DD HH:MM:SS
                     return datetime.datetime(
