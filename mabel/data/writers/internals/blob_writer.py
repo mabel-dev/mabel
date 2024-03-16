@@ -1,10 +1,12 @@
 import datetime
+import io
 import json
 import sys
 import threading
 from typing import Optional
 
 import orjson
+import orso
 import zstandard
 from orso.logging import get_logger
 from orso.schema import RelationSchema
@@ -13,7 +15,8 @@ from mabel.data.internals.records import flatten
 from mabel.data.validator import schema_loader
 from mabel.errors import MissingDependencyError
 
-BLOB_SIZE = 64 * 1024 * 1024  # 64Mb, 16 files per gigabyte
+# we use 62Mb to allow for headers/footers and errors in calcs
+BLOB_SIZE = 62 * 1024 * 1024  # 64Mb, 16 files per gigabyte
 SUPPORTED_FORMATS_ALGORITHMS = ("jsonl", "zstd", "parquet", "text", "flat")
 
 
@@ -80,7 +83,7 @@ class BlobWriter(object):
 
         kwargs["format"] = format
         self.inner_writer = inner_writer(**kwargs)  # type:ignore
-
+        self.schema = schema_loader(schema)
         self.open_buffer()
 
         if self.format == "parquet":
@@ -88,20 +91,15 @@ class BlobWriter(object):
         else:
             self.append = self.text_append
 
-        self.schema = schema_loader(schema)
+
 
     def arrow_append(self, record: dict = {}):
-        record_length = get_size(record)
+        self.records_in_buffer += 1
+        self.wal.append(record)  # type:ignore
         # if this write would exceed the blob size, close it
-        if (
-            self.byte_count + record_length
-        ) > self.maximum_blob_size and self.records_in_buffer > 0:
+        if (self.wal.nbytes()) > self.maximum_blob_size and self.records_in_buffer > 0:
             self.commit()
             self.open_buffer()
-
-        self.byte_count += record_length + 16
-        self.records_in_buffer += 1
-        self.buffer.append(record)  # type:ignore
 
     def text_append(self, record: dict = {}):
         # serialize the record
@@ -155,7 +153,7 @@ class BlobWriter(object):
             "BOOLEAN": pyarrow.bool_(),
             "INTEGER": pyarrow.int64(),
             "DOUBLE": pyarrow.float64(),
-            "ARRAY": pyarrow.list_(pyarrow.string())
+            "ARRAY": pyarrow.list_(pyarrow.string()),
             #            "STRUCT": pyarrow.map_(pyarrow.string(), pyarrow.string())
         }
 
@@ -175,7 +173,7 @@ class BlobWriter(object):
     def commit(self):
         committed_blob_name = ""
 
-        if len(self.buffer) > 0:
+        if self.records_in_buffer > 0:
             lock = threading.Lock()
 
             try:
@@ -190,24 +188,13 @@ class BlobWriter(object):
                             "`pyarrow` is missing, please install or include in requirements.txt"
                         )
 
-                    import io
-
-                    tempfile = io.BytesIO()
-
-                    # Add in any columns from the schema
-                    columns = sorted(self.schema.column_names)
-
-                    # then we make sure each row has all the columns
-                    self.buffer = [
-                        {column: row.get(column) for column in columns} for row in self.buffer
-                    ]
-
-                    pytable = pyarrow.Table.from_pylist(self.buffer)
+                    pytable = self.wal.arrow()
 
                     # if we have a schema, make effort to align the parquet file to it
                     if self.schema:
                         pytable = self._normalize_arrow_schema(pytable, self.schema)
 
+                    tempfile = io.BytesIO()
                     pyarrow.parquet.write_table(pytable, where=tempfile, compression="zstd")
 
                     tempfile.seek(0)
@@ -229,10 +216,10 @@ class BlobWriter(object):
                     {
                         "format": self.format,
                         "committed_blob": committed_blob_name,
-                        "records": len(self.buffer)
-                        if self.format == "parquet"
-                        else self.records_in_buffer,
-                        "bytes": self.byte_count if self.format == "parquet" else len(self.buffer),
+                        "records": (
+                            len(self.buffer) if self.format == "parquet" else self.records_in_buffer
+                        ),
+                        "bytes": len(self.buffer),
                     }
                 )
             finally:
@@ -243,8 +230,7 @@ class BlobWriter(object):
 
     def open_buffer(self):
         if self.format == "parquet":
-            self.buffer = []
-            self.byte_count = 5120  # parquet has headers etc
+            self.wal = orso.DataFrame(rows=[], schema=self.schema)
         else:
             self.buffer = bytearray()
             self.byte_count = 0

@@ -132,6 +132,7 @@ class BatchWriter(Writer):
 
         completion_path = self.blob_writer.inner_writer.filename
         completion_path = os.path.split(completion_path)[0] + "/frame.complete"
+        manifest_path = os.path.split(completion_path)[0] + "/manifest.json"
         self.metadata["records"] = self.records
         if self.schema:
             if isinstance(self.schema, dict):

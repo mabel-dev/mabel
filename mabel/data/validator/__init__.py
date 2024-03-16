@@ -15,7 +15,7 @@ def schema_loader(
 ) -> Union[RelationSchema, bool]:
     if definition is None:
         raise ValueError(
-            "Writer is missing a schema, minimum schema is a list of the columns or explicitly set to 'False' is data is unschamable."
+            "Writer is missing a schema, minimum schema is a list of the columns or explicitly set to 'False' is data is unschemable."
         )
 
     if definition is False:

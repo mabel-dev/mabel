@@ -149,9 +149,9 @@ class BlobWriter(object):
                     {
                         "format": self.format,
                         "committed_blob": committed_blob_name,
-                        "records": len(buffer)
-                        if self.format == "parquet"
-                        else self.records_in_buffer,
+                        "records": (
+                            len(buffer) if self.format == "parquet" else self.records_in_buffer
+                        ),
                     }
                 )
             finally:

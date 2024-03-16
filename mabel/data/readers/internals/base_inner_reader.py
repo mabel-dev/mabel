@@ -1,6 +1,7 @@
 """
 Base Inner Reader
 """
+
 import abc
 import datetime
 import io

@@ -217,5 +217,4 @@ def get_data():
 if __name__ == "__main__":  # pragma: no cover
     from tests.helpers.runner import run_tests
 
-    test_reader_writer()
     run_tests()

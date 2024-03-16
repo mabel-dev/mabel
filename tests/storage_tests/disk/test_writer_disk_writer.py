@@ -5,13 +5,14 @@ import sys
 import glob
 import pytest
 
-
 sys.path.insert(1, os.path.join(sys.path[0], "../../.."))
+
 from mabel.adapters.disk import DiskReader, DiskWriter
 from mabel.adapters.null import NullWriter
 from mabel.data import BatchWriter
 from mabel.data import Reader
 from mabel.data.internals.dictset import STORAGE_CLASS
+
 
 
 def do_writer():
@@ -144,7 +145,6 @@ def test_reader_writer_format_parquet():
     c = glob.glob("_temp/**/*.complete", recursive=True)
     len(c) == 0, c
 
-    print("written")
     parq = Reader(inner_reader=DiskReader, dataset="_temp", persistence=STORAGE_CLASS.MEMORY)
 
     records = parq.count()

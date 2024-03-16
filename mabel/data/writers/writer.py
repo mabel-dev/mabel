@@ -103,9 +103,9 @@ class Writer:
 
         arg_dict = kwargs.copy()
         arg_dict["dataset"] = f"{self.dataset}"
-        arg_dict[
-            "inner_writer"
-        ] = f"{arg_dict.get('inner_writer', type(None)).__name__}"  # type:ignore
+        arg_dict["inner_writer"] = (
+            f"{arg_dict.get('inner_writer', type(None)).__name__}"
+        )  # type:ignore
         logger.debug(orjson.dumps(arg_dict))
 
         # add the schema to the writer - pyarrow uses this
