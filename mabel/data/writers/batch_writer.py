@@ -148,7 +148,9 @@ class BatchWriter(Writer):
         # the file format changes
         self.metadata["versions"] = {"mabel": mabel.__version__, "orso": orso.__version__}
         flag = self.blob_writer.inner_writer.commit(
-            byte_data=orjson.dumps(self.metadata, option=orjson.OPT_INDENT_2),
+            byte_data=orjson.dumps(
+                self.metadata, option=orjson.OPT_INDENT_2 | orjson.OPT_SERIALIZE_NUMPY
+            ),
             override_blob_name=completion_path,
         )
         get_logger().debug(f"Frame completion file `{flag}` written")
