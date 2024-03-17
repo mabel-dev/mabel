@@ -132,13 +132,14 @@ class BatchWriter(Writer):
 
         completion_path = self.blob_writer.inner_writer.filename
         completion_path = os.path.split(completion_path)[0] + "/frame.complete"
-        manifest_path = os.path.split(completion_path)[0] + "/manifest.json"
         self.metadata["records"] = self.records
+        self.metadata["format"] = self.blob_writer.format
         if self.schema:
             if isinstance(self.schema, dict):
                 self.metadata["schema"] = self.schema
-            elif hasattr(self.schema, "definition"):
-                self.metadata["schema"] = self.schema.definition
+            elif hasattr(self.schema, "to_dict"):
+                self.metadata["schema"] = self.schema.to_dict()
+        self.metadata["manifest"] = self.blob_writer.manifest
         flag = self.blob_writer.inner_writer.commit(
             byte_data=orjson.dumps(self.metadata, option=orjson.OPT_INDENT_2),
             override_blob_name=completion_path,

@@ -1,7 +1,5 @@
-import datetime
 import io
 import json
-import sys
 import threading
 from typing import Optional
 
@@ -20,49 +18,12 @@ BLOB_SIZE = 62 * 1024 * 1024  # 64Mb, 16 files per gigabyte
 SUPPORTED_FORMATS_ALGORITHMS = ("jsonl", "zstd", "parquet", "text", "flat")
 
 
-def get_size(obj, seen=None):
-    """
-    Recursively approximate the size of objects.
-    We don't know the actual size until we save, so we approximate the size based
-    on some rules - this will be wrong due to RLE, headers, precision and other
-    factors.
-    """
-    size = sys.getsizeof(obj)
-
-    if seen is None:
-        seen = set()
-    obj_id = id(obj)
-    if obj_id in seen:
-        return 0
-
-    if isinstance(obj, (int, float)):
-        size = 6  # probably 4 bytes, could be 8
-    if isinstance(obj, bool):
-        size = 1
-    if isinstance(obj, (str, bytes, bytearray)):
-        size = len(obj) + 4
-    if obj is None:
-        size = 1
-    if isinstance(obj, datetime.datetime):
-        size = 8
-
-    # Important mark as seen *before* entering recursion to gracefully handle
-    # self-referential objects
-    seen.add(obj_id)
-    if isinstance(obj, dict):
-        size = sum([get_size(v, seen) for v in obj.values()]) + 8
-    elif hasattr(obj, "__dict__"):
-        size += get_size(obj.__dict__, seen) + 8
-    elif hasattr(obj, "__iter__") and not isinstance(obj, (str, bytes, bytearray)):
-        size += sum([get_size(i, seen) for i in obj]) + 8
-    return size
-
-
 class BlobWriter(object):
     # in som failure scenarios commit is called before __init__, so we need to define
     # this variable outside the __init__.
     buffer = bytearray()
     byte_count = 0
+    manifest = {}
 
     def __init__(
         self,
@@ -91,13 +52,11 @@ class BlobWriter(object):
         else:
             self.append = self.text_append
 
-
-
     def arrow_append(self, record: dict = {}):
         self.records_in_buffer += 1
         self.wal.append(record)  # type:ignore
         # if this write would exceed the blob size, close it
-        if (self.wal.nbytes()) > self.maximum_blob_size and self.records_in_buffer > 0:
+        if self.wal.nbytes() > self.maximum_blob_size:
             self.commit()
             self.open_buffer()
 
@@ -122,7 +81,7 @@ class BlobWriter(object):
 
         # the newline isn't counted so add 1 to get the actual length if this write
         # would exceed the blob size, close it so another blob will be created
-        if len(self.buffer) > self.maximum_blob_size and self.records_in_buffer > 0:
+        if len(self.buffer) > self.maximum_blob_size:
             self.commit()
             self.open_buffer()
 
@@ -176,6 +135,7 @@ class BlobWriter(object):
         if self.records_in_buffer > 0:
             lock = threading.Lock()
 
+            summary = None
             try:
                 lock.acquire(blocking=True, timeout=10)
 
@@ -189,6 +149,7 @@ class BlobWriter(object):
                         )
 
                     pytable = self.wal.arrow()
+                    summary = self.wal.profile.to_dicts()
 
                     # if we have a schema, make effort to align the parquet file to it
                     if self.schema:
@@ -207,6 +168,7 @@ class BlobWriter(object):
                 committed_blob_name = self.inner_writer.commit(
                     byte_data=bytes(self.buffer), override_blob_name=None
                 )
+                self.manifest[committed_blob_name] = summary
 
                 if "BACKOUT" in committed_blob_name:
                     get_logger().warning(

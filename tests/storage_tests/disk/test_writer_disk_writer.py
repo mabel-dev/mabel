@@ -14,7 +14,6 @@ from mabel.data import Reader
 from mabel.data.internals.dictset import STORAGE_CLASS
 
 
-
 def do_writer():
     w = BatchWriter(
         inner_writer=DiskWriter,
