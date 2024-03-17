@@ -149,7 +149,10 @@ class BlobWriter(object):
                         )
 
                     pytable = self.wal.arrow()
-                    summary = self.wal.profile.to_dicts()
+                    try:
+                        summary = self.wal.profile.to_dicts()
+                    except Exception as e:
+                        print(f"[MABEL] Unable to profile morsel - {type(e).__name__} - {e}")
 
                     # if we have a schema, make effort to align the parquet file to it
                     if self.schema:
