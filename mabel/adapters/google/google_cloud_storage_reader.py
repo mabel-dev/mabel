@@ -1,6 +1,7 @@
 """
 Google Cloud Storage Reader
 """
+
 import os
 
 from mabel.data.readers.internals.base_inner_reader import BaseInnerReader

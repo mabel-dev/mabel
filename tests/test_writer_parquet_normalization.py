@@ -83,7 +83,6 @@ def test_reader_writer_parquet_normalization():
     c = glob.glob("_temp/**/*.complete", recursive=True)
     len(c) == 0, c
 
-    print("written")
     parq = Reader(inner_reader=DiskReader, dataset="_temp", persistence=STORAGE_CLASS.MEMORY)
     records = parq.count()
     recurring = parq.collect_list("recurring")

@@ -1,6 +1,7 @@
 """
 Test the null reader
 """
+
 import os
 import sys
 

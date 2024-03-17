@@ -9,6 +9,7 @@ Cursor is made of three parts:
 - location : the record in the active partition (blob), so we can resume reading
              midway through the blob if required.
 """
+
 import orjson
 from orso.cityhash import CityHash64
 

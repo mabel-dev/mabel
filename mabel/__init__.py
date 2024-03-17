@@ -10,6 +10,8 @@ from .data.readers.reader import Reader
 from .data.writers.writer import Writer
 from .version import __version__
 
+__all__ = ["DictSet", "SqlReader", "Reader", "Writer", "__version__"]
+
 try:
     import dotenv  # type:ignore
 except ImportError:  # pragma: no cover

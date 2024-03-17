@@ -8,6 +8,7 @@ memory, or you are doing a lot of operations on the data.
 If you're doing few operations on the the data and it is easily recreated or local
 storage is fast, this isn't a good option.
 """
+
 import gc
 from typing import List
 from typing import Set

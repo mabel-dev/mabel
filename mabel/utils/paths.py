@@ -1,6 +1,7 @@
 """
 Functions to help with handling file paths
 """
+
 import datetime
 import errno
 import os

@@ -8,6 +8,7 @@ jsonl took 0.525919 seconds
 
 outcome: stay with the simple JSONL format.
 """
+
 import avro.schema
 from avro.datafile import DataFileReader, DataFileWriter
 from avro.io import DatumReader, DatumWriter

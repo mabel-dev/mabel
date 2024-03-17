@@ -3,6 +3,7 @@ Tests for paths to ensure the split and join methods
 of paths return the expected values for various
 stimulus.
 """
+
 import sys
 import os
 

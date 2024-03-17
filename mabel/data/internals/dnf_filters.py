@@ -1,6 +1,7 @@
 """
 This is a filtering mechanism to be applied when reading data.
 """
+
 import operator
 from typing import Iterable
 from typing import List

@@ -8,6 +8,7 @@ MIT Licence
 
 #nodoc - don't add to the documentation wiki
 """
+
 import os.path
 import pathlib
 import sys

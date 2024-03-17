@@ -11,6 +11,7 @@
 Results indicate that if you're IO bound (you almost definitely are) that the
 effort to compress is paid back many times by the effort to IO.
 """
+
 import os
 import time
 import lzma

@@ -15,6 +15,7 @@ Results (average of 10 runs, 100,000 rows of 8 field record, NullWriter)
 └─────────────┴────────────┴────────┴───────┴─────────────┘
 Your numbers will vary depending on any number of factors
 """
+
 import sys
 import os
 import time
