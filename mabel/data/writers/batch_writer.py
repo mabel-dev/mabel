@@ -109,6 +109,10 @@ class BatchWriter(Writer):
         self.always_complete = always_complete
 
     def finalize(self, **kwargs):
+        import orso
+
+        import mabel
+
         final = super().finalize()
 
         has_failure = bool(kwargs.get("has_failure", False))
@@ -140,6 +144,9 @@ class BatchWriter(Writer):
             elif hasattr(self.schema, "to_dict"):
                 self.metadata["schema"] = self.schema.to_dict()
         self.metadata["manifest"] = self.blob_writer.manifest
+        # write the library versions - this allows us to change logic later if
+        # the file format changes
+        self.metadata["versions"] = {"mabel": mabel.__version__, "orso": orso.__version__}
         flag = self.blob_writer.inner_writer.commit(
             byte_data=orjson.dumps(self.metadata, option=orjson.OPT_INDENT_2),
             override_blob_name=completion_path,
