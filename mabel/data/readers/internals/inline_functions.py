@@ -4,6 +4,7 @@ These are a set of functions that can be applied to data as it passes through.
 These are the function definitions, the processor which uses these is in the
 'inline_evaluator' module.
 """
+
 import datetime
 from functools import lru_cache
 from math import trunc

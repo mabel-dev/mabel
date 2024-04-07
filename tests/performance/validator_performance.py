@@ -6,6 +6,7 @@
 │ pydantic │ 2.1748749800000002 │
 └──────────┴────────────────────┘
 """
+
 import time
 import pydantic
 import datetime

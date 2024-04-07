@@ -5,6 +5,7 @@ Google Cloud Storage or MinIO.
 
 The primary activity is contained in the .commit() method.
 """
+
 import abc
 import os
 import time

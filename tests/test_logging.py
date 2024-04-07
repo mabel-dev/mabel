@@ -2,6 +2,7 @@
 Test the mabel logger, this extends the Python logging logger.
 We test that the trace method and decorators raise no errors.
 """
+
 import os
 import sys
 

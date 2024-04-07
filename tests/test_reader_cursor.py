@@ -1,6 +1,7 @@
 """
 Test the cursor
 """
+
 import os
 import sys
 import orjson
