@@ -113,6 +113,7 @@ class BlobWriter(object):
             "INTEGER": pyarrow.int64(),
             "DOUBLE": pyarrow.float64(),
             "ARRAY": pyarrow.list_(pyarrow.string()),
+            "BLOB": pyarrow.binary(),
             #            "STRUCT": pyarrow.map_(pyarrow.string(), pyarrow.string())
         }
 
@@ -181,9 +182,7 @@ class BlobWriter(object):
                     {
                         "format": self.format,
                         "committed_blob": committed_blob_name,
-                        "records": (
-                            len(self.buffer) if self.format == "parquet" else self.records_in_buffer
-                        ),
+                        "records": self.records_in_buffer,
                         "bytes": len(self.buffer),
                     }
                 )
