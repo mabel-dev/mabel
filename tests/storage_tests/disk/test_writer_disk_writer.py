@@ -172,7 +172,7 @@ def test_reader_writer_format_parquet():
 def test_reader_writer_format_default():
     do_writer_default()
 
-    g = glob.glob("_temp/**/*.zstd", recursive=True)
+    g = glob.glob("_temp/**/*.parquet", recursive=True)
     assert len(g) > 0, g
 
     c = glob.glob("_temp/**/*.complete", recursive=True)

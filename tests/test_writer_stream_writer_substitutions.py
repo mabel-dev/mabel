@@ -14,17 +14,18 @@ traceback.install()
 DATA_SET = [
     {"key": 6, "value": ["s", "i", "x"], "combinations": 3},  # (6,s),(6,i),(6,x)
     {"key": [1, 0], "value": ["t", "e", "n"], "combinations": 6},
-    {"key": 0, "combinations": 1},
+    {"key": 0, "value": None, "combinations": 1},
 ]
 
 
 def test_writer_substitutions():
-    w = StreamWriter(dataset="TEST/{key}/{value}", inner_writer=NullWriter, schema=["@"])
+    w = StreamWriter(
+        dataset="TEST/{key}/{value}",
+        inner_writer=NullWriter,
+        schema=["key", "value", "combinations"],
+    )
 
     for record in DATA_SET:
-        # convert to a simd object to test behavior
-        as_json = orjson.dumps(record)
-
         combinations = w.append(record)
         assert combinations == record["combinations"], combinations
 

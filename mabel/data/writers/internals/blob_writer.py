@@ -30,7 +30,7 @@ class BlobWriter(object):
         *,  # force params to be named
         inner_writer=None,  # type:ignore
         blob_size: int = BLOB_SIZE,
-        format: str = "zstd",
+        format: str = "parquet",
         schema: Optional[RelationSchema] = None,
         **kwargs,
     ):
@@ -60,6 +60,8 @@ class BlobWriter(object):
             self.commit()
             self.open_buffer()
 
+        return self.records_in_buffer
+
     def text_append(self, record: dict = {}):
         # serialize the record
         if self.format == "text":
@@ -85,6 +87,9 @@ class BlobWriter(object):
             self.commit()
             self.open_buffer()
 
+        if isinstance(self.buffer, bytes):
+            self.buffer = bytearray(self.buffer)
+            get_logger().warning("Write buffer corrected from invalid state.")
         # write the record to the file
         self.buffer.extend(serialized)
         self.records_in_buffer += 1
@@ -163,14 +168,16 @@ class BlobWriter(object):
                     pyarrow.parquet.write_table(pytable, where=tempfile, compression="zstd")
 
                     tempfile.seek(0)
-                    self.buffer = tempfile.read()
+                    write_buffer = tempfile.read()
 
-                if self.format == "zstd":
+                elif self.format == "zstd":
                     # zstandard is an non-optional installed dependency
-                    self.buffer = zstandard.compress(self.buffer)
+                    write_buffer = zstandard.compress(self.buffer)
+                else:
+                    write_buffer = bytes(self.buffer)
 
                 committed_blob_name = self.inner_writer.commit(
-                    byte_data=bytes(self.buffer), override_blob_name=None
+                    byte_data=write_buffer, override_blob_name=None
                 )
                 self.manifest[committed_blob_name] = summary
 
@@ -178,12 +185,13 @@ class BlobWriter(object):
                     get_logger().warning(
                         f"{self.records_in_buffer:n} failed records written to BACKOUT partition `{committed_blob_name}`"
                     )
+
                 get_logger().debug(
                     {
                         "format": self.format,
                         "committed_blob": committed_blob_name,
                         "records": self.records_in_buffer,
-                        "bytes": len(self.buffer),
+                        "bytes": len(write_buffer),
                     }
                 )
             finally:

@@ -21,7 +21,7 @@ class BatchWriter(Writer):
         self,
         *,
         dataset: str,
-        format: str = "zstd",
+        format: str = "parquet",
         date: Any = None,
         partitions=["year_{yyyy}/month_{mm}/day_{dd}"],
         frame_id: str = None,
