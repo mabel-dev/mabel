@@ -175,7 +175,7 @@ def test_reader_writer_complete_anyway_no_records():
     )
     w.finalize()
 
-    g = glob.glob("_temp/**/*.zstd", recursive=True)
+    g = glob.glob("_temp/**/*.parquet", recursive=True)
     assert len(g) == 0, g
 
     c = glob.glob("_temp/**/*.complete", recursive=True)
@@ -197,7 +197,7 @@ def test_reader_writer_complete_anyway_with_records():
         w.append({"character": "Laszlo Cravensworth", "persona": "Jackie Daytona"})
     w.finalize()
 
-    g = glob.glob("_temp/**/*.zstd", recursive=True)
+    g = glob.glob("_temp/**/*.parquet", recursive=True)
     assert len(g) == 1, g
 
     c = glob.glob("_temp/**/*.complete", recursive=True)
