@@ -34,7 +34,7 @@ class Writer:
         *,
         schema: Union[RelationSchema, list, bool] = None,
         set_of_expectations: Optional[list] = None,
-        format: str = "zstd",
+        format: str = "parquet",
         date: Any = None,
         partitions=["year_{yyyy}/month_{mm}/day_{dd}"],
         **kwargs,

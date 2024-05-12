@@ -25,7 +25,7 @@ class StreamWriter(Writer):
         self,
         *,
         dataset: str,
-        format: str = "zstd",
+        format: str = "parquet",
         idle_timeout_seconds: int = 30,
         writer_pool_capacity: int = 10,
         **kwargs,
