@@ -60,6 +60,8 @@ class BlobWriter(object):
             self.commit()
             self.open_buffer()
 
+        return self.records_in_buffer
+
     def text_append(self, record: dict = {}):
         # serialize the record
         if self.format == "text":
