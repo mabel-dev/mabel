@@ -84,11 +84,6 @@ class BatchWriter(Writer):
                 self.batch_date,
             )
 
-        if metadata:
-            self.metadata = metadata
-        else:
-            self.metadata = {}
-
         # kwargs["raw_path"] = True  # we've just added the dates
         kwargs["format"] = format
         kwargs["dataset"] = frame_id
@@ -109,9 +104,6 @@ class BatchWriter(Writer):
         self.always_complete = always_complete
 
     def finalize(self, **kwargs):
-        import orso
-
-        import mabel
 
         final = super().finalize()
 
@@ -136,21 +128,8 @@ class BatchWriter(Writer):
 
         completion_path = self.blob_writer.inner_writer.filename
         completion_path = os.path.split(completion_path)[0] + "/frame.complete"
-        self.metadata["records"] = self.records
-        self.metadata["format"] = self.blob_writer.format
-        if self.schema:
-            if isinstance(self.schema, dict):
-                self.metadata["schema"] = self.schema
-            elif hasattr(self.schema, "to_dict"):
-                self.metadata["schema"] = self.schema.to_dict()
-        self.metadata["manifest"] = self.blob_writer.manifest
-        # write the library versions - this allows us to change logic later if
-        # the file format changes
-        self.metadata["versions"] = {"mabel": mabel.__version__, "orso": orso.__version__}
         flag = self.blob_writer.inner_writer.commit(
-            byte_data=orjson.dumps(
-                self.metadata, option=orjson.OPT_INDENT_2 | orjson.OPT_SERIALIZE_NUMPY
-            ),
+            b"",
             override_blob_name=completion_path,
         )
         get_logger().debug(f"Frame completion file `{flag}` written")
