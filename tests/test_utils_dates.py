@@ -1,11 +1,12 @@
 import os
 import sys
+import pytest
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 
 import datetime
-
-import pytest
+import numpy
+import pandas
 
 from mabel.utils import dates
 
@@ -28,14 +29,20 @@ DATE_TESTS = [
         ("1999-12-31T23:59:59.9999Z", datetime.datetime(1999,12,31,23,59,59)),
         ("1999-12-31T23:59:59.999999", datetime.datetime(1999,12,31,23,59,59)),
         ("1999-12-31T23:59:59.999999+0800", datetime.datetime(1999,12,31,23,59,59)),
-        ("1999-12-31T23:59:59.99999999", datetime.datetime(1999,12,31,23,59,59))
+        ("1999-12-31T23:59:59.99999999", datetime.datetime(1999,12,31,23,59,59)),
+        (numpy.datetime64("2021-01-11T12:00"), datetime.datetime(2021, 1, 11, 12, 0)),
+        (numpy.datetime64("2021-02-21T00:00"), datetime.datetime(2021, 2, 21)),
+        (pandas.Timestamp("2021-03-11T12:00"), datetime.datetime(2021, 3, 11, 12, 0, 0)),
+        (pandas.Timestamp("2021-04-21T00:00"), datetime.datetime(2021, 4, 21)),
     ]
 # fmt:on
 
 
 @pytest.mark.parametrize("string, expect", DATE_TESTS)
 def test_date_parser(string, expect):
-    assert dates.parse_iso(string) == expect, f"{string}  {dates.parse_iso(string)}  {expect}"
+    assert (
+        dates.parse_iso(string) == expect
+    ), f"in:{string}  res:{dates.parse_iso(string)} exp:{expect}"
 
 
 if __name__ == "__main__":  # pragma: no cover

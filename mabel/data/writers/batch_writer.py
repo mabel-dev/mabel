@@ -2,7 +2,6 @@ import datetime
 import os
 from typing import Any
 
-import orjson
 from orso.logging import get_logger
 
 from mabel.data.writers.internals.blob_writer import BlobWriter
