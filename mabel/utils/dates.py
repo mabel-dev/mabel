@@ -8,11 +8,6 @@ try:
 except ImportError:
     numpy = None
 
-try:
-    import pandas
-except ImportError:
-    pandas = None
-
 TIMEDELTA_REGEX = (
     r"((?P<days>-?\d+)d)?"
     r"((?P<hours>-?\d+)h)?"
@@ -79,9 +74,9 @@ def parse_iso(
             if isinstance(value, numpy.datetime64):
                 value = value.astype(datetime.datetime)
                 input_type = type(value)
-        if pandas:
-            if hasattr(value, "to_pydatetime"):
-                return value.to_pydatetime()
+
+        if hasattr(value, "to_pydatetime"):
+            return value.to_pydatetime()
 
         if input_type == datetime.datetime:
             return value
