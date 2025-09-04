@@ -3,7 +3,7 @@ Separate the implementation of the Cursor from the Reader.
 
 Cursor is made of three parts:
 - map      : a bit array representing all of the blobs in the set - unread blobs
-             are 0s and read blobs are 1s. This allows for blobs to be read in 
+             are 0s and read blobs are 1s. This allows for blobs to be read in
              an arbitrary order - although currently only implemented linearly.
 - partition: the active parition (blob) that is being read
 - location : the record in the active partition (blob), so we can resume reading

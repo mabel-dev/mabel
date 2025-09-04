@@ -1,11 +1,11 @@
 """
 Results (seconds to search for a username in 65,500 rows):
 
- indexed | row exists | time  
+ indexed | row exists | time
 -------------------------------
  yes     |    yes     |   0.094   <- about 3.5x faster when is match
  yes     |    no      |   0.006   <- over 50x faster when no match
- no      |    yes     |   0.357 
+ no      |    yes     |   0.357
  no      |    no      |   0.332
 -------------------------------
 """
