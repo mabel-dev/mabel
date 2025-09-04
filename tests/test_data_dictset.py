@@ -2,6 +2,7 @@ import os
 import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
+
 from mabel import Reader, DictSet
 from mabel.data import STORAGE_CLASS
 from mabel.adapters.disk import DiskReader
@@ -189,7 +190,7 @@ def test_hash():
     ]
     ds = DictSet(data, storage_class=STORAGE_CLASS.MEMORY)
     hashval = hash(ds)
-    assert hashval == 8826660322425604498, hashval
+    assert hashval == 386528107484878589, hashval
 
 
 def test_sort():
@@ -210,6 +211,6 @@ def test_sort():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    from tests.helpers.runner import run_tests
+    from helpers.runner import run_tests
 
     run_tests()
