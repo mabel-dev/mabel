@@ -11,7 +11,7 @@ Cursor is made of three parts:
 """
 
 import orjson
-from orso.cityhash import CityHash64
+from xxhash import xxh3_64_intdigest
 
 
 class InvalidCursor(Exception):
@@ -47,7 +47,9 @@ class Cursor:
 
         self.location = cursor["location"]
         find_partition = [
-            blob for blob in self.readable_blobs if CityHash64(blob) == cursor["partition"]
+            blob
+            for blob in self.readable_blobs
+            if xxh3_64_intdigest(blob, 0) == cursor["partition"]
         ]
         if len(find_partition) == 1:
             self.partition = find_partition[0]
@@ -67,7 +69,7 @@ class Cursor:
             if self.partition in self.readable_blobs:
                 return self.partition
             partition_finder = [
-                blob for blob in self.readable_blobs if CityHash64(blob) == self.partition
+                blob for blob in self.readable_blobs if xxh3_64_intdigest(blob, 0) == self.partition
             ]
             if len(partition_finder) != 1:
                 raise ValueError(f"Unable to determine current partition ({self.partition})")
@@ -103,7 +105,7 @@ class Cursor:
             )
             return blob_map.tobytes().hex()
         if item == "partition":
-            return CityHash64(self.partition)
+            return xxh3_64_intdigest(self.partition, 0)
         if item == "location":
             return self.location
         return None

@@ -7,7 +7,7 @@ python setup.py build_ext --inplace
 """
 from collections import defaultdict
 
-from siphashc import siphash
+from xxhash import xxh3_64_intdigest
 
 
 def summer(x, y):
@@ -72,12 +72,12 @@ class GroupBy:
 
         for record in self._dictset:
             try:
-                group_key: int = siphash(
+                group_key: int = xxh3_64_intdigest(
                     HASH_SEED,
                     "".join([str(record[column]) for column in self._columns]),
                 )
             except KeyError:
-                group_key: int = siphash(
+                group_key: int = xxh3_64_intdigest(
                     HASH_SEED,
                     "".join([f"{record.get(column, '')}" for column in self._columns]),
                 )

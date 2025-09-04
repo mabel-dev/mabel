@@ -2,5 +2,5 @@ bitarray
 lz4
 orjson
 orso>=0.0.147
-siphashc
+xxhash
 zstandard
