@@ -1,13 +1,13 @@
 """
-JSON parsing and serialization performance tests so a decision on 
+JSON parsing and serialization performance tests so a decision on
 which library(s) to use can be made - previously the selection was
 inconsistent.
 
 Results (seconds to process 10m rows):
 
- library | parsing | serialize  
+ library | parsing | serialize
 -------------------------------
- json    |    36.6 |      1.74 
+ json    |    36.6 |      1.74
  ujson   |    16.5 |      0.86
  orjson  |    10.4 |      0.66   <- lower is better
  simd    |     2.8 |       N/A   <- lower is better

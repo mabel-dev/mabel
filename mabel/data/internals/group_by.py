@@ -7,7 +7,7 @@ python setup.py build_ext --inplace
 """
 from collections import defaultdict
 
-from siphashc import siphash
+from xxhash import xxh3_64_intdigest
 
 
 def summer(x, y):
@@ -25,7 +25,7 @@ AGGREGATORS = {
     "AVG": lambda x, y: 1,
 }
 
-HASH_SEED = b"Anakin Skywalker"
+HASH_SEED = 42
 
 
 class TooManyGroups(Exception):
@@ -72,14 +72,14 @@ class GroupBy:
 
         for record in self._dictset:
             try:
-                group_key: int = siphash(
-                    HASH_SEED,
+                group_key: int = xxh3_64_intdigest(
                     "".join([str(record[column]) for column in self._columns]),
+                    HASH_SEED
                 )
             except KeyError:
-                group_key: int = siphash(
-                    HASH_SEED,
+                group_key: int = xxh3_64_intdigest(
                     "".join([f"{record.get(column, '')}" for column in self._columns]),
+                    HASH_SEED,
                 )
             if group_key not in self._group_keys.keys():
                 self._group_keys[group_key] = [

@@ -41,7 +41,7 @@ def parse_delta(delta: str) -> datetime.timedelta:
 
 
 def parse_iso(
-    value: Union[str, int, float, datetime.datetime, datetime.date]
+    value: Union[str, int, float, datetime.datetime, datetime.date],
 ) -> Optional[datetime.datetime]:
     """
     Parses an ISO date string into a datetime object, with an emphasis on speed.

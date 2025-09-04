@@ -165,7 +165,7 @@ class BlobWriter(object):
                         pytable = self._normalize_arrow_schema(pytable, self.schema)
 
                     tempfile = io.BytesIO()
-                    pyarrow.parquet.write_table(pytable, where=tempfile, compression="zstd")
+                    pyarrow.parquet.write_table(pytable, where=tempfile)
 
                     tempfile.seek(0)
                     write_buffer = tempfile.read()

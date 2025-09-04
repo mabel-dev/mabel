@@ -11,7 +11,7 @@ __all__ = ["schema_loader"]
 
 
 def schema_loader(
-    definition: Union[str, List[Dict[str, Any]], dict, RelationSchema, bool]
+    definition: Union[str, List[Dict[str, Any]], dict, RelationSchema, bool],
 ) -> Union[RelationSchema, bool]:
     if definition is None:
         raise ValueError(

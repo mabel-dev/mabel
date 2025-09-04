@@ -37,8 +37,6 @@ def test_cursor():
     for i in range(number_of_records):
         data.append({"one": 1, "index": i})
 
-    reader = Reader(inner_reader=NullReader, dataset="none", partitions=None, data=data)
-
     # create random offsets for testing - it's illogical to have a 0 cursor
     offsets = (entropy.random_range(1, number_of_records) for i in range(20))
 
@@ -135,7 +133,7 @@ def test_cursor_as_text():
     offsets = (entropy.random_range(1, number_of_records - 1) for i in range(5))
 
     for offset in offsets:
-        cursor = {"location": offset, "map": "00", "partition": 1983839293359648136}
+        cursor = {"location": offset, "map": "00", "partition": 13429097919052166063}
         reader = Reader(
             inner_reader=DiskReader,
             dataset="tests/data/formats/jsonl",
@@ -164,7 +162,7 @@ def test_move_to_cursor():
             inner_reader=DiskReader,
             dataset="tests/data/formats/jsonl",
             partitions=None,
-            cursor={"location": offset, "map": "00", "partition": 1983839293359648136},
+            cursor={"location": offset, "map": "00", "partition": 13429097919052166063},
             persistence=STORAGE_CLASS.NO_PERSISTANCE,
         )
 
@@ -229,6 +227,6 @@ def test_multiple_files():
 
 
 if __name__ == "__main__":  # pragma: no cover
-    from tests.helpers.runner import run_tests
+    from helpers.runner import run_tests
 
     run_tests()
