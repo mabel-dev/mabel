@@ -130,7 +130,9 @@ def test_gappy_set():
         {"AVG(key)": 1.0, "value": "one"},
     ]
 
-    assert set(tuple(sorted(d.items())) for d in gs) == set(tuple(sorted(d.items())) for d in expected)
+    assert set(tuple(sorted(d.items())) for d in gs) == set(
+        tuple(sorted(d.items())) for d in expected
+    )
 
 
 if __name__ == "__main__":  # pragma: no cover
