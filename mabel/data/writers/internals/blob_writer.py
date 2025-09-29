@@ -23,7 +23,6 @@ class BlobWriter(object):
     # this variable outside the __init__.
     buffer = bytearray()
     byte_count = 0
-    manifest = {}
 
     def __init__(
         self,
@@ -141,7 +140,6 @@ class BlobWriter(object):
         if self.records_in_buffer > 0:
             lock = threading.Lock()
 
-            summary = None
             try:
                 lock.acquire(blocking=True, timeout=10)
 
@@ -155,10 +153,6 @@ class BlobWriter(object):
                         )
 
                     pytable = self.wal.arrow()
-                    try:
-                        summary = self.wal.profile.to_dicts()
-                    except Exception as e:
-                        print(f"[MABEL] Unable to profile morsel - {type(e).__name__} - {e}")
 
                     # if we have a schema, make effort to align the parquet file to it
                     if self.schema:
@@ -179,7 +173,6 @@ class BlobWriter(object):
                 committed_blob_name = self.inner_writer.commit(
                     byte_data=write_buffer, override_blob_name=None
                 )
-                self.manifest[committed_blob_name] = summary
 
                 if "BACKOUT" in committed_blob_name:
                     get_logger().warning(

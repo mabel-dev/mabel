@@ -73,8 +73,7 @@ class GroupBy:
         for record in self._dictset:
             try:
                 group_key: int = xxh3_64_intdigest(
-                    "".join([str(record[column]) for column in self._columns]),
-                    HASH_SEED
+                    "".join([str(record[column]) for column in self._columns]), HASH_SEED
                 )
             except KeyError:
                 group_key: int = xxh3_64_intdigest(

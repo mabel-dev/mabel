@@ -46,6 +46,8 @@ class GoogleCloudStorageWriter(BaseInnerWriter):
         # name from the path builder
         if override_blob_name:
             blob_name = override_blob_name
+            if blob_name.startswith(self.bucket + "/"):
+                blob_name = blob_name[len(self.bucket) + 1 :]
         else:
             blob_name = self._build_path()
 
