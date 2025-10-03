@@ -31,10 +31,14 @@ class BlobWriter(object):
         blob_size: int = BLOB_SIZE,
         format: str = "parquet",
         schema: Optional[RelationSchema] = None,
+        parquet_row_group_size: int = 5000,
+        sort_by: Optional[str] = None,
         **kwargs,
     ):
         self.format = format
         self.maximum_blob_size = blob_size
+        self.parquet_row_group_size = parquet_row_group_size
+        self.sort_by = sort_by
 
         if format not in SUPPORTED_FORMATS_ALGORITHMS:
             raise ValueError(
@@ -158,8 +162,14 @@ class BlobWriter(object):
                     if self.schema:
                         pytable = self._normalize_arrow_schema(pytable, self.schema)
 
+                    # sort the table if sort_by is specified
+                    if self.sort_by:
+                        pytable = pytable.sort_by(self.sort_by)
+
                     tempfile = io.BytesIO()
-                    pyarrow.parquet.write_table(pytable, where=tempfile)
+                    pyarrow.parquet.write_table(
+                        pytable, where=tempfile, row_group_size=self.parquet_row_group_size
+                    )
 
                     tempfile.seek(0)
                     write_buffer = tempfile.read()
