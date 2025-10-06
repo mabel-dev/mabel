@@ -237,6 +237,105 @@ def test_parquet_sorting_single_column_list():
     shutil.rmtree("_temp_sort_single_list", ignore_errors=True)
 
 
+def test_parquet_dictionary_encoding_all():
+    """Test that use_dictionary parameter can be set to True for all columns"""
+    shutil.rmtree("_temp_dict_all", ignore_errors=True)
+    
+    w = BatchWriter(
+        inner_writer=DiskWriter,
+        dataset="_temp_dict_all",
+        format="parquet",
+        date=datetime.datetime.utcnow().date(),
+        schema=[
+            {"name": "id", "type": "INTEGER"},
+            {"name": "category", "type": "VARCHAR"}
+        ],
+        use_dictionary=True,  # Enable dictionary encoding for all columns
+    )
+    
+    # Write records with repeated category values (good for dictionary encoding)
+    for i in range(100):
+        w.append({"id": i, "category": f"category_{i % 5}"})
+    
+    w.finalize()
+    
+    # Read back and verify data
+    r = Reader(inner_reader=DiskReader, dataset="_temp_dict_all")
+    records = list(r)
+    assert len(records) == 100, f"Expected 100 records, got {len(records)}"
+    
+    shutil.rmtree("_temp_dict_all", ignore_errors=True)
+
+
+def test_parquet_dictionary_encoding_disabled():
+    """Test that use_dictionary parameter can be set to False to disable dictionary encoding"""
+    shutil.rmtree("_temp_dict_disabled", ignore_errors=True)
+    
+    w = BatchWriter(
+        inner_writer=DiskWriter,
+        dataset="_temp_dict_disabled",
+        format="parquet",
+        date=datetime.datetime.utcnow().date(),
+        schema=[
+            {"name": "id", "type": "INTEGER"},
+            {"name": "category", "type": "VARCHAR"}
+        ],
+        use_dictionary=False,  # Disable dictionary encoding
+    )
+    
+    # Write records
+    for i in range(100):
+        w.append({"id": i, "category": f"category_{i % 5}"})
+    
+    w.finalize()
+    
+    # Read back and verify data
+    r = Reader(inner_reader=DiskReader, dataset="_temp_dict_disabled")
+    records = list(r)
+    assert len(records) == 100, f"Expected 100 records, got {len(records)}"
+    
+    shutil.rmtree("_temp_dict_disabled", ignore_errors=True)
+
+
+def test_parquet_dictionary_encoding_specific_columns():
+    """Test that use_dictionary parameter can specify specific columns for dictionary encoding"""
+    shutil.rmtree("_temp_dict_specific", ignore_errors=True)
+    
+    w = BatchWriter(
+        inner_writer=DiskWriter,
+        dataset="_temp_dict_specific",
+        format="parquet",
+        date=datetime.datetime.utcnow().date(),
+        schema=[
+            {"name": "id", "type": "INTEGER"},
+            {"name": "category", "type": "VARCHAR"},
+            {"name": "value", "type": "VARCHAR"}
+        ],
+        use_dictionary=["category"],  # Only encode 'category' column with dictionary
+    )
+    
+    # Write records with repeated category values
+    for i in range(100):
+        w.append({
+            "id": i,
+            "category": f"category_{i % 5}",
+            "value": f"unique_value_{i}"
+        })
+    
+    w.finalize()
+    
+    # Read back and verify data
+    r = Reader(inner_reader=DiskReader, dataset="_temp_dict_specific")
+    records = list(r)
+    assert len(records) == 100, f"Expected 100 records, got {len(records)}"
+    
+    # Verify the data is correct
+    assert records[0]["category"] == "category_0"
+    assert records[50]["category"] == "category_0"
+    
+    shutil.rmtree("_temp_dict_specific", ignore_errors=True)
+
+
 if __name__ == "__main__":  # pragma: no cover
     from tests.helpers.runner import run_tests
     
