@@ -148,6 +148,95 @@ def test_parquet_default_row_group_size():
     shutil.rmtree("_temp_default", ignore_errors=True)
 
 
+def test_parquet_sorting_list_of_strings():
+    """Test that sort_by parameter can accept a list of strings"""
+    shutil.rmtree("_temp_sort_list", ignore_errors=True)
+    
+    # Create a writer with sorting by list of strings
+    w = BatchWriter(
+        inner_writer=DiskWriter,
+        dataset="_temp_sort_list",
+        format="parquet",
+        date=datetime.datetime.utcnow().date(),
+        schema=[
+            {"name": "id", "type": "INTEGER"},
+            {"name": "category", "type": "VARCHAR"},
+            {"name": "value", "type": "VARCHAR"}
+        ],
+        sort_by=["category", "id"],  # Sort by category first, then id
+        parquet_row_group_size=5000,
+    )
+    
+    # Write records in random order
+    records_to_write = [
+        {"id": 3, "category": "B", "value": "value_3"},
+        {"id": 1, "category": "A", "value": "value_1"},
+        {"id": 4, "category": "B", "value": "value_4"},
+        {"id": 2, "category": "A", "value": "value_2"},
+        {"id": 5, "category": "C", "value": "value_5"},
+    ]
+    
+    for record in records_to_write:
+        w.append(record)
+    
+    w.finalize()
+    
+    # Read back and verify the data is sorted by category, then id
+    r = Reader(inner_reader=DiskReader, dataset="_temp_sort_list")
+    records = list(r)
+    
+    assert len(records) == 5, f"Expected 5 records, got {len(records)}"
+    
+    # Check that records are sorted by category first, then by id
+    expected_order = [
+        {"id": 1, "category": "A", "value": "value_1"},
+        {"id": 2, "category": "A", "value": "value_2"},
+        {"id": 3, "category": "B", "value": "value_3"},
+        {"id": 4, "category": "B", "value": "value_4"},
+        {"id": 5, "category": "C", "value": "value_5"},
+    ]
+    
+    for i, record in enumerate(records):
+        assert record["id"] == expected_order[i]["id"], f"Record {i} id mismatch: {record['id']} != {expected_order[i]['id']}"
+        assert record["category"] == expected_order[i]["category"], f"Record {i} category mismatch"
+    
+    shutil.rmtree("_temp_sort_list", ignore_errors=True)
+
+
+def test_parquet_sorting_single_column_list():
+    """Test that sort_by parameter can accept a list with a single string"""
+    shutil.rmtree("_temp_sort_single_list", ignore_errors=True)
+    
+    # Create a writer with sorting by a list containing a single column
+    w = BatchWriter(
+        inner_writer=DiskWriter,
+        dataset="_temp_sort_single_list",
+        format="parquet",
+        date=datetime.datetime.utcnow().date(),
+        schema=[{"name": "id", "type": "INTEGER"}, {"name": "value", "type": "VARCHAR"}],
+        sort_by=["id"],  # Sort by id column as a list
+        parquet_row_group_size=5000,
+    )
+    
+    # Write records in reverse order
+    for i in range(10, 0, -1):
+        w.append({"id": i, "value": f"value_{i}"})
+    
+    w.finalize()
+    
+    # Read back and verify the data is sorted
+    r = Reader(inner_reader=DiskReader, dataset="_temp_sort_single_list")
+    records = list(r)
+    
+    assert len(records) == 10, f"Expected 10 records, got {len(records)}"
+    
+    # Check that records are sorted by id
+    ids = [record["id"] for record in records]
+    assert ids == list(range(1, 11)), f"Records are not sorted correctly: {ids}"
+    
+    shutil.rmtree("_temp_sort_single_list", ignore_errors=True)
+
+
 if __name__ == "__main__":  # pragma: no cover
     from tests.helpers.runner import run_tests
     
