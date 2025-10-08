@@ -92,11 +92,13 @@ def parse_iso(
                 if not 10 <= len(value) <= 28:
                     return None
             val_len = len(value)
-            if not value[4] in DATE_SEPARATORS or not value[7] in DATE_SEPARATORS:
+            if value[4] not in DATE_SEPARATORS or value[7] not in DATE_SEPARATORS:
                 return None
             if val_len == 10:
                 # YYYY-MM-DD
-                return datetime.datetime(*map(int, [value[:4], value[5:7], value[8:10]]))
+                return datetime.datetime(
+                    *map(int, [value[:4], value[5:7], value[8:10]])
+                )
             if val_len >= 16:
                 if not (value[10] in ("T", " ") and value[13] in DATE_SEPARATORS):
                     return None
@@ -160,7 +162,9 @@ def date_range(
     start_date = start_date.replace(minute=0, second=0, microsecond=0)  # type:ignore
 
     if end_date < start_date:  # type:ignore
-        raise ValueError("date_range: end_date must be the same or later than the start_date ")
+        raise ValueError(
+            "date_range: end_date must be the same or later than the start_date "
+        )
 
     for n in range(
         int((end_date - start_date).total_seconds() // SECONDS_PER_HOUR)  # type:ignore

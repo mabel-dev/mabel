@@ -3,7 +3,6 @@ import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.data import DatabaseWriter
-from mabel.data import Reader
 from rich import traceback
 from mabel.adapters.database import NullWriter
 

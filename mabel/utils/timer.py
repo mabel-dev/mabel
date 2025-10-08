@@ -18,4 +18,6 @@ class Timer(object):
         self.start = time.time_ns()
 
     def __exit__(self, type, value, traceback):
-        print("{} took {} seconds".format(self.name, (time.time_ns() - self.start) / 1e9))
+        print(
+            "{} took {} seconds".format(self.name, (time.time_ns() - self.start) / 1e9)
+        )

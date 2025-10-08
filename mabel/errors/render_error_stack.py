@@ -71,7 +71,9 @@ def _build_error_stack():
     is_cause = False
 
     while True:
-        stack = Stack(exc_type=str(exc_type.__name__), exc_value=str(exc_value), is_cause=is_cause)
+        stack = Stack(
+            exc_type=str(exc_type.__name__), exc_value=str(exc_value), is_cause=is_cause
+        )
 
         stacks.append(stack)
         append = stack.frames.append
@@ -97,7 +99,11 @@ def _build_error_stack():
                 continue
 
         cause = exc_value.__context__
-        if cause and cause.__traceback__ and not getattr(exc_value, "__suppress_context__", False):
+        if (
+            cause
+            and cause.__traceback__
+            and not getattr(exc_value, "__suppress_context__", False)
+        ):
             exc_type = cause.__class__
             exc_value = cause
             traceback = cause.__traceback__
@@ -131,7 +137,7 @@ def _read_from_code(filename: str, line: int, extend_by: int) -> Generator:
         yield bar_label(path.stem + path.suffix)
         for line_number in range(start_line, end_line):
             prefix = ">" if line_number == line else " "
-            yield f"{prefix}{line_number:4d} | {lines[line_number-1]}"
+            yield f"{prefix}{line_number:4d} | {lines[line_number - 1]}"
             line_number += 1
     except:
         return ""
@@ -145,7 +151,9 @@ def _render_error_stack():
             if frame.filename.startswith("<"):
                 continue
             yield from _render_locals(frame.locals)
-            yield from _read_from_code(filename=frame.filename, line=frame.lineno, extend_by=3)
+            yield from _read_from_code(
+                filename=frame.filename, line=frame.lineno, extend_by=3
+            )
 
             yield bar_label("")
             yield ""

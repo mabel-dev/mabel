@@ -8,7 +8,6 @@
 """
 
 import time
-import pydantic
 import datetime
 import statistics
 from typing import Optional
@@ -18,10 +17,8 @@ import os
 
 sys.path.insert(1, os.path.join(sys.path[0], "../.."))
 from mabel.data.validator import Schema
-from mabel.data.formats import dictset
 from mabel.data.formats.dictset import display
 
-import orjson as json
 
 
 py_tweet = {

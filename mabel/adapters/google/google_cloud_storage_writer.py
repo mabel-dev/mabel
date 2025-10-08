@@ -53,7 +53,9 @@ class GoogleCloudStorageWriter(BaseInnerWriter):
 
         try:
             blob = self.gcs_bucket.blob(blob_name)
-            self.retry(blob.upload_from_string)(byte_data, content_type="application/octet-stream")
+            self.retry(blob.upload_from_string)(
+                byte_data, content_type="application/octet-stream"
+            )
             return blob_name
         except Exception as err:  # pragma: no cover
             import traceback

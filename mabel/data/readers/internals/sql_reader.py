@@ -122,7 +122,9 @@ class SqlParser:
             raise InvalidSqlError("Malformed FROM clause - must start with a letter.")
         # can't be attempting path traversal
         if ".." in dataset or "//" in dataset or "--" in dataset:
-            raise InvalidSqlError("Malformed FROM clause - invalid repeated characters.")
+            raise InvalidSqlError(
+                "Malformed FROM clause - invalid repeated characters."
+            )
         # can only contain limited character set (alpha num . / - _)
         if (
             not dataset.replace(".", "")
@@ -163,7 +165,9 @@ class SqlParser:
                 if labeler.next_token_value().upper() == "DISTINCT":
                     labeler.next()
                     self.distinct = True
-                    while labeler.has_next() and labeler.next_token_type() == TOKENS.EMPTY:
+                    while (
+                        labeler.has_next() and labeler.next_token_type() == TOKENS.EMPTY
+                    ):
                         labeler.next()
                 self.select_expression = self.collector(labeler)
             elif labeler.peek().upper() == "FROM":
@@ -193,7 +197,9 @@ class SqlParser:
                         labeler.next()
 
                     if open_parentheses != 0:
-                        raise InvalidSqlError("Malformed FROM clause - mismatched parenthesis.")
+                        raise InvalidSqlError(
+                            "Malformed FROM clause - mismatched parenthesis."
+                        )
 
                     self.dataset = collector
                 else:
@@ -288,7 +294,11 @@ def SqlReader(sql_statement: str, **kwargs):
 
         # convert the clause into something we can pass to GroupBy
         if sql.group_by:
-            groups = [group.strip() for group in sql.group_by.split(",") if group.strip() != ""]
+            groups = [
+                group.strip()
+                for group in sql.group_by.split(",")
+                if group.strip() != ""
+            ]
         else:
             groups = ["*"]  # we're not really grouping
 
@@ -344,7 +354,9 @@ def SqlReader(sql_statement: str, **kwargs):
         if sql.limit:
             take = int(sql.limit)
         reader = DictSet(
-            reader.sort_and_take(column=sql.order_by, take=take, descending=sql.order_descending)
+            reader.sort_and_take(
+                column=sql.order_by, take=take, descending=sql.order_descending
+            )
         )
 
     # LIMIT clause
