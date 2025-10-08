@@ -119,7 +119,9 @@ class DnfFilters:
         if self.empty_filter:
             yield from dictset
         else:
-            yield from (record for record in dictset if evaluate(self.predicates, record))
+            yield from (
+                record for record in dictset if evaluate(self.predicates, record)
+            )
 
     def __call__(self, record) -> bool:
         return evaluate(self.predicates, record)

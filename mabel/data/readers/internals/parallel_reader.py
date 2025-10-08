@@ -21,6 +21,7 @@ dataset:
 │ Reduce     │ Aggregate                                                  │
 └────────────┴────────────────────────────────────────────────────────────┘
 """
+
 from enum import Enum
 
 from orso import logging

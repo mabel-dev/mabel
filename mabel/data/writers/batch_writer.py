@@ -103,25 +103,26 @@ class BatchWriter(Writer):
         self.always_complete = always_complete
 
     def finalize(self, **kwargs):
-
         final = super().finalize()
 
         has_failure = bool(kwargs.get("has_failure", False))
 
         if has_failure:
             self.seen_failures = True
-            get_logger().debug(f"Error found in the stack, not marking frame as complete.")
+            get_logger().debug(
+                "Error found in the stack, not marking frame as complete."
+            )
             return -1
 
         if self.seen_failures:
             get_logger().debug(
-                f"Error previously seen in the stack, not marking frame as complete."
+                "Error previously seen in the stack, not marking frame as complete."
             )
             return -1
 
         if self.records == 0 and not self.always_complete:
             get_logger().warning(
-                f"No records written, and 'always_complete' not set, so not marking frame as complete."
+                "No records written, and 'always_complete' not set, so not marking frame as complete."
             )
             return -1
 

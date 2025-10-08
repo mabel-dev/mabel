@@ -8,7 +8,6 @@ import pytest
 sys.path.insert(1, os.path.join(sys.path[0], "../../.."))
 
 from mabel.adapters.disk import DiskReader, DiskWriter
-from mabel.adapters.null import NullWriter
 from mabel.data import BatchWriter
 from mabel.data import Reader
 from mabel.data.internals.dictset import STORAGE_CLASS

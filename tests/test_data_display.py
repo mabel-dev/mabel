@@ -2,7 +2,7 @@ import os
 import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
-from mabel import Reader, DictSet
+from mabel import Reader
 from mabel.data import STORAGE_CLASS
 from mabel.data.internals.display import html_table
 from mabel.adapters.disk import DiskReader

@@ -5,10 +5,9 @@ import sys
 import pytest
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
-from mabel.adapters.disk import DiskReader, DiskWriter
+from mabel.adapters.disk import DiskWriter
 from mabel.adapters.null import NullWriter
 from mabel.data import BatchWriter
-from mabel.data import Reader
 from orso.exceptions import DataValidationError, ExcessColumnsInDataError
 
 dataset = {

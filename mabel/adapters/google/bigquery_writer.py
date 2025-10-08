@@ -47,7 +47,9 @@ class GoogleBigQueryWriter(BaseInnerWriter):
 
         super().__init__(**kwargs)
 
-    def _get_table(self, dataset, table, schema, partition_expiration: Optional[int] = None):
+    def _get_table(
+        self, dataset, table, schema, partition_expiration: Optional[int] = None
+    ):
         bigquery_client = bigquery.Client()
         dataset = bigquery_client.dataset(dataset)
 
@@ -62,8 +64,12 @@ class GoogleBigQueryWriter(BaseInnerWriter):
                 bigquery.SchemaField(
                     name="_system_date", field_type="TIMESTAMP", mode=FieldMode.REQUIRED
                 ),
-                bigquery.SchemaField(name="name", field_type="STRING", mode=FieldMode.REQUIRED),
-                bigquery.SchemaField(name="age", field_type="INTEGER", mode=FieldMode.REQUIRED),
+                bigquery.SchemaField(
+                    name="name", field_type="STRING", mode=FieldMode.REQUIRED
+                ),
+                bigquery.SchemaField(
+                    name="age", field_type="INTEGER", mode=FieldMode.REQUIRED
+                ),
             ]
             table = bigquery.Table(table_ref, schema=schema)
 

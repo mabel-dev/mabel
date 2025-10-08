@@ -9,14 +9,13 @@ jsonl took 0.525919 seconds
 outcome: stay with the simple JSONL format.
 """
 
-import avro.schema
-from avro.datafile import DataFileReader, DataFileWriter
-from avro.io import DatumReader, DatumWriter
+from avro.datafile import DataFileReader
+from avro.io import DatumReader
 import os
 import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], "../.."))
-from mabel.data.readers import Reader, FileReader
+from mabel.data.readers import FileReader
 from mabel.data.formats import dictset
 
 try:

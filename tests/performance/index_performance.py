@@ -10,10 +10,11 @@ Results (seconds to search for a username in 65,500 rows):
 -------------------------------
 """
 
-import os, sys
+import os
+import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], "../.."))
-from mabel.data.internals.index import Index, IndexBuilder
+from mabel.data.internals.index import Index
 import time
 
 
@@ -30,7 +31,8 @@ def time_it(dataset, username):
     return (time.perf_counter_ns() - start) / 1e9
 
 
-import os, sys
+import os
+import sys
 
 sys.path.insert(1, os.path.join(sys.path[0], "../.."))
 from mabel.data import Reader
