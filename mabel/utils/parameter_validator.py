@@ -25,7 +25,9 @@ def get_levenshtein_distance(word1, word2):
     for x in range(1, len(word1) + 1):
         for y in range(1, len(word2) + 1):
             if word1[x - 1] == word2[y - 1]:
-                matrix[x][y] = min(matrix[x - 1][y] + 1, matrix[x - 1][y - 1], matrix[x][y - 1] + 1)
+                matrix[x][y] = min(
+                    matrix[x - 1][y] + 1, matrix[x - 1][y - 1], matrix[x][y - 1] + 1
+                )
             else:
                 matrix[x][y] = min(
                     matrix[x - 1][y] + 1, matrix[x - 1][y - 1] + 1, matrix[x][y - 1] + 1
@@ -67,7 +69,9 @@ class validate:  # pragma: no cover
             ]:
                 suggestion = []
                 for valid in valid_parameters:
-                    if get_levenshtein_distance(not_on_list, valid) <= (len(valid) // 2):
+                    if get_levenshtein_distance(not_on_list, valid) <= (
+                        len(valid) // 2
+                    ):
                         suggestion.append(valid)
                 if len(suggestion):
                     get_logger().error(
@@ -90,9 +94,13 @@ class validate:  # pragma: no cover
                 has_errors = True
 
             # check for missing required paramters
-            required_parameters = {item.get("name") for item in my_rules if item.get("required")}
+            required_parameters = {
+                item.get("name") for item in my_rules if item.get("required")
+            }
             missing_required_parameters = [
-                param for param in required_parameters if param not in entered_parameters
+                param
+                for param in required_parameters
+                if param not in entered_parameters
             ]
             if len(missing_required_parameters):
                 get_logger().error(
@@ -106,7 +114,9 @@ class validate:  # pragma: no cover
 
             # warnings
             warninged_parameters = {
-                item.get("name"): item.get("warning") for item in my_rules if item.get("warning")
+                item.get("name"): item.get("warning")
+                for item in my_rules
+                if item.get("warning")
             }
             for parameter, warning in warninged_parameters.items():
                 if parameter in entered_parameters:
@@ -119,7 +129,9 @@ class validate:  # pragma: no cover
                     and entered_parameters[param.get("name")]
                 ):
                     toxic = [
-                        t for t in param["incompatible_with"] if t in entered_parameters.keys()
+                        t
+                        for t in param["incompatible_with"]
+                        if t in entered_parameters.keys()
                     ]
                     if toxic:
                         has_errors = True

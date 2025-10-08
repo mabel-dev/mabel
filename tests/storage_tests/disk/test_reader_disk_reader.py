@@ -87,7 +87,7 @@ def test_disk_binary():
         w = BatchWriter(
             inner_writer=DiskWriter,
             blob_size=1024,
-            dataset=f"_temp/test/disk/dataset/binary",
+            dataset="_temp/test/disk/dataset/binary",
             schema=["index"],
         )
         for i in range(200):
@@ -98,7 +98,7 @@ def test_disk_binary():
         # read over both paritions.
         r = Reader(
             inner_reader=DiskReader,
-            dataset=f"_temp/test/disk/dataset/binary",
+            dataset="_temp/test/disk/dataset/binary",
         )
         l = list(r)
 
@@ -113,7 +113,7 @@ def test_disk_text():
             inner_writer=DiskWriter,
             blob_size=1024,
             format="jsonl",
-            dataset=f"_temp/test/gcs/dataset/text",
+            dataset="_temp/test/gcs/dataset/text",
             schema=["index"],
         )
         for i in range(250):
@@ -124,7 +124,7 @@ def test_disk_text():
         # read over both paritions.
         r = Reader(
             inner_reader=DiskReader,
-            dataset=f"_temp/test/gcs/dataset/text",
+            dataset="_temp/test/gcs/dataset/text",
         )
         l = list(r)
 

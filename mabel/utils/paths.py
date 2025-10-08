@@ -37,7 +37,7 @@ def build_path(path: str, date: datetime.date = None):
     if not path:
         raise ValueError("build_path: path must have a value")
 
-    if not path[-1] in ["/"]:
+    if path[-1] not in ["/"]:
         # process the path
         bucket, path_string, filename, extension = get_parts(path)
         if path_string != "/":

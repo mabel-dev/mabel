@@ -5,6 +5,7 @@ will be effective:
 
 python setup.py build_ext --inplace
 """
+
 from collections import defaultdict
 
 from xxhash import xxh3_64_intdigest
@@ -73,7 +74,8 @@ class GroupBy:
         for record in self._dictset:
             try:
                 group_key: int = xxh3_64_intdigest(
-                    "".join([str(record[column]) for column in self._columns]), HASH_SEED
+                    "".join([str(record[column]) for column in self._columns]),
+                    HASH_SEED,
                 )
             except KeyError:
                 group_key: int = xxh3_64_intdigest(
@@ -163,10 +165,13 @@ class GroupBy:
         for group, results in collector.items():
             for func, col in requested_aggs:
                 if func == "AVG":
-                    results[f"AVG({col})"] = results[f"SUM({col})"] / results[f"COUNT({col})"]
+                    results[f"AVG({col})"] = (
+                        results[f"SUM({col})"] / results[f"COUNT({col})"]
+                    )
 
             results = {
-                f"{func}({col})": results.get(f"{func}({col})") for func, col in requested_aggs
+                f"{func}({col})": results.get(f"{func}({col})")
+                for func, col in requested_aggs
             }
 
             keys = self._group_keys[group]

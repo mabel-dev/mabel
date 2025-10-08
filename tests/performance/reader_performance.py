@@ -7,7 +7,7 @@ def do_read():
 
     sys.path.insert(1, os.path.join(sys.path[0], "../.."))
     from mabel.adapters.disk import DiskReader
-    from mabel.data import Reader, SqlReader
+    from mabel.data import SqlReader
 
     # d = Reader(inner_reader=DiskReader, dataset="tests/data/nvd/", raw_path=True)
     SQL = "SELECT COUNT(*) FROM (SELECT * FROM tests/data/huge GROUP BY cve.CVE_data_meta.ASSIGNER)"

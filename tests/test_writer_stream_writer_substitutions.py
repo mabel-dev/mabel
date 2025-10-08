@@ -1,7 +1,6 @@
 import os
 import sys
 
-import orjson
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from mabel.adapters.null import NullWriter

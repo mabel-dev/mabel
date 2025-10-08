@@ -25,7 +25,9 @@ def html_table(dictset: Iterable[dict], limit: int = 5):
         if isinstance(htmlstring, (list, tuple, set)) or hasattr(htmlstring, "as_list"):
             return "[ " + ", ".join([sanitize(i) for i in htmlstring]) + " ]"
         if hasattr(htmlstring, "items"):
-            return sanitize("{ " + ", ".join([f'"{k}": {v}' for k, v in htmlstring.items()]) + " }")
+            return sanitize(
+                "{ " + ", ".join([f'"{k}": {v}' for k, v in htmlstring.items()]) + " }"
+            )
         if not isinstance(htmlstring, str):
             return htmlstring
         escapes = {'"': "&quot;", "'": "&#39;", "<": "&lt;", ">": "&gt;", "$": "&#x24;"}
@@ -66,7 +68,7 @@ def html_table(dictset: Iterable[dict], limit: int = 5):
 
     footer = ""
     if isinstance(dictset, types.GeneratorType):
-        footer = f"\n<p>top {i+1} rows x {len(columns)} columns</p>"
+        footer = f"\n<p>top {i + 1} rows x {len(columns)} columns</p>"
         footer += "\nNOTE: the displayed records may have been spent"
     elif hasattr(dictset, "__len__"):
         footer = f"\n<p>{len(dictset)} rows x {len(columns)} columns</p>"  # type:ignore
@@ -95,7 +97,9 @@ def ascii_table(dictset: Iterable[Dict[Any, Any]], limit: int = 5):
         if isinstance(val, (list, tuple, set)) or hasattr(val, "as_list"):
             return "[ " + ", ".join([format_value(i) for i in val]) + " ]"
         if hasattr(val, "items"):
-            return format_value("{ " + ", ".join([f'"{k}": {v}' for k, v in val.items()]) + " }")
+            return format_value(
+                "{ " + ", ".join([f'"{k}": {v}' for k, v in val.items()]) + " }"
+            )
         return str(val)
 
     result = []
@@ -121,14 +125,18 @@ def ascii_table(dictset: Iterable[Dict[Any, Any]], limit: int = 5):
 
     # display headers
     result.append("┌" + "┬".join(bars) + "┐")
-    result.append("│" + "│".join([str(k).center(v + 2) for k, v in columns.items()]) + "│")
+    result.append(
+        "│" + "│".join([str(k).center(v + 2) for k, v in columns.items()]) + "│"
+    )
     result.append("├" + "┼".join(bars) + "┤")
 
     # display values
     for row in cache:
         result.append(
             "│"
-            + "│".join([str(format_value(v)).center(columns[k] + 2) for k, v in row.items()])
+            + "│".join(
+                [str(format_value(v)).center(columns[k] + 2) for k, v in row.items()]
+            )
             + "│"
         )
 

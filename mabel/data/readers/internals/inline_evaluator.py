@@ -20,6 +20,7 @@ Evaluator("LEFT(NAME, 1), AGE").evaluate(dic)
 will perform the function LEFT on the NAME field from the dict and return AGE
 from the dict
 """
+
 import re
 
 from mabel.data.readers.internals.inline_functions import FUNCTIONS

@@ -39,9 +39,9 @@ class Cursor:
             cursor = orjson.loads(cursor)
 
         if (
-            not "location" in cursor.keys()
-            or not "map" in cursor.keys()
-            or not "partition" in cursor.keys()
+            "location" not in cursor.keys()
+            or "map" not in cursor.keys()
+            or "partition" not in cursor.keys()
         ):
             raise InvalidCursor(f"Cursor is malformed or corrupted {cursor}")
 
@@ -57,7 +57,9 @@ class Cursor:
         blob_map = bitarray()
         blob_map.frombytes(map_bytes)
         self.read_blobs = [
-            self.readable_blobs[i] for i in range(len(self.readable_blobs)) if blob_map[i]
+            self.readable_blobs[i]
+            for i in range(len(self.readable_blobs))
+            if blob_map[i]
         ]
 
     def next_blob(self, previous_blob=None):
@@ -69,10 +71,14 @@ class Cursor:
             if self.partition in self.readable_blobs:
                 return self.partition
             partition_finder = [
-                blob for blob in self.readable_blobs if xxh3_64_intdigest(blob, 0) == self.partition
+                blob
+                for blob in self.readable_blobs
+                if xxh3_64_intdigest(blob, 0) == self.partition
             ]
             if len(partition_finder) != 1:
-                raise ValueError(f"Unable to determine current partition ({self.partition})")
+                raise ValueError(
+                    f"Unable to determine current partition ({self.partition})"
+                )
             return partition_finder[0]
         unread = [blob for blob in self.readable_blobs if blob not in self.read_blobs]
         if len(unread) > 0:
@@ -101,7 +107,12 @@ class Cursor:
 
         if item == "map":
             blob_map = bitarray(
-                "".join(["1" if blob in self.read_blobs else "0" for blob in self.readable_blobs])
+                "".join(
+                    [
+                        "1" if blob in self.read_blobs else "0"
+                        for blob in self.readable_blobs
+                    ]
+                )
             )
             return blob_map.tobytes().hex()
         if item == "partition":

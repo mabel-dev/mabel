@@ -135,7 +135,9 @@ class BlobWriter(object):
             if mabel_column and mabel_column.type in type_map:
                 index = table.column_names.index(column)
                 # update the schema
-                schema = schema.set(index, pyarrow.field(column, type_map[mabel_column.type]))
+                schema = schema.set(
+                    index, pyarrow.field(column, type_map[mabel_column.type])
+                )
         # apply the updated schema
         table = table.cast(target_schema=schema)
         return table
@@ -153,7 +155,7 @@ class BlobWriter(object):
                     try:
                         import pyarrow
                         import pyarrow.parquet
-                    except ImportError as err:  # pragma: no cover
+                    except ImportError:  # pragma: no cover
                         raise MissingDependencyError(
                             "`pyarrow` is missing, please install or include in requirements.txt"
                         )

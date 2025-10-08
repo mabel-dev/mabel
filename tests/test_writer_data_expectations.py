@@ -3,11 +3,9 @@ import sys
 import pytest
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
-from mabel.adapters.disk import DiskReader, DiskWriter
 from mabel.adapters.null import NullWriter
-from mabel.data import Reader, Writer
+from mabel.data import Writer
 from rich import traceback
-from data_expectations import Expectations
 from data_expectations.errors import ExpectationNotMetError
 
 traceback.install()
