@@ -1,7 +1,7 @@
 import io
 import json
 import threading
-from typing import Optional
+from typing import List, Optional, Union
 
 import orjson
 import orso
@@ -32,13 +32,15 @@ class BlobWriter(object):
         format: str = "parquet",
         schema: Optional[RelationSchema] = None,
         parquet_row_group_size: int = 5000,
-        sort_by: Optional[str] = None,
+        sort_by: Optional[Union[str, List]] = None,
+        use_dictionary: Optional[Union[bool, List[str]]] = None,
         **kwargs,
     ):
         self.format = format
         self.maximum_blob_size = blob_size
         self.parquet_row_group_size = parquet_row_group_size
         self.sort_by = sort_by
+        self.use_dictionary = use_dictionary
 
         if format not in SUPPORTED_FORMATS_ALGORITHMS:
             raise ValueError(
@@ -166,12 +168,18 @@ class BlobWriter(object):
 
                     # sort the table if sort_by is specified
                     if self.sort_by:
-                        pytable = pytable.sort_by(self.sort_by)
+                        # Convert list of strings to PyArrow format
+                        sort_spec = self.sort_by
+                        if isinstance(self.sort_by, list) and all(isinstance(item, str) for item in self.sort_by):
+                            # Convert list of strings to list of tuples with default ascending order
+                            sort_spec = [(col, "ascending") for col in self.sort_by]
+                        pytable = pytable.sort_by(sort_spec)
 
                     tempfile = io.BytesIO()
-                    pyarrow.parquet.write_table(
-                        pytable, where=tempfile, row_group_size=self.parquet_row_group_size
-                    )
+                    write_kwargs = {"row_group_size": self.parquet_row_group_size}
+                    if self.use_dictionary is not None:
+                        write_kwargs["use_dictionary"] = self.use_dictionary
+                    pyarrow.parquet.write_table(pytable, where=tempfile, **write_kwargs)
 
                     tempfile.seek(0)
                     write_buffer = tempfile.read()
