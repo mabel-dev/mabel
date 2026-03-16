@@ -1,7 +1,9 @@
 import io
 import json
 import threading
-from typing import List, Optional, Union
+from typing import List
+from typing import Optional
+from typing import Union
 
 import orjson
 import orso
@@ -61,7 +63,12 @@ class BlobWriter(object):
         self.records_in_buffer += 1
         self.wal.append(record)  # type:ignore
         # if this write would exceed the blob size, close it
-        if self.wal.nbytes() > self.maximum_blob_size:
+        # check every 1000 records to reduce overhead.
+        if (
+            self.records_in_buffer > 0
+            and self.records_in_buffer % 1000 == 0
+            and self.wal.nbytes() > self.maximum_blob_size
+        ):
             self.commit()
             self.open_buffer()
 
@@ -170,7 +177,9 @@ class BlobWriter(object):
                     if self.sort_by:
                         # Convert list of strings to PyArrow format
                         sort_spec = self.sort_by
-                        if isinstance(self.sort_by, list) and all(isinstance(item, str) for item in self.sort_by):
+                        if isinstance(self.sort_by, list) and all(
+                            isinstance(item, str) for item in self.sort_by
+                        ):
                             # Convert list of strings to list of tuples with default ascending order
                             sort_spec = [(col, "ascending") for col in self.sort_by]
                         pytable = pytable.sort_by(sort_spec)
