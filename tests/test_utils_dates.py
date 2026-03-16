@@ -8,7 +8,7 @@ import datetime
 import numpy
 import pandas
 
-from mabel.utils import dates
+#from mabel.utils import dates
 
 # fmt:off
 DATE_TESTS = [
@@ -40,6 +40,7 @@ DATE_TESTS = [
 
 @pytest.mark.parametrize("string, expect", DATE_TESTS)
 def test_date_parser(string, expect):
+    from opteryx.utils import dates
     assert (
         dates.parse_iso(string) == expect
     ), f"in:{string}  res:{dates.parse_iso(string)} exp:{expect}"

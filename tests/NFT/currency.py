@@ -27,8 +27,8 @@ import json
 import requests  # type:ignore
 import logging
 import operator
-import pkg_resources  # type:ignore
-from pkg_resources import parse_version  # type:ignore
+from importlib.metadata import distributions  # type:ignore
+from packaging.version import Version  # type:ignore
 
 logger = logging.getLogger("measures")
 logger.setLevel(10)
@@ -85,16 +85,16 @@ def get_latest_version(package_name):
 
 def compare_versions(version_a, version_b):
     # default to equals
-    operator = COMPARATORS["="]
+    operator_func = COMPARATORS["="]
 
     # find if it's a different operator
     find_operator = [c for c in COMPARATORS if version_a.startswith(c)]
     if len(find_operator):
         s = find_operator[0]
-        operator = COMPARATORS[s]
+        operator_func = COMPARATORS[s]
         version_a = version_a.lstrip(s)
 
-    return operator(parse_version(version_b), parse_version(version_a))
+    return operator_func(Version(version_b), Version(version_a))
 
 
 def get_package_summary(package=None, installed_version=None, vuln_details={}):
@@ -157,11 +157,11 @@ class CurrencyTest:
         results = []
 
         known_vulns = get_known_vulns()
-        for package in pkg_resources.working_set:
+        for dist in distributions():
             package_result = get_package_summary(
-                package=package.project_name,
-                installed_version=package.version,
-                vuln_details=known_vulns.get(package.project_name),
+                package=dist.metadata["Name"],
+                installed_version=dist.version,
+                vuln_details=known_vulns.get(dist.metadata["Name"]),
             )
 
             if package_result["state"] == "VULNERABLE":
