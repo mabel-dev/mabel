@@ -70,10 +70,17 @@ class Cursor:
         if self.partition and self.location >= 0:
             if self.partition in self.readable_blobs:
                 return self.partition
+            # self.partition is usually a blob name, but a serialized cursor holds
+            # the hash of the name - accept either so we compare like for like
+            partition_hash = (
+                self.partition
+                if isinstance(self.partition, int)
+                else xxh3_64_intdigest(self.partition, 0)
+            )
             partition_finder = [
                 blob
                 for blob in self.readable_blobs
-                if xxh3_64_intdigest(blob, 0) == self.partition
+                if xxh3_64_intdigest(blob, 0) == partition_hash
             ]
             if len(partition_finder) != 1:
                 raise ValueError(

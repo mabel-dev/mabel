@@ -12,7 +12,9 @@ from mabel.data.internals.dictset import STORAGE_CLASS
 from mabel.adapters.disk import DiskReader
 from mabel.adapters.null import NullReader
 from mabel.data import Reader
+from mabel.data.readers.internals.cursor import Cursor
 from mabel.utils import entropy
+from xxhash import xxh3_64_intdigest
 from rich import traceback
 
 traceback.install()
@@ -224,6 +226,42 @@ def test_multiple_files():
             going = False
 
     assert counter == records
+
+
+def test_partition_lookup_accepts_name_or_hash():
+    """
+    Cursor.partition is normally a blob name, but a serialized cursor carries the
+    hash of that name. next_blob() has a lookup branch that has to cope with both,
+    and it is the only place the two representations meet - pin the behaviour so a
+    refactor can't quietly reintroduce comparing a hash against a name (which never
+    matches) or hashing a value that is already a hash (which raises TypeError).
+    """
+    blobs = [f"data/part-{i:03}.jsonl" for i in range(5)]
+
+    def cursor_at(partition):
+        # drive the lookup branch directly - it needs a partition that isn't the
+        # one next_blob() would pick on its own, and a location we've read past
+        cursor = Cursor(readable_blobs=blobs)
+        cursor.partition = partition
+        cursor.location = 7
+        return cursor
+
+    # a partition held as a hash resolves back to the blob name
+    assert cursor_at(xxh3_64_intdigest("data/part-002.jsonl", 0)).next_blob() == (
+        "data/part-002.jsonl"
+    )
+
+    # a partition held as a name is returned unchanged
+    assert cursor_at("data/part-003.jsonl").next_blob() == "data/part-003.jsonl"
+
+    # every readable blob is reachable by its hash
+    for blob in blobs:
+        assert cursor_at(xxh3_64_intdigest(blob, 0)).next_blob() == blob
+
+    # a partition that is no longer readable is an error, in either representation
+    for missing in ("data/part-999.jsonl", xxh3_64_intdigest("data/part-999.jsonl", 0)):
+        with pytest.raises(ValueError):
+            cursor_at(missing).next_blob()
 
 
 if __name__ == "__main__":  # pragma: no cover
