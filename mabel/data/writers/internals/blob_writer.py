@@ -10,6 +10,7 @@ import orso
 import zstandard
 from orso.logging import get_logger
 from orso.schema import RelationSchema
+from orso.types import OrsoTypes
 
 from mabel.data.internals.records import flatten
 from mabel.data.validator import schema_loader
@@ -52,6 +53,15 @@ class BlobWriter(object):
         kwargs["format"] = format
         self.inner_writer = inner_writer(**kwargs)  # type:ignore
         self.schema = schema_loader(schema)
+        # orso applies the schema when it converts the WAL to Arrow, and a column with
+        # no declared type is rendered as a VARCHAR - which fails as soon as anything
+        # that isn't a string is written to it. Where we don't know the types, hand
+        # orso the column names instead and let it infer them from the data.
+        self.wal_schema = self.schema
+        if isinstance(self.schema, RelationSchema) and any(
+            column.type == OrsoTypes._MISSING_TYPE for column in self.schema.columns
+        ):
+            self.wal_schema = [column.name for column in self.schema.columns]
         self.open_buffer()
 
         if self.format == "parquet":
@@ -224,7 +234,7 @@ class BlobWriter(object):
 
     def open_buffer(self):
         if self.format == "parquet":
-            self.wal = orso.DataFrame(rows=[], schema=self.schema)
+            self.wal = orso.DataFrame(rows=[], schema=self.wal_schema)
         else:
             self.buffer = bytearray()
             self.byte_count = 0

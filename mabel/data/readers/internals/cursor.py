@@ -14,6 +14,19 @@ import orjson
 from xxhash import xxh3_64_intdigest
 
 
+def partition_hash(partition) -> int:
+    """
+    Identify a partition (blob) by the hash of its name.
+
+    xxhash requires bytes - from 4.0 it rejects strings outright rather than
+    encoding them for us - and a serialized cursor carries the hash rather than
+    the name, so accept either representation.
+    """
+    if isinstance(partition, int):
+        return partition
+    return xxh3_64_intdigest(partition.encode("utf-8"), 0)
+
+
 class InvalidCursor(Exception):
     pass
 
@@ -49,7 +62,7 @@ class Cursor:
         find_partition = [
             blob
             for blob in self.readable_blobs
-            if xxh3_64_intdigest(blob, 0) == cursor["partition"]
+            if partition_hash(blob) == cursor["partition"]
         ]
         if len(find_partition) == 1:
             self.partition = find_partition[0]
@@ -70,17 +83,9 @@ class Cursor:
         if self.partition and self.location >= 0:
             if self.partition in self.readable_blobs:
                 return self.partition
-            # self.partition is usually a blob name, but a serialized cursor holds
-            # the hash of the name - accept either so we compare like for like
-            partition_hash = (
-                self.partition
-                if isinstance(self.partition, int)
-                else xxh3_64_intdigest(self.partition, 0)
-            )
+            target = partition_hash(self.partition)
             partition_finder = [
-                blob
-                for blob in self.readable_blobs
-                if xxh3_64_intdigest(blob, 0) == partition_hash
+                blob for blob in self.readable_blobs if partition_hash(blob) == target
             ]
             if len(partition_finder) != 1:
                 raise ValueError(
@@ -123,7 +128,7 @@ class Cursor:
             )
             return blob_map.tobytes().hex()
         if item == "partition":
-            return xxh3_64_intdigest(self.partition, 0)
+            return partition_hash(self.partition)
         if item == "location":
             return self.location
         return None

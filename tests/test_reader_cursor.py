@@ -13,8 +13,8 @@ from mabel.adapters.disk import DiskReader
 from mabel.adapters.null import NullReader
 from mabel.data import Reader
 from mabel.data.readers.internals.cursor import Cursor
+from mabel.data.readers.internals.cursor import partition_hash
 from mabel.utils import entropy
-from xxhash import xxh3_64_intdigest
 from rich import traceback
 
 traceback.install()
@@ -235,6 +235,7 @@ def test_partition_lookup_accepts_name_or_hash():
     and it is the only place the two representations meet - pin the behaviour so a
     refactor can't quietly reintroduce comparing a hash against a name (which never
     matches) or hashing a value that is already a hash (which raises TypeError).
+    partition_hash also encodes to bytes - xxhash 4.0 rejects str outright.
     """
     blobs = [f"data/part-{i:03}.jsonl" for i in range(5)]
 
@@ -247,7 +248,7 @@ def test_partition_lookup_accepts_name_or_hash():
         return cursor
 
     # a partition held as a hash resolves back to the blob name
-    assert cursor_at(xxh3_64_intdigest("data/part-002.jsonl", 0)).next_blob() == (
+    assert cursor_at(partition_hash("data/part-002.jsonl")).next_blob() == (
         "data/part-002.jsonl"
     )
 
@@ -256,10 +257,10 @@ def test_partition_lookup_accepts_name_or_hash():
 
     # every readable blob is reachable by its hash
     for blob in blobs:
-        assert cursor_at(xxh3_64_intdigest(blob, 0)).next_blob() == blob
+        assert cursor_at(partition_hash(blob)).next_blob() == blob
 
     # a partition that is no longer readable is an error, in either representation
-    for missing in ("data/part-999.jsonl", xxh3_64_intdigest("data/part-999.jsonl", 0)):
+    for missing in ("data/part-999.jsonl", partition_hash("data/part-999.jsonl")):
         with pytest.raises(ValueError):
             cursor_at(missing).next_blob()
 
