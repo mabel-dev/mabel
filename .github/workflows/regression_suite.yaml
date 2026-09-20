@@ -66,4 +66,4 @@ jobs:
           pip install -r $GITHUB_WORKSPACE/tests/requirements.txt
 
       - name: Execute Test
-        run: mypy --ignore-missing-imports --python-version 3.11 --no-strict-optional mabel
+        run: mypy --ignore-missing-imports --python-version 3.13 --no-strict-optional mabel

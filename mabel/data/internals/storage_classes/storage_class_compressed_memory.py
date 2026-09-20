@@ -47,7 +47,7 @@ class StorageClassCompressedMemory(BaseStorageClass):
         del batch
         gc.collect()
 
-    def _inner_reader(self, *locations: Union[int, Tuple[int], List[int], Set[int]]):
+    def _inner_reader(self, *locations: int):
         if locations:
             ordered_location = sorted(locations)
             batch_number = -1
@@ -61,8 +61,8 @@ class StorageClassCompressedMemory(BaseStorageClass):
                 yield batch[i % BATCH_SIZE]
 
         else:
-            for batch in self.batches:
-                records = self.parse_json(self.decompressor.decompress(batch))
+            for compressed_batch in self.batches:
+                records = self.parse_json(self.decompressor.decompress(compressed_batch))
                 for record in records:
                     if record:
                         yield record

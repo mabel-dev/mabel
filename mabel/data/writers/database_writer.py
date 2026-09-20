@@ -108,12 +108,6 @@ class DatabaseWriter:
 
         return self.records_in_buffer
 
-    def __del__(self):
-        if hasattr(self, "finalized") and not self.finalized and self.records > 0:
-            logger.error(
-                f"{type(self).__name__} has not been finalized - {self.records} may have been lost, use `.finalize()` to finalize writers."
-            )
-
     def commit(self):
         if len(self.wal) > 0:
             lock = threading.Lock()

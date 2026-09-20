@@ -2,6 +2,7 @@ import os
 from typing import Any
 from typing import Dict
 from typing import List
+from typing import Literal
 from typing import Union
 
 import orjson
@@ -12,7 +13,7 @@ __all__ = ["schema_loader"]
 
 def schema_loader(
     definition: Union[str, List[Dict[str, Any]], dict, RelationSchema, bool],
-) -> Union[RelationSchema, bool]:
+) -> Union[RelationSchema, Literal[False]]:
     if definition is None:
         raise ValueError(
             "Writer is missing a schema, minimum schema is a list of the columns or explicitly set to 'False' is data is unschemable."
