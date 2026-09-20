@@ -68,23 +68,23 @@ def parse_iso(
     # If the last character is a Z, we ignore it.
     # If we have +0000 notation on the end, we ignore it.
     try:
-        input_type = type(value)
-
         if numpy:
             if isinstance(value, numpy.datetime64):
                 value = value.astype(datetime.datetime)
-                input_type = type(value)
 
         if hasattr(value, "to_pydatetime"):
-            return value.to_pydatetime()
+            return value.to_pydatetime()  # type:ignore[union-attr]
 
-        if input_type == datetime.datetime:
+        # these are isinstance rather than type() checks so the type narrows for
+        # the checker - datetime is tested before date because it subclasses it,
+        # and bool is excluded because it subclasses int
+        if isinstance(value, datetime.datetime):
             return value
-        if input_type == datetime.date:
+        if isinstance(value, datetime.date):
             return datetime.datetime.combine(value, datetime.time.min)
-        if input_type in (int, float):
+        if isinstance(value, (int, float)) and not isinstance(value, bool):
             return datetime.datetime.fromtimestamp(value)
-        if input_type == str and 10 <= len(value) <= 33:
+        if isinstance(value, str) and 10 <= len(value) <= 33:
             if value[-1] == "Z":
                 value = value[:-1]
             if "+" in value:
@@ -97,7 +97,7 @@ def parse_iso(
             if val_len == 10:
                 # YYYY-MM-DD
                 return datetime.datetime(
-                    *map(int, [value[:4], value[5:7], value[8:10]])
+                    *map(int, [value[:4], value[5:7], value[8:10]])  # type:ignore
                 )
             if val_len >= 16:
                 if not (value[10] in ("T", " ") and value[13] in DATE_SEPARATORS):

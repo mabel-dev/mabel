@@ -44,6 +44,6 @@ class BaseInnerWriter(abc.ABC):
     def _get_node(self):
         return f"{uuid.getnode():x}-{os.getpid():x}"
 
-    @abc.abstractclassmethod
+    @abc.abstractmethod
     def commit(self, byte_data, override_blob_name=None):
         pass

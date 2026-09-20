@@ -74,12 +74,16 @@ class GroupBy:
         for record in self._dictset:
             try:
                 group_key: int = xxh3_64_intdigest(
-                    "".join([str(record[column]) for column in self._columns]),
+                    "".join([str(record[column]) for column in self._columns]).encode(
+                        "utf-8"
+                    ),
                     HASH_SEED,
                 )
             except KeyError:
                 group_key: int = xxh3_64_intdigest(
-                    "".join([f"{record.get(column, '')}" for column in self._columns]),
+                    "".join(
+                        [f"{record.get(column, '')}" for column in self._columns]
+                    ).encode("utf-8"),
                     HASH_SEED,
                 )
             if group_key not in self._group_keys.keys():

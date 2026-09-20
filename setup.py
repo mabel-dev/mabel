@@ -26,5 +26,6 @@ setup(
     author_email="justin.joyce@joocer.com",
     packages=find_packages(include=["mabel", "mabel.*"]),
     url="https://github.com/mabel-dev/mabel/",
+    python_requires=">=3.11",
     install_requires=required,
 )

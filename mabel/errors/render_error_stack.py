@@ -140,7 +140,7 @@ def _read_from_code(filename: str, line: int, extend_by: int) -> Generator:
             yield f"{prefix}{line_number:4d} | {lines[line_number - 1]}"
             line_number += 1
     except:
-        return ""
+        return
 
 
 def _render_error_stack():
