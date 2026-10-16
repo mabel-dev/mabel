@@ -114,5 +114,4 @@ Want to help build mabel? See the [contribution guidance](https://github.com/mab
 
 [Apache 2.0](LICENSE)
 
-
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmabel-dev%2Fmabel.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmabel-dev%2Fmabel?ref=badge_large)
