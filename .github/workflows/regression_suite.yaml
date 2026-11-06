@@ -34,6 +34,19 @@ jobs:
                      -p 9090:4443 \
                      fsouza/fake-gcs-server:1.47 \
                      -scheme http
+          # don't start the tests until the emulator answers; if it never does,
+          # show why rather than letting each GCS test retry for minutes
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:9090/storage/v1/b > /dev/null; then
+              echo "GCS emulator is up"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "GCS emulator did not start"
+          docker ps -a --filter name=fake-gcs-server
+          docker logs fake-gcs-server
+          exit 1
 
       - name: Run Regression Tests
         run: coverage run -m pytest --color=yes
