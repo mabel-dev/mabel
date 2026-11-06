@@ -112,7 +112,7 @@ class Writer:
         )
         logger.debug(orjson.dumps(arg_dict))
 
-        # add the schema to the writer - pyarrow uses this
+        # add the schema to the writer - the parquet writer uses this
         # add after the config has been written to the logs
         kwargs["schema"] = self.schema
 

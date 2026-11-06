@@ -63,7 +63,7 @@ class DatabaseWriter:
         arg_dict["inner_writer"] = f"{inner_writer.__name__}"  # type:ignore
         logger.debug([f"{k}={v!r}" for k, v in arg_dict.items()])
 
-        # add the schema to the writer - pyarrow uses this
+        # add the schema to the writer - the parquet writer uses this
         # add after the config has been written to the logs
         kwargs["schema"] = self.schema
 
