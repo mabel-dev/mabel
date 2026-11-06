@@ -1,4 +1,4 @@
-import io
+import copy
 import json
 import threading
 from typing import List
@@ -19,6 +19,17 @@ from mabel.errors import MissingDependencyError
 # we use 62Mb to allow for headers/footers and errors in calcs
 BLOB_SIZE = 62 * 1024 * 1024  # 64Mb, 16 files per gigabyte
 SUPPORTED_FORMATS_ALGORITHMS = ("jsonl", "zstd", "parquet", "text", "flat")
+# the draken type to write an all-null column as, by its declared mabel type
+PARQUET_NULL_TYPES = {
+    "TIMESTAMP": "TIMESTAMP",
+    "DATE": "DATE",
+    "VARCHAR": "VARCHAR",
+    "BOOLEAN": "BOOLEAN",
+    "INTEGER": "INTEGER",
+    "DOUBLE": "DOUBLE",
+    "ARRAY": "ARRAY",
+    "BLOB": "BLOB",
+}
 
 
 class BlobWriter(object):
@@ -62,6 +73,14 @@ class BlobWriter(object):
             column.type == OrsoTypes._MISSING_TYPE for column in self.schema.columns
         ):
             self.wal_schema = [column.name for column in self.schema.columns]
+        elif isinstance(self.schema, RelationSchema) and any(
+            column.type == OrsoTypes.STRUCT for column in self.schema.columns
+        ):
+            # STRUCT values are held as JSON strings (see `arrow_append`)
+            self.wal_schema = copy.deepcopy(self.schema)
+            for column in self.wal_schema.columns:
+                if column.type == OrsoTypes.STRUCT:
+                    column.type = OrsoTypes.VARCHAR
         self.open_buffer()
 
         if self.format == "parquet":
@@ -70,6 +89,13 @@ class BlobWriter(object):
             self.append = self.text_append
 
     def arrow_append(self, record: dict = {}):
+        # parquet is written by rugo, which has no struct type - write nested
+        # dictionaries as JSON strings instead
+        if any(isinstance(value, dict) for value in record.values()):
+            record = {
+                key: orjson.dumps(value).decode() if isinstance(value, dict) else value
+                for key, value in record.items()
+            }
         self.records_in_buffer += 1
         self.wal.append(record)  # type:ignore
         # if this write would exceed the blob size, close it
@@ -118,46 +144,80 @@ class BlobWriter(object):
 
         return self.records_in_buffer
 
-    def _normalize_arrow_schema(self, table, mabel_schema: RelationSchema):
+    def _normalize_parquet_schema(self, morsel, mabel_schema: RelationSchema):
         """
-        Because we partition the data, there are instances where nulls in one of the
-        columns isn't being correctly identified as the target type.
-
-        We only handle a subset of types here, so it doesn't remove the problem.
+        Because we partition the data, a column can be entirely null in one blob, in
+        which case its type can't be inferred from the values. Where the schema tells
+        us what the column should be, write the nulls as that type so every blob in
+        the dataset agrees.
         """
-        try:
-            import pyarrow
-        except ImportError:
-            raise MissingDependencyError(
-                "`pyarrow` missing, please install or include in `requirements.txt`."
-            )
+        import draken
 
-        type_map = {
-            "TIMESTAMP": pyarrow.timestamp("us"),
-            "DATE": pyarrow.date64(),
-            "VARCHAR": pyarrow.string(),
-            "BOOLEAN": pyarrow.bool_(),
-            "INTEGER": pyarrow.int64(),
-            "DOUBLE": pyarrow.float64(),
-            "ARRAY": pyarrow.list_(pyarrow.string()),
-            "BLOB": pyarrow.binary(),
-            #            "STRUCT": pyarrow.map_(pyarrow.string(), pyarrow.string())
-        }
+        native = draken.draken_native
+        null_type = native.DrakenType.NULL
+        rows = morsel.num_rows
 
-        schema = table.schema
+        names = []
+        vectors = []
+        changed = False
+        for name in morsel.column_names:
+            column_name = name.decode() if isinstance(name, bytes) else name
+            vector = getattr(morsel.column(name), "_nb", morsel.column(name))
+            mabel_column = mabel_schema.find_column(column_name)
+            column_type = str(mabel_column.type) if mabel_column else None
+            if vector.type == null_type and column_type in PARQUET_NULL_TYPES:
+                if column_type == "ARRAY":
+                    vector = native.vector_array_from_sequence(
+                        [None] * rows, native.DrakenType.VARCHAR, 1
+                    )
+                else:
+                    vector = draken.vector_from_sequence(
+                        [None] * rows, PARQUET_NULL_TYPES[column_type]
+                    )
+                changed = True
+            names.append(column_name)
+            vectors.append(vector)
 
-        for column in schema.names:
-            # if we know about the column and it's a type we handle
-            mabel_column = mabel_schema.find_column(column)
-            if mabel_column and mabel_column.type in type_map:
-                index = table.column_names.index(column)
-                # update the schema
-                schema = schema.set(
-                    index, pyarrow.field(column, type_map[mabel_column.type])
-                )
-        # apply the updated schema
-        table = table.cast(target_schema=schema)
-        return table
+        if not changed:
+            return morsel
+        return draken.Morsel.from_vectors(names, vectors)
+
+    def _sort_parquet(self, morsel):
+        """
+        Order the rows by `sort_by`, which is either a column name, a list of column
+        names, or a list of (column, "ascending" | "descending") tuples. Nulls sort
+        last in either direction.
+
+        Returns the sorted morsel, and a (column, descending) tuple for the leading
+        key if the file can declare itself sorted by it, otherwise None.
+        """
+        sort_spec = self.sort_by
+        if isinstance(sort_spec, str):
+            sort_spec = [sort_spec]
+        keys = [
+            (item, "ascending") if isinstance(item, str) else (item[0], item[1])
+            for item in sort_spec
+        ]
+
+        order = list(range(morsel.num_rows))
+        # stable sorts, applied from the least to the most significant key
+        for column, direction in reversed(keys):
+            values = morsel.column(column.encode()).to_pylist()
+            present = [i for i in order if values[i] is not None]
+            missing = [i for i in order if values[i] is None]
+            present.sort(key=values.__getitem__, reverse=direction == "descending")
+            order = present + missing
+
+        lead_column, lead_direction = keys[0]
+        declared = None
+        # rugo records the leading key in the file's sorting_columns, which implies
+        # nulls first for ascending and nulls last for descending. We always put nulls
+        # last, so only make the claim when that ordering is the same either way.
+        lead_nulls = morsel.column(lead_column.encode()).null_count()
+        if lead_direction == "descending" or lead_nulls == 0:
+            declared = (lead_column, lead_direction == "descending")
+
+        return morsel.take(order), declared
 
     def commit(self):
         committed_blob_name = ""
@@ -170,38 +230,34 @@ class BlobWriter(object):
 
                 if self.format == "parquet":
                     try:
-                        import pyarrow
-                        import pyarrow.parquet
+                        from rugo.parquet import write_parquet
                     except ImportError:  # pragma: no cover
                         raise MissingDependencyError(
-                            "`pyarrow` is missing, please install or include in requirements.txt"
+                            "`rugo` is missing, please install or include in requirements.txt"
                         )
 
-                    pytable = self.wal.arrow()
+                    morsel = self.wal.to_draken()
 
                     # if we have a schema, make effort to align the parquet file to it
                     if self.schema:
-                        pytable = self._normalize_arrow_schema(pytable, self.schema)
+                        morsel = self._normalize_parquet_schema(morsel, self.schema)
+
+                    write_kwargs = {"max_rows_per_row_group": self.parquet_row_group_size}
 
                     # sort the table if sort_by is specified
                     if self.sort_by:
-                        # Convert list of strings to PyArrow format
-                        sort_spec = self.sort_by
-                        if isinstance(self.sort_by, list) and all(
-                            isinstance(item, str) for item in self.sort_by
-                        ):
-                            # Convert list of strings to list of tuples with default ascending order
-                            sort_spec = [(col, "ascending") for col in self.sort_by]
-                        pytable = pytable.sort_by(sort_spec)
+                        morsel, declared = self._sort_parquet(morsel)
+                        if declared:
+                            write_kwargs["sorted_by"] = declared[0]
+                            write_kwargs["sorted_descending"] = declared[1]
 
-                    tempfile = io.BytesIO()
-                    write_kwargs = {"row_group_size": self.parquet_row_group_size}
                     if self.use_dictionary is not None:
-                        write_kwargs["use_dictionary"] = self.use_dictionary
-                    pyarrow.parquet.write_table(pytable, where=tempfile, **write_kwargs)
+                        # rugo decides per column whether dictionary encoding is
+                        # worthwhile; it can be turned on or off, but not chosen
+                        # column by column, so a list of columns turns it on.
+                        write_kwargs["dictionary"] = bool(self.use_dictionary)
 
-                    tempfile.seek(0)
-                    write_buffer = tempfile.read()
+                    write_buffer = write_parquet(morsel, **write_kwargs)
 
                 elif self.format == "zstd":
                     # zstandard is an non-optional installed dependency
