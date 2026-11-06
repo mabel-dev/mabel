@@ -5,7 +5,9 @@ on: [push, pull_request]
 jobs:
   regression_tests:
     name: Regression Tests
-    runs-on: ubuntu-latest
+    # pinned: on ubuntu-26.04 the fake-gcs-server container fails to open its
+    # listening socket ("socket: function not implemented") and exits at start
+    runs-on: ubuntu-24.04
 #    runs-on: ${{ matrix.os }}
 #    strategy:
 #      matrix:
