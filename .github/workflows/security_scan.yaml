@@ -1,0 +1,25 @@
+# SEC-04: Bandit, Semgrep and Grype through the fleet's reusable workflow.
+# This file owns only the triggers. The scan, the pull-request gate (fail on
+# new high/critical findings versus the base) and the upload of every finding
+# to opteryx.ops.pipeline_scan_findings are defined once in mabel-dev/.github.
+name: Security Scan
+
+on:
+  push:
+  pull_request:
+  schedule:
+    # Minute is sha256("mabel-dev/mabel") mod 60, so the fleet does not all start at once.
+    - cron: '46 5 * * *'
+
+permissions: {}
+
+jobs:
+  security-scan:
+    permissions:
+      contents: read
+      id-token: write  # OIDC to authenticate.opteryx for the upload; no stored secret
+    uses: mabel-dev/.github/.github/workflows/security_scan.yaml@main
+    secrets:
+      XAI_API_KEY: ${{ secrets.XAI_API_KEY }}  # SEC-06 Grok PR review; skipped where the org secret is not granted
+    with:
+      python: true
