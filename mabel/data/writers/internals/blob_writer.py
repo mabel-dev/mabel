@@ -77,10 +77,11 @@ class BlobWriter(object):
             column.type == OrsoTypes.STRUCT for column in self.schema.columns
         ):
             # STRUCT values are held as JSON strings (see `arrow_append`)
-            self.wal_schema = copy.deepcopy(self.schema)
-            for column in self.wal_schema.columns:
+            wal_schema = copy.deepcopy(self.schema)
+            for column in wal_schema.columns:
                 if column.type == OrsoTypes.STRUCT:
                     column.type = OrsoTypes.VARCHAR
+            self.wal_schema = wal_schema
         self.open_buffer()
 
         if self.format == "parquet":
